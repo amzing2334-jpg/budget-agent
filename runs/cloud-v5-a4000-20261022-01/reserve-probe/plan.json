@@ -1,0 +1,56 @@
+{
+  "kind": "development_action_reserve_diagnostic",
+  "created_at": "2026-10-22T07:10:26.523910+00:00",
+  "task_id": "astropy__astropy-12907",
+  "split": "dev",
+  "task_sha256": "64e4c61d6ca814c7995e4f9cc471f29cb9521608f7d123ad1532b3c05bab9e29",
+  "tasks_path": "/home/featurize/work/budget-agent-v5-followup/tasks/swebench-pilot.jsonl",
+  "tasks_sha256": "0e7104adbdf85bfe4f3c81c5e56a7ff8ff2884480804e5e73245b70573dc0e0c",
+  "config_path": "/home/featurize/work/budget-agent-v5-followup/configs/cloud-v5-qwen3-4b.toml",
+  "config_sha256": "a9ccc1828f54d584e0a400ff276b5d02e75765ee8e7bf03feafd20f064f6c883",
+  "source_fingerprint": "e9642259b3f1e5d18db9cd75a3780b1dfdaa8012eb3baa6e1c4e8f4ee597f0a5",
+  "driver_sha256": "adce8c52a7d68389731011ef94b9b16e01a8e2878a829e7193c49548e15da448",
+  "common_config": {
+    "strategy": "recent",
+    "history_format": "chat",
+    "provider": "transformers",
+    "model": "Qwen/Qwen3-4B-Instruct-2507",
+    "base_url": "",
+    "api_key_env": "LLM_API_KEY",
+    "context_tokens": 8192,
+    "total_tokens": 32000,
+    "max_output_tokens": 768,
+    "max_steps": 20,
+    "timeout_seconds": 120,
+    "tokenizer": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+    "temperature": 0.0,
+    "seed": 42,
+    "input_price_per_million": null,
+    "output_price_per_million": null,
+    "max_cost_usd": null,
+    "allow_local_execution": false,
+    "environment": "docker",
+    "docker_image": "python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce",
+    "api_max_tokens_field": "max_tokens",
+    "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+    "device": "cuda",
+    "model_dtype": "bfloat16"
+  },
+  "attempts": [
+    {
+      "min_action_output_tokens": 1,
+      "output": "/home/featurize/work/budget-agent-v5-followup/runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-1"
+    },
+    {
+      "min_action_output_tokens": 128,
+      "output": "/home/featurize/work/budget-agent-v5-followup/runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-128"
+    }
+  ],
+  "attempts_per_reserve": 1,
+  "notes": [
+    "The reserve is an admission/context budget requirement, not forced generation or a guarantee of a complete action.",
+    "One known development task, one attempt per condition; this is not a benchmark success rate.",
+    "Only min_action_output_tokens differs. Upstream mini-SWE-agent is a separate external-harness run.",
+    "Official export, evaluation and attachment run separately; a finished run or nonempty patch is not repair success."
+  ]
+}

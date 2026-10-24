@@ -1,0 +1,6 @@
+{
+  "next_prompt_tokens": 5982,
+  "remaining_total_tokens": 5200,
+  "min_action_output_tokens": 128,
+  "measurement": "Saved upstream messages before the final exit, same pinned HF tokenizer/chat template; tokenizer only, no generation."
+}

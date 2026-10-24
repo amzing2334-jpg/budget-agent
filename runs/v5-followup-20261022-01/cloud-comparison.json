@@ -1,0 +1,1176 @@
+{
+  "kind": "descriptive_cloud_artifact_inventory",
+  "generated_at": "2026-10-22T07:52:39.693888+00:00",
+  "input": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01",
+  "grading_root": "C:\\找工作\\budget-agent-evaluation\\cloud-v5-a4000-20261022-01",
+  "analysis_source": {
+    "path": "C:\\找工作\\budget-agent\\runs\\v5-followup-20261022-01\\analyze_cloud.py",
+    "bytes": 15976,
+    "sha256": "1137746b2ac4ae50227f81cfa6e82f9bb669be611599751a0a66d1949086891c"
+  },
+  "missing_planned_arms": [],
+  "runs": [
+    {
+      "arm": "adaptive-guidance",
+      "registration": "additional_not_preregistered",
+      "registration_scope": "directory matches predeclared driver; not independent verification of creation time",
+      "task_id": "astropy__astropy-12907",
+      "split": "dev",
+      "run_id": "20261022T074654Z-43348b7b",
+      "provider": "transformers",
+      "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "actual_models": [
+        "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      ],
+      "strategy": "mask",
+      "status": "budget_exhausted",
+      "resolved": null,
+      "evidence_kind": "model_run",
+      "source_fingerprint": "d3ca73f7db6c7ecd49832e1c04d9d87fa08b73092b7dd1189a19d83fe98a4528",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "initial_revision": "e3b0c44298fc1c14",
+      "created_at": "2026-10-22T07:49:15.106299+00:00",
+      "model_metadata": {
+        "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "tokenizer_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "device": "cuda",
+        "dtype": "bfloat16",
+        "generation": {
+          "do_sample": false,
+          "temperature": 1.0,
+          "top_k": 0,
+          "top_p": 1.0,
+          "repetition_penalty": 1.0,
+          "num_beams": 1,
+          "use_cache": true,
+          "bos_token_id": null,
+          "eos_token_id": [
+            151645,
+            151643
+          ],
+          "pad_token_id": 151643
+        },
+        "seed_scope": "torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee"
+      },
+      "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+      "harness": null,
+      "harness_group": "internal_budget_agent",
+      "harness_note": "Internal result schema does not currently record a harness field.",
+      "upstream": null,
+      "configuration": {
+        "context_tokens": 8192,
+        "total_tokens": 32000,
+        "max_output_tokens": 768,
+        "min_action_output_tokens": 128,
+        "max_steps": 20,
+        "history_format": "chat",
+        "strategy": "mask",
+        "seed": 42,
+        "temperature": 0.0,
+        "model_dtype": "bfloat16",
+        "context_policy": null,
+        "submission_policy": null
+      },
+      "usage": {
+        "input_tokens": 31440,
+        "output_tokens": 361,
+        "total_tokens": 31801,
+        "calls": 13,
+        "usage_unknown": false,
+        "usage_sources": [
+          "tokenizer_exact"
+        ],
+        "elapsed_seconds": 140.41973654999947,
+        "model_seconds": 21.315813246999824
+      },
+      "budget": {
+        "input_tokens": 31440,
+        "output_tokens": 361,
+        "total_tokens": 31801,
+        "calls": 13,
+        "attempted_calls": 13,
+        "remaining_tokens": 199,
+        "overrun": false,
+        "unreconciled_request": false,
+        "usage_is_estimated": false,
+        "preflight_counter": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      },
+      "evaluation": {
+        "status": "official_empty_patch",
+        "resolved": null,
+        "tests_executed": false,
+        "test_counts": null,
+        "official_resolved": null,
+        "infra_failure": null,
+        "infra_failure_reason": null,
+        "patch_successfully_applied": null,
+        "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "report_path": null,
+        "summary_path": "/home/featurize/work/budget-agent-evaluation/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/Qwen__Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554-mask.cloud-v5-a4000-20261022-01-guidance-pair-budget-aware.json"
+      },
+      "independent_evaluator_counts": null,
+      "patch_bytes": 0,
+      "internal_diagnostics": {
+        "source": "result.diagnostics",
+        "counts": {
+          "events": 13,
+          "invalid_actions": 0,
+          "invalid_actions_at_output_limit": 0,
+          "repeated_failed_actions": 0,
+          "repeated_observations": 0,
+          "successful_edit_file": 0,
+          "successful_write_file": 0,
+          "successful_run": 0,
+          "successful_diff": 0
+        },
+        "tools": {
+          "edit_file": null,
+          "write_file": null,
+          "run": null,
+          "diff": null
+        },
+        "call_alignment": {
+          "method": "ordered_agent_responses",
+          "agent_responses": 13,
+          "events": 13,
+          "raw_content_mismatches": [],
+          "unpaired_events": 0,
+          "unpaired_agent_responses": 0
+        }
+      },
+      "mini_native_metrics": null,
+      "call_ledger": {
+        "rows": 13,
+        "response_rows": 13,
+        "unknown_usage_rows": 0,
+        "known_input_tokens": 31440,
+        "known_output_tokens": 361,
+        "usage_sources": [
+          "tokenizer_exact"
+        ]
+      },
+      "evidence": {
+        "result.json": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-guidance\\budget-aware\\astropy__astropy-12907__mask__20261022T074654Z-43348b7b\\result.json",
+          "bytes": 23777,
+          "sha256": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce"
+        },
+        "patch.diff": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-guidance\\budget-aware\\astropy__astropy-12907__mask__20261022T074654Z-43348b7b\\patch.diff",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "calls.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-guidance\\budget-aware\\astropy__astropy-12907__mask__20261022T074654Z-43348b7b\\calls.jsonl",
+          "bytes": 123537,
+          "sha256": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03"
+        },
+        "trajectory.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-guidance\\budget-aware\\astropy__astropy-12907__mask__20261022T074654Z-43348b7b\\trajectory.jsonl",
+          "bytes": 26146,
+          "sha256": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+        },
+        "mini.traj.json": null
+      }
+    },
+    {
+      "arm": "adaptive-guidance",
+      "registration": "additional_not_preregistered",
+      "registration_scope": "directory matches predeclared driver; not independent verification of creation time",
+      "task_id": "astropy__astropy-12907",
+      "split": "dev",
+      "run_id": "20261022T074532Z-2df7bd07",
+      "provider": "transformers",
+      "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "actual_models": [
+        "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      ],
+      "strategy": "mask",
+      "status": "budget_exhausted",
+      "resolved": null,
+      "evidence_kind": "model_run",
+      "source_fingerprint": "d3ca73f7db6c7ecd49832e1c04d9d87fa08b73092b7dd1189a19d83fe98a4528",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "initial_revision": "e3b0c44298fc1c14",
+      "created_at": "2026-10-22T07:46:54.661195+00:00",
+      "model_metadata": {
+        "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "tokenizer_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "device": "cuda",
+        "dtype": "bfloat16",
+        "generation": {
+          "do_sample": false,
+          "temperature": 1.0,
+          "top_k": 0,
+          "top_p": 1.0,
+          "repetition_penalty": 1.0,
+          "num_beams": 1,
+          "use_cache": true,
+          "bos_token_id": null,
+          "eos_token_id": [
+            151645,
+            151643
+          ],
+          "pad_token_id": 151643
+        },
+        "seed_scope": "torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee"
+      },
+      "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+      "harness": null,
+      "harness_group": "internal_budget_agent",
+      "harness_note": "Internal result schema does not currently record a harness field.",
+      "upstream": null,
+      "configuration": {
+        "context_tokens": 8192,
+        "total_tokens": 32000,
+        "max_output_tokens": 768,
+        "min_action_output_tokens": 128,
+        "max_steps": 20,
+        "history_format": "chat",
+        "strategy": "mask",
+        "seed": 42,
+        "temperature": 0.0,
+        "model_dtype": "bfloat16",
+        "context_policy": null,
+        "submission_policy": null
+      },
+      "usage": {
+        "input_tokens": 31339,
+        "output_tokens": 347,
+        "total_tokens": 31686,
+        "calls": 13,
+        "usage_unknown": false,
+        "usage_sources": [
+          "tokenizer_exact"
+        ],
+        "elapsed_seconds": 81.81826761499997,
+        "model_seconds": 21.142728367999553
+      },
+      "budget": {
+        "input_tokens": 31339,
+        "output_tokens": 347,
+        "total_tokens": 31686,
+        "calls": 13,
+        "attempted_calls": 13,
+        "remaining_tokens": 314,
+        "overrun": false,
+        "unreconciled_request": false,
+        "usage_is_estimated": false,
+        "preflight_counter": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      },
+      "evaluation": {
+        "status": "official_empty_patch",
+        "resolved": null,
+        "tests_executed": false,
+        "test_counts": null,
+        "official_resolved": null,
+        "infra_failure": null,
+        "infra_failure_reason": null,
+        "patch_successfully_applied": null,
+        "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "report_path": null,
+        "summary_path": "/home/featurize/work/budget-agent-evaluation/cloud-v5-a4000-20261022-01/adaptive-guidance/direct/Qwen__Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554-mask.cloud-v5-a4000-20261022-01-guidance-pair-direct.json"
+      },
+      "independent_evaluator_counts": null,
+      "patch_bytes": 0,
+      "internal_diagnostics": {
+        "source": "result.diagnostics",
+        "counts": {
+          "events": 13,
+          "invalid_actions": 0,
+          "invalid_actions_at_output_limit": 0,
+          "repeated_failed_actions": 0,
+          "repeated_observations": 0,
+          "successful_edit_file": 0,
+          "successful_write_file": 0,
+          "successful_run": 0,
+          "successful_diff": 0
+        },
+        "tools": {
+          "edit_file": null,
+          "write_file": null,
+          "run": null,
+          "diff": null
+        },
+        "call_alignment": {
+          "method": "ordered_agent_responses",
+          "agent_responses": 13,
+          "events": 13,
+          "raw_content_mismatches": [],
+          "unpaired_events": 0,
+          "unpaired_agent_responses": 0
+        }
+      },
+      "mini_native_metrics": null,
+      "call_ledger": {
+        "rows": 13,
+        "response_rows": 13,
+        "unknown_usage_rows": 0,
+        "known_input_tokens": 31339,
+        "known_output_tokens": 347,
+        "usage_sources": [
+          "tokenizer_exact"
+        ]
+      },
+      "evidence": {
+        "result.json": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-guidance\\direct\\astropy__astropy-12907__mask__20261022T074532Z-2df7bd07\\result.json",
+          "bytes": 23274,
+          "sha256": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6"
+        },
+        "patch.diff": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-guidance\\direct\\astropy__astropy-12907__mask__20261022T074532Z-2df7bd07\\patch.diff",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "calls.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-guidance\\direct\\astropy__astropy-12907__mask__20261022T074532Z-2df7bd07\\calls.jsonl",
+          "bytes": 120357,
+          "sha256": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b"
+        },
+        "trajectory.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-guidance\\direct\\astropy__astropy-12907__mask__20261022T074532Z-2df7bd07\\trajectory.jsonl",
+          "bytes": 29079,
+          "sha256": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+        },
+        "mini.traj.json": null
+      }
+    },
+    {
+      "arm": "adaptive-mask",
+      "registration": "additional_not_preregistered",
+      "registration_scope": "directory matches predeclared driver; not independent verification of creation time",
+      "task_id": "astropy__astropy-12907",
+      "split": "dev",
+      "run_id": "20261022T072704Z-bbb60603",
+      "provider": "transformers",
+      "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "actual_models": [
+        "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      ],
+      "strategy": "mask",
+      "status": "budget_exhausted",
+      "resolved": null,
+      "evidence_kind": "model_run",
+      "source_fingerprint": "209a8cff1285870eb9456fdb1db5f38c1e02ef73a987b82ab53ffe1961a4ca4f",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "initial_revision": "e3b0c44298fc1c14",
+      "created_at": "2026-10-22T07:27:41.002885+00:00",
+      "model_metadata": {
+        "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "tokenizer_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "device": "cuda",
+        "dtype": "bfloat16",
+        "generation": {
+          "do_sample": false,
+          "temperature": 1.0,
+          "top_k": 0,
+          "top_p": 1.0,
+          "repetition_penalty": 1.0,
+          "num_beams": 1,
+          "use_cache": true,
+          "bos_token_id": null,
+          "eos_token_id": [
+            151645,
+            151643
+          ],
+          "pad_token_id": 151643
+        },
+        "seed_scope": "torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee"
+      },
+      "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+      "harness": null,
+      "harness_group": "internal_budget_agent",
+      "harness_note": "Internal result schema does not currently record a harness field.",
+      "upstream": null,
+      "configuration": {
+        "context_tokens": 8192,
+        "total_tokens": 32000,
+        "max_output_tokens": 768,
+        "min_action_output_tokens": 128,
+        "max_steps": 20,
+        "history_format": "chat",
+        "strategy": "mask",
+        "seed": 42,
+        "temperature": 0.0,
+        "model_dtype": "bfloat16",
+        "context_policy": null,
+        "submission_policy": null
+      },
+      "usage": {
+        "input_tokens": 31339,
+        "output_tokens": 347,
+        "total_tokens": 31686,
+        "calls": 13,
+        "usage_unknown": false,
+        "usage_sources": [
+          "tokenizer_exact"
+        ],
+        "elapsed_seconds": 36.71306298499985,
+        "model_seconds": 21.274745673001235
+      },
+      "budget": {
+        "input_tokens": 31339,
+        "output_tokens": 347,
+        "total_tokens": 31686,
+        "calls": 13,
+        "attempted_calls": 13,
+        "remaining_tokens": 314,
+        "overrun": false,
+        "unreconciled_request": false,
+        "usage_is_estimated": false,
+        "preflight_counter": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      },
+      "evaluation": {
+        "status": "official_empty_patch",
+        "resolved": null,
+        "tests_executed": false,
+        "test_counts": null,
+        "official_resolved": null,
+        "infra_failure": null,
+        "infra_failure_reason": null,
+        "patch_successfully_applied": null,
+        "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "report_path": null,
+        "summary_path": "/home/featurize/work/budget-agent-evaluation/cloud-v5-a4000-20261022-01/adaptive-mask/mask/Qwen__Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554-mask.cloud-v5-a4000-20261022-01-mask-pair-mask.json"
+      },
+      "independent_evaluator_counts": null,
+      "patch_bytes": 0,
+      "internal_diagnostics": {
+        "source": "result.diagnostics",
+        "counts": {
+          "events": 13,
+          "invalid_actions": 0,
+          "invalid_actions_at_output_limit": 0,
+          "repeated_failed_actions": 0,
+          "repeated_observations": 0,
+          "successful_edit_file": 0,
+          "successful_write_file": 0,
+          "successful_run": 0,
+          "successful_diff": 0
+        },
+        "tools": {
+          "edit_file": null,
+          "write_file": null,
+          "run": null,
+          "diff": null
+        },
+        "call_alignment": {
+          "method": "ordered_agent_responses",
+          "agent_responses": 13,
+          "events": 13,
+          "raw_content_mismatches": [],
+          "unpaired_events": 0,
+          "unpaired_agent_responses": 0
+        }
+      },
+      "mini_native_metrics": null,
+      "call_ledger": {
+        "rows": 13,
+        "response_rows": 13,
+        "unknown_usage_rows": 0,
+        "known_input_tokens": 31339,
+        "known_output_tokens": 347,
+        "usage_sources": [
+          "tokenizer_exact"
+        ]
+      },
+      "evidence": {
+        "result.json": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-mask\\astropy__astropy-12907__mask__20261022T072704Z-bbb60603\\result.json",
+          "bytes": 16567,
+          "sha256": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180"
+        },
+        "patch.diff": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-mask\\astropy__astropy-12907__mask__20261022T072704Z-bbb60603\\patch.diff",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "calls.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-mask\\astropy__astropy-12907__mask__20261022T072704Z-bbb60603\\calls.jsonl",
+          "bytes": 120359,
+          "sha256": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017"
+        },
+        "trajectory.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-mask\\astropy__astropy-12907__mask__20261022T072704Z-bbb60603\\trajectory.jsonl",
+          "bytes": 29080,
+          "sha256": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+        },
+        "mini.traj.json": null
+      }
+    },
+    {
+      "arm": "adaptive-mask",
+      "registration": "additional_not_preregistered",
+      "registration_scope": "directory matches predeclared driver; not independent verification of creation time",
+      "task_id": "astropy__astropy-12907",
+      "split": "dev",
+      "run_id": "20261022T072506Z-86c192b2",
+      "provider": "transformers",
+      "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "actual_models": [
+        "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      ],
+      "strategy": "recent",
+      "status": "budget_exhausted",
+      "resolved": null,
+      "evidence_kind": "model_run",
+      "source_fingerprint": "209a8cff1285870eb9456fdb1db5f38c1e02ef73a987b82ab53ffe1961a4ca4f",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "initial_revision": "e3b0c44298fc1c14",
+      "created_at": "2026-10-22T07:27:04.281384+00:00",
+      "model_metadata": {
+        "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "tokenizer_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "device": "cuda",
+        "dtype": "bfloat16",
+        "generation": {
+          "do_sample": false,
+          "temperature": 1.0,
+          "top_k": 0,
+          "top_p": 1.0,
+          "repetition_penalty": 1.0,
+          "num_beams": 1,
+          "use_cache": true,
+          "bos_token_id": null,
+          "eos_token_id": [
+            151645,
+            151643
+          ],
+          "pad_token_id": 151643
+        },
+        "seed_scope": "torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee"
+      },
+      "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+      "harness": null,
+      "harness_group": "internal_budget_agent",
+      "harness_note": "Internal result schema does not currently record a harness field.",
+      "upstream": null,
+      "configuration": {
+        "context_tokens": 8192,
+        "total_tokens": 32000,
+        "max_output_tokens": 768,
+        "min_action_output_tokens": 128,
+        "max_steps": 20,
+        "history_format": "chat",
+        "strategy": "recent",
+        "seed": 42,
+        "temperature": 0.0,
+        "model_dtype": "bfloat16",
+        "context_policy": null,
+        "submission_policy": null
+      },
+      "usage": {
+        "input_tokens": 31175,
+        "output_tokens": 252,
+        "total_tokens": 31427,
+        "calls": 8,
+        "usage_unknown": false,
+        "usage_sources": [
+          "tokenizer_exact"
+        ],
+        "elapsed_seconds": 118.05610152400004,
+        "model_seconds": 18.128280109000116
+      },
+      "budget": {
+        "input_tokens": 31175,
+        "output_tokens": 252,
+        "total_tokens": 31427,
+        "calls": 8,
+        "attempted_calls": 8,
+        "remaining_tokens": 573,
+        "overrun": false,
+        "unreconciled_request": false,
+        "usage_is_estimated": false,
+        "preflight_counter": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      },
+      "evaluation": {
+        "status": "official_empty_patch",
+        "resolved": null,
+        "tests_executed": false,
+        "test_counts": null,
+        "official_resolved": null,
+        "infra_failure": null,
+        "infra_failure_reason": null,
+        "patch_successfully_applied": null,
+        "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "report_path": null,
+        "summary_path": "/home/featurize/work/budget-agent-evaluation/cloud-v5-a4000-20261022-01/adaptive-mask/recent/Qwen__Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554-recent.cloud-v5-a4000-20261022-01-mask-pair-recent.json"
+      },
+      "independent_evaluator_counts": null,
+      "patch_bytes": 0,
+      "internal_diagnostics": {
+        "source": "result.diagnostics",
+        "counts": {
+          "events": 8,
+          "invalid_actions": 0,
+          "invalid_actions_at_output_limit": 0,
+          "repeated_failed_actions": 0,
+          "repeated_observations": 0,
+          "successful_edit_file": 0,
+          "successful_write_file": 0,
+          "successful_run": 1,
+          "successful_diff": 0
+        },
+        "tools": {
+          "edit_file": null,
+          "write_file": null,
+          "run": {
+            "calls": 2,
+            "successful": 1,
+            "failed": 1,
+            "duration_seconds": 4.439753604999623,
+            "output_characters": 158
+          },
+          "diff": null
+        },
+        "call_alignment": {
+          "method": "ordered_agent_responses",
+          "agent_responses": 8,
+          "events": 8,
+          "raw_content_mismatches": [],
+          "unpaired_events": 0,
+          "unpaired_agent_responses": 0
+        }
+      },
+      "mini_native_metrics": null,
+      "call_ledger": {
+        "rows": 8,
+        "response_rows": 8,
+        "unknown_usage_rows": 0,
+        "known_input_tokens": 31175,
+        "known_output_tokens": 252,
+        "usage_sources": [
+          "tokenizer_exact"
+        ]
+      },
+      "evidence": {
+        "result.json": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-mask\\astropy__astropy-12907__recent__20261022T072506Z-86c192b2\\result.json",
+          "bytes": 12993,
+          "sha256": "024379c46f7ba82448ff5f15eb5039e61f4043dfa38f5bfb4e0a17981688199c"
+        },
+        "patch.diff": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-mask\\astropy__astropy-12907__recent__20261022T072506Z-86c192b2\\patch.diff",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "calls.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-mask\\astropy__astropy-12907__recent__20261022T072506Z-86c192b2\\calls.jsonl",
+          "bytes": 113397,
+          "sha256": "368b58dca6badea4ac05fe3d7bfca98aa19d85515c6075e64adb917c4a8e0b9c"
+        },
+        "trajectory.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\adaptive-mask\\astropy__astropy-12907__recent__20261022T072506Z-86c192b2\\trajectory.jsonl",
+          "bytes": 21529,
+          "sha256": "26d0a7f87a553f323116738b1d48785ed6b5e71e985aa99fda8995c640cd7ade"
+        },
+        "mini.traj.json": null
+      }
+    },
+    {
+      "arm": "mini-baseline",
+      "registration": "planned_layout",
+      "registration_scope": "directory matches predeclared driver; not independent verification of creation time",
+      "task_id": "astropy__astropy-12907",
+      "split": "dev",
+      "run_id": "astropy__astropy-12907__mini-swe-textbased",
+      "provider": "transformers",
+      "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "actual_models": [
+        "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      ],
+      "strategy": "mini-swe-textbased",
+      "status": "budget_exhausted",
+      "resolved": null,
+      "evidence_kind": "model_run",
+      "source_fingerprint": "36652ef463361827c7e5f48991ca7eb864fd7c34af70f49e9709ba5dd5f3aa1a",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "initial_revision": "e3b0c44298fc1c14",
+      "created_at": "2026-10-22T07:16:26.300087+00:00",
+      "model_metadata": {
+        "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "tokenizer_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "device": "cuda",
+        "dtype": "bfloat16",
+        "generation": {
+          "do_sample": false,
+          "temperature": 1.0,
+          "top_k": 0,
+          "top_p": 1.0,
+          "repetition_penalty": 1.0,
+          "num_beams": 1,
+          "use_cache": true,
+          "bos_token_id": null,
+          "eos_token_id": [
+            151645,
+            151643
+          ],
+          "pad_token_id": 151643
+        },
+        "seed_scope": "torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee"
+      },
+      "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+      "harness": "mini-swe-agent-textbased-budget-adapter",
+      "harness_group": "external_mini_swe",
+      "harness_note": null,
+      "upstream": {
+        "upstream_sha": "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+        "upstream_version": "2.4.6",
+        "upstream_config_sha256": "05aa713bbbeb50af86a8890b21261a97d6c0e59258ba83841deac18e3645528b"
+      },
+      "configuration": {
+        "context_tokens": 8192,
+        "total_tokens": 32000,
+        "max_output_tokens": 768,
+        "min_action_output_tokens": 128,
+        "max_steps": 20,
+        "history_format": "upstream_textbased",
+        "strategy": "mini-swe-textbased",
+        "seed": 42,
+        "temperature": 0.0,
+        "model_dtype": "bfloat16",
+        "context_policy": "upstream_full_history",
+        "submission_policy": "explicit_upstream_submission"
+      },
+      "usage": {
+        "input_tokens": 25570,
+        "output_tokens": 1230,
+        "total_tokens": 26800,
+        "calls": 6,
+        "usage_unknown": false,
+        "usage_sources": [
+          "tokenizer_exact"
+        ],
+        "elapsed_seconds": 88.91281828000001,
+        "model_seconds": 65.33074855199993
+      },
+      "budget": {
+        "input_tokens": 25570,
+        "output_tokens": 1230,
+        "total_tokens": 26800,
+        "calls": 6,
+        "attempted_calls": 6,
+        "remaining_tokens": 5200,
+        "overrun": false,
+        "unreconciled_request": false,
+        "usage_is_estimated": false,
+        "preflight_counter": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      },
+      "evaluation": {
+        "status": "official_empty_patch",
+        "resolved": null,
+        "tests_executed": false,
+        "test_counts": null,
+        "official_resolved": null,
+        "infra_failure": null,
+        "infra_failure_reason": null,
+        "patch_successfully_applied": null,
+        "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "report_path": null,
+        "summary_path": "/home/featurize/work/budget-agent-evaluation/cloud-v5-a4000-20261022-01/mini/Qwen__Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554-mini-swe-textbased.cloud-v5-a4000-20261022-01-mini.json"
+      },
+      "independent_evaluator_counts": null,
+      "patch_bytes": 0,
+      "internal_diagnostics": null,
+      "mini_native_metrics": {
+        "trajectory_format": "mini-swe-agent-1.1",
+        "mini_version": "2.4.6",
+        "exit_status": "budget_exhausted",
+        "native_model_stats": {
+          "instance_cost": 0.0,
+          "api_calls": 7
+        },
+        "roles": {
+          "system": 1,
+          "user": 7,
+          "assistant": 6,
+          "exit": 1
+        },
+        "parsed_actions": 6,
+        "format_error_messages": 0,
+        "returncode_observations": 6,
+        "nonzero_returncode_observations": 0,
+        "metric_scope": "upstream messages and shell actions; not equivalent to internal JSON tool counts",
+        "native_call_caveat": "Upstream api_calls increments before the adapter budget gate; use budget/calls ledger for metering."
+      },
+      "call_ledger": {
+        "rows": 6,
+        "response_rows": 6,
+        "unknown_usage_rows": 0,
+        "known_input_tokens": 25570,
+        "known_output_tokens": 1230,
+        "usage_sources": [
+          "tokenizer_exact"
+        ]
+      },
+      "evidence": {
+        "result.json": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\mini-baseline\\astropy__astropy-12907__mini-swe-textbased\\result.json",
+          "bytes": 7463,
+          "sha256": "ea7ad0e8d8e149f085e48184376d123c3059c1f0c5e3c7a249ac6c7475ca25d6"
+        },
+        "patch.diff": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\mini-baseline\\astropy__astropy-12907__mini-swe-textbased\\patch.diff",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "calls.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\mini-baseline\\astropy__astropy-12907__mini-swe-textbased\\calls.jsonl",
+          "bytes": 119946,
+          "sha256": "9e963282090dd8d8ff07e2ab7aefe4f8e1b6d1d43e10302742d1491d6958f994"
+        },
+        "trajectory.jsonl": null,
+        "mini.traj.json": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\mini-baseline\\astropy__astropy-12907__mini-swe-textbased\\mini.traj.json",
+          "bytes": 59602,
+          "sha256": "dc0222818175be4716b6b5de63dfedd1e84668d07fdb7ed457de21ac527f7328"
+        }
+      }
+    },
+    {
+      "arm": "reserve-1",
+      "registration": "planned_layout",
+      "registration_scope": "directory matches predeclared driver; not independent verification of creation time",
+      "task_id": "astropy__astropy-12907",
+      "split": "dev",
+      "run_id": "20261022T071042Z-2c771740",
+      "provider": "transformers",
+      "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "actual_models": [
+        "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      ],
+      "strategy": "recent",
+      "status": "budget_exhausted",
+      "resolved": null,
+      "evidence_kind": "model_run",
+      "source_fingerprint": "e9642259b3f1e5d18db9cd75a3780b1dfdaa8012eb3baa6e1c4e8f4ee597f0a5",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "initial_revision": "e3b0c44298fc1c14",
+      "created_at": "2026-10-22T07:12:36.542740+00:00",
+      "model_metadata": {
+        "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "tokenizer_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "device": "cuda",
+        "dtype": "bfloat16",
+        "generation": {
+          "do_sample": false,
+          "temperature": 1.0,
+          "top_k": 0,
+          "top_p": 1.0,
+          "repetition_penalty": 1.0,
+          "num_beams": 1,
+          "use_cache": true,
+          "bos_token_id": null,
+          "eos_token_id": [
+            151645,
+            151643
+          ],
+          "pad_token_id": 151643
+        },
+        "seed_scope": "torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee"
+      },
+      "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+      "harness": null,
+      "harness_group": "internal_budget_agent",
+      "harness_note": "Internal result schema does not currently record a harness field.",
+      "upstream": null,
+      "configuration": {
+        "context_tokens": 8192,
+        "total_tokens": 32000,
+        "max_output_tokens": 768,
+        "min_action_output_tokens": 1,
+        "max_steps": 20,
+        "history_format": "chat",
+        "strategy": "recent",
+        "seed": 42,
+        "temperature": 0.0,
+        "model_dtype": "bfloat16",
+        "context_policy": null,
+        "submission_policy": null
+      },
+      "usage": {
+        "input_tokens": 31175,
+        "output_tokens": 252,
+        "total_tokens": 31427,
+        "calls": 8,
+        "usage_unknown": false,
+        "usage_sources": [
+          "tokenizer_exact"
+        ],
+        "elapsed_seconds": 113.74832518699986,
+        "model_seconds": 17.8905552680003
+      },
+      "budget": {
+        "input_tokens": 31175,
+        "output_tokens": 252,
+        "total_tokens": 31427,
+        "calls": 8,
+        "attempted_calls": 8,
+        "remaining_tokens": 573,
+        "overrun": false,
+        "unreconciled_request": false,
+        "usage_is_estimated": false,
+        "preflight_counter": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      },
+      "evaluation": {
+        "status": "official_empty_patch",
+        "resolved": null,
+        "tests_executed": false,
+        "test_counts": null,
+        "official_resolved": null,
+        "infra_failure": null,
+        "infra_failure_reason": null,
+        "patch_successfully_applied": null,
+        "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "report_path": null,
+        "summary_path": "/home/featurize/work/budget-agent-evaluation/cloud-v5-a4000-20261022-01/reserve-1/Qwen__Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554-recent.cloud-v5-a4000-20261022-01-reserve-1.json"
+      },
+      "independent_evaluator_counts": null,
+      "patch_bytes": 0,
+      "internal_diagnostics": {
+        "source": "result.diagnostics",
+        "counts": {
+          "events": 8,
+          "invalid_actions": 0,
+          "invalid_actions_at_output_limit": 0,
+          "repeated_failed_actions": 0,
+          "repeated_observations": 0,
+          "successful_edit_file": 0,
+          "successful_write_file": 0,
+          "successful_run": 1,
+          "successful_diff": 0
+        },
+        "tools": {
+          "edit_file": null,
+          "write_file": null,
+          "run": {
+            "calls": 2,
+            "successful": 1,
+            "failed": 1,
+            "duration_seconds": 3.228188055999908,
+            "output_characters": 158
+          },
+          "diff": null
+        },
+        "call_alignment": {
+          "method": "ordered_agent_responses",
+          "agent_responses": 8,
+          "events": 8,
+          "raw_content_mismatches": [],
+          "unpaired_events": 0,
+          "unpaired_agent_responses": 0
+        }
+      },
+      "mini_native_metrics": null,
+      "call_ledger": {
+        "rows": 8,
+        "response_rows": 8,
+        "unknown_usage_rows": 0,
+        "known_input_tokens": 31175,
+        "known_output_tokens": 252,
+        "usage_sources": [
+          "tokenizer_exact"
+        ]
+      },
+      "evidence": {
+        "result.json": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\reserve-probe\\reserve-1\\astropy__astropy-12907__recent__20261022T071042Z-2c771740\\result.json",
+          "bytes": 12941,
+          "sha256": "ed30e67944b8f03d061dbbfc0a7ff9f6d10161646c87fd33c7624eeef7cf43f3"
+        },
+        "patch.diff": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\reserve-probe\\reserve-1\\astropy__astropy-12907__recent__20261022T071042Z-2c771740\\patch.diff",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "calls.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\reserve-probe\\reserve-1\\astropy__astropy-12907__recent__20261022T071042Z-2c771740\\calls.jsonl",
+          "bytes": 113401,
+          "sha256": "08f3ed49a088ef1facdc5eb2616aa1ca3bdeee4df73614a2ad6e0f9989ebcfea"
+        },
+        "trajectory.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\reserve-probe\\reserve-1\\astropy__astropy-12907__recent__20261022T071042Z-2c771740\\trajectory.jsonl",
+          "bytes": 21533,
+          "sha256": "c318b966ed98eb94b65236712000355b16897dc94a58762268fbae6664190adc"
+        },
+        "mini.traj.json": null
+      }
+    },
+    {
+      "arm": "reserve-128",
+      "registration": "planned_layout",
+      "registration_scope": "directory matches predeclared driver; not independent verification of creation time",
+      "task_id": "astropy__astropy-12907",
+      "split": "dev",
+      "run_id": "20261022T071302Z-adc44a6d",
+      "provider": "transformers",
+      "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "actual_models": [
+        "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      ],
+      "strategy": "recent",
+      "status": "budget_exhausted",
+      "resolved": null,
+      "evidence_kind": "model_run",
+      "source_fingerprint": "e9642259b3f1e5d18db9cd75a3780b1dfdaa8012eb3baa6e1c4e8f4ee597f0a5",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "initial_revision": "e3b0c44298fc1c14",
+      "created_at": "2026-10-22T07:14:05.380949+00:00",
+      "model_metadata": {
+        "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "tokenizer_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "device": "cuda",
+        "dtype": "bfloat16",
+        "generation": {
+          "do_sample": false,
+          "temperature": 1.0,
+          "top_k": 0,
+          "top_p": 1.0,
+          "repetition_penalty": 1.0,
+          "num_beams": 1,
+          "use_cache": true,
+          "bos_token_id": null,
+          "eos_token_id": [
+            151645,
+            151643
+          ],
+          "pad_token_id": 151643
+        },
+        "seed_scope": "torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee"
+      },
+      "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+      "harness": null,
+      "harness_group": "internal_budget_agent",
+      "harness_note": "Internal result schema does not currently record a harness field.",
+      "upstream": null,
+      "configuration": {
+        "context_tokens": 8192,
+        "total_tokens": 32000,
+        "max_output_tokens": 768,
+        "min_action_output_tokens": 128,
+        "max_steps": 20,
+        "history_format": "chat",
+        "strategy": "recent",
+        "seed": 42,
+        "temperature": 0.0,
+        "model_dtype": "bfloat16",
+        "context_policy": null,
+        "submission_policy": null
+      },
+      "usage": {
+        "input_tokens": 31175,
+        "output_tokens": 252,
+        "total_tokens": 31427,
+        "calls": 8,
+        "usage_unknown": false,
+        "usage_sources": [
+          "tokenizer_exact"
+        ],
+        "elapsed_seconds": 60.945632983999985,
+        "model_seconds": 17.66062500199996
+      },
+      "budget": {
+        "input_tokens": 31175,
+        "output_tokens": 252,
+        "total_tokens": 31427,
+        "calls": 8,
+        "attempted_calls": 8,
+        "remaining_tokens": 573,
+        "overrun": false,
+        "unreconciled_request": false,
+        "usage_is_estimated": false,
+        "preflight_counter": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+      },
+      "evaluation": {
+        "status": "official_empty_patch",
+        "resolved": null,
+        "tests_executed": false,
+        "test_counts": null,
+        "official_resolved": null,
+        "infra_failure": null,
+        "infra_failure_reason": null,
+        "patch_successfully_applied": null,
+        "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "report_path": null,
+        "summary_path": "/home/featurize/work/budget-agent-evaluation/cloud-v5-a4000-20261022-01/reserve-128/Qwen__Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554-recent.cloud-v5-a4000-20261022-01-reserve-128.json"
+      },
+      "independent_evaluator_counts": null,
+      "patch_bytes": 0,
+      "internal_diagnostics": {
+        "source": "result.diagnostics",
+        "counts": {
+          "events": 8,
+          "invalid_actions": 0,
+          "invalid_actions_at_output_limit": 0,
+          "repeated_failed_actions": 0,
+          "repeated_observations": 0,
+          "successful_edit_file": 0,
+          "successful_write_file": 0,
+          "successful_run": 1,
+          "successful_diff": 0
+        },
+        "tools": {
+          "edit_file": null,
+          "write_file": null,
+          "run": {
+            "calls": 2,
+            "successful": 1,
+            "failed": 1,
+            "duration_seconds": 3.37229011799991,
+            "output_characters": 158
+          },
+          "diff": null
+        },
+        "call_alignment": {
+          "method": "ordered_agent_responses",
+          "agent_responses": 8,
+          "events": 8,
+          "raw_content_mismatches": [],
+          "unpaired_events": 0,
+          "unpaired_agent_responses": 0
+        }
+      },
+      "mini_native_metrics": null,
+      "call_ledger": {
+        "rows": 8,
+        "response_rows": 8,
+        "unknown_usage_rows": 0,
+        "known_input_tokens": 31175,
+        "known_output_tokens": 252,
+        "usage_sources": [
+          "tokenizer_exact"
+        ]
+      },
+      "evidence": {
+        "result.json": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\reserve-probe\\reserve-128\\astropy__astropy-12907__recent__20261022T071302Z-adc44a6d\\result.json",
+          "bytes": 12956,
+          "sha256": "07b3c4cfcc34edaab1bbfd49f3ef077c7cb0bca8b88592ef7c9c16167ca7afc9"
+        },
+        "patch.diff": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\reserve-probe\\reserve-128\\astropy__astropy-12907__recent__20261022T071302Z-adc44a6d\\patch.diff",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "calls.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\reserve-probe\\reserve-128\\astropy__astropy-12907__recent__20261022T071302Z-adc44a6d\\calls.jsonl",
+          "bytes": 113400,
+          "sha256": "fc1404270c397545a06941777e2ea84024544ee8a79c6a8530197f6424df98d5"
+        },
+        "trajectory.jsonl": {
+          "path": "C:\\找工作\\budget-agent\\runs\\cloud-v5-a4000-20261022-01\\reserve-probe\\reserve-128\\astropy__astropy-12907__recent__20261022T071302Z-adc44a6d\\trajectory.jsonl",
+          "bytes": 21531,
+          "sha256": "4c8e6462eca7b5736a88755364d6a7d72de8534138667482f87f2c104e274757"
+        },
+        "mini.traj.json": null
+      }
+    }
+  ],
+  "notes": [
+    "No effectiveness conclusion or benchmark score is calculated.",
+    "Unknown tests_executed remains null; resolved does not independently establish test execution. Matched official success classifications can establish at least one observed test.",
+    "External harness and internal reserve pair are distinct comparisons.",
+    "Source hashes identify these local bytes; they do not independently validate upstream grading."
+  ]
+}

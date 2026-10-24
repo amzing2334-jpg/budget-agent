@@ -1,0 +1,22 @@
+{
+  "kind": "adaptive_context_policy_diagnostic",
+  "declared_before_execution": true,
+  "created_at": "2026-10-22T07:24:43.459381+00:00",
+  "decision_basis": "All three predefined attempts exhausted input budgets before producing a patch. Test masking old observation bodies. This is development, not preregistered confirmation.",
+  "source_fingerprint": "209a8cff1285870eb9456fdb1db5f38c1e02ef73a987b82ab53ffe1961a4ca4f",
+  "config_sha256": "a7e158201600bd04fbbc7cdcc4b4992fd47062011b087bf8dc799799fa210e6e",
+  "task": "astropy__astropy-12907",
+  "strategies": [
+    "recent",
+    "mask"
+  ],
+  "attempts_per_strategy": 1,
+  "total_tokens": 32000,
+  "context_tokens": 8192,
+  "max_output_tokens": 768,
+  "min_action_output_tokens": 128,
+  "mask_keep_recent": 2,
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+  "note": "Both conditions rerun using the same new source and a single loaded model. Prior results preserved."
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "min_action_output_tokens": 1,
+    "status": "budget_exhausted",
+    "result_path": "/home/featurize/work/budget-agent-v5-followup/runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-1/astropy__astropy-12907__recent__20261022T071042Z-2c771740/result.json"
+  },
+  {
+    "min_action_output_tokens": 128,
+    "status": "budget_exhausted",
+    "result_path": "/home/featurize/work/budget-agent-v5-followup/runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-128/astropy__astropy-12907__recent__20261022T071302Z-adc44a6d/result.json"
+  }
+]

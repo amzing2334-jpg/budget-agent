@@ -1,0 +1,15 @@
+{
+  "version": "v2-training-smoke-2026-10-21",
+  "frozen": true,
+  "purpose": "Verify real trainable multi-turn coding-agent execution, not a confirmatory performance claim",
+  "model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+  "revision": "ea3f2471cf1b1f0db85067f1ef93848e38e88c25",
+  "data": {"generator": "budget_agent.learning.curriculum", "train_tasks": 12, "eval_tasks": 6, "families": ["threshold", "range"], "split": "odd/even disjoint constants; shared templates"},
+  "sequence": ["base evaluation", "60-step train-only synthetic SFT", "SFT evaluation", "3 fresh GRPO groups of 4 training rollouts", "GRPO evaluation"],
+  "seed": 42,
+  "budgets": {"context_tokens": 1536, "total_tokens_per_episode": 8192, "max_steps": 5, "max_new_tokens": 192},
+  "sft": {"learning_rate": 0.00005, "steps": 60, "assistant_completion_loss_only": true},
+  "grpo": {"reward": "1 iff independent private verifier passes, else 0; infrastructure failures excluded by abort", "group_size": 4, "attempted_groups": 3, "learning_rate": 0.00005, "clip_epsilon": 0.2, "beta": 0, "temperature": 0.8, "normalization": "population group reward std, equal trajectory weighting, token mean per trajectory", "equal_rewards": "skip optimizer update"},
+  "success_criteria": ["Real model emits tool actions and private tests grade generated patches", "SFT alters LoRA weights and saved adapter reloads", "GRPO mathematical tests pass; actual nonzero-reward-variance groups report nonzero gradient and parameter delta when present", "Report zero-update batches and all failed or unchanged eval outcomes without selection"],
+  "limits": "0.5B and six same-template synthetic held-out tasks cannot establish real-repository ability, statistical gains, or RL superiority over SFT. No benchmark score is claimed. Any further exploratory run gets a separate dated configuration."
+}

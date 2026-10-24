@@ -1,0 +1,19 @@
+[train]
+model = "Qwen/Qwen2.5-Coder-0.5B-Instruct"
+revision = "ea3f2471cf1b1f0db85067f1ef93848e38e88c25"
+device = "cuda"
+lora_r = 8
+temperature = 0.8
+context_tokens = 1536
+total_tokens = 8192
+max_steps = 5
+max_new_tokens = 192
+environment = "docker"
+docker_image = "python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce"
+tool_timeout = 30
+group_size = 4
+updates = 3
+learning_rate = 0.00005
+clip_epsilon = 0.2
+max_grad_norm = 1.0
+seed = 42

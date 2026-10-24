@@ -1,0 +1,7 @@
+{
+  "cpu__integration-1": {
+    "result_path": "C:\\Users\\98341\\AppData\\Local\\Temp\\mini-swe-cpu-integration-6fa90f23501b4f42b4946718963ee9c6\\integration-artifacts-validated\\test_real_upstream_format_reco0\\cpu__integration-1__mini-swe-textbased\\result.json",
+    "patch_sha256": "15840045946a59040b8a26457b92e6671fe181bf67b11527ad68668f89f653bf",
+    "model_name_or_path": "cpu-integration-double-mini-swe-textbased"
+  }
+}

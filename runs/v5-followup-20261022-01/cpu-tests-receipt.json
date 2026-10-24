@@ -1,0 +1,33 @@
+{
+  "kind": "cpu_full_regression",
+  "started_utc": "2026-10-22T06:43:33.979036+00:00",
+  "finished_utc": "2026-10-22T06:44:00.860310+00:00",
+  "command": [
+    "C:\\找工作\\budget-agent\\.venv\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "-q"
+  ],
+  "python": "3.13.5",
+  "platform": "Windows",
+  "exit_code": 0,
+  "seconds": 26.862245200027246,
+  "source_fingerprint_before": "e9642259b3f1e5d18db9cd75a3780b1dfdaa8012eb3baa6e1c4e8f4ee597f0a5",
+  "source_fingerprint_after": "e9642259b3f1e5d18db9cd75a3780b1dfdaa8012eb3baa6e1c4e8f4ee597f0a5",
+  "source_unchanged": true,
+  "optional_training_stack_available": {
+    "torch": false,
+    "transformers": false,
+    "peft": false,
+    "accelerate": false,
+    "datasets": false
+  },
+  "upstream_cpu_integration": "not selected in lightweight suite; separate six-case receipt in upstream-integration/receipt.json",
+  "log_path": "C:\\找工作\\budget-agent\\runs\\v5-followup-20261022-01\\cpu-tests.log",
+  "log_sha256": "2892574b0261f121eb7a858b3f26c32db51f0bb30cde2d9068a6688dfb403aad",
+  "cloud_config_sha256": "a9ccc1828f54d584e0a400ff276b5d02e75765ee8e7bf03feafd20f064f6c883",
+  "summary_line": "342 passed, 8 skipped in 25.97s",
+  "model_inference": false,
+  "training": false,
+  "model_stack_installed": false
+}

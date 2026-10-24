@@ -1,0 +1,22 @@
+{
+  "canonical_protocol": {
+    "path": "docs/TRAINING_PROTOCOL_V2.json",
+    "frozen": true,
+    "sha256": "69a4bdeec391f734f5f77a1eedae465cd1480f711e79b3060743322a050d731a"
+  },
+  "cloud_diagnostic_v3": {
+    "path": "docs/CLOUD_DIAGNOSTIC_V3.json",
+    "sha256": "4f82f1b6b2260fd282bcc48f1e76fa2f7e7c1cdf08bcd06fceac0d56513d6269",
+    "scope": "inference development diagnostic; separate from the historical v2 training protocol"
+  },
+  "cloud_diagnostic_v3a": {
+    "path": "docs/CLOUD_DIAGNOSTIC_V3A.json",
+    "sha256": "3e05d7a17967a4bb022249aa9ef7b8c725f85369e3b61ea0afd0c7043947ed5c",
+    "scope": "Amended single-task development diagnostic after a reproduced chat-template bug."
+  },
+  "cloud_diagnostic_v3b": {
+    "path": "docs/CLOUD_DIAGNOSTIC_V3B.json",
+    "sha256": "26c0f0cb4c49986fde98ddb223774c02cb4e6d9888d73e287d38f23f92a23c1b",
+    "scope": "Single recent follow-up diagnostic after editing-contract failure; not an independent evaluation."
+  }
+}

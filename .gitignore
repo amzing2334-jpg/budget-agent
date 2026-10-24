@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.venv-train/
+train_outputs/
+data/curriculum/
+*.egg-info/
+.env
+.env.*
+!.env.example
+# Raw runs remain local; reviewed evidence is explicitly tracked when archived.
+runs/
+data/swebench/
+build/
+dist/

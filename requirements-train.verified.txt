@@ -1,0 +1,6 @@
+# Observed local Windows CUDA training stack; torch CUDA wheels are platform-specific.
+# This is a version record, not a complete transitive lockfile.
+torch==2.8.0+cu128
+transformers==5.4.0
+peft==0.19.0
+accelerate==1.13.0

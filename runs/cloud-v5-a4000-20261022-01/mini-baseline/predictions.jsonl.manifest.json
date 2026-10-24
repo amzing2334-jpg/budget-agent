@@ -1,0 +1,7 @@
+{
+  "astropy__astropy-12907": {
+    "result_path": "/home/featurize/work/budget-agent-v5-followup/runs/cloud-v5-a4000-20261022-01/mini-baseline/astropy__astropy-12907__mini-swe-textbased/result.json",
+    "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model_name_or_path": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554-mini-swe-textbased"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "kind": "local_cpu_full_regression_after_observation_masking",
+  "started_at_utc": "2026-10-22T07:21:01.185545+00:00",
+  "finished_at_utc": "2026-10-22T07:21:27.781365+00:00",
+  "elapsed_seconds": 26.5930234999978,
+  "command": [
+    "C:\\找工作\\budget-agent\\.venv\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "-q"
+  ],
+  "exit_code": 0,
+  "python": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 16:37:03) [MSC v.1929 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "model_stack_installed": {
+    "torch": false,
+    "transformers": false,
+    "peft": false,
+    "accelerate": false,
+    "datasets": false
+  },
+  "optional_upstream_integration_enabled": false,
+  "source_fingerprint_before": "209a8cff1285870eb9456fdb1db5f38c1e02ef73a987b82ab53ffe1961a4ca4f",
+  "source_fingerprint_after": "209a8cff1285870eb9456fdb1db5f38c1e02ef73a987b82ab53ffe1961a4ca4f",
+  "config_sha256": "a7e158201600bd04fbbc7cdcc4b4992fd47062011b087bf8dc799799fa210e6e",
+  "log_sha256": "6f03a84c952181bbee8e3d61fc66519c66d2db80f95d6eff057ac074c032ba59",
+  "scope": "CPU scripted software tests only; no model inference, training, GPU, Docker or rental",
+  "pytest_summary": "360 passed, 8 skipped in 26.22s"
+}

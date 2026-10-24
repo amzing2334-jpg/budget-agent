@@ -1,0 +1,16 @@
+[run]
+provider = "transformers"
+model = "Qwen/Qwen2.5-Coder-7B-Instruct"
+model_revision = "c03e6d358207e414f1eca0bb1891e29f1db0e242"
+device = "cuda"
+model_dtype = "bfloat16"
+temperature = 0.0
+seed = 42
+strategy = "recent"
+environment = "docker"
+context_tokens = 8192
+total_tokens = 32000
+max_output_tokens = 768
+max_steps = 20
+timeout_seconds = 120
+docker_image = "python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce"

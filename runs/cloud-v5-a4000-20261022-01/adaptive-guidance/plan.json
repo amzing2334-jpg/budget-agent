@@ -1,0 +1,45 @@
+{
+  "created_at": "2026-10-22T07:45:00.668064+00:00",
+  "kind": "adaptive_development_decision_policy_pair",
+  "fingerprints": {
+    "source": "d3ca73f7db6c7ecd49832e1c04d9d87fa08b73092b7dd1189a19d83fe98a4528",
+    "configs/cloud-v5-qwen3-mask.toml": "a7e158201600bd04fbbc7cdcc4b4992fd47062011b087bf8dc799799fa210e6e",
+    "tasks/swebench-pilot.jsonl": "0e7104adbdf85bfe4f3c81c5e56a7ff8ff2884480804e5e73245b70573dc0e0c",
+    "/home/featurize/run_guidance_pair.py": "684068cd3e69701f5076b2f3b709fb114ec5d5fcd54c29a7f93521c22d58bef1"
+  },
+  "common_config": {
+    "strategy": "mask",
+    "history_format": "chat",
+    "decision_policy": "direct",
+    "provider": "transformers",
+    "model": "Qwen/Qwen3-4B-Instruct-2507",
+    "base_url": "",
+    "api_key_env": "LLM_API_KEY",
+    "context_tokens": 8192,
+    "total_tokens": 32000,
+    "max_output_tokens": 768,
+    "min_action_output_tokens": 128,
+    "max_steps": 20,
+    "timeout_seconds": 120,
+    "tokenizer": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+    "temperature": 0.0,
+    "seed": 42,
+    "input_price_per_million": null,
+    "output_price_per_million": null,
+    "max_cost_usd": null,
+    "allow_local_execution": false,
+    "environment": "docker",
+    "docker_image": "python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce",
+    "api_max_tokens_field": "max_tokens",
+    "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+    "device": "cuda",
+    "model_dtype": "bfloat16"
+  },
+  "task_id": "astropy__astropy-12907",
+  "policies": [
+    "direct",
+    "budget-aware"
+  ],
+  "attempts_per_policy": 1,
+  "note": "Selected after the earlier mask pair failed. Same known dev task; no holdout claim. Only decision_policy differs. Official grading is separate."
+}

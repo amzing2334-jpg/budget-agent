@@ -1,0 +1,423 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Budget Agent · Evaluation</title><style>
+:root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#20302c;background:#f3f6f3}body{margin:0}main{max-width:1200px;margin:0 auto;padding:48px 24px 64px}header{margin-bottom:28px}h1{font-size:clamp(30px,5vw,46px);letter-spacing:-1.5px;margin:8px 0}h2{font-size:19px;overflow-wrap:anywhere}.eyebrow{color:#21735a;letter-spacing:2px;font-size:11px;font-weight:700}.muted{color:#64756e}aside{background:#e5eee7;border-left:4px solid #3a876b;padding:18px 22px;line-height:1.7;border-radius:4px}section{margin-top:24px;background:#fff;border:1px solid #dfe7e0;border-radius:12px;padding:24px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th{color:#66786e;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px}th,td{padding:15px 12px;border-bottom:1px solid #edf0ed;white-space:nowrap}td:first-child{font-weight:600}details{margin-top:18px;color:#64756e;font-size:12px}summary{cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}.warning{background:#fff5db;color:#805600;padding:12px;border-radius:6px}footer{color:#64756e;font-size:12px;margin-top:24px}</style></head><body><main><header><div class="eyebrow">BUDGET AGENT / REPRODUCIBLE EXPERIMENTS</div><h1>Code repair, measured.</h1><p class="muted">Context policies · verified outcomes · complete inference accounting</p></header><aside>Scripted smoke runs verify plumbing only; they are not LLM performance evidence. Unknown cost is not zero. Pending/ungraded tasks are not counted as failures or successes. Official empty patches have no executed tests; infrastructure failures are ungraded and counted separately. A success rate is shown only when every attempt has a verifier outcome and valid budget accounting. Budget overruns and unknown usage invalidate fixed-budget comparisons. Harnesses, configurations, models, splits and token-accounting modes are grouped separately; compare strategies only with matched task fingerprints and repetition labels. API seeds are repetition labels; the Transformers backend resets its RNG per attempt. Neither guarantees cross-hardware reproducibility.</aside>
+<section><div class="eyebrow">EXPERIMENT 683c1965a4</div><h2>model_run · Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554 · dev · 683c1965a4</h2><p class="muted">Context: 8192 · total: 32000 · tokenizer: hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554</p>
+<div class="table-wrap"><table><thead><tr><th>Strategy</th><th>Success / graded / attempted</th><th>Infra errors</th><th>Empty patches</th><th>Rate</th><th>Tokens</th><th>Total USD</th><th>USD / success</th><th>Seconds / task</th></tr></thead><tbody>
+<tr><td>mini-swe-textbased</td><td>0 / 0 / 1</td><td>0</td><td>1</td><td>ungraded</td><td>26,800</td><td>—</td><td>—</td><td>88.91</td></tr>
+</tbody></table></div>
+<details><summary>Exact comparison conditions</summary><pre>{
+  &quot;actual_models&quot;: [
+    &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  ],
+  &quot;config&quot;: {
+    &quot;allow_local_execution&quot;: false,
+    &quot;api_key_env&quot;: &quot;LLM_API_KEY&quot;,
+    &quot;api_max_tokens_field&quot;: &quot;max_tokens&quot;,
+    &quot;base_url&quot;: &quot;&quot;,
+    &quot;context_policy&quot;: &quot;upstream_full_history&quot;,
+    &quot;context_tokens&quot;: 8192,
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;docker_image&quot;: &quot;python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce&quot;,
+    &quot;environment&quot;: &quot;docker&quot;,
+    &quot;harness&quot;: &quot;mini-swe-agent-textbased-budget-adapter&quot;,
+    &quot;history_format&quot;: &quot;upstream_textbased&quot;,
+    &quot;input_price_per_million&quot;: null,
+    &quot;max_cost_usd&quot;: null,
+    &quot;max_output_tokens&quot;: 768,
+    &quot;max_steps&quot;: 20,
+    &quot;min_action_output_tokens&quot;: 128,
+    &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507&quot;,
+    &quot;model_dtype&quot;: &quot;bfloat16&quot;,
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;output_price_per_million&quot;: null,
+    &quot;provider&quot;: &quot;transformers&quot;,
+    &quot;submission_policy&quot;: &quot;explicit_upstream_submission&quot;,
+    &quot;temperature&quot;: 0.0,
+    &quot;timeout_seconds&quot;: 120,
+    &quot;tokenizer&quot;: &quot;hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;total_tokens&quot;: 32000,
+    &quot;upstream_sha&quot;: &quot;a83fcae82d2a08f0ee0c688f9d137b3566c097f8&quot;
+  },
+  &quot;evidence_kind&quot;: &quot;model_run&quot;,
+  &quot;harness&quot;: &quot;mini-swe-agent-textbased-budget-adapter&quot;,
+  &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+  &quot;model_metadata&quot;: {
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;dtype&quot;: &quot;bfloat16&quot;,
+    &quot;generation&quot;: {
+      &quot;bos_token_id&quot;: null,
+      &quot;do_sample&quot;: false,
+      &quot;eos_token_id&quot;: [
+        151645,
+        151643
+      ],
+      &quot;num_beams&quot;: 1,
+      &quot;pad_token_id&quot;: 151643,
+      &quot;repetition_penalty&quot;: 1.0,
+      &quot;temperature&quot;: 1.0,
+      &quot;top_k&quot;: 0,
+      &quot;top_p&quot;: 1.0,
+      &quot;use_cache&quot;: true
+    },
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;seed_scope&quot;: &quot;torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee&quot;,
+    &quot;tokenizer_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  },
+  &quot;provider&quot;: &quot;transformers&quot;,
+  &quot;source_fingerprint&quot;: &quot;36652ef463361827c7e5f48991ca7eb864fd7c34af70f49e9709ba5dd5f3aa1a&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;task_kind&quot;: &quot;swebench&quot;,
+  &quot;usage_sources&quot;: [
+    &quot;tokenizer_exact&quot;
+  ]
+}</pre></details></section>
+<section><div class="eyebrow">EXPERIMENT 8b26a30aa2</div><h2>model_run · Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554 · dev · 8b26a30aa2</h2><p class="muted">Context: 8192 · total: 32000 · tokenizer: hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554</p>
+<div class="table-wrap"><table><thead><tr><th>Strategy</th><th>Success / graded / attempted</th><th>Infra errors</th><th>Empty patches</th><th>Rate</th><th>Tokens</th><th>Total USD</th><th>USD / success</th><th>Seconds / task</th></tr></thead><tbody>
+<tr><td>mask</td><td>0 / 0 / 1</td><td>0</td><td>1</td><td>ungraded</td><td>31,801</td><td>—</td><td>—</td><td>140.42</td></tr>
+</tbody></table></div>
+<details><summary>Exact comparison conditions</summary><pre>{
+  &quot;actual_models&quot;: [
+    &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  ],
+  &quot;config&quot;: {
+    &quot;allow_local_execution&quot;: false,
+    &quot;api_key_env&quot;: &quot;LLM_API_KEY&quot;,
+    &quot;api_max_tokens_field&quot;: &quot;max_tokens&quot;,
+    &quot;base_url&quot;: &quot;&quot;,
+    &quot;context_tokens&quot;: 8192,
+    &quot;decision_policy&quot;: &quot;budget-aware&quot;,
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;docker_image&quot;: &quot;python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce&quot;,
+    &quot;environment&quot;: &quot;docker&quot;,
+    &quot;history_format&quot;: &quot;chat&quot;,
+    &quot;input_price_per_million&quot;: null,
+    &quot;max_cost_usd&quot;: null,
+    &quot;max_output_tokens&quot;: 768,
+    &quot;max_steps&quot;: 20,
+    &quot;min_action_output_tokens&quot;: 128,
+    &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507&quot;,
+    &quot;model_dtype&quot;: &quot;bfloat16&quot;,
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;output_price_per_million&quot;: null,
+    &quot;provider&quot;: &quot;transformers&quot;,
+    &quot;temperature&quot;: 0.0,
+    &quot;timeout_seconds&quot;: 120,
+    &quot;tokenizer&quot;: &quot;hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;total_tokens&quot;: 32000
+  },
+  &quot;evidence_kind&quot;: &quot;model_run&quot;,
+  &quot;harness&quot;: null,
+  &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+  &quot;model_metadata&quot;: {
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;dtype&quot;: &quot;bfloat16&quot;,
+    &quot;generation&quot;: {
+      &quot;bos_token_id&quot;: null,
+      &quot;do_sample&quot;: false,
+      &quot;eos_token_id&quot;: [
+        151645,
+        151643
+      ],
+      &quot;num_beams&quot;: 1,
+      &quot;pad_token_id&quot;: 151643,
+      &quot;repetition_penalty&quot;: 1.0,
+      &quot;temperature&quot;: 1.0,
+      &quot;top_k&quot;: 0,
+      &quot;top_p&quot;: 1.0,
+      &quot;use_cache&quot;: true
+    },
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;seed_scope&quot;: &quot;torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee&quot;,
+    &quot;tokenizer_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  },
+  &quot;provider&quot;: &quot;transformers&quot;,
+  &quot;source_fingerprint&quot;: &quot;d3ca73f7db6c7ecd49832e1c04d9d87fa08b73092b7dd1189a19d83fe98a4528&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;task_kind&quot;: &quot;swebench&quot;,
+  &quot;usage_sources&quot;: [
+    &quot;tokenizer_exact&quot;
+  ]
+}</pre></details></section>
+<section><div class="eyebrow">EXPERIMENT 3d654c65ae</div><h2>model_run · Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554 · dev · 3d654c65ae</h2><p class="muted">Context: 8192 · total: 32000 · tokenizer: hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554</p>
+<div class="table-wrap"><table><thead><tr><th>Strategy</th><th>Success / graded / attempted</th><th>Infra errors</th><th>Empty patches</th><th>Rate</th><th>Tokens</th><th>Total USD</th><th>USD / success</th><th>Seconds / task</th></tr></thead><tbody>
+<tr><td>mask</td><td>0 / 0 / 1</td><td>0</td><td>1</td><td>ungraded</td><td>31,686</td><td>—</td><td>—</td><td>81.82</td></tr>
+</tbody></table></div>
+<details><summary>Exact comparison conditions</summary><pre>{
+  &quot;actual_models&quot;: [
+    &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  ],
+  &quot;config&quot;: {
+    &quot;allow_local_execution&quot;: false,
+    &quot;api_key_env&quot;: &quot;LLM_API_KEY&quot;,
+    &quot;api_max_tokens_field&quot;: &quot;max_tokens&quot;,
+    &quot;base_url&quot;: &quot;&quot;,
+    &quot;context_tokens&quot;: 8192,
+    &quot;decision_policy&quot;: &quot;direct&quot;,
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;docker_image&quot;: &quot;python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce&quot;,
+    &quot;environment&quot;: &quot;docker&quot;,
+    &quot;history_format&quot;: &quot;chat&quot;,
+    &quot;input_price_per_million&quot;: null,
+    &quot;max_cost_usd&quot;: null,
+    &quot;max_output_tokens&quot;: 768,
+    &quot;max_steps&quot;: 20,
+    &quot;min_action_output_tokens&quot;: 128,
+    &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507&quot;,
+    &quot;model_dtype&quot;: &quot;bfloat16&quot;,
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;output_price_per_million&quot;: null,
+    &quot;provider&quot;: &quot;transformers&quot;,
+    &quot;temperature&quot;: 0.0,
+    &quot;timeout_seconds&quot;: 120,
+    &quot;tokenizer&quot;: &quot;hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;total_tokens&quot;: 32000
+  },
+  &quot;evidence_kind&quot;: &quot;model_run&quot;,
+  &quot;harness&quot;: null,
+  &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+  &quot;model_metadata&quot;: {
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;dtype&quot;: &quot;bfloat16&quot;,
+    &quot;generation&quot;: {
+      &quot;bos_token_id&quot;: null,
+      &quot;do_sample&quot;: false,
+      &quot;eos_token_id&quot;: [
+        151645,
+        151643
+      ],
+      &quot;num_beams&quot;: 1,
+      &quot;pad_token_id&quot;: 151643,
+      &quot;repetition_penalty&quot;: 1.0,
+      &quot;temperature&quot;: 1.0,
+      &quot;top_k&quot;: 0,
+      &quot;top_p&quot;: 1.0,
+      &quot;use_cache&quot;: true
+    },
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;seed_scope&quot;: &quot;torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee&quot;,
+    &quot;tokenizer_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  },
+  &quot;provider&quot;: &quot;transformers&quot;,
+  &quot;source_fingerprint&quot;: &quot;d3ca73f7db6c7ecd49832e1c04d9d87fa08b73092b7dd1189a19d83fe98a4528&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;task_kind&quot;: &quot;swebench&quot;,
+  &quot;usage_sources&quot;: [
+    &quot;tokenizer_exact&quot;
+  ]
+}</pre></details></section>
+<section><div class="eyebrow">EXPERIMENT 3ae6e69012</div><h2>model_run · Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554 · dev · 3ae6e69012</h2><p class="muted">Context: 8192 · total: 32000 · tokenizer: hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554</p>
+<div class="table-wrap"><table><thead><tr><th>Strategy</th><th>Success / graded / attempted</th><th>Infra errors</th><th>Empty patches</th><th>Rate</th><th>Tokens</th><th>Total USD</th><th>USD / success</th><th>Seconds / task</th></tr></thead><tbody>
+<tr><td>recent</td><td>0 / 0 / 1</td><td>0</td><td>1</td><td>ungraded</td><td>31,427</td><td>—</td><td>—</td><td>113.75</td></tr>
+</tbody></table></div>
+<details><summary>Exact comparison conditions</summary><pre>{
+  &quot;actual_models&quot;: [
+    &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  ],
+  &quot;config&quot;: {
+    &quot;allow_local_execution&quot;: false,
+    &quot;api_key_env&quot;: &quot;LLM_API_KEY&quot;,
+    &quot;api_max_tokens_field&quot;: &quot;max_tokens&quot;,
+    &quot;base_url&quot;: &quot;&quot;,
+    &quot;context_tokens&quot;: 8192,
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;docker_image&quot;: &quot;python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce&quot;,
+    &quot;environment&quot;: &quot;docker&quot;,
+    &quot;history_format&quot;: &quot;chat&quot;,
+    &quot;input_price_per_million&quot;: null,
+    &quot;max_cost_usd&quot;: null,
+    &quot;max_output_tokens&quot;: 768,
+    &quot;max_steps&quot;: 20,
+    &quot;min_action_output_tokens&quot;: 1,
+    &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507&quot;,
+    &quot;model_dtype&quot;: &quot;bfloat16&quot;,
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;output_price_per_million&quot;: null,
+    &quot;provider&quot;: &quot;transformers&quot;,
+    &quot;temperature&quot;: 0.0,
+    &quot;timeout_seconds&quot;: 120,
+    &quot;tokenizer&quot;: &quot;hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;total_tokens&quot;: 32000
+  },
+  &quot;evidence_kind&quot;: &quot;model_run&quot;,
+  &quot;harness&quot;: null,
+  &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+  &quot;model_metadata&quot;: {
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;dtype&quot;: &quot;bfloat16&quot;,
+    &quot;generation&quot;: {
+      &quot;bos_token_id&quot;: null,
+      &quot;do_sample&quot;: false,
+      &quot;eos_token_id&quot;: [
+        151645,
+        151643
+      ],
+      &quot;num_beams&quot;: 1,
+      &quot;pad_token_id&quot;: 151643,
+      &quot;repetition_penalty&quot;: 1.0,
+      &quot;temperature&quot;: 1.0,
+      &quot;top_k&quot;: 0,
+      &quot;top_p&quot;: 1.0,
+      &quot;use_cache&quot;: true
+    },
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;seed_scope&quot;: &quot;torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee&quot;,
+    &quot;tokenizer_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  },
+  &quot;provider&quot;: &quot;transformers&quot;,
+  &quot;source_fingerprint&quot;: &quot;e9642259b3f1e5d18db9cd75a3780b1dfdaa8012eb3baa6e1c4e8f4ee597f0a5&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;task_kind&quot;: &quot;swebench&quot;,
+  &quot;usage_sources&quot;: [
+    &quot;tokenizer_exact&quot;
+  ]
+}</pre></details></section>
+<section><div class="eyebrow">EXPERIMENT bfa433b1db</div><h2>model_run · Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554 · dev · bfa433b1db</h2><p class="muted">Context: 8192 · total: 32000 · tokenizer: hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554</p>
+<div class="table-wrap"><table><thead><tr><th>Strategy</th><th>Success / graded / attempted</th><th>Infra errors</th><th>Empty patches</th><th>Rate</th><th>Tokens</th><th>Total USD</th><th>USD / success</th><th>Seconds / task</th></tr></thead><tbody>
+<tr><td>mask</td><td>0 / 0 / 1</td><td>0</td><td>1</td><td>ungraded</td><td>31,686</td><td>—</td><td>—</td><td>36.71</td></tr>
+<tr><td>recent</td><td>0 / 0 / 1</td><td>0</td><td>1</td><td>ungraded</td><td>31,427</td><td>—</td><td>—</td><td>118.06</td></tr>
+</tbody></table></div>
+<details><summary>Exact comparison conditions</summary><pre>{
+  &quot;actual_models&quot;: [
+    &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  ],
+  &quot;config&quot;: {
+    &quot;allow_local_execution&quot;: false,
+    &quot;api_key_env&quot;: &quot;LLM_API_KEY&quot;,
+    &quot;api_max_tokens_field&quot;: &quot;max_tokens&quot;,
+    &quot;base_url&quot;: &quot;&quot;,
+    &quot;context_tokens&quot;: 8192,
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;docker_image&quot;: &quot;python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce&quot;,
+    &quot;environment&quot;: &quot;docker&quot;,
+    &quot;history_format&quot;: &quot;chat&quot;,
+    &quot;input_price_per_million&quot;: null,
+    &quot;max_cost_usd&quot;: null,
+    &quot;max_output_tokens&quot;: 768,
+    &quot;max_steps&quot;: 20,
+    &quot;min_action_output_tokens&quot;: 128,
+    &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507&quot;,
+    &quot;model_dtype&quot;: &quot;bfloat16&quot;,
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;output_price_per_million&quot;: null,
+    &quot;provider&quot;: &quot;transformers&quot;,
+    &quot;temperature&quot;: 0.0,
+    &quot;timeout_seconds&quot;: 120,
+    &quot;tokenizer&quot;: &quot;hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;total_tokens&quot;: 32000
+  },
+  &quot;evidence_kind&quot;: &quot;model_run&quot;,
+  &quot;harness&quot;: null,
+  &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+  &quot;model_metadata&quot;: {
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;dtype&quot;: &quot;bfloat16&quot;,
+    &quot;generation&quot;: {
+      &quot;bos_token_id&quot;: null,
+      &quot;do_sample&quot;: false,
+      &quot;eos_token_id&quot;: [
+        151645,
+        151643
+      ],
+      &quot;num_beams&quot;: 1,
+      &quot;pad_token_id&quot;: 151643,
+      &quot;repetition_penalty&quot;: 1.0,
+      &quot;temperature&quot;: 1.0,
+      &quot;top_k&quot;: 0,
+      &quot;top_p&quot;: 1.0,
+      &quot;use_cache&quot;: true
+    },
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;seed_scope&quot;: &quot;torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee&quot;,
+    &quot;tokenizer_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  },
+  &quot;provider&quot;: &quot;transformers&quot;,
+  &quot;source_fingerprint&quot;: &quot;209a8cff1285870eb9456fdb1db5f38c1e02ef73a987b82ab53ffe1961a4ca4f&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;task_kind&quot;: &quot;swebench&quot;,
+  &quot;usage_sources&quot;: [
+    &quot;tokenizer_exact&quot;
+  ]
+}</pre></details></section>
+<section><div class="eyebrow">EXPERIMENT bd7137c67b</div><h2>model_run · Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554 · dev · bd7137c67b</h2><p class="muted">Context: 8192 · total: 32000 · tokenizer: hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554</p>
+<div class="table-wrap"><table><thead><tr><th>Strategy</th><th>Success / graded / attempted</th><th>Infra errors</th><th>Empty patches</th><th>Rate</th><th>Tokens</th><th>Total USD</th><th>USD / success</th><th>Seconds / task</th></tr></thead><tbody>
+<tr><td>recent</td><td>0 / 0 / 1</td><td>0</td><td>1</td><td>ungraded</td><td>31,427</td><td>—</td><td>—</td><td>60.95</td></tr>
+</tbody></table></div>
+<details><summary>Exact comparison conditions</summary><pre>{
+  &quot;actual_models&quot;: [
+    &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  ],
+  &quot;config&quot;: {
+    &quot;allow_local_execution&quot;: false,
+    &quot;api_key_env&quot;: &quot;LLM_API_KEY&quot;,
+    &quot;api_max_tokens_field&quot;: &quot;max_tokens&quot;,
+    &quot;base_url&quot;: &quot;&quot;,
+    &quot;context_tokens&quot;: 8192,
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;docker_image&quot;: &quot;python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce&quot;,
+    &quot;environment&quot;: &quot;docker&quot;,
+    &quot;history_format&quot;: &quot;chat&quot;,
+    &quot;input_price_per_million&quot;: null,
+    &quot;max_cost_usd&quot;: null,
+    &quot;max_output_tokens&quot;: 768,
+    &quot;max_steps&quot;: 20,
+    &quot;min_action_output_tokens&quot;: 128,
+    &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507&quot;,
+    &quot;model_dtype&quot;: &quot;bfloat16&quot;,
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;output_price_per_million&quot;: null,
+    &quot;provider&quot;: &quot;transformers&quot;,
+    &quot;temperature&quot;: 0.0,
+    &quot;timeout_seconds&quot;: 120,
+    &quot;tokenizer&quot;: &quot;hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;total_tokens&quot;: 32000
+  },
+  &quot;evidence_kind&quot;: &quot;model_run&quot;,
+  &quot;harness&quot;: null,
+  &quot;model&quot;: &quot;Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+  &quot;model_metadata&quot;: {
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;dtype&quot;: &quot;bfloat16&quot;,
+    &quot;generation&quot;: {
+      &quot;bos_token_id&quot;: null,
+      &quot;do_sample&quot;: false,
+      &quot;eos_token_id&quot;: [
+        151645,
+        151643
+      ],
+      &quot;num_beams&quot;: 1,
+      &quot;pad_token_id&quot;: 151643,
+      &quot;repetition_penalty&quot;: 1.0,
+      &quot;temperature&quot;: 1.0,
+      &quot;top_k&quot;: 0,
+      &quot;top_p&quot;: 1.0,
+      &quot;use_cache&quot;: true
+    },
+    &quot;model_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;,
+    &quot;seed_scope&quot;: &quot;torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee&quot;,
+    &quot;tokenizer_revision&quot;: &quot;cdbee75f17c01a7cc42f958dc650907174af0554&quot;
+  },
+  &quot;provider&quot;: &quot;transformers&quot;,
+  &quot;source_fingerprint&quot;: &quot;e9642259b3f1e5d18db9cd75a3780b1dfdaa8012eb3baa6e1c4e8f4ee597f0a5&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;task_kind&quot;: &quot;swebench&quot;,
+  &quot;usage_sources&quot;: [
+    &quot;tokenizer_exact&quot;
+  ]
+}</pre></details></section>
+<section><h2>Run ledger</h2><div class="table-wrap"><table><thead><tr><th>Task</th><th>Strategy</th><th>Agent status</th><th>Evaluation status</th><th>Verified outcome</th></tr></thead><tbody>
+<tr><td>astropy__astropy-12907</td><td>mask</td><td>budget_exhausted</td><td>official_empty_patch</td><td>ungraded: official empty patch; tests not executed</td></tr>
+<tr><td>astropy__astropy-12907</td><td>mask</td><td>budget_exhausted</td><td>official_empty_patch</td><td>ungraded: official empty patch; tests not executed</td></tr>
+<tr><td>astropy__astropy-12907</td><td>mask</td><td>budget_exhausted</td><td>official_empty_patch</td><td>ungraded: official empty patch; tests not executed</td></tr>
+<tr><td>astropy__astropy-12907</td><td>recent</td><td>budget_exhausted</td><td>official_empty_patch</td><td>ungraded: official empty patch; tests not executed</td></tr>
+<tr><td>astropy__astropy-12907</td><td>mini-swe-textbased</td><td>budget_exhausted</td><td>official_empty_patch</td><td>ungraded: official empty patch; tests not executed</td></tr>
+<tr><td>astropy__astropy-12907</td><td>recent</td><td>budget_exhausted</td><td>official_empty_patch</td><td>ungraded: official empty patch; tests not executed</td></tr>
+<tr><td>astropy__astropy-12907</td><td>recent</td><td>budget_exhausted</td><td>official_empty_patch</td><td>ungraded: official empty patch; tests not executed</td></tr>
+</tbody></table></div></section>
+<section><h2>Run behavior diagnostics</h2><p class="muted">Tool success does not establish a correct repair or a passed test. Repeated observations have identical action, output and recorded revision; repetition does not necessarily indicate an error. unavailable means the result has no stored count. This report does not reanalyze old trajectories.</p><div class="table-wrap"><table><thead><tr><th>Run</th><th>Task</th><th>Strategy</th><th>Successful read</th><th>Successful edit + write</th><th>Successful run</th><th>Successful diff</th><th>Invalid actions</th><th>Failed action repeats</th><th>Identical observation repeats</th></tr></thead><tbody>
+<tr><td>20261022T074654Z-43348b7b</td><td>astropy__astropy-12907</td><td>mask</td><td>10</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>20261022T074532Z-2df7bd07</td><td>astropy__astropy-12907</td><td>mask</td><td>9</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>20261022T072704Z-bbb60603</td><td>astropy__astropy-12907</td><td>mask</td><td>9</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>20261022T072506Z-86c192b2</td><td>astropy__astropy-12907</td><td>recent</td><td>4</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>astropy__astropy-12907__mini-swe-textbased</td><td>astropy__astropy-12907</td><td>mini-swe-textbased</td><td>unavailable</td><td>unavailable</td><td>unavailable</td><td>unavailable</td><td>unavailable</td><td>unavailable</td><td>unavailable</td></tr>
+<tr><td>20261022T071042Z-2c771740</td><td>astropy__astropy-12907</td><td>recent</td><td>4</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>20261022T071302Z-adc44a6d</td><td>astropy__astropy-12907</td><td>recent</td><td>4</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+</tbody></table></div></section><footer>Generated locally. No external assets, telemetry, or model calls are used by this report.</footer></main></body></html>

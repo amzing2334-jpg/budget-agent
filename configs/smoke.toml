@@ -1,0 +1,10 @@
+[run]
+provider = "scripted"
+environment = "local"
+model = "scripted-smoke-v1"
+strategy = "structured"
+context_tokens = 8192
+total_tokens = 64000
+max_output_tokens = 1536
+max_steps = 12
+tokenizer = "byte"

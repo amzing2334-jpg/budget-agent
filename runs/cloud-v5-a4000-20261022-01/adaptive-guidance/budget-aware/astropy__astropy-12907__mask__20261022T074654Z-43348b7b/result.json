@@ -1,0 +1,764 @@
+{
+  "run_id": "20261022T074654Z-43348b7b",
+  "task_id": "astropy__astropy-12907",
+  "split": "dev",
+  "task_kind": "swebench",
+  "provider": "transformers",
+  "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+  "actual_models": [
+    "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554"
+  ],
+  "strategy": "mask",
+  "config": {
+    "strategy": "mask",
+    "history_format": "chat",
+    "decision_policy": "budget-aware",
+    "provider": "transformers",
+    "model": "Qwen/Qwen3-4B-Instruct-2507",
+    "base_url": "",
+    "api_key_env": "LLM_API_KEY",
+    "context_tokens": 8192,
+    "total_tokens": 32000,
+    "max_output_tokens": 768,
+    "min_action_output_tokens": 128,
+    "max_steps": 20,
+    "timeout_seconds": 120,
+    "tokenizer": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+    "temperature": 0.0,
+    "seed": 42,
+    "input_price_per_million": null,
+    "output_price_per_million": null,
+    "max_cost_usd": null,
+    "allow_local_execution": false,
+    "environment": "docker",
+    "docker_image": "python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce",
+    "api_max_tokens_field": "max_tokens",
+    "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+    "device": "cuda",
+    "model_dtype": "bfloat16"
+  },
+  "status": "budget_exhausted",
+  "error": "Remaining budget cannot fit the selected context and action output reserve: System instructions and complete task issue do not fit; increase context budget",
+  "resolved": null,
+  "evaluation": {
+    "status": "official_empty_patch",
+    "resolved": null,
+    "tests_executed": false,
+    "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "summary_path": "/home/featurize/work/budget-agent-evaluation/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/Qwen__Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554-mask.cloud-v5-a4000-20261022-01-guidance-pair-budget-aware.json",
+    "predictions_path": "/home/featurize/work/budget-agent-evaluation/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/predictions.jsonl",
+    "manifest_path": "/home/featurize/work/budget-agent-evaluation/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/predictions.jsonl.manifest.json"
+  },
+  "evidence_kind": "model_run",
+  "input_tokens": 31440,
+  "output_tokens": 361,
+  "total_tokens": 31801,
+  "calls": 13,
+  "cost_usd": null,
+  "known_cost_usd": null,
+  "usage_unknown": false,
+  "usage_sources": [
+    "tokenizer_exact"
+  ],
+  "budget": {
+    "input_tokens": 31440,
+    "output_tokens": 361,
+    "total_tokens": 31801,
+    "remaining_tokens": 199,
+    "calls": 13,
+    "cost_usd": null,
+    "cost_kind": "unknown_prices",
+    "usage_sources": [
+      "tokenizer_exact"
+    ],
+    "preflight_counter": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+    "preflight_description": "Exact input IDs from the same pinned tokenizer and chat template used for generation",
+    "usage_is_estimated": false,
+    "overrun": false,
+    "unreconciled_request": false,
+    "attempted_calls": 13,
+    "pending_reservation": null,
+    "requests": [
+      {
+        "purpose": "agent",
+        "input_tokens": 917,
+        "output_tokens": 23,
+        "estimated_input_tokens": 917,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 1261,
+        "output_tokens": 17,
+        "estimated_input_tokens": 1261,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 2593,
+        "output_tokens": 31,
+        "estimated_input_tokens": 2593,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 3596,
+        "output_tokens": 31,
+        "estimated_input_tokens": 3596,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 3828,
+        "output_tokens": 22,
+        "estimated_input_tokens": 3828,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 3251,
+        "output_tokens": 29,
+        "estimated_input_tokens": 3251,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 2151,
+        "output_tokens": 31,
+        "estimated_input_tokens": 2151,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 2177,
+        "output_tokens": 22,
+        "estimated_input_tokens": 2177,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 2178,
+        "output_tokens": 31,
+        "estimated_input_tokens": 2178,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 2076,
+        "output_tokens": 31,
+        "estimated_input_tokens": 2076,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 2346,
+        "output_tokens": 31,
+        "estimated_input_tokens": 2346,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 2479,
+        "output_tokens": 31,
+        "estimated_input_tokens": 2479,
+        "reserved_output_tokens": 768,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 2587,
+        "output_tokens": 31,
+        "estimated_input_tokens": 2587,
+        "reserved_output_tokens": 230,
+        "usage_source": "tokenizer_exact",
+        "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+        "overrun_reasons": []
+      }
+    ]
+  },
+  "elapsed_seconds": 140.41973654999947,
+  "model_seconds": 21.315813246999824,
+  "steps": 13,
+  "context_stats": {
+    "builds": 14,
+    "compactions": 10,
+    "summary_calls": 0,
+    "excerpted_events": 0,
+    "last_input_tokens": 2587,
+    "last_visible_events": 12,
+    "last_omitted_events": 0,
+    "last_masked_events": 10
+  },
+  "diagnostics": {
+    "schema_version": 1,
+    "counts": {
+      "events": 13,
+      "invalid_actions": 0,
+      "invalid_actions_at_output_limit": 0,
+      "repeated_failed_actions": 0,
+      "repeated_observations": 0,
+      "successful_read_file": 10,
+      "successful_edit_file": 0,
+      "successful_write_file": 0,
+      "successful_run": 0,
+      "successful_diff": 0
+    },
+    "first_successful_tool_action": {
+      "event_id": "e0001",
+      "step": 1,
+      "tool": "search"
+    },
+    "invalid_actions": [],
+    "repeated_failed_actions": [],
+    "repeated_observations": [],
+    "tools": {
+      "search": {
+        "calls": 3,
+        "successful": 3,
+        "failed": 0,
+        "duration_seconds": 1.162734518000434,
+        "output_characters": 2682
+      },
+      "read_file": {
+        "calls": 10,
+        "successful": 10,
+        "failed": 0,
+        "duration_seconds": 3.6586262519995216,
+        "output_characters": 18147
+      }
+    },
+    "usage": {
+      "calls": 13,
+      "calls_with_response": 13,
+      "unknown_usage_calls": 0,
+      "input_tokens": 31440,
+      "output_tokens": 361,
+      "total_tokens": 31801,
+      "input_fraction": 0.9886481557183736,
+      "usage_sources": [
+        "tokenizer_exact"
+      ],
+      "recorded_model_seconds": 21.31623512400165
+    },
+    "call_alignment": {
+      "method": "ordered_agent_responses",
+      "agent_responses": 13,
+      "events": 13,
+      "raw_content_mismatches": [],
+      "unpaired_events": 0,
+      "unpaired_agent_responses": 0
+    },
+    "observation_exposure": {
+      "events": [
+        {
+          "event_id": "e0004",
+          "tool": "read_file",
+          "original_output_characters": 4250,
+          "visible_observation_characters": 8500,
+          "request_indices": [
+            5,
+            6
+          ],
+          "masked_messages": 7,
+          "masked_marker_characters": 371,
+          "masked_request_indices": [
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "associated_request_input_tokens": 7079
+        },
+        {
+          "event_id": "e0002",
+          "tool": "read_file",
+          "original_output_characters": 3970,
+          "visible_observation_characters": 7940,
+          "request_indices": [
+            3,
+            4
+          ],
+          "masked_messages": 9,
+          "masked_marker_characters": 477,
+          "masked_request_indices": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "associated_request_input_tokens": 6189
+        },
+        {
+          "event_id": "e0003",
+          "tool": "read_file",
+          "original_output_characters": 3629,
+          "visible_observation_characters": 7258,
+          "request_indices": [
+            4,
+            5
+          ],
+          "masked_messages": 8,
+          "masked_marker_characters": 424,
+          "masked_request_indices": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "associated_request_input_tokens": 7424
+        },
+        {
+          "event_id": "e0005",
+          "tool": "search",
+          "original_output_characters": 1571,
+          "visible_observation_characters": 3142,
+          "request_indices": [
+            6,
+            7
+          ],
+          "masked_messages": 6,
+          "masked_marker_characters": 318,
+          "masked_request_indices": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "associated_request_input_tokens": 5402
+        },
+        {
+          "event_id": "e0007",
+          "tool": "read_file",
+          "original_output_characters": 1413,
+          "visible_observation_characters": 2826,
+          "request_indices": [
+            8,
+            9
+          ],
+          "masked_messages": 4,
+          "masked_marker_characters": 212,
+          "masked_request_indices": [
+            10,
+            11,
+            12,
+            13
+          ],
+          "associated_request_input_tokens": 4355
+        },
+        {
+          "event_id": "e0001",
+          "tool": "search",
+          "original_output_characters": 822,
+          "visible_observation_characters": 1644,
+          "request_indices": [
+            2,
+            3
+          ],
+          "masked_messages": 10,
+          "masked_marker_characters": 530,
+          "masked_request_indices": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "associated_request_input_tokens": 3854
+        },
+        {
+          "event_id": "e0011",
+          "tool": "read_file",
+          "original_output_characters": 734,
+          "visible_observation_characters": 1468,
+          "request_indices": [
+            12,
+            13
+          ],
+          "masked_messages": 0,
+          "masked_marker_characters": 0,
+          "masked_request_indices": [],
+          "associated_request_input_tokens": 5066
+        },
+        {
+          "event_id": "e0010",
+          "tool": "read_file",
+          "original_output_characters": 705,
+          "visible_observation_characters": 1410,
+          "request_indices": [
+            11,
+            12
+          ],
+          "masked_messages": 1,
+          "masked_marker_characters": 53,
+          "masked_request_indices": [
+            13
+          ],
+          "associated_request_input_tokens": 4825
+        },
+        {
+          "event_id": "e0009",
+          "tool": "read_file",
+          "original_output_characters": 619,
+          "visible_observation_characters": 1238,
+          "request_indices": [
+            10,
+            11
+          ],
+          "masked_messages": 2,
+          "masked_marker_characters": 106,
+          "masked_request_indices": [
+            12,
+            13
+          ],
+          "associated_request_input_tokens": 4422
+        },
+        {
+          "event_id": "e0006",
+          "tool": "read_file",
+          "original_output_characters": 597,
+          "visible_observation_characters": 1194,
+          "request_indices": [
+            7,
+            8
+          ],
+          "masked_messages": 5,
+          "masked_marker_characters": 265,
+          "masked_request_indices": [
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "associated_request_input_tokens": 4328
+        },
+        {
+          "event_id": "e0012",
+          "tool": "read_file",
+          "original_output_characters": 849,
+          "visible_observation_characters": 849,
+          "request_indices": [
+            13
+          ],
+          "masked_messages": 0,
+          "masked_marker_characters": 0,
+          "masked_request_indices": [],
+          "associated_request_input_tokens": 2587
+        },
+        {
+          "event_id": "e0008",
+          "tool": "search",
+          "original_output_characters": 289,
+          "visible_observation_characters": 578,
+          "request_indices": [
+            9,
+            10
+          ],
+          "masked_messages": 3,
+          "masked_marker_characters": 159,
+          "masked_request_indices": [
+            11,
+            12,
+            13
+          ],
+          "associated_request_input_tokens": 4254
+        }
+      ],
+      "visible_observation_characters": 38047,
+      "masked_messages": 55,
+      "masked_marker_characters": 2915,
+      "measurement": "Characters in explicit event observation messages, including excerpt markers but excluding masked placeholders. Associated request tokens include all input, are not event token costs, and overlap across events. Free-text summaries and recalled payloads are not attributed back to their source events."
+    },
+    "read_file_coverage": {
+      "status": "complete",
+      "events": [
+        {
+          "event_id": "e0002",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "status": "measured",
+          "returned_lines": 100,
+          "new_lines": 100,
+          "repeated_lines": 0,
+          "covered_intervals": [
+            [
+              1,
+              100
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        },
+        {
+          "event_id": "e0003",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "status": "measured",
+          "returned_lines": 100,
+          "new_lines": 100,
+          "repeated_lines": 0,
+          "covered_intervals": [
+            [
+              1,
+              200
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        },
+        {
+          "event_id": "e0004",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "status": "measured",
+          "returned_lines": 117,
+          "new_lines": 117,
+          "repeated_lines": 0,
+          "covered_intervals": [
+            [
+              1,
+              317
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        },
+        {
+          "event_id": "e0006",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "status": "measured",
+          "returned_lines": 13,
+          "new_lines": 0,
+          "repeated_lines": 13,
+          "covered_intervals": [
+            [
+              1,
+              317
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        },
+        {
+          "event_id": "e0007",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "status": "measured",
+          "returned_lines": 28,
+          "new_lines": 0,
+          "repeated_lines": 28,
+          "covered_intervals": [
+            [
+              1,
+              317
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        },
+        {
+          "event_id": "e0009",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "status": "measured",
+          "returned_lines": 17,
+          "new_lines": 0,
+          "repeated_lines": 17,
+          "covered_intervals": [
+            [
+              1,
+              317
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        },
+        {
+          "event_id": "e0010",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "status": "measured",
+          "returned_lines": 15,
+          "new_lines": 0,
+          "repeated_lines": 15,
+          "covered_intervals": [
+            [
+              1,
+              317
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        },
+        {
+          "event_id": "e0011",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "status": "measured",
+          "returned_lines": 20,
+          "new_lines": 0,
+          "repeated_lines": 20,
+          "covered_intervals": [
+            [
+              1,
+              317
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        },
+        {
+          "event_id": "e0012",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "status": "measured",
+          "returned_lines": 20,
+          "new_lines": 0,
+          "repeated_lines": 20,
+          "covered_intervals": [
+            [
+              1,
+              317
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        },
+        {
+          "event_id": "e0013",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "status": "measured",
+          "returned_lines": 27,
+          "new_lines": 0,
+          "repeated_lines": 27,
+          "covered_intervals": [
+            [
+              1,
+              317
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        }
+      ],
+      "measured_events": 10,
+      "unknown_events": 0,
+      "failed_events": 0,
+      "measured_returned_lines": 457,
+      "measured_new_lines": 317,
+      "measured_repeated_lines": 140,
+      "paths": [
+        {
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "unique_lines": 317,
+          "covered_intervals": [
+            [
+              1,
+              317
+            ]
+          ],
+          "covered_interval_count": 1
+        }
+      ],
+      "measurement": "Actual numbered lines validated against read_file output header; grouped by revision and canonical output path. New/repeated is relative to supported prior outputs only; unknown legacy formats are excluded, not guessed. Line coverage does not establish complete line content, comprehension, or unnecessary rereading."
+    },
+    "notes": [
+      "Tool success and the first successful action do not establish a correct repair or a passed test.",
+      "Repeated observations mean identical action, output, and recorded revision; they do not prove that repeating the check was unnecessary.",
+      "Reaching an output allowance is evidence of budget pressure, not proof that truncation caused the invalid action; both flags can coexist.",
+      "Repeated failures count identical actions at the same recorded revision, excluding invalid_action; different failure messages may be present."
+    ]
+  },
+  "patch_path": "/home/featurize/work/budget-agent-v5-followup/runs/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/astropy__astropy-12907__mask__20261022T074654Z-43348b7b/patch.diff",
+  "initial_revision": "e3b0c44298fc1c14",
+  "environment_provenance": {
+    "kind": "docker",
+    "requested_image": "swebench/sweb.eval.x86_64.astropy_1776_astropy-12907:latest",
+    "image_id": "sha256:a7cc2f990459911b958bd75b84fb89205fa6a6b33e0ee1cf9b33b175b8fd0df0",
+    "task_base_commit": "d16bfe05a744909de4b27f5875fe0d4ed41ce607",
+    "image_checkout": "43935ffe13dfe1cff03f51e33b6936d02fea84f9"
+  },
+  "source_fingerprint": "d3ca73f7db6c7ecd49832e1c04d9d87fa08b73092b7dd1189a19d83fe98a4528",
+  "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+  "created_at": "2026-10-22T07:49:15.106299+00:00",
+  "result_path": "/home/featurize/work/budget-agent-v5-followup/runs/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/astropy__astropy-12907__mask__20261022T074654Z-43348b7b/result.json",
+  "model_metadata": {
+    "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+    "tokenizer_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+    "device": "cuda",
+    "dtype": "bfloat16",
+    "generation": {
+      "do_sample": false,
+      "temperature": 1.0,
+      "top_k": 0,
+      "top_p": 1.0,
+      "repetition_penalty": 1.0,
+      "num_beams": 1,
+      "use_cache": true,
+      "bos_token_id": null,
+      "eos_token_id": [
+        151645,
+        151643
+      ],
+      "pad_token_id": 151643
+    },
+    "seed_scope": "torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee"
+  }
+}

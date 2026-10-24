@@ -1,0 +1,5 @@
+"""Split a sequence into consecutive chunks."""
+
+
+def chunks(items, size):
+    return [items[i:i + size] for i in range(0, len(items), size)]

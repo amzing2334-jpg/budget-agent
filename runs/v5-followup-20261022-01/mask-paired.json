@@ -1,0 +1,145 @@
+{
+  "baseline": "recent",
+  "candidate": "mask",
+  "condition": {
+    "provider": "transformers",
+    "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+    "split": "dev",
+    "task_kind": "swebench",
+    "evidence_kind": "model_run",
+    "config": {
+      "history_format": "chat",
+      "provider": "transformers",
+      "model": "Qwen/Qwen3-4B-Instruct-2507",
+      "base_url": "",
+      "api_key_env": "LLM_API_KEY",
+      "context_tokens": 8192,
+      "total_tokens": 32000,
+      "max_output_tokens": 768,
+      "min_action_output_tokens": 128,
+      "max_steps": 20,
+      "timeout_seconds": 120,
+      "tokenizer": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "temperature": 0.0,
+      "input_price_per_million": null,
+      "output_price_per_million": null,
+      "max_cost_usd": null,
+      "allow_local_execution": false,
+      "environment": "docker",
+      "docker_image": "python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce",
+      "api_max_tokens_field": "max_tokens",
+      "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+      "device": "cuda",
+      "model_dtype": "bfloat16"
+    },
+    "source_fingerprint": "209a8cff1285870eb9456fdb1db5f38c1e02ef73a987b82ab53ffe1961a4ca4f",
+    "model_metadata": {
+      "model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+      "tokenizer_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+      "device": "cuda",
+      "dtype": "bfloat16",
+      "generation": {
+        "do_sample": false,
+        "temperature": 1.0,
+        "top_k": 0,
+        "top_p": 1.0,
+        "repetition_penalty": 1.0,
+        "num_beams": 1,
+        "use_cache": true,
+        "bos_token_id": null,
+        "eos_token_id": [
+          151645,
+          151643
+        ],
+        "pad_token_id": 151643
+      },
+      "seed_scope": "torch RNG reset once at each task/strategy attempt; not a cross-hardware determinism guarantee"
+    }
+  },
+  "matched_pairs": 1,
+  "eligible_graded_pairs": 0,
+  "outcome_counts": {
+    "baseline": {
+      "ungraded": 1
+    },
+    "candidate": {
+      "ungraded": 1
+    }
+  },
+  "candidate_wins": 0,
+  "baseline_wins": 0,
+  "mean_candidate_minus_baseline": {
+    "total_tokens": {
+      "n": 0,
+      "mean": null
+    },
+    "elapsed_seconds": {
+      "n": 0,
+      "mean": null
+    },
+    "cost_usd": {
+      "n": 0,
+      "mean": null
+    },
+    "repeat_reads_same_revision": {
+      "n": 0,
+      "mean": null
+    },
+    "invalid_actions": {
+      "n": 0,
+      "mean": null
+    },
+    "failed_tool_actions": {
+      "n": 0,
+      "mean": null
+    }
+  },
+  "pairs": [
+    {
+      "task_id": "astropy__astropy-12907",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "seed": 42,
+      "evidence_kind": "model_run",
+      "eligible_graded_pair": false,
+      "baseline": {
+        "outcome": "ungraded",
+        "resolved": null,
+        "budget_valid": true,
+        "status": "budget_exhausted",
+        "total_tokens": 31427,
+        "elapsed_seconds": 118.05610152400004,
+        "cost_usd": null,
+        "repeat_reads_same_revision": 0,
+        "invalid_actions": 0,
+        "failed_tool_actions": 1
+      },
+      "candidate": {
+        "outcome": "ungraded",
+        "resolved": null,
+        "budget_valid": true,
+        "status": "budget_exhausted",
+        "total_tokens": 31686,
+        "elapsed_seconds": 36.71306298499985,
+        "cost_usd": null,
+        "repeat_reads_same_revision": 0,
+        "invalid_actions": 0,
+        "failed_tool_actions": 0
+      },
+      "candidate_minus_baseline": {
+        "total_tokens": 259,
+        "elapsed_seconds": -81.34303853900019,
+        "cost_usd": null,
+        "repeat_reads_same_revision": 0,
+        "invalid_actions": 0,
+        "failed_tool_actions": -1
+      }
+    }
+  ],
+  "notes": [
+    "Descriptive paired results only; no significance or generalization claim.",
+    "Means and wins exclude ungraded, infrastructure-error, and invalid-budget pairs; all attempts remain in the ledger.",
+    "Repeated reads and failed tool actions are behavior proxies, not proof of wasted work or incorrect reasoning.",
+    "GPU rental and setup cost are not measured by model cost_usd; unknown cost remains null.",
+    "Scripted smoke results are infrastructure evidence, not model capability evidence."
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "kind": "development_diagnostic_not_confirmatory_benchmark",
+  "recorded_at_utc": "2026-10-21T17:05:02.618304+00:00",
+  "question": "Can a pinned real model execute repository tools, export a patch, and receive a trustworthy independent SWE-bench grade within a fixed inference budget?",
+  "decision": "Only proceed to a larger context-policy study after environment controls and model/tool capability diagnostics; no superiority or RL claim from this run.",
+  "task_ids": [
+    "astropy__astropy-12907"
+  ],
+  "task_role": "dev",
+  "selection": "First task in pre-existing pilot manifest; selected before this task model outcome.",
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242",
+  "config": "configs/cloud-qwen7b.toml",
+  "config_sha256": "6bf173ce33f50b04518c5e1afccf56a2df61f55f20ea1296393684fa8aac2d69",
+  "source_fingerprint": "30c89797e1fa44757083adf3e385f44a16b957f39118bc6a8e509db6dbbf094f",
+  "strategies": [
+    "recent",
+    "structured",
+    "summary"
+  ],
+  "attempts_per_task_strategy": 1,
+  "temperature": 0.0,
+  "context_tokens": 8192,
+  "total_input_plus_output_tokens": 32000,
+  "max_output_tokens": 768,
+  "max_steps": 20,
+  "grader": "swebench==5.0.2",
+  "dataset": "SWE-bench/SWE-bench_Lite",
+  "controls": [
+    "official gold patch",
+    "nonempty patch adding one irrelevant text file without changing source/tests/configuration"
+  ],
+  "gold_and_hidden_tests": "Independent grader only; not mounted into Agent container or included in prompt",
+  "compute_location": "Featurize cloud RTX 4090 24GB only; local computer CPU software tests only",
+  "rental_cny_per_hour": 1.87,
+  "existing_budget_cny_max": 10,
+  "release_deadline_utc": "2026-10-21T17:34:00Z",
+  "prior_probe": "A separate slugify fixture protocol probe already completed with 11499 tokens and passed its independent checks; it is not a real-repository benchmark score.",
+  "environment": "Official fixed Dockerfile with documented download-source changes; record actual image ID and inspect setup-only diff before running.",
+  "failure_rule": "Retain failed attempts and infrastructure failures separately; do not count missing grading as model failure or silently replace the selected task.",
+  "dataset_revision": "b0dde1093fe417d83b7184254edf8199c1f0dff5",
+  "actual_image_id": "sha256:a9be42bfe49491bdc15d285eb8000fe25530411c132b2a8869580c65ffad406b",
+  "environment_check": {
+    "changed_blob_files": [
+      "pyproject.toml"
+    ],
+    "mode_only_changes": 1860,
+    "python": "3.9.20",
+    "conda_environment": "testbed"
+  },
+  "output": "runs/cloud-v3-swe-dev-02",
+  "amendment": {
+    "previous_protocol": "CLOUD_DIAGNOSTIC_V3.json",
+    "reason": "Real HF chat templates reject empty conversations. Structured framing now uses the actual nonempty base message list; one production line changed. No prompt/tool/model/budget/task changes.",
+    "prior_attempts": "Recent exhausted exactly 32000 tokens and is pending official grade. Structured crashed before its first model call with IndexError. Summary did not start. All artifacts retained in cloud-v3-swe-dev-01.",
+    "comparison_rule": "Rerun all three strategies at the new source fingerprint. Never pool old and new attempts or select the best attempt. This is an amended development diagnostic, not a confirmatory or independent repeat.",
+    "regression_test": "51 targeted CPU tests passed, including three strategies with a tokenizer that rejects empty conversations."
+  }
+}

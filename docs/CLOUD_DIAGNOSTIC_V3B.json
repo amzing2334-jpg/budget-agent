@@ -1,0 +1,61 @@
+{
+  "kind": "development_diagnostic_not_confirmatory_benchmark",
+  "recorded_at_utc": "2026-10-21T17:21:29.436050+00:00",
+  "question": "After observing whole-file write truncation and destructive partial replacement, can a unique-match edit tool and repository-specific test discovery instruction support a valid small repository repair?",
+  "decision": "Only proceed to a larger context-policy study after environment controls and model/tool capability diagnostics; no superiority or RL claim from this run.",
+  "task_ids": [
+    "astropy__astropy-12907"
+  ],
+  "task_role": "dev",
+  "selection": "First task in pre-existing pilot manifest; selected before this task model outcome.",
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242",
+  "config": "configs/cloud-qwen7b.toml",
+  "config_sha256": "6bf173ce33f50b04518c5e1afccf56a2df61f55f20ea1296393684fa8aac2d69",
+  "source_fingerprint": "c0cbab0ccde2db9cb9edd7d459d94d5290448e0026519f12b51aafa532883ca3",
+  "strategies": [
+    "recent"
+  ],
+  "attempts_per_task_strategy": 1,
+  "temperature": 0.0,
+  "context_tokens": 8192,
+  "total_input_plus_output_tokens": 32000,
+  "max_output_tokens": 768,
+  "max_steps": 20,
+  "grader": "swebench==5.0.2",
+  "dataset": "SWE-bench/SWE-bench_Lite",
+  "controls": [
+    "official gold patch",
+    "nonempty patch adding one irrelevant text file without changing source/tests/configuration"
+  ],
+  "gold_and_hidden_tests": "Independent grader only; not mounted into Agent container or included in prompt",
+  "compute_location": "Featurize cloud RTX 4090 24GB only; local computer CPU software tests only",
+  "rental_cny_per_hour": 1.87,
+  "existing_budget_cny_max": 10,
+  "release_deadline_utc": "2026-10-21T17:34:00Z",
+  "prior_probe": "A separate slugify fixture protocol probe already completed with 11499 tokens and passed its independent checks; it is not a real-repository benchmark score.",
+  "environment": "Official fixed Dockerfile with documented download-source changes; record actual image ID and inspect setup-only diff before running.",
+  "failure_rule": "Retain failed attempts and infrastructure failures separately; do not count missing grading as model failure or silently replace the selected task.",
+  "dataset_revision": "b0dde1093fe417d83b7184254edf8199c1f0dff5",
+  "actual_image_id": "sha256:a9be42bfe49491bdc15d285eb8000fe25530411c132b2a8869580c65ffad406b",
+  "environment_check": {
+    "changed_blob_files": [
+      "pyproject.toml"
+    ],
+    "mode_only_changes": 1860,
+    "python": "3.9.20",
+    "conda_environment": "testbed"
+  },
+  "output": "runs/cloud-v3-edit-probe-01",
+  "amendment": {
+    "previous_protocol": "CLOUD_DIAGNOSTIC_V3A.json",
+    "changes": [
+      "Add edit_file(path, old, new), with a nonempty unique old substring; reuse path and test-file boundaries.",
+      "Clarify whole-file write semantics and prefer local edits; use a neutral shell-command example and instruct repository-specific test discovery."
+    ],
+    "selection": "Same previously examined dev task after failure analysis; no gold/hidden test content used to construct actions or hints.",
+    "comparison_rule": "One follow-up capability diagnostic, not an independent test or controlled claim about the new tool. Do not pool with the prior context-policy cohort.",
+    "attempts": 1,
+    "regression_test": "85 targeted CPU tests passed. No local model inference or training."
+  }
+}

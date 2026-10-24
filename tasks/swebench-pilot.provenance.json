@@ -1,0 +1,11 @@
+{
+  "source_url": "https://datasets-server.huggingface.co/rows?dataset=princeton-nlp%2FSWE-bench_Lite&config=default&split=test&offset=0&length=5",
+  "source_dataset_split": "test",
+  "project_split": "dev",
+  "selection": "contiguous dataset order, before any model run; development convenience sample",
+  "offset": 0,
+  "count": 5,
+  "retrieved_at": "2026-10-21T04:03:56.692182+00:00",
+  "manifest_sha256": "0e7104adbdf85bfe4f3c81c5e56a7ff8ff2884480804e5e73245b70573dc0e0c",
+  "note": "Project split dev is our development partition, not an official SWE-bench split. No generalization claim."
+}

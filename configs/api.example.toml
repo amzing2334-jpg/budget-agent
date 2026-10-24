@@ -1,0 +1,24 @@
+# Copy this file and fill in the exact endpoint/model. Never put an API key here.
+[run]
+provider = "openai-compatible"
+model = "REPLACE_WITH_EXACT_MODEL_VERSION"
+base_url = "https://REPLACE_WITH_YOUR_PROVIDER/v1"
+api_key_env = "LLM_API_KEY"
+api_max_tokens_field = "max_tokens"
+environment = "docker"
+docker_image = "python:3.11-slim"
+strategy = "structured"
+context_tokens = 8192
+total_tokens = 64000
+max_output_tokens = 1024
+max_steps = 30
+timeout_seconds = 60
+temperature = 0.0
+# byte is a conservative local UTF-8 byte estimate, NOT the model's token count.
+# After configuring your tokenizer, e.g. tiktoken:cl100k_base, it is still an
+# estimate for remote chat serialization. Provider usage is the final ledger.
+tokenizer = "byte"
+# Set BOTH actual prices to enable dollar accounting. Omitted means unknown.
+# input_price_per_million = 0.0
+# output_price_per_million = 0.0
+# max_cost_usd = 1.0

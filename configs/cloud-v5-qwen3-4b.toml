@@ -1,0 +1,20 @@
+# v5 follow-up: all three harness conditions use this pinned 4B model on A4000.
+# The 7B experiment remains separate; GPU availability determined this choice.
+[run]
+provider = "transformers"
+model = "Qwen/Qwen3-4B-Instruct-2507"
+model_revision = "cdbee75f17c01a7cc42f958dc650907174af0554"
+device = "cuda"
+model_dtype = "bfloat16"
+temperature = 0.0
+seed = 42
+strategy = "recent"
+history_format = "chat"
+environment = "docker"
+context_tokens = 8192
+total_tokens = 32000
+max_output_tokens = 768
+min_action_output_tokens = 128
+max_steps = 20
+timeout_seconds = 120
+docker_image = "python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce"

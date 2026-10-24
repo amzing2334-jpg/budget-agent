@@ -1,0 +1,11 @@
+{
+  "started_at": "2026-10-22T07:50:17.893387+00:00",
+  "finished_at": "2026-10-22T07:50:44.125725+00:00",
+  "elapsed_seconds": 26.232334600004833,
+  "exit_code": 0,
+  "source_before": "1faa1c77c69d824ec94d072bc3a3e2f0959dc18879ea544ca13b3d68bfa70af1",
+  "source_after": "1faa1c77c69d824ec94d072bc3a3e2f0959dc18879ea544ca13b3d68bfa70af1",
+  "log_sha256": "dc63a5cd9adbc291e1d6115f8056b47497dfd68d815db3592cf62867ba92d052",
+  "cloud_source": "d3ca73f7db6c7ecd49832e1c04d9d87fa08b73092b7dd1189a19d83fe98a4528",
+  "post_cloud_change": "Refresh budget-aware system snapshot after paid summary, before budget.reserve. Tested locally without model inference; cloud mask pair had no summaries."
+}

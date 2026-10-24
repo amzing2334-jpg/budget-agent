@@ -1,0 +1,88 @@
+{
+  "kind": "cpu_upstream_integration",
+  "created_utc": "2026-10-22T06:15:50.2675742Z",
+  "upstream_version": "2.4.6",
+  "upstream_sha": "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+  "python": "3.13.5",
+  "platform": "Windows",
+  "actual_upstream_loop": true,
+  "tests": {
+    "passed": 6,
+    "failures": 0,
+    "errors": 0,
+    "deselected_contract_tests": 13,
+    "seconds": 5.08
+  },
+  "model": "scripted CPU double; no inference",
+  "environment": "scripted CPU double; no commands or Docker",
+  "training_stack_absent": [
+    "torch",
+    "transformers",
+    "peft",
+    "accelerate",
+    "datasets"
+  ],
+  "dependency_check": "pip check: No broken requirements found",
+  "result_filename": "cpu-result.json",
+  "result_naming_reason": "Preserve original bytes while excluding synthetic results from report.load_results result.json glob",
+  "original_path_fields_preserved": true,
+  "zero_call_ledger_note": "budget-exhausted has no calls.jsonl because no request was issued",
+  "adapter_sha256": "60e779948e8e57f5bd7d947ccdd40fcf5a73ba4fdcbe47d35ca21451ece2ac92",
+  "test_sha256": "b64423ce0b3c3cb50885deda444378db2f3aa9b81d66022ba3c66a29e109b36b",
+  "cases": [
+    {
+      "name": "budget-exhausted",
+      "status": "budget_exhausted",
+      "reconciled_calls": 0,
+      "attempted_calls": 0,
+      "environment_actions": 0,
+      "usage_unknown": false,
+      "ledger_present": false
+    },
+    {
+      "name": "model-error",
+      "status": "ModelError",
+      "reconciled_calls": 0,
+      "attempted_calls": 1,
+      "environment_actions": 0,
+      "usage_unknown": true,
+      "ledger_present": true
+    },
+    {
+      "name": "keyboard-interrupt",
+      "status": "interrupted",
+      "reconciled_calls": 0,
+      "attempted_calls": 1,
+      "environment_actions": 0,
+      "usage_unknown": true,
+      "ledger_present": true
+    },
+    {
+      "name": "format-recovery-submit",
+      "status": "Submitted",
+      "reconciled_calls": 3,
+      "attempted_calls": 3,
+      "environment_actions": 2,
+      "usage_unknown": false,
+      "ledger_present": true
+    },
+    {
+      "name": "repeated-format-error",
+      "status": "RepeatedFormatError",
+      "reconciled_calls": 3,
+      "attempted_calls": 3,
+      "environment_actions": 0,
+      "usage_unknown": false,
+      "ledger_present": true
+    },
+    {
+      "name": "step-limit",
+      "status": "LimitsExceeded",
+      "reconciled_calls": 1,
+      "attempted_calls": 1,
+      "environment_actions": 1,
+      "usage_unknown": false,
+      "ledger_present": true
+    }
+  ]
+}

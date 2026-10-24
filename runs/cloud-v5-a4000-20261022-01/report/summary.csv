@@ -1,0 +1,8 @@
+﻿group_id,strategy,provider,model,split,evidence_kind,attempted,graded,pending_or_ungraded,infrastructure_errors,official_empty_patches,successes,success_rate,matched_tasks_and_repetition_labels,invalid_budget_attempts,comparison_valid,input_tokens,output_tokens,total_tokens,mean_tokens,total_cost_usd,cost_per_success_usd,mean_elapsed_seconds
+683c1965a4,mini-swe-textbased,transformers,Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554,dev,model_run,1,0,1,0,1,0,,True,0,False,25570,1230,26800,26800.0,,,88.91281828000001
+8b26a30aa2,mask,transformers,Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554,dev,model_run,1,0,1,0,1,0,,True,0,False,31440,361,31801,31801.0,,,140.41973654999947
+3d654c65ae,mask,transformers,Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554,dev,model_run,1,0,1,0,1,0,,True,0,False,31339,347,31686,31686.0,,,81.81826761499997
+3ae6e69012,recent,transformers,Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554,dev,model_run,1,0,1,0,1,0,,True,0,False,31175,252,31427,31427.0,,,113.74832518699986
+bfa433b1db,mask,transformers,Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554,dev,model_run,1,0,1,0,1,0,,True,0,False,31339,347,31686,31686.0,,,36.71306298499985
+bfa433b1db,recent,transformers,Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554,dev,model_run,1,0,1,0,1,0,,True,0,False,31175,252,31427,31427.0,,,118.05610152400004
+bd7137c67b,recent,transformers,Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554,dev,model_run,1,0,1,0,1,0,,True,0,False,31175,252,31427,31427.0,,,60.945632983999985

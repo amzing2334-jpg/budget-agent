@@ -1,0 +1,291 @@
+{
+  "schema_version": 1,
+  "counts": {
+    "events": 8,
+    "invalid_actions": 0,
+    "invalid_actions_at_output_limit": 0,
+    "repeated_failed_actions": 0,
+    "repeated_observations": 0,
+    "successful_read_file": 4,
+    "successful_edit_file": 0,
+    "successful_write_file": 0,
+    "successful_run": 1,
+    "successful_diff": 0
+  },
+  "first_successful_tool_action": {
+    "event_id": "e0001",
+    "step": 1,
+    "tool": "search"
+  },
+  "invalid_actions": [],
+  "repeated_failed_actions": [],
+  "repeated_observations": [],
+  "tools": {
+    "search": {
+      "calls": 1,
+      "successful": 1,
+      "failed": 0,
+      "duration_seconds": 0.8858791979996568,
+      "output_characters": 2410
+    },
+    "read_file": {
+      "calls": 4,
+      "successful": 4,
+      "failed": 0,
+      "duration_seconds": 2.279076145000545,
+      "output_characters": 12785
+    },
+    "recall": {
+      "calls": 1,
+      "successful": 1,
+      "failed": 0,
+      "duration_seconds": 0.2174586440000894,
+      "output_characters": 2619
+    },
+    "run": {
+      "calls": 2,
+      "successful": 1,
+      "failed": 1,
+      "duration_seconds": 4.439753604999623,
+      "output_characters": 158
+    }
+  },
+  "usage": {
+    "calls": 8,
+    "calls_with_response": 8,
+    "unknown_usage_calls": 0,
+    "input_tokens": 31175,
+    "output_tokens": 252,
+    "total_tokens": 31427,
+    "input_fraction": 0.9919814172526809,
+    "usage_sources": [
+      "tokenizer_exact"
+    ],
+    "recorded_model_seconds": 18.128591099999994
+  },
+  "call_alignment": {
+    "method": "ordered_agent_responses",
+    "agent_responses": 8,
+    "events": 8,
+    "raw_content_mismatches": [],
+    "unpaired_events": 0,
+    "unpaired_agent_responses": 0
+  },
+  "observation_exposure": {
+    "events": [
+      {
+        "event_id": "e0002",
+        "tool": "read_file",
+        "original_output_characters": 3970,
+        "visible_observation_characters": 19850,
+        "request_indices": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "masked_messages": 0,
+        "masked_marker_characters": 0,
+        "masked_request_indices": [],
+        "associated_request_input_tokens": 25535
+      },
+      {
+        "event_id": "e0004",
+        "tool": "read_file",
+        "original_output_characters": 4250,
+        "visible_observation_characters": 17000,
+        "request_indices": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "masked_messages": 0,
+        "masked_marker_characters": 0,
+        "masked_request_indices": [],
+        "associated_request_input_tokens": 21971
+      },
+      {
+        "event_id": "e0003",
+        "tool": "read_file",
+        "original_output_characters": 3629,
+        "visible_observation_characters": 14516,
+        "request_indices": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "masked_messages": 0,
+        "masked_marker_characters": 0,
+        "masked_request_indices": [],
+        "associated_request_input_tokens": 22693
+      },
+      {
+        "event_id": "e0001",
+        "tool": "search",
+        "original_output_characters": 2410,
+        "visible_observation_characters": 14460,
+        "request_indices": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "masked_messages": 0,
+        "masked_marker_characters": 0,
+        "masked_request_indices": [],
+        "associated_request_input_tokens": 27045
+      },
+      {
+        "event_id": "e0005",
+        "tool": "recall",
+        "original_output_characters": 2619,
+        "visible_observation_characters": 7857,
+        "request_indices": [
+          6,
+          7,
+          8
+        ],
+        "masked_messages": 0,
+        "masked_marker_characters": 0,
+        "masked_request_indices": [],
+        "associated_request_input_tokens": 16398
+      },
+      {
+        "event_id": "e0006",
+        "tool": "run",
+        "original_output_characters": 127,
+        "visible_observation_characters": 254,
+        "request_indices": [
+          7,
+          8
+        ],
+        "masked_messages": 0,
+        "masked_marker_characters": 0,
+        "masked_request_indices": [],
+        "associated_request_input_tokens": 9958
+      },
+      {
+        "event_id": "e0007",
+        "tool": "run",
+        "original_output_characters": 31,
+        "visible_observation_characters": 31,
+        "request_indices": [
+          8
+        ],
+        "masked_messages": 0,
+        "masked_marker_characters": 0,
+        "masked_request_indices": [],
+        "associated_request_input_tokens": 3374
+      }
+    ],
+    "visible_observation_characters": 73968,
+    "masked_messages": 0,
+    "masked_marker_characters": 0,
+    "measurement": "Characters in explicit event observation messages, including excerpt markers but excluding masked placeholders. Associated request tokens include all input, are not event token costs, and overlap across events. Free-text summaries and recalled payloads are not attributed back to their source events."
+  },
+  "read_file_coverage": {
+    "status": "complete",
+    "events": [
+      {
+        "event_id": "e0002",
+        "revision": "e3b0c44298fc1c14",
+        "path": "astropy/modeling/separable.py",
+        "status": "measured",
+        "returned_lines": 100,
+        "new_lines": 100,
+        "repeated_lines": 0,
+        "covered_intervals": [
+          [
+            1,
+            100
+          ]
+        ],
+        "covered_interval_count": 1,
+        "truncated_line_content": false
+      },
+      {
+        "event_id": "e0003",
+        "revision": "e3b0c44298fc1c14",
+        "path": "astropy/modeling/separable.py",
+        "status": "measured",
+        "returned_lines": 100,
+        "new_lines": 100,
+        "repeated_lines": 0,
+        "covered_intervals": [
+          [
+            1,
+            200
+          ]
+        ],
+        "covered_interval_count": 1,
+        "truncated_line_content": false
+      },
+      {
+        "event_id": "e0004",
+        "revision": "e3b0c44298fc1c14",
+        "path": "astropy/modeling/separable.py",
+        "status": "measured",
+        "returned_lines": 117,
+        "new_lines": 117,
+        "repeated_lines": 0,
+        "covered_intervals": [
+          [
+            1,
+            317
+          ]
+        ],
+        "covered_interval_count": 1,
+        "truncated_line_content": false
+      },
+      {
+        "event_id": "e0008",
+        "revision": "e3b0c44298fc1c14",
+        "path": "astropy/modeling/separable.py",
+        "status": "measured",
+        "returned_lines": 14,
+        "new_lines": 0,
+        "repeated_lines": 14,
+        "covered_intervals": [
+          [
+            1,
+            317
+          ]
+        ],
+        "covered_interval_count": 1,
+        "truncated_line_content": false
+      }
+    ],
+    "measured_events": 4,
+    "unknown_events": 0,
+    "failed_events": 0,
+    "measured_returned_lines": 331,
+    "measured_new_lines": 317,
+    "measured_repeated_lines": 14,
+    "paths": [
+      {
+        "revision": "e3b0c44298fc1c14",
+        "path": "astropy/modeling/separable.py",
+        "unique_lines": 317,
+        "covered_intervals": [
+          [
+            1,
+            317
+          ]
+        ],
+        "covered_interval_count": 1
+      }
+    ],
+    "measurement": "Actual numbered lines validated against read_file output header; grouped by revision and canonical output path. New/repeated is relative to supported prior outputs only; unknown legacy formats are excluded, not guessed. Line coverage does not establish complete line content, comprehension, or unnecessary rereading."
+  },
+  "notes": [
+    "Tool success and the first successful action do not establish a correct repair or a passed test.",
+    "Repeated observations mean identical action, output, and recorded revision; they do not prove that repeating the check was unnecessary.",
+    "Reaching an output allowance is evidence of budget pressure, not proof that truncation caused the invalid action; both flags can coexist.",
+    "Repeated failures count identical actions at the same recorded revision, excluding invalid_action; different failure messages may be present."
+  ]
+}

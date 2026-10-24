@@ -1,0 +1,1 @@
+{"instance_id": "cpu__integration-1", "model_name_or_path": "cpu-integration-double-mini-swe-textbased", "model_patch": "diff --git a/example.py b/example.py\n--- a/example.py\n+++ b/example.py\n@@ -1 +1 @@\n-old\n+new\n"}
