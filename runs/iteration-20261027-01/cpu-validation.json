@@ -1,0 +1,49 @@
+{
+  "evidence_kind": "cpu_software_validation",
+  "observed_date": "2026-10-27",
+  "command": "python -m pytest -q --junitxml=runs/iteration-20261027-01/cpu-tests.xml",
+  "source_fingerprint": "b21d9a155d9901ea74772ba6f93187b2d1aa69b82f44302ae5a4c20abe8c8a2c",
+  "tests": 504,
+  "passed": 496,
+  "skipped": [
+    {
+      "test": ".tests.test_learning_policy",
+      "reason": "collection skipped"
+    },
+    {
+      "test": ".tests.test_learning_trainer",
+      "reason": "collection skipped"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_format_recovery_submission_and_export",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_repeated_format_error_limit",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_step_limit",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_budget_exception_and_save",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_failed_model_call_keeps_ledger[failure0-ModelError]",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_failed_model_call_keeps_ledger[failure1-interrupted]",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    }
+  ],
+  "failures": 0,
+  "errors": 0,
+  "elapsed_seconds": 28.321,
+  "log_sha256": "3381d5e198e915ed2b25f010662b8c5221096037350fdd666bf2f778cf8b2a5f",
+  "junit_sha256": "7ca82aabcb3d4a161a2322d9c9a57acfcd99bf6f5f7c2d3dd4394df40080869c",
+  "historical_replay": "read-memory-replay/replay.json",
+  "limitations": "CPU software checks and fixed archived-prefix analysis only; no real model inference, training, new rental or model-performance claim."
+}

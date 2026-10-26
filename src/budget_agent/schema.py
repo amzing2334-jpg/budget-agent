@@ -59,6 +59,7 @@ class RunConfig:
     total_tokens: int = 64000
     max_output_tokens: int = 1024
     min_action_output_tokens: int = 128
+    read_memory_tokens: int = 1024
     max_steps: int = 30
     timeout_seconds: int = 30
     tokenizer: str = "byte"
@@ -76,8 +77,8 @@ class RunConfig:
     model_dtype: str = "bfloat16"
 
     def validate(self) -> None:
-        if self.strategy not in {"full", "recent", "mask", "summary", "structured"}:
-            raise ValueError("strategy must be full, recent, mask, summary, or structured")
+        if self.strategy not in {"full", "recent", "mask", "mask-read", "summary", "structured"}:
+            raise ValueError("strategy must be full, recent, mask, mask-read, summary, or structured")
         if self.history_format not in {"transcript", "chat"}:
             raise ValueError("history_format must be transcript or chat")
         if self.decision_policy not in {"direct", "budget-aware"}:
@@ -98,6 +99,8 @@ class RunConfig:
             raise ValueError("context_tokens must exceed max_output_tokens")
         if self.min_action_output_tokens > self.max_output_tokens:
             raise ValueError("min_action_output_tokens must not exceed max_output_tokens")
+        if type(self.read_memory_tokens) is not int or self.read_memory_tokens < 0:
+            raise ValueError("read_memory_tokens must be a non-negative integer")
         if self.environment not in {"local", "docker"}:
             raise ValueError("environment must be local or docker")
         if self.api_max_tokens_field not in {"max_tokens", "max_completion_tokens"}:

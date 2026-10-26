@@ -24,7 +24,7 @@ def test_full_keeps_history_and_refuses_overflow():
         manager.build("system", "must preserve Unicode 中文", events, "r1", 400)
 
 
-@pytest.mark.parametrize("strategy", ["full", "recent", "mask", "summary", "structured"])
+@pytest.mark.parametrize("strategy", ["full", "recent", "mask", "mask-read", "summary", "structured"])
 def test_issue_never_truncated(strategy):
     manager = ContextManager(strategy, TokenCounter(), history_format="transcript")
     with pytest.raises(ContextOverflow, match="complete task issue"):
@@ -90,7 +90,7 @@ def test_summary_does_not_need_model_if_history_fits():
     assert "event_id=e1" in messages[-1]["content"]
 
 
-@pytest.mark.parametrize("strategy", ["full", "recent", "mask", "summary", "structured"])
+@pytest.mark.parametrize("strategy", ["full", "recent", "mask", "mask-read", "summary", "structured"])
 def test_new_note_preserves_staleness_of_old_source(strategy):
     manager = ContextManager(strategy, TokenCounter(), history_format="transcript")
     note = event(2, revision="r2", tool="remember", source="e1", source_revision="r1", note="test passed before the edit")

@@ -4,6 +4,8 @@
 
 GitHub：[amzing2334-jpg/budget-agent](https://github.com/amzing2334-jpg/budget-agent)（私有）。代码、测试、文档及选定的 v5 实验记录已纳入版本管理；模型权重、运行环境和云端连接材料保留在本地。仓库范围与历史产物位置见 [仓库说明](docs/REPOSITORY.md)。
 
+**2026-10-27 迭代：新增 `mask-read` 有界源码保留候选。** 在 mask 的全部动作和最近两条完整观察之外，利用明确的额外输入额度保留当前连续工作区版本的旧源码整行，按实际路径/行去重并保留来源。`read_memory_tokens=0` 与 mask 请求完全相同；默认 1024 是输入增量上限，所有内容照常计入总预算。历史前缀回放仅用于测可见性与成本，不是新模型实验或修复收益。详见[实现与验收](docs/READ_MEMORY_VALIDATION.md)和[本轮行业复核](docs/INDUSTRY_REVIEW_2026-10-27.md)。
+
 **2026-10-26 迭代：新增可关闭的可见源码重读控制，以及 `strategy / decision_policy / loop_policy` 单因素配对评测。** 控制器只对实际请求中已经完整可见的相同行内容反馈，给模型一次纠正机会后才停止；反馈正常计费，原始轨迹和独立评分保留。历史七次尝试回放仅发现三次符合该窄判据的读取，三条 mask 轨迹均不触发，因此不声称解决旧停滞或提高修复率。实现、验收和复现命令见 [本轮验证](docs/READ_LOOP_VALIDATION.md)；后续每四小时工作从[迭代记录](docs/ITERATION_LOG.md)接续，岗位依据见[行业复核](docs/INDUSTRY_REVIEW_2026-10-26.md)。
 
 当前主线是**真实仓库修复、可靠交互与可信评测**。v5 根据[笔记研读与项目回看](docs/FEISHU_NOTE_CAREER_ANALYSIS_2026-10-22.md)，加入有范围/分页的文件工具、可定位的编辑失败反馈、动作输出额度下限、离线行为诊断，以及固定版本 mini-SWE-agent 外部参考入口。后续实测又加入 `mask` 观察压缩和可选预算决策提示，分别进行同源码对照；详见 [v5 后续验收](docs/VALIDATION_V5_FOLLOWUP.md)。默认 `history_format=chat`，旧表示通过 `transcript` 保留。
@@ -64,6 +66,7 @@ python -m budget_agent demo --output runs/demo
 | `full` | 保留完整历史；超限明确停止 | 本项目自己的不压缩基线，未声称复现 mini-swe-agent |
 | `recent` | 保留完整任务与最近连续交互；最新观察过长时明确截取 | 可运行的简单滑动窗口基线，区别于 observation masking |
 | `mask` | 始终保留全部动作与来源标记，只保留最近 2 个事件的完整观察；旧观察可 recall | 提前减少重复输入，无额外摘要调用；放不下时明确停止 |
+| `mask-read` | 在 mask 上有界恢复当前连续版本的旧源码整行，去重并保留来源 | 额外输入需计费；待验证是否改善修复，不能仅凭覆盖增加声称更优 |
 | `summary` | 历史放不下时，调用同一模型生成滚动摘要 | 摘要输入和输出同样消耗预算 |
 | `structured` | 优先保留近期事件、失败证据、修改与记忆；按需读取原始记录 | 确定性策略，不额外调用摘要模型 |
 

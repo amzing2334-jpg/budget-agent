@@ -94,7 +94,8 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex[:8]
     run_dir = output_dir.resolve() / f"{task.id}__{config.strategy}__{run_id}"
     run_dir.mkdir(parents=True, exist_ok=False)
-    budget, context = Budget(counter, config), ContextManager(config.strategy, counter, config.history_format)
+    budget, context = Budget(counter, config), ContextManager(config.strategy, counter, config.history_format,
+                                                            read_memory_tokens=config.read_memory_tokens)
     events: list[Event] = []
     call_records: list[dict] = []
     usage_sources: set[str] = set()

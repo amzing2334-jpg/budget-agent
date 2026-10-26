@@ -9,6 +9,7 @@ import json
 from typing import Callable
 
 from .budget import TokenCounter
+from .observations import parse_read_observation
 from .schema import Event
 
 
@@ -62,17 +63,19 @@ def _event_text(event: Event, revision: str, *, compact: bool = False, observati
 
 
 class ContextManager:
-    def __init__(self, strategy: str, counter: TokenCounter, history_format: str = "chat"):
-        if strategy not in {"full", "recent", "mask", "summary", "structured"}:
+    def __init__(self, strategy: str, counter: TokenCounter, history_format: str = "chat", *, read_memory_tokens: int = 1024):
+        if strategy not in {"full", "recent", "mask", "mask-read", "summary", "structured"}:
             raise ValueError("Unknown context strategy")
         self.strategy = strategy
         if history_format not in {"transcript", "chat"}:
             raise ValueError("history_format must be transcript or chat")
         self.history_format = history_format
         self.counter = counter
+        self.read_memory_tokens = read_memory_tokens
         self._summary = ""
         self._summarized_ids: set[str] = set()
-        self.stats = {"builds": 0, "compactions": 0, "summary_calls": 0, "excerpted_events": 0, "last_input_tokens": 0, "last_visible_events": 0, "last_omitted_events": 0, "last_masked_events": 0}
+        self.stats = {"builds": 0, "compactions": 0, "summary_calls": 0, "excerpted_events": 0, "last_input_tokens": 0, "last_visible_events": 0, "last_omitted_events": 0, "last_masked_events": 0,
+                      "last_read_memory_tokens": 0, "last_read_memory_lines": 0, "last_read_memory_events": 0}
 
     def _event_messages(self, event: Event, revision: str, *, observation: str | None = None) -> list[dict[str, str]]:
         if self.history_format == "transcript":
@@ -119,6 +122,8 @@ class ContextManager:
             raise ContextOverflow("System instructions and complete task issue do not fit; increase context budget")
         if self.strategy == "mask":
             return self._build_mask(base, events, revision, max_input_tokens)
+        if self.strategy == "mask-read":
+            return self._build_mask_reads(base, events, revision, max_input_tokens)
         full = base + self._history(events, revision)
         if self.strategy == "full":
             if self.counter.messages(full) > max_input_tokens:
@@ -152,6 +157,71 @@ class ContextManager:
         self.stats["compactions"] += int(masked > 0)
         if self.counter.messages(messages) > limit:
             raise ContextOverflow("Observation masking cannot fit complete actions, provenance and latest two observations")
+        return self._finish(messages, len(events), len(events))
+
+    def _build_mask_reads(self, base: list[dict[str, str]], events: list[Event], revision: str, limit: int) -> list[dict[str, str]]:
+        """Spend a bounded extra input allowance on older, unique source lines.
+
+        Keep the mask baseline's action history and two recent observations intact.
+        Select using the past prefix only: newest reads in the current continuous
+        revision segment first, then complete line prefixes. No model summaries.
+        """
+        messages = self._build_mask(base, events, revision, limit)
+        baseline_tokens = self.counter.messages(messages)
+        capacity = min(limit, baseline_tokens + self.read_memory_tokens)
+        self.stats.update(last_read_memory_tokens=0, last_read_memory_lines=0, last_read_memory_events=0)
+        if self.read_memory_tokens == 0:
+            return messages
+
+        seen: set[tuple[str, int]] = set()
+        newest_text: dict[tuple[str, int], str] = {}
+        masked = max(0, len(events) - MASK_KEEP_RECENT)
+        stride = 2 if self.history_format == "chat" else 1
+        for index in range(len(events) - 1, -1, -1):
+            event = events[index]
+            # A -> B -> A starts a new segment, even if the hash matches old A.
+            if event.revision != revision:
+                break
+            if not event.ok or event.action["tool"] != "read_file":
+                continue
+            observed = parse_read_observation(event.output)
+            if observed is None or observed.truncated_line_content is not False:
+                continue
+            for number, text in observed.lines.items():
+                newest_text.setdefault((observed.path, number), text)
+            if index >= masked:
+                seen.update((observed.path, number) for number in observed.lines)
+                continue
+            rows = [(number, text) for number, text in observed.lines.items()
+                    if (observed.path, number) not in seen and newest_text[(observed.path, number)] == text]
+            if not rows:
+                continue
+            position = len(base) + (index + 1) * stride - 1
+
+            def candidate(count: int) -> list[dict[str, str]]:
+                prefix = "read_file excerpt " + json.dumps({"path": observed.path, "source_event_id": event.id,
+                                                           "retained_lines": count}, ensure_ascii=False)
+                observation = prefix + "\n[omitted lines available by recall]\n" + "\n".join(text for _, text in rows[:count])
+                group = self._event_messages(event, revision, observation=observation)
+                trial = list(messages)
+                trial[position] = group[-1]
+                return trial
+
+            low, high = 0, len(rows)
+            while low < high:
+                middle = (low + high + 1) // 2
+                if self.counter.messages(candidate(middle)) <= capacity:
+                    low = middle
+                else:
+                    high = middle - 1
+            if low:
+                messages = candidate(low)
+                seen.update((observed.path, number) for number, _ in rows[:low])
+                self.stats["last_read_memory_lines"] += low
+                self.stats["last_read_memory_events"] += 1
+                self.stats["excerpted_events"] += 1
+        self.stats["last_read_memory_tokens"] = self.counter.messages(messages) - baseline_tokens
+        self.stats["last_masked_events"] -= self.stats["last_read_memory_events"]
         return self._finish(messages, len(events), len(events))
 
     def _build_recent(self, base: list[dict[str, str]], events: list[Event], revision: str, limit: int) -> list[dict[str, str]]:

@@ -52,7 +52,7 @@ def add_run_arguments(parser):
     parser.add_argument("--output", type=Path, default=Path("runs/pilot"))
     for name in ("strategy", "history_format", "decision_policy", "loop_policy", "provider", "model", "base_url", "api_key_env", "tokenizer", "environment", "docker_image", "api_max_tokens_field", "model_revision", "device", "model_dtype"):
         parser.add_argument("--" + name.replace("_", "-"))
-    for name in ("context_tokens", "total_tokens", "max_output_tokens", "min_action_output_tokens", "max_steps", "timeout_seconds", "seed"):
+    for name in ("context_tokens", "total_tokens", "max_output_tokens", "min_action_output_tokens", "read_memory_tokens", "max_steps", "timeout_seconds", "seed"):
         parser.add_argument("--" + name.replace("_", "-"), type=int)
     for name in ("temperature", "input_price_per_million", "output_price_per_million", "max_cost_usd"):
         parser.add_argument("--" + name.replace("_", "-"), type=float)
@@ -70,7 +70,7 @@ def build_parser():
     add_run_arguments(run)
     compare = sub.add_parser("compare", help="Run paired strategies under identical settings")
     add_run_arguments(compare)
-    compare.add_argument("--strategies", nargs="+", choices=["full", "recent", "mask", "summary", "structured"], default=["full", "recent", "summary", "structured"])
+    compare.add_argument("--strategies", nargs="+", choices=["full", "recent", "mask", "mask-read", "summary", "structured"], default=["full", "recent", "summary", "structured"])
     compare.add_argument("--repeat", type=int, default=1)
     report = sub.add_parser("report", help="Generate CSV, Markdown and offline HTML")
     report.add_argument("--input", required=True, type=Path)

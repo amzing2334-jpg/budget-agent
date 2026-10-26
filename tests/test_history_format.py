@@ -13,7 +13,7 @@ from budget_agent.schema import Event, ModelResponse, RunConfig
 from budget_agent.tasks import load_tasks
 
 
-STRATEGIES = ["full", "recent", "mask", "summary", "structured"]
+STRATEGIES = ["full", "recent", "mask", "mask-read", "summary", "structured"]
 
 
 class ChatTokenizer:

@@ -1,0 +1,1832 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "offline_fixed_prefix_replay",
+  "created_at_utc": "2026-10-26T19:08:12.098330+00:00",
+  "source_path_base": "project root for relative paths; absolute paths otherwise",
+  "analysis_counter": {
+    "name": "tiktoken:cl100k_base",
+    "description": "tiktoken:cl100k_base tokens + framing estimate",
+    "usage_is_estimated": true,
+    "exact_qwen_tokenizer": false,
+    "provider_billing": false
+  },
+  "read_memory_tokens": 1024,
+  "source_fingerprint": "b21d9a155d9901ea74772ba6f93187b2d1aa69b82f44302ae5a4c20abe8c8a2c",
+  "driver_sha256": "7d799630a5e916f6802fff61ca03a9f0f6fc68267850f27a9583816cc10dcaad",
+  "limitations": [
+    "Fixed recorded prefixes only: no new actions, model calls, repair successes, training or billed usage.",
+    "Analysis token estimates use the selected encoding and estimated chat framing; they are not exact Qwen tokens or provider billing.",
+    "Each prefix uses config.context_tokens - config.max_output_tokens, not the historical remaining total-budget reservation.",
+    "Extra input inclusion costs do not establish whole-rollout savings or how a model would act after seeing different context.",
+    "Overflow prefixes remain in the report with unknown visibility; they are not silently dropped or counted as zero.",
+    "Repeated histories from the same task are not independent tasks; no statistical success-rate claim is made.",
+    "Coverage means exact complete numbered source lines observed earlier in the current contiguous revision segment, not semantic usefulness."
+  ],
+  "summary": {
+    "replayed_runs": 3,
+    "excluded_runs": 4,
+    "distinct_task_ids": 1,
+    "histories_per_task_id": {
+      "astropy__astropy-12907": 3
+    },
+    "recorded_prefixes": 39,
+    "paired_constructed_prefixes": 39,
+    "overflow_prefixes": 0,
+    "mean_extra_input_tokens_per_constructed_prefix": 706.1538461538462,
+    "known_target_line_occurrences_all_read_prefixes": 464,
+    "known_target_line_occurrences_on_paired_read_prefixes": 464,
+    "visible_known_line_occurrences": {
+      "mask": 4,
+      "mask-read": 226
+    }
+  },
+  "runs": [
+    {
+      "run_directory": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/astropy__astropy-12907__mask__20261022T074654Z-43348b7b",
+      "task_id": "astropy__astropy-12907",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "run_id": "20261022T074654Z-43348b7b",
+      "status": "replayed",
+      "sources": {
+        "result.json": {
+          "path": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/astropy__astropy-12907__mask__20261022T074654Z-43348b7b/result.json",
+          "sha256": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce"
+        },
+        "calls.jsonl": {
+          "path": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/astropy__astropy-12907__mask__20261022T074654Z-43348b7b/calls.jsonl",
+          "sha256": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03"
+        },
+        "trajectory.jsonl": {
+          "path": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/astropy__astropy-12907__mask__20261022T074654Z-43348b7b/trajectory.jsonl",
+          "sha256": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+        }
+      },
+      "excluded_call_rows": 0,
+      "input_cap": 7424,
+      "original_tokenizer": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "prefixes": [
+        {
+          "call_jsonl_line": 1,
+          "event_id": "e0001",
+          "prefix_event_count": 0,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "actual_system_sha256": "d7e9d66bb38645493c2f71d9a7481d03e747f956ca6cb2f7abc158adfc93c72c",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 912,
+          "historical_usage": {
+            "input_tokens": 917,
+            "output_tokens": 23,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 912,
+              "messages_sha256": "13b31ee05feae61eda3cf31a3fa1d826b74b77c16d313eb1536563aee4c16266",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 912,
+              "messages_sha256": "13b31ee05feae61eda3cf31a3fa1d826b74b77c16d313eb1536563aee4c16266",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 2,
+          "event_id": "e0002",
+          "prefix_event_count": 1,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "a882c06e91a13c93943cdf765ea55724f64dc3cfc744f1f9a327b2d9e4bfe76a",
+          "actual_system_sha256": "1f526f9e076bf74fbd2dfcf514960d67474aa82142c8fea2dc21c86882dad789",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 1254,
+          "historical_usage": {
+            "input_tokens": 1261,
+            "output_tokens": 17,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 0,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 1254,
+              "messages_sha256": "473c4a2e4cfcacf146b12d5d88e03cf1234daafd3567369c5b59e9061daa41b2",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 1254,
+              "messages_sha256": "473c4a2e4cfcacf146b12d5d88e03cf1234daafd3567369c5b59e9061daa41b2",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 3,
+          "event_id": "e0003",
+          "prefix_event_count": 2,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "e4a142ad200bd283e98c34067590ba5dc70f015e3445761bf0cc1f979a85e08f",
+          "actual_system_sha256": "2953f7a3750ce686cbfd11a28d1658d8dbb7a4c14b4eaf9a96e427fd9d232102",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2494,
+          "historical_usage": {
+            "input_tokens": 2593,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 0,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2494,
+              "messages_sha256": "3b9e7dc733e59266da77527bd5c72a58dbd0aac593a72959940d86c7f232b843",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 2494,
+              "messages_sha256": "3b9e7dc733e59266da77527bd5c72a58dbd0aac593a72959940d86c7f232b843",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 4,
+          "event_id": "e0004",
+          "prefix_event_count": 3,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "4f115eac33b2ddfb39ebb8b3904a146dab695081e023cf8f3bca7e967e996624",
+          "actual_system_sha256": "2e5ff3bdeaa2578d31756b828cad13e846c25d65395fd2a4367b6fc7dc276fb1",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 3299,
+          "historical_usage": {
+            "input_tokens": 3596,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 0,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 3299,
+              "messages_sha256": "16349034b586a5986c574efa507e893b9ba0c9a2baf950c29d31cea754a67d85",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3299,
+              "messages_sha256": "16349034b586a5986c574efa507e893b9ba0c9a2baf950c29d31cea754a67d85",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 5,
+          "event_id": "e0005",
+          "prefix_event_count": 4,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "6c4f858ae8feb6756d0ebb487c4d5c4c72b73716658c592050d34218869a5265",
+          "actual_system_sha256": "1518d1a5e2376d6ba32b5194a1d2c383b49610f04266925d06653a6361681eb0",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 3391,
+          "historical_usage": {
+            "input_tokens": 3828,
+            "output_tokens": 22,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 1020,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 3391,
+              "messages_sha256": "4bffada5f75dbae4583e0da9f7aaa99b12c07c3a6166583030e94b6e6cbb5fe6",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 4411,
+              "messages_sha256": "b6b1339d1d7aa7f07efcb961090e280d3cd71711acd452bb96f8bff8f177e48b",
+              "read_memory_lines": 92,
+              "read_memory_events": 1,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 6,
+          "event_id": "e0006",
+          "prefix_event_count": 5,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "e99f5b17829a3bef60d802a7d04926834d9c16f506200023d4ed15cb1ec1103f",
+          "actual_system_sha256": "0040ababacb0f7227329c845ed364bdd087658959c3ddebd9a526e9b1a312e19",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 3004,
+          "historical_usage": {
+            "input_tokens": 3251,
+            "output_tokens": 29,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 13,
+          "extra_input_tokens_estimate": 1017,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 3004,
+              "messages_sha256": "d7447c1c21b1fe49c7b5a7f30020a562c4fe86e456e6a9533b727cf1dcf7f886",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 4021,
+              "messages_sha256": "94b2e4c4816711734092c30032996600e5117242562f4dee69964fb95928216e",
+              "read_memory_lines": 106,
+              "read_memory_events": 2,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 7,
+          "event_id": "e0007",
+          "prefix_event_count": 6,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "478ddc9e89b8fa84c629f07550f0904a1db44d789d4c0f5478bca03466144b95",
+          "actual_system_sha256": "f0867b70a58443e7974b69f1c7140093d6ac206f3a5d4972c30f3006a4cde60d",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2130,
+          "historical_usage": {
+            "input_tokens": 2151,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 28,
+          "extra_input_tokens_estimate": 1023,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2130,
+              "messages_sha256": "265f1f083d49ca8ba14ab760ab7221c3c8c4556b3df530830c16288265ebe2a7",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3153,
+              "messages_sha256": "f59b9f6bef375576273b12a3b9e94ca972702ea0431fbca6cb7dc3d25d5fc493",
+              "read_memory_lines": 110,
+              "read_memory_events": 1,
+              "visible_known_target_lines": 21
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 8,
+          "event_id": "e0008",
+          "prefix_event_count": 7,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "e7a8b192fc4cb9d742877666e0c5fe0df4a8af582b7c91c31edbfad751b9f9c7",
+          "actual_system_sha256": "972e5a54b3d25d8bfacacc597aff6f963a1e88a13879e4fcf9c3a3d189794304",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2120,
+          "historical_usage": {
+            "input_tokens": 2177,
+            "output_tokens": 22,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 1022,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2120,
+              "messages_sha256": "7a8264e4a1484d1f89f6a7f4e661d1def14fe840583e5178bc9c606fb543e996",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3142,
+              "messages_sha256": "a4f3b5cb8cdd6b038d6e9999870cb35cbd5b0d53e1baacfa1c1c0c8f981d0dff",
+              "read_memory_lines": 109,
+              "read_memory_events": 2,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 9,
+          "event_id": "e0009",
+          "prefix_event_count": 8,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "2d6e5fa0ea734a57e0232c423f841ef1040363fd6dd624a1252d46900425d1f6",
+          "actual_system_sha256": "75d540364ece93a7f01dafec4c46c1eabc1a29818c7dd808684842f99e78e1ea",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2141,
+          "historical_usage": {
+            "input_tokens": 2178,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 17,
+          "extra_input_tokens_estimate": 1019,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2141,
+              "messages_sha256": "0b24b38264da5876686c791b89f03bd90b9e0487b8f49c5bff4e0182d986af2c",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3160,
+              "messages_sha256": "6b28d6646cd598d3c8b6d9a0209a77ddbf5bf5aa7db4b5d79a149d2c62b6c805",
+              "read_memory_lines": 103,
+              "read_memory_events": 3,
+              "visible_known_target_lines": 17
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 10,
+          "event_id": "e0010",
+          "prefix_event_count": 9,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "4d0c6453cbc8f2f179509617f2bb64484402a148f51f2fb3bd3c05fcc10e7be9",
+          "actual_system_sha256": "a0d33f0c07473ad5e3fc79ba36506616f2dfb0c45f33d5f5cee25ea6e90c4005",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2061,
+          "historical_usage": {
+            "input_tokens": 2076,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 15,
+          "extra_input_tokens_estimate": 1021,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2061,
+              "messages_sha256": "efb5d590d94bebb6de3cd936f3d8023329caceb927c4d795b5672c769aae089f",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3082,
+              "messages_sha256": "96d7996c5ef8393d03817735a243dc470d1de80428f925d932ae0a33dc18a618",
+              "read_memory_lines": 94,
+              "read_memory_events": 3,
+              "visible_known_target_lines": 15
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 11,
+          "event_id": "e0011",
+          "prefix_event_count": 10,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "b9875fe922aa2d9cf2e0acb169ff1e21c47824448e47178d2791dcf853caeeda",
+          "actual_system_sha256": "bd67e18d7a05d7cbcf050f0c8c2f075aee54a4b3ba9dd3e8eeb80ce876776c04",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2297,
+          "historical_usage": {
+            "input_tokens": 2346,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 20,
+          "extra_input_tokens_estimate": 1009,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2297,
+              "messages_sha256": "341ed19bc98400fa53cf4273a132afa2abf774633360af98151cde5f2fe13753",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3306,
+              "messages_sha256": "90f0da04f8ca7ecc03944eadcf8ce815d4ef9b208181b1ada5275fd67f36fac7",
+              "read_memory_lines": 98,
+              "read_memory_events": 3,
+              "visible_known_target_lines": 20
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 12,
+          "event_id": "e0012",
+          "prefix_event_count": 11,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "9d1a95d7ca822a7926fda4af1c2385e4720fc2c8969dbb662608ab107d496967",
+          "actual_system_sha256": "651e695c8534e2c18c99ea2db5ed1dc651ef5e4fe25afb0a8c4dc86e54af2147",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2425,
+          "historical_usage": {
+            "input_tokens": 2479,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 20,
+          "extra_input_tokens_estimate": 1015,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2425,
+              "messages_sha256": "26dbd9bb0fa65be648e12f05832a7f50158289efa9409e85cf396f4daa9e35b0",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3440,
+              "messages_sha256": "f720a9574ba48b48abfe9e878a58907b7bcb8cabdc665b4cadf42178502bb4ff",
+              "read_memory_lines": 95,
+              "read_memory_events": 4,
+              "visible_known_target_lines": 20
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 13,
+          "event_id": "e0013",
+          "prefix_event_count": 12,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+            "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+            "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+          },
+          "prefix_events_sha256": "e11fb567a3553f020969228c9cc3059d2ff9838d0be521e8b58560cff4de7ca0",
+          "actual_system_sha256": "cdc426496a5c847c83036dc4ddda38c32d9889804c800c92a0034ffda743d08f",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2524,
+          "historical_usage": {
+            "input_tokens": 2587,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 27,
+          "extra_input_tokens_estimate": 1020,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2524,
+              "messages_sha256": "f1d76bb8d0317fbb2dd7f9c4c46e53ffdf222828b5db99a7f339b7d3f93fc132",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3544,
+              "messages_sha256": "9403a4b00c53f324c28d8b190d8cd137f0d569782c396d22c58fbbb1683fb8e6",
+              "read_memory_lines": 86,
+              "read_memory_events": 5,
+              "visible_known_target_lines": 27
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run_directory": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/direct/astropy__astropy-12907__mask__20261022T074532Z-2df7bd07",
+      "task_id": "astropy__astropy-12907",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "run_id": "20261022T074532Z-2df7bd07",
+      "status": "replayed",
+      "sources": {
+        "result.json": {
+          "path": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/direct/astropy__astropy-12907__mask__20261022T074532Z-2df7bd07/result.json",
+          "sha256": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6"
+        },
+        "calls.jsonl": {
+          "path": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/direct/astropy__astropy-12907__mask__20261022T074532Z-2df7bd07/calls.jsonl",
+          "sha256": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b"
+        },
+        "trajectory.jsonl": {
+          "path": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/direct/astropy__astropy-12907__mask__20261022T074532Z-2df7bd07/trajectory.jsonl",
+          "sha256": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+        }
+      },
+      "excluded_call_rows": 0,
+      "input_cap": 7424,
+      "original_tokenizer": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "prefixes": [
+        {
+          "call_jsonl_line": 1,
+          "event_id": "e0001",
+          "prefix_event_count": 0,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 758,
+          "historical_usage": {
+            "input_tokens": 756,
+            "output_tokens": 17,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 758,
+              "messages_sha256": "0661c47e30bcb50bf2f3b521c285f8182b78a043e2d504156fe4358edc01096b",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 758,
+              "messages_sha256": "0661c47e30bcb50bf2f3b521c285f8182b78a043e2d504156fe4358edc01096b",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 2,
+          "event_id": "e0002",
+          "prefix_event_count": 1,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "44dbc2af8bff0d6adc546e0ca9f4efa0e565f127de206b611d75c1d5d0fcf42d",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 1481,
+          "historical_usage": {
+            "input_tokens": 1510,
+            "output_tokens": 17,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 0,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 1481,
+              "messages_sha256": "69b2b00bcdc9dd3fc604c87f90717d256621a86b8e4dd968072969ca0c5a97f3",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 1481,
+              "messages_sha256": "69b2b00bcdc9dd3fc604c87f90717d256621a86b8e4dd968072969ca0c5a97f3",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 3,
+          "event_id": "e0003",
+          "prefix_event_count": 2,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "aefdcfeb1518898f16f76b2d827ca5ca7f9fc67a73721649ee67b99ef1cc25fc",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2721,
+          "historical_usage": {
+            "input_tokens": 2842,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 0,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2721,
+              "messages_sha256": "d90a7daf511453abe54197a2bfb3132287f6acfdc1b0b402de7d26aa71ee2677",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 2721,
+              "messages_sha256": "d90a7daf511453abe54197a2bfb3132287f6acfdc1b0b402de7d26aa71ee2677",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 4,
+          "event_id": "e0004",
+          "prefix_event_count": 3,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "22d8f03ed0926c8bc9c8c708f44d0dd4595be6f071a87002cdf59f2286bee042",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 3139,
+          "historical_usage": {
+            "input_tokens": 3429,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 0,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 3139,
+              "messages_sha256": "b715d5ec02c66c98b74ea51d6de0f2b19f49e4f9771b50a8048fa73ee33bf6fd",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3139,
+              "messages_sha256": "b715d5ec02c66c98b74ea51d6de0f2b19f49e4f9771b50a8048fa73ee33bf6fd",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 5,
+          "event_id": "e0005",
+          "prefix_event_count": 4,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "3868f68b6ced834fa768bb274791cf8ad5a183b2ddfa562c135fbedf697f4bdd",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 3231,
+          "historical_usage": {
+            "input_tokens": 3661,
+            "output_tokens": 22,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 1020,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 3231,
+              "messages_sha256": "3b622b7c207049a0385e73d1557b12fda2ed06afbd0c994888f8fbae0d0bb94e",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 4251,
+              "messages_sha256": "6c03b49b045edf3d1ceda92dba9dbba54175846c731f562de1384d645f3924f7",
+              "read_memory_lines": 92,
+              "read_memory_events": 1,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 6,
+          "event_id": "e0006",
+          "prefix_event_count": 5,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "6c6f46e4601acc121b2e4a1a47397dcbe41feea6ba072e7227ab3091aba808cc",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2534,
+          "historical_usage": {
+            "input_tokens": 2759,
+            "output_tokens": 30,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 61,
+          "extra_input_tokens_estimate": 1017,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2534,
+              "messages_sha256": "ff55bc2380ddd900b17a5f7cd447bacfc994e8e22e6f47ade6edee0556098501",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3551,
+              "messages_sha256": "517e8708c8c26b278cc213f95febb08af5d601bcce5dfc1fa1739e821dc7298b",
+              "read_memory_lines": 106,
+              "read_memory_events": 2,
+              "visible_known_target_lines": 10
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 7,
+          "event_id": "e0007",
+          "prefix_event_count": 6,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "c7fb6d450c1222a6d2c779d0d3b5ba00ed6020a63c3eac3718bbfe691217c69a",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2287,
+          "historical_usage": {
+            "input_tokens": 2348,
+            "output_tokens": 22,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 1023,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2287,
+              "messages_sha256": "e6370aa63b2122709f499afae7bc6ecc9034b5762d3d3bbac7ac7843ed49333b",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3310,
+              "messages_sha256": "27571d21caa77db2c711ccc808b5770b8e8ce2649ed1333a6e4855bce520512d",
+              "read_memory_lines": 110,
+              "read_memory_events": 1,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 8,
+          "event_id": "e0008",
+          "prefix_event_count": 7,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "300965b784c1a561f033a23e384875841814727b3d57ec259ac2d88b47aec4a3",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2695,
+          "historical_usage": {
+            "input_tokens": 2765,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 28,
+          "extra_input_tokens_estimate": 1023,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2695,
+              "messages_sha256": "10f7b1f490e4c4dc7578b07fe8e0a46e85e89194e4846afb465b0361145b1aae",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3718,
+              "messages_sha256": "9be6deb9cbfba3e28a9e6c1e61a84ffc63c42ef2ebc35661d304582649e0134d",
+              "read_memory_lines": 110,
+              "read_memory_events": 1,
+              "visible_known_target_lines": 21
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 9,
+          "event_id": "e0009",
+          "prefix_event_count": 8,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "9ee4e2b04105edc7c12c1b654c94db6d879b89fe0875674ba3f9ac58596a4b85",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2359,
+          "historical_usage": {
+            "input_tokens": 2410,
+            "output_tokens": 22,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 1024,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2359,
+              "messages_sha256": "1957ca56e0f6903dc2bbbbabb04e72c062b9a93e24e1096ee26894b231bfe11a",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3383,
+              "messages_sha256": "55792dad067b64c3db6b02d685670b81a583165c230eeced8b560b02c75ad44d",
+              "read_memory_lines": 85,
+              "read_memory_events": 2,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 10,
+          "event_id": "e0010",
+          "prefix_event_count": 9,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "16ace44d121830bb0dedb363fde063236d2ab8344e890e3f45bfbc3a608a5b68",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2079,
+          "historical_usage": {
+            "input_tokens": 2104,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 21,
+          "extra_input_tokens_estimate": 1024,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2079,
+              "messages_sha256": "c29dc371b229fab3dbc02545012cabfff5a193369f8facba2ef267fa7a2958b1",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3103,
+              "messages_sha256": "c689008c63497e8a36fbe29618fbdd0f238d63669d01b9d4f1f057007d7c8764",
+              "read_memory_lines": 85,
+              "read_memory_events": 2,
+              "visible_known_target_lines": 20
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 11,
+          "event_id": "e0011",
+          "prefix_event_count": 10,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "b8e137f3dabd789bab4cd34fb5b1255d71cd97d16e0536c1d8c0945efb95316a",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2089,
+          "historical_usage": {
+            "input_tokens": 2101,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 12,
+          "extra_input_tokens_estimate": 1022,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2089,
+              "messages_sha256": "8642e46fc7a9f387c54f05a62021cd960a3d51b1bb23490d7cdacc5fce4cceef",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 2
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3111,
+              "messages_sha256": "f63a380b522203d29b245c592676f504cbf602ebc0634764fcd4157190007a26",
+              "read_memory_lines": 79,
+              "read_memory_events": 2,
+              "visible_known_target_lines": 2
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 12,
+          "event_id": "e0012",
+          "prefix_event_count": 11,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "cd53c3ecfb3582dbefbedc7633b51ae7817a50a4f0805463673e670afe8a4f4d",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2241,
+          "historical_usage": {
+            "input_tokens": 2280,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 20,
+          "extra_input_tokens_estimate": 1022,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2241,
+              "messages_sha256": "d6b4ffb9fdc639638c8dba67acd03296c10302bf30ee559dee4a654c1563370b",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3263,
+              "messages_sha256": "9912a334a703d405ccbb1229778e43d810a1b5329de5283eb755e24cea48c49a",
+              "read_memory_lines": 79,
+              "read_memory_events": 2,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 13,
+          "event_id": "e0013",
+          "prefix_event_count": 12,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+            "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+            "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+          },
+          "prefix_events_sha256": "e67be6c6e0c80add2d0b2e4d70ecc12e3d36c8d0589ad7ab4b1a6cd30864f0e6",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2338,
+          "historical_usage": {
+            "input_tokens": 2374,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 20,
+          "extra_input_tokens_estimate": 1012,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2338,
+              "messages_sha256": "39cce59713332e965429e1dbd9abdfb410b4ac130b7216ecf603b50d38c0bc12",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3350,
+              "messages_sha256": "d1b0680d853849545cd8898efee25b32fededb2991b968a0a8efd826ed2fa440",
+              "read_memory_lines": 84,
+              "read_memory_events": 3,
+              "visible_known_target_lines": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run_directory": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__mask__20261022T072704Z-bbb60603",
+      "task_id": "astropy__astropy-12907",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "run_id": "20261022T072704Z-bbb60603",
+      "status": "replayed",
+      "sources": {
+        "result.json": {
+          "path": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__mask__20261022T072704Z-bbb60603/result.json",
+          "sha256": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180"
+        },
+        "calls.jsonl": {
+          "path": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__mask__20261022T072704Z-bbb60603/calls.jsonl",
+          "sha256": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017"
+        },
+        "trajectory.jsonl": {
+          "path": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__mask__20261022T072704Z-bbb60603/trajectory.jsonl",
+          "sha256": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+        }
+      },
+      "excluded_call_rows": 0,
+      "input_cap": 7424,
+      "original_tokenizer": "hf:Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+      "prefixes": [
+        {
+          "call_jsonl_line": 1,
+          "event_id": "e0001",
+          "prefix_event_count": 0,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 758,
+          "historical_usage": {
+            "input_tokens": 756,
+            "output_tokens": 17,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 758,
+              "messages_sha256": "0661c47e30bcb50bf2f3b521c285f8182b78a043e2d504156fe4358edc01096b",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 758,
+              "messages_sha256": "0661c47e30bcb50bf2f3b521c285f8182b78a043e2d504156fe4358edc01096b",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 2,
+          "event_id": "e0002",
+          "prefix_event_count": 1,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "81adea73ad30b9fe5b5db629bd5e6bb466da953e9d1b7c5841588da7df3a6eed",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 1481,
+          "historical_usage": {
+            "input_tokens": 1510,
+            "output_tokens": 17,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 0,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 1481,
+              "messages_sha256": "69b2b00bcdc9dd3fc604c87f90717d256621a86b8e4dd968072969ca0c5a97f3",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 1481,
+              "messages_sha256": "69b2b00bcdc9dd3fc604c87f90717d256621a86b8e4dd968072969ca0c5a97f3",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 3,
+          "event_id": "e0003",
+          "prefix_event_count": 2,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "ac3e012fd27b52fbd7e461fc510a78467e5f77b66cb0f24b195a1c1cd0b8be12",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2721,
+          "historical_usage": {
+            "input_tokens": 2842,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 0,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2721,
+              "messages_sha256": "d90a7daf511453abe54197a2bfb3132287f6acfdc1b0b402de7d26aa71ee2677",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 2721,
+              "messages_sha256": "d90a7daf511453abe54197a2bfb3132287f6acfdc1b0b402de7d26aa71ee2677",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 4,
+          "event_id": "e0004",
+          "prefix_event_count": 3,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "f930eaad6bfb8ccd4e03b85b29feadd2e3c671cbc47014901cf3b2823a10dfec",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 3139,
+          "historical_usage": {
+            "input_tokens": 3429,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 0,
+          "extra_input_tokens_estimate": 0,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 3139,
+              "messages_sha256": "b715d5ec02c66c98b74ea51d6de0f2b19f49e4f9771b50a8048fa73ee33bf6fd",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3139,
+              "messages_sha256": "b715d5ec02c66c98b74ea51d6de0f2b19f49e4f9771b50a8048fa73ee33bf6fd",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 5,
+          "event_id": "e0005",
+          "prefix_event_count": 4,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "ef4a1dec2c2d91ead3c00e825a2a17796d070101b9beefe5ec03b48e99a7778a",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 3231,
+          "historical_usage": {
+            "input_tokens": 3661,
+            "output_tokens": 22,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 1020,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 3231,
+              "messages_sha256": "3b622b7c207049a0385e73d1557b12fda2ed06afbd0c994888f8fbae0d0bb94e",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 4251,
+              "messages_sha256": "6c03b49b045edf3d1ceda92dba9dbba54175846c731f562de1384d645f3924f7",
+              "read_memory_lines": 92,
+              "read_memory_events": 1,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 6,
+          "event_id": "e0006",
+          "prefix_event_count": 5,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "2f61da6feaede3d12f92ec7ae63616ff05570b0b99d8976937acb1ffdb5eea92",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2534,
+          "historical_usage": {
+            "input_tokens": 2759,
+            "output_tokens": 30,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 61,
+          "extra_input_tokens_estimate": 1017,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2534,
+              "messages_sha256": "ff55bc2380ddd900b17a5f7cd447bacfc994e8e22e6f47ade6edee0556098501",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3551,
+              "messages_sha256": "517e8708c8c26b278cc213f95febb08af5d601bcce5dfc1fa1739e821dc7298b",
+              "read_memory_lines": 106,
+              "read_memory_events": 2,
+              "visible_known_target_lines": 10
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 7,
+          "event_id": "e0007",
+          "prefix_event_count": 6,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "94cea82308b51858439d1569085e795fc76b4ce21674831d1f91248e07699ed4",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2287,
+          "historical_usage": {
+            "input_tokens": 2348,
+            "output_tokens": 22,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 1023,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2287,
+              "messages_sha256": "e6370aa63b2122709f499afae7bc6ecc9034b5762d3d3bbac7ac7843ed49333b",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3310,
+              "messages_sha256": "27571d21caa77db2c711ccc808b5770b8e8ce2649ed1333a6e4855bce520512d",
+              "read_memory_lines": 110,
+              "read_memory_events": 1,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 8,
+          "event_id": "e0008",
+          "prefix_event_count": 7,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "e04aca04145a4a0b1e1e670f5741298a759f3bba11ad64c86b7da1cda38584cb",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2695,
+          "historical_usage": {
+            "input_tokens": 2765,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 28,
+          "extra_input_tokens_estimate": 1023,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2695,
+              "messages_sha256": "10f7b1f490e4c4dc7578b07fe8e0a46e85e89194e4846afb465b0361145b1aae",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3718,
+              "messages_sha256": "9be6deb9cbfba3e28a9e6c1e61a84ffc63c42ef2ebc35661d304582649e0134d",
+              "read_memory_lines": 110,
+              "read_memory_events": 1,
+              "visible_known_target_lines": 21
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 9,
+          "event_id": "e0009",
+          "prefix_event_count": 8,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "8740e9e43e24530a6deb87fac2e7ccd0f6ffe54994645c0668fcaef1690a1f05",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2359,
+          "historical_usage": {
+            "input_tokens": 2410,
+            "output_tokens": 22,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "not_read_file",
+          "known_target_read_lines": null,
+          "extra_input_tokens_estimate": 1024,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2359,
+              "messages_sha256": "1957ca56e0f6903dc2bbbbabb04e72c062b9a93e24e1096ee26894b231bfe11a",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": null
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3383,
+              "messages_sha256": "55792dad067b64c3db6b02d685670b81a583165c230eeced8b560b02c75ad44d",
+              "read_memory_lines": 85,
+              "read_memory_events": 2,
+              "visible_known_target_lines": null
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 10,
+          "event_id": "e0010",
+          "prefix_event_count": 9,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "d72bbe245a20008773789e29dc514a87ee93f9ad50b8196f82d170fc0d55d7b5",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2079,
+          "historical_usage": {
+            "input_tokens": 2104,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 21,
+          "extra_input_tokens_estimate": 1024,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2079,
+              "messages_sha256": "c29dc371b229fab3dbc02545012cabfff5a193369f8facba2ef267fa7a2958b1",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3103,
+              "messages_sha256": "c689008c63497e8a36fbe29618fbdd0f238d63669d01b9d4f1f057007d7c8764",
+              "read_memory_lines": 85,
+              "read_memory_events": 2,
+              "visible_known_target_lines": 20
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 11,
+          "event_id": "e0011",
+          "prefix_event_count": 10,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "33e5f5a357d34d31c99bb4b5ed68ea4a78bb48dcd64a86ad575fbd4d9f0a40bc",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2089,
+          "historical_usage": {
+            "input_tokens": 2101,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 12,
+          "extra_input_tokens_estimate": 1022,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2089,
+              "messages_sha256": "8642e46fc7a9f387c54f05a62021cd960a3d51b1bb23490d7cdacc5fce4cceef",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 2
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3111,
+              "messages_sha256": "f63a380b522203d29b245c592676f504cbf602ebc0634764fcd4157190007a26",
+              "read_memory_lines": 79,
+              "read_memory_events": 2,
+              "visible_known_target_lines": 2
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 12,
+          "event_id": "e0012",
+          "prefix_event_count": 11,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "c09347b700575f8be35bf779a29872a911c89080f0a81d591e9942ec730e8495",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2241,
+          "historical_usage": {
+            "input_tokens": 2280,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 20,
+          "extra_input_tokens_estimate": 1022,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2241,
+              "messages_sha256": "d6b4ffb9fdc639638c8dba67acd03296c10302bf30ee559dee4a654c1563370b",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3263,
+              "messages_sha256": "9912a334a703d405ccbb1229778e43d810a1b5329de5283eb755e24cea48c49a",
+              "read_memory_lines": 79,
+              "read_memory_events": 2,
+              "visible_known_target_lines": 0
+            }
+          }
+        },
+        {
+          "call_jsonl_line": 13,
+          "event_id": "e0013",
+          "prefix_event_count": 12,
+          "revision_before_call": "e3b0c44298fc1c14",
+          "input_cap": 7424,
+          "source_sha256": {
+            "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+            "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+            "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+          },
+          "prefix_events_sha256": "0530ff25e863878160dfdb66e1249a0b27cec32d9459feb4f783db540100050d",
+          "actual_system_sha256": "2e21b1f4852a57ca95bad82493b767327eeb5868858f27fbb399328e5adf3665",
+          "actual_issue_sha256": "c01334ec1b21a089c650cf2e7b96ab974469076bf1260d23885799e1f0a7551f",
+          "recorded_input_estimate_with_analysis_counter": 2338,
+          "historical_usage": {
+            "input_tokens": 2374,
+            "output_tokens": 31,
+            "usage_source": "tokenizer_exact",
+            "not_analysis_counter": true
+          },
+          "target_read_status": "complete_read_output",
+          "known_target_read_lines": 20,
+          "extra_input_tokens_estimate": 1012,
+          "policies": {
+            "mask": {
+              "status": "constructed",
+              "input_tokens_estimate": 2338,
+              "messages_sha256": "39cce59713332e965429e1dbd9abdfb410b4ac130b7216ecf603b50d38c0bc12",
+              "read_memory_lines": 0,
+              "read_memory_events": 0,
+              "visible_known_target_lines": 0
+            },
+            "mask-read": {
+              "status": "constructed",
+              "input_tokens_estimate": 3350,
+              "messages_sha256": "d1b0680d853849545cd8898efee25b32fededb2991b968a0a8efd826ed2fa440",
+              "read_memory_lines": 84,
+              "read_memory_events": 3,
+              "visible_known_target_lines": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run_directory": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__recent__20261022T072506Z-86c192b2",
+      "task_id": "astropy__astropy-12907",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "run_id": "20261022T072506Z-86c192b2",
+      "status": "excluded",
+      "reason": "Original strategy result=recent, config=recent; only mask is replayed"
+    },
+    {
+      "run_directory": "runs/cloud-v5-a4000-20261022-01/mini-baseline/astropy__astropy-12907__mini-swe-textbased",
+      "task_id": "astropy__astropy-12907",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "run_id": "astropy__astropy-12907__mini-swe-textbased",
+      "status": "excluded",
+      "reason": "External harness mini-swe-agent-textbased-budget-adapter; not an internal mask policy run"
+    },
+    {
+      "run_directory": "runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-1/astropy__astropy-12907__recent__20261022T071042Z-2c771740",
+      "task_id": "astropy__astropy-12907",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "run_id": "20261022T071042Z-2c771740",
+      "status": "excluded",
+      "reason": "Original strategy result=recent, config=recent; only mask is replayed"
+    },
+    {
+      "run_directory": "runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-128/astropy__astropy-12907__recent__20261022T071302Z-adc44a6d",
+      "task_id": "astropy__astropy-12907",
+      "task_fingerprint": "b7518d8b5d4f0fe3128043ee22b1de07ffac872f40b068b42b8aa1a8289c0a2e",
+      "run_id": "20261022T071302Z-adc44a6d",
+      "status": "excluded",
+      "reason": "Original strategy result=recent, config=recent; only mask is replayed"
+    }
+  ]
+}
