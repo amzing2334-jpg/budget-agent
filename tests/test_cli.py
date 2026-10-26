@@ -78,3 +78,24 @@ def test_action_floor_cli_and_config_validation():
     args = build_parser().parse_args(["run", "--min-action-output-tokens", "2048"])
     with pytest.raises(ValueError, match="min_action_output_tokens"):
         load_config(args)
+
+
+def test_explicit_thinking_cli_overrides_config_without_default_injection(tmp_path):
+    config = tmp_path / "api.toml"
+    config.write_text('[run]\napi_enable_thinking = false\n', encoding="utf-8")
+    assert load_config(build_parser().parse_args(["run"])).api_enable_thinking is None
+    assert load_config(build_parser().parse_args(["run", "--config", str(config)])).api_enable_thinking is False
+    assert load_config(build_parser().parse_args(["run", "--config", str(config), "--api-enable-thinking"])).api_enable_thinking is True
+    assert load_config(build_parser().parse_args(["run", "--no-api-enable-thinking"])).api_enable_thinking is False
+
+
+def test_reference_pilot_config_is_pinned_and_non_thinking():
+    root = Path(__file__).resolve().parents[1]
+    config = load_config(build_parser().parse_args(["run", "--config", str(root / "configs/reference-qwen38-max.toml")]))
+    assert config.provider == "openai-compatible" and config.environment == "docker"
+    assert config.model == "qwen3.8-max-0902"
+    assert config.api_enable_thinking is False
+    assert config.api_max_tokens_field == "max_completion_tokens"
+    assert config.loop_policy == "off" and config.strategy == "recent"
+    assert config.total_tokens == 128000 and config.max_output_tokens == 2048
+    assert config.input_price_per_million is None and config.output_price_per_million is None

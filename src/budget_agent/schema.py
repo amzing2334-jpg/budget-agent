@@ -72,6 +72,7 @@ class RunConfig:
     environment: str = "local"
     docker_image: str = "python:3.11-slim"
     api_max_tokens_field: str = "max_tokens"
+    api_enable_thinking: bool | None = None
     model_revision: str = ""
     device: str = "cuda"
     model_dtype: str = "bfloat16"
@@ -105,6 +106,8 @@ class RunConfig:
             raise ValueError("environment must be local or docker")
         if self.api_max_tokens_field not in {"max_tokens", "max_completion_tokens"}:
             raise ValueError("unsupported API output limit field")
+        if self.api_enable_thinking is not None and type(self.api_enable_thinking) is not bool:
+            raise ValueError("api_enable_thinking must be a boolean when specified")
         for name in ("input_price_per_million", "output_price_per_million", "max_cost_usd"):
             value = getattr(self, name)
             if value is not None and (not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0):

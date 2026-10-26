@@ -57,6 +57,7 @@ def add_run_arguments(parser):
     for name in ("temperature", "input_price_per_million", "output_price_per_million", "max_cost_usd"):
         parser.add_argument("--" + name.replace("_", "-"), type=float)
     parser.add_argument("--allow-local-execution", action="store_true", default=None)
+    parser.add_argument("--api-enable-thinking", action=argparse.BooleanOptionalAction, default=None)
 
 
 def build_parser():
@@ -186,12 +187,17 @@ def main(argv=None) -> int:
                         generate_report(args.output, args.output / "report")
                         print("Interrupted attempt saved: " + result["result_path"], file=sys.stderr)
                         return 130
+                    budget_state = result.get("budget", {})
+                    if (result.get("usage_unknown") or budget_state.get("unreconciled_request")
+                            or budget_state.get("overrun")):
+                        paths = generate_report(args.output, args.output / "report")
+                        print("Stopped remaining attempts: model usage is unknown, unreconciled, or exceeded its budget. "
+                              "Review the saved ledger before starting a new batch. Report: " + str(paths["html"]), file=sys.stderr)
+                        return 1
                     failed |= (
                         result["status"] in {"model_error", "environment_error"}
                         or result["evaluation"].get("status") in {"grading_error", "infrastructure_error"}
                         or bool(result["evaluation"].get("cleanup_error"))
-                        or result.get("usage_unknown", False)
-                        or result.get("budget", {}).get("overrun", False)
                     )
         paths = generate_report(args.output, args.output / "report")
         print("Report: " + str(paths["html"]))

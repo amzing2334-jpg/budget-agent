@@ -1,0 +1,55 @@
+{
+  "evidence_kind": "cpu_scripted_cli_reproduction",
+  "created_at_utc": "2026-10-26T22:57:32.871809+00:00",
+  "source_commit": "c4963d1bb8c8730c0f02655cd78870bafe990630",
+  "source_fingerprint": "b21d9a155d9901ea74772ba6f93187b2d1aa69b82f44302ae5a4c20abe8c8a2c",
+  "first_result": "usage_unknown with unreconciled reservation",
+  "planned_attempts": 8,
+  "actual_invocations": 8,
+  "invocations_after_first_failure": 7,
+  "exit_code": 1,
+  "attempts": [
+    {
+      "task": "a",
+      "strategy": "mask",
+      "seed": 0
+    },
+    {
+      "task": "a",
+      "strategy": "mask-read",
+      "seed": 0
+    },
+    {
+      "task": "b",
+      "strategy": "mask",
+      "seed": 0
+    },
+    {
+      "task": "b",
+      "strategy": "mask-read",
+      "seed": 0
+    },
+    {
+      "task": "a",
+      "strategy": "mask",
+      "seed": 1
+    },
+    {
+      "task": "a",
+      "strategy": "mask-read",
+      "seed": 1
+    },
+    {
+      "task": "b",
+      "strategy": "mask",
+      "seed": 1
+    },
+    {
+      "task": "b",
+      "strategy": "mask-read",
+      "seed": 1
+    }
+  ],
+  "real_model_calls": 0,
+  "limitation": "Mocked runner boundary with real CLI matrix; demonstrates dispatch behavior, not provider billing or model repair performance."
+}

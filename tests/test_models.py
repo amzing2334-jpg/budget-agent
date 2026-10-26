@@ -46,6 +46,25 @@ def test_real_http_protocol_and_usage(server):
     assert server.requests[0]["stream"] is False
 
 
+@pytest.mark.parametrize("thinking", [None, False, True])
+def test_thinking_mode_is_explicit_and_does_not_replace_output_cap(server, thinking):
+    config = RunConfig(model="requested-version", base_url=f"http://127.0.0.1:{server.server_port}/v1",
+                       api_enable_thinking=thinking, api_max_tokens_field="max_completion_tokens")
+    response = OpenAICompatibleModel(config).complete([{"role": "user", "content": "test"}], 17)
+    body, = server.requests
+    assert ("enable_thinking" in body) == (thinking is not None)
+    if thinking is not None:
+        assert body["enable_thinking"] is thinking
+    assert body["max_completion_tokens"] == 17 and "max_tokens" not in body
+    assert response.input_tokens == 30 and response.output_tokens == 6
+
+
+@pytest.mark.parametrize("invalid", [0, 1, "false", []])
+def test_invalid_thinking_mode_rejected_before_request(invalid):
+    with pytest.raises(ValueError, match="api_enable_thinking"):
+        RunConfig(api_enable_thinking=invalid).validate()
+
+
 def test_missing_usage_is_not_free_inference(server):
     del server.body["usage"]
     with pytest.raises(ModelError, match="usage unknown"):

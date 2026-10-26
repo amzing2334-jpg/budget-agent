@@ -1,0 +1,21 @@
+{
+  "evidence_kind": "cpu_scripted_cli_reproduction",
+  "created_at_utc": "2026-10-26T23:02:29.923205+00:00",
+  "base_commit": "c4963d1bb8c8730c0f02655cd78870bafe990630",
+  "source_fingerprint": "ca71a13c18c81b04de8b0b77e1c0a940046ebdf7e12f0acd65221588423a1fba",
+  "first_result": "usage_unknown with unreconciled reservation",
+  "planned_attempts": 8,
+  "actual_invocations": 1,
+  "invocations_after_first_failure": 0,
+  "report_invocations": 1,
+  "exit_code": 1,
+  "attempts": [
+    {
+      "task": "a",
+      "strategy": "mask",
+      "seed": 0
+    }
+  ],
+  "real_model_calls": 0,
+  "limitation": "Mocked runner boundary with real CLI matrix; demonstrates dispatch behavior, not provider billing or model repair performance."
+}

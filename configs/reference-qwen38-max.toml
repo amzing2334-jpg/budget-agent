@@ -1,0 +1,26 @@
+# Prepared reference candidate, not an executed or successful model experiment.
+# Beijing endpoint and dated model checked against Alibaba Cloud docs 2026-10-27.
+# See docs/REFERENCE_PILOT_2026-10-27.md for authorization, staged gates and CNY costs.
+[run]
+provider = "openai-compatible"
+model = "qwen3.8-max-0902"
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+api_key_env = "DASHSCOPE_API_KEY"
+api_max_tokens_field = "max_completion_tokens"
+api_enable_thinking = false
+temperature = 0.0
+strategy = "recent"
+history_format = "chat"
+decision_policy = "direct"
+loop_policy = "off"
+context_tokens = 32768
+total_tokens = 128000
+max_output_tokens = 2048
+min_action_output_tokens = 256
+max_steps = 30
+timeout_seconds = 120
+tokenizer = "byte"
+environment = "docker"
+docker_image = "python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce"
+# No USD prices: the verified provider quote is denominated in CNY. Do not put
+# 12/36 CNY rates into input_price_per_million/output_price_per_million USD fields.

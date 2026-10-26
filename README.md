@@ -4,6 +4,8 @@
 
 GitHub：[amzing2334-jpg/budget-agent](https://github.com/amzing2334-jpg/budget-agent)（私有）。代码、测试、文档及选定的 v5 实验记录已纳入版本管理；模型权重、运行环境和云端连接材料保留在本地。仓库范围与历史产物位置见 [仓库说明](docs/REPOSITORY.md)。
 
+**2026-10-27 第三轮：修复批量用量异常后的继续调度，准备固定模型参考试跑。** 未知、未对账或实际超额的请求现在会中止后续任务/策略/重复次数并保存部分报告；正常已知预算耗尽仍可继续对照。新增显式思考模式参数与 `qwen3.8-max-0902` 非思考候选配置，尚未调用真实服务。CPU 套件 516 项通过、8 项跳过，见[验收](docs/BATCH_STOP_VALIDATION.md)；下一轮具体模型、任务、云端资源和待授权费用见[参考方案](docs/REFERENCE_PILOT_2026-10-27.md)。
+
 **2026-10-27 迭代：新增 `mask-read` 有界源码保留候选。** 在 mask 的全部动作和最近两条完整观察之外，利用明确的额外输入额度保留当前连续工作区版本的旧源码整行，按实际路径/行去重并保留来源。`read_memory_tokens=0` 与 mask 请求完全相同；默认 1024 是输入增量上限，所有内容照常计入总预算。历史前缀回放仅用于测可见性与成本，不是新模型实验或修复收益。详见[实现与验收](docs/READ_MEMORY_VALIDATION.md)和[本轮行业复核](docs/INDUSTRY_REVIEW_2026-10-27.md)。
 
 **2026-10-26 迭代：新增可关闭的可见源码重读控制，以及 `strategy / decision_policy / loop_policy` 单因素配对评测。** 控制器只对实际请求中已经完整可见的相同行内容反馈，给模型一次纠正机会后才停止；反馈正常计费，原始轨迹和独立评分保留。历史七次尝试回放仅发现三次符合该窄判据的读取，三条 mask 轨迹均不触发，因此不声称解决旧停滞或提高修复率。实现、验收和复现命令见 [本轮验证](docs/READ_LOOP_VALIDATION.md)；后续每四小时工作从[迭代记录](docs/ITERATION_LOG.md)接续，岗位依据见[行业复核](docs/INDUSTRY_REVIEW_2026-10-26.md)。
@@ -112,6 +114,8 @@ python -m budget_agent run --config configs/api.example.toml --tokenizer tiktoke
 ## 后续接入真实模型
 
 首版支持 **OpenAI 兼容的非流式 Chat Completions HTTP 接口**。服务必须返回文本 `choices[0].message.content`，以及整数 `usage.prompt_tokens` / `usage.completion_tokens`。这不表示已验证所有模型供应商兼容性；不支持 Responses、Anthropic 原生接口或流式响应。
+
+支持供应商明确提供的 `enable_thinking` 时，可在 TOML 设置 `api_enable_thinking = false`，或使用 `--no-api-enable-thinking`；未设置则不发该字段。该参数不是通用 OpenAI 标准，也不表示实现了思维链保存/重放。需要约束完整输出时使用供应商支持的 `api_max_tokens_field = "max_completion_tokens"`；实际用量仍必须对账。
 
 复制 `configs/api.example.toml`，填写准确模型版本和 API 根地址。密钥仅从环境变量读取，不写进配置或报告。PowerShell 7 可在不回显的情况下输入：
 

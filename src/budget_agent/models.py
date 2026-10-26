@@ -40,6 +40,8 @@ class OpenAICompatibleModel:
             "temperature": self.config.temperature,
             "stream": False,
         }
+        if self.config.api_enable_thinking is not None:
+            body["enable_thinking"] = self.config.api_enable_thinking
         headers = {"Content-Type": "application/json"}
         if self.key:
             headers["Authorization"] = "Bearer " + self.key
