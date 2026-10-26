@@ -1,0 +1,176 @@
+{
+  "kind": "offline_historical_read_visibility_audit",
+  "observed_date": "2026-10-26",
+  "analysis_source_fingerprint": "6234dcbaee573c4504b71dab55af8fb5316a46515f07f203bcd3bbe803c582df",
+  "runs": [
+    {
+      "source_result": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/astropy__astropy-12907__mask__20261022T074654Z-43348b7b/result.json",
+      "source_sha256": {
+        "result.json": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+        "calls.jsonl": "2e761397223df7044c8ece60a94a110fb18aa2d6d511da7bdf752f48348fad03",
+        "trajectory.jsonl": "78344c2700f8de0d9bb363253a304e22d00185700f474e32c9ccfa9ef3ccc0a4"
+      },
+      "source_run_fingerprint": "d3ca73f7db6c7ecd49832e1c04d9d87fa08b73092b7dd1189a19d83fe98a4528",
+      "read_tool_events": 10,
+      "visible_read_repetitions": [],
+      "call_alignment": {
+        "method": "ordered_agent_responses",
+        "agent_responses": 13,
+        "events": 13,
+        "raw_content_mismatches": [],
+        "unpaired_events": 0,
+        "unpaired_agent_responses": 0
+      }
+    },
+    {
+      "source_result": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/direct/astropy__astropy-12907__mask__20261022T074532Z-2df7bd07/result.json",
+      "source_sha256": {
+        "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+        "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+        "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+      },
+      "source_run_fingerprint": "d3ca73f7db6c7ecd49832e1c04d9d87fa08b73092b7dd1189a19d83fe98a4528",
+      "read_tool_events": 9,
+      "visible_read_repetitions": [],
+      "call_alignment": {
+        "method": "ordered_agent_responses",
+        "agent_responses": 13,
+        "events": 13,
+        "raw_content_mismatches": [],
+        "unpaired_events": 0,
+        "unpaired_agent_responses": 0
+      }
+    },
+    {
+      "source_result": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__mask__20261022T072704Z-bbb60603/result.json",
+      "source_sha256": {
+        "result.json": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+        "calls.jsonl": "fdf85658af0c6aaa5ba8576fdb3530640300a575886aeb3004a3540ec614d017",
+        "trajectory.jsonl": "a7d388154b0dee27cd54f96f13ec79a6958fcc41c7901d063190e57494c1e0ff"
+      },
+      "source_run_fingerprint": "209a8cff1285870eb9456fdb1db5f38c1e02ef73a987b82ab53ffe1961a4ca4f",
+      "read_tool_events": 9,
+      "visible_read_repetitions": [],
+      "call_alignment": {
+        "method": "ordered_agent_responses",
+        "agent_responses": 13,
+        "events": 13,
+        "raw_content_mismatches": [],
+        "unpaired_events": 0,
+        "unpaired_agent_responses": 0
+      }
+    },
+    {
+      "source_result": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__recent__20261022T072506Z-86c192b2/result.json",
+      "source_sha256": {
+        "result.json": "024379c46f7ba82448ff5f15eb5039e61f4043dfa38f5bfb4e0a17981688199c",
+        "calls.jsonl": "368b58dca6badea4ac05fe3d7bfca98aa19d85515c6075e64adb917c4a8e0b9c",
+        "trajectory.jsonl": "26d0a7f87a553f323116738b1d48785ed6b5e71e985aa99fda8995c640cd7ade"
+      },
+      "source_run_fingerprint": "209a8cff1285870eb9456fdb1db5f38c1e02ef73a987b82ab53ffe1961a4ca4f",
+      "read_tool_events": 4,
+      "visible_read_repetitions": [
+        {
+          "event_id": "e0008",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "start_line": 304,
+          "end_line": 317,
+          "source_event_ids": [
+            "e0004"
+          ],
+          "consecutive_repeats": 1
+        }
+      ],
+      "call_alignment": {
+        "method": "ordered_agent_responses",
+        "agent_responses": 8,
+        "events": 8,
+        "raw_content_mismatches": [],
+        "unpaired_events": 0,
+        "unpaired_agent_responses": 0
+      }
+    },
+    {
+      "source_result": "runs/cloud-v5-a4000-20261022-01/mini-baseline/astropy__astropy-12907__mini-swe-textbased/result.json",
+      "source_sha256": {
+        "result.json": "ea7ad0e8d8e149f085e48184376d123c3059c1f0c5e3c7a249ac6c7475ca25d6",
+        "calls.jsonl": "9e963282090dd8d8ff07e2ab7aefe4f8e1b6d1d43e10302742d1491d6958f994"
+      },
+      "source_run_fingerprint": "36652ef463361827c7e5f48991ca7eb864fd7c34af70f49e9709ba5dd5f3aa1a",
+      "read_tool_events": 0,
+      "visible_read_repetitions": [],
+      "call_alignment": {
+        "method": "ordered_agent_responses",
+        "agent_responses": 6,
+        "events": 0,
+        "raw_content_mismatches": [],
+        "unpaired_events": 0,
+        "unpaired_agent_responses": 6
+      }
+    },
+    {
+      "source_result": "runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-1/astropy__astropy-12907__recent__20261022T071042Z-2c771740/result.json",
+      "source_sha256": {
+        "result.json": "ed30e67944b8f03d061dbbfc0a7ff9f6d10161646c87fd33c7624eeef7cf43f3",
+        "calls.jsonl": "08f3ed49a088ef1facdc5eb2616aa1ca3bdeee4df73614a2ad6e0f9989ebcfea",
+        "trajectory.jsonl": "c318b966ed98eb94b65236712000355b16897dc94a58762268fbae6664190adc"
+      },
+      "source_run_fingerprint": "e9642259b3f1e5d18db9cd75a3780b1dfdaa8012eb3baa6e1c4e8f4ee597f0a5",
+      "read_tool_events": 4,
+      "visible_read_repetitions": [
+        {
+          "event_id": "e0008",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "start_line": 304,
+          "end_line": 317,
+          "source_event_ids": [
+            "e0004"
+          ],
+          "consecutive_repeats": 1
+        }
+      ],
+      "call_alignment": {
+        "method": "ordered_agent_responses",
+        "agent_responses": 8,
+        "events": 8,
+        "raw_content_mismatches": [],
+        "unpaired_events": 0,
+        "unpaired_agent_responses": 0
+      }
+    },
+    {
+      "source_result": "runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-128/astropy__astropy-12907__recent__20261022T071302Z-adc44a6d/result.json",
+      "source_sha256": {
+        "result.json": "07b3c4cfcc34edaab1bbfd49f3ef077c7cb0bca8b88592ef7c9c16167ca7afc9",
+        "calls.jsonl": "fc1404270c397545a06941777e2ea84024544ee8a79c6a8530197f6424df98d5",
+        "trajectory.jsonl": "4c8e6462eca7b5736a88755364d6a7d72de8534138667482f87f2c104e274757"
+      },
+      "source_run_fingerprint": "e9642259b3f1e5d18db9cd75a3780b1dfdaa8012eb3baa6e1c4e8f4ee597f0a5",
+      "read_tool_events": 4,
+      "visible_read_repetitions": [
+        {
+          "event_id": "e0008",
+          "revision": "e3b0c44298fc1c14",
+          "path": "astropy/modeling/separable.py",
+          "start_line": 304,
+          "end_line": 317,
+          "source_event_ids": [
+            "e0004"
+          ],
+          "consecutive_repeats": 1
+        }
+      ],
+      "call_alignment": {
+        "method": "ordered_agent_responses",
+        "agent_responses": 8,
+        "events": 8,
+        "raw_content_mismatches": [],
+        "unpaired_events": 0,
+        "unpaired_agent_responses": 0
+      }
+    }
+  ],
+  "limitations": "No model requests, no feedback delivered, no counterfactual repair or token-saving claims. All seven attempts concern the same known development issue; shell trajectories are outside read_file coverage."
+}

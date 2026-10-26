@@ -46,9 +46,21 @@ def _invalid_budget(result: dict[str, Any]) -> bool:
                 result.get("status") in {"budget_overrun", "usage_unknown"})
 
 
-def _verified_outcome(result: dict[str, Any]) -> bool | None:
+def is_infrastructure_error(result: dict[str, Any]) -> bool:
     evaluation = result.get("evaluation", {})
-    if evaluation.get("infra_failure") is True or evaluation.get("status") in {"infrastructure_error", "grading_error", "official_empty_patch"}:
+    return (result.get("status") in {"environment_error", "model_error"}
+            or evaluation.get("infra_failure") is True
+            or evaluation.get("status") in {"infrastructure_error", "grading_error"})
+
+
+def verified_outcome(result: dict[str, Any]) -> bool | None:
+    """One verifier interpretation for aggregate reports and paired comparisons."""
+    evaluation = result.get("evaluation", {})
+    ungraded = {"official_empty_patch", "pending_official_evaluation", "not_evaluated", "pending", "ungraded"}
+    if (is_infrastructure_error(result) or result.get("status") == "interrupted"
+            or result.get("status") in ungraded or evaluation.get("status") in ungraded
+            or evaluation.get("tests_executed") is False
+            or ("resolved" in evaluation and evaluation["resolved"] is not result.get("resolved"))):
         return None
     value = result.get("resolved")
     return value if type(value) is bool else None
@@ -78,12 +90,12 @@ def aggregate(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
         samples = [Counter((r["task_id"], r.get("task_fingerprint"), r.get("config", {}).get("seed", 0)) for r in records) for records in policies.values()]
         matched = all(sample == samples[0] for sample in samples)
         group_invalid_budget = any(_invalid_budget(r) for r in group)
-        group_ungraded = any(_verified_outcome(r) is None for r in group)
+        group_ungraded = any(verified_outcome(r) is None for r in group)
         for strategy, records in sorted(policies.items()):
             n = len(records)
-            graded = sum(_verified_outcome(r) is not None for r in records)
-            successes = sum(_verified_outcome(r) is True for r in records)
-            infrastructure_errors = sum(r.get("evaluation", {}).get("status") == "infrastructure_error" or r.get("evaluation", {}).get("infra_failure") is True for r in records)
+            graded = sum(verified_outcome(r) is not None for r in records)
+            successes = sum(verified_outcome(r) is True for r in records)
+            infrastructure_errors = sum(is_infrastructure_error(r) for r in records)
             empty_patches = sum(r.get("evaluation", {}).get("status") == "official_empty_patch" for r in records)
             invalid_budget_attempts = sum(_invalid_budget(r) for r in records)
             costs = [r.get("cost_usd") for r in records]
@@ -186,9 +198,9 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
     for result in results:
         evaluation = result.get("evaluation", {})
         evaluation_status = evaluation.get("status", "unrecorded")
-        resolved = _verified_outcome(result)
+        resolved = verified_outcome(result)
         outcome = "success" if resolved is True else "failed verification" if resolved is False else "ungraded"
-        if evaluation.get("infra_failure") is True or evaluation_status == "infrastructure_error":
+        if is_infrastructure_error(result):
             outcome = "ungraded: infrastructure error"
             if evaluation.get("infra_failure_reason"):
                 outcome += f' ({evaluation["infra_failure_reason"]})'
@@ -218,6 +230,31 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
         md.append("| " + " | ".join(str(value).replace("|", "\\|").replace("\n", " ") for value in values) + " |")
         body.append("<tr>" + "".join(f"<td>{html.escape(str(value))}</td>" for value in values) + "</tr>")
     body.append('</tbody></table></div></section>')
+    if any((result.get("loop_control") or {}).get("policy") == "recover"
+           or (result.get("loop_control") or {}).get("events") for result in results):
+        loop_notice = ("Stored controller events only; no trajectory replay. A repeated visible read is not proof of faulty reasoning. "
+                       "off means not monitored; unavailable means the run predates controller logging.")
+        headers = ["Run", "Policy", "Observed repeats", "Warnings sent", "Stopped", "Read evidence"]
+        md.extend(["", "## Read-loop control", "", loop_notice, "",
+                   "| " + " | ".join(headers) + " |", "|" + "---|" * len(headers)])
+        body.append('<section><h2>Read-loop control</h2><p class="muted">' + html.escape(loop_notice)
+                    + '</p><div class="table-wrap"><table><thead><tr>'
+                    + ''.join('<th>' + label + '</th>' for label in headers) + '</tr></thead><tbody>')
+        for result in results:
+            control = result.get("loop_control")
+            run_id = result.get("run_id", Path(result["_result_path"]).parent.name)
+            if control is None:
+                values = [run_id, *(["unavailable"] * 5)]
+            else:
+                repeats = [event for event in control["events"] if event["kind"] == "repeated_visible_read"]
+                evidence = "; ".join(f'{event["event_id"]} <- {", ".join(event["source_event_ids"])}: '
+                                     f'{event["path"]}:{event["start_line"]}-{event["end_line"]}' for event in repeats)
+                values = [run_id, control["policy"], len(repeats) if control["policy"] != "off" else "not monitored",
+                          control["warnings_sent"], control["stopped"], evidence or "—"]
+            cells = [html.escape(str(value)) for value in values]
+            md.append("| " + " | ".join(value.replace("|", "\\|").replace("\n", " ") for value in cells) + " |")
+            body.append("<tr>" + "".join(f"<td>{value}</td>" for value in cells) + "</tr>")
+        body.append('</tbody></table></div></section>')
     paths["markdown"].write_text("\n".join(md) + "\n", encoding="utf-8")
     template = """<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Budget Agent · Evaluation</title><style>
 :root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#20302c;background:#f3f6f3}body{margin:0}main{max-width:1200px;margin:0 auto;padding:48px 24px 64px}header{margin-bottom:28px}h1{font-size:clamp(30px,5vw,46px);letter-spacing:-1.5px;margin:8px 0}h2{font-size:19px;overflow-wrap:anywhere}.eyebrow{color:#21735a;letter-spacing:2px;font-size:11px;font-weight:700}.muted{color:#64756e}aside{background:#e5eee7;border-left:4px solid #3a876b;padding:18px 22px;line-height:1.7;border-radius:4px}section{margin-top:24px;background:#fff;border:1px solid #dfe7e0;border-radius:12px;padding:24px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th{color:#66786e;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px}th,td{padding:15px 12px;border-bottom:1px solid #edf0ed;white-space:nowrap}td:first-child{font-weight:600}details{margin-top:18px;color:#64756e;font-size:12px}summary{cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}.warning{background:#fff5db;color:#805600;padding:12px;border-radius:6px}footer{color:#64756e;font-size:12px;margin-top:24px}</style></head><body><main><header><div class="eyebrow">BUDGET AGENT / REPRODUCIBLE EXPERIMENTS</div><h1>Code repair, measured.</h1><p class="muted">Context policies · verified outcomes · complete inference accounting</p></header>__BODY__<footer>Generated locally. No external assets, telemetry, or model calls are used by this report.</footer></main></body></html>"""

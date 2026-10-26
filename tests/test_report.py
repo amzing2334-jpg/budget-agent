@@ -193,3 +193,78 @@ def test_legacy_behavior_counts_are_unavailable_without_reading_trajectories(tmp
         assert "does not reanalyze old trajectories" in text
     assert "| legacy | task-a | full | " + " | ".join(["unavailable"] * 7) + " |" in rendered["markdown"].read_text(encoding="utf-8")
     assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("change", [
+    {"evaluation": {"status": "official_empty_patch"}},
+    {"evaluation": {"status": "pending_official_evaluation"}},
+    {"evaluation": {"status": "not_evaluated"}},
+    {"evaluation": {"status": "ungraded"}},
+    {"evaluation": {"tests_executed": False}},
+    {"evaluation": {"status": "official_swebench", "resolved": False}},
+    {"evaluation": {"status": "official_swebench", "infra_failure": True}},
+    {"evaluation": {"status": "grading_error"}},
+    {"status": "environment_error"},
+    {"status": "interrupted"},
+    {"status": "pending_official_evaluation"},
+])
+def test_aggregate_html_and_paired_share_verifier_interpretation(tmp_path, change):
+    from budget_agent.paired import analyze_paired
+
+    run = tmp_path / "candidate"
+    run.mkdir()
+    candidate = row(task_fingerprint="task-fingerprint", **change)
+    candidate["_result_path"] = str(run / "result.json")
+    Path(candidate["_result_path"]).write_text(json.dumps(candidate), encoding="utf-8")
+    baseline = row(strategy="recent", task_fingerprint="task-fingerprint", resolved=False,
+                   config={**candidate["config"], "strategy": "recent"}, _result_path=str(tmp_path / "baseline" / "result.json"))
+    grouped = aggregate([candidate])[0]
+    paired = analyze_paired([baseline, candidate], "recent", "full")
+    paths = generate_report(run, tmp_path / "report")
+    assert grouped["successes"] == grouped["graded"] == 0
+    assert grouped["success_rate"] is None
+    assert paired["candidate_wins"] == paired["eligible_graded_pairs"] == 0
+    assert "<td>0 / 0 / 1</td>" in paths["html"].read_text(encoding="utf-8")
+    assert "<td>success</td>" not in paths["html"].read_text(encoding="utf-8")
+
+
+def test_read_loop_report_uses_stored_signals_and_preserves_legacy_unknowns(tmp_path):
+    signals = [
+        {"kind": "repeated_visible_read", "event_id": "e0002", "source_event_ids": ["e0001"],
+         "path": "<script>file|name.py", "start_line": 1, "end_line": 10},
+        {"kind": "warning_sent", "after_event_id": "e0002"},
+    ]
+    cases = {
+        "recover": row(run_id="recover", loop_control={"policy": "recover", "events": signals, "warnings_sent": 1, "stopped": True}),
+        "off": row(run_id="off", loop_control={"policy": "off", "events": [], "warnings_sent": 0, "stopped": False}),
+        "legacy": row(run_id="legacy"),
+    }
+    originals = {}
+    for name, result in cases.items():
+        run = tmp_path / "runs" / name
+        run.mkdir(parents=True)
+        path = run / "result.json"
+        path.write_text(json.dumps(result), encoding="utf-8")
+        originals[path] = path.read_bytes()
+        (run / "trajectory.jsonl").write_text("must not read this malformed trajectory", encoding="utf-8")
+    rendered = generate_report(tmp_path / "runs", tmp_path / "report")
+    markdown = rendered["markdown"].read_text(encoding="utf-8")
+    page = rendered["html"].read_text(encoding="utf-8")
+    assert "| recover | recover | 1 | 1 | True |" in markdown
+    assert "| off | off | not monitored | 0 | False |" in markdown
+    assert "| legacy | " + " | ".join(["unavailable"] * 5) + " |" in markdown
+    assert "e0002 &lt;- e0001: &lt;script&gt;file\\|name.py:1-10" in markdown
+    assert "Read-loop control" in page
+    assert "<script>file" not in page and "<script>file" not in markdown
+    assert "&lt;script&gt;file|name.py:1-10" in page
+    assert all(path.read_bytes() == content for path, content in originals.items())
+
+
+@pytest.mark.parametrize("control", [None, {"policy": "off", "events": [], "warnings_sent": 0, "stopped": False}])
+def test_read_loop_table_is_omitted_when_no_controller_was_active(tmp_path, control):
+    run = tmp_path / "run"
+    run.mkdir()
+    value = row() if control is None else row(loop_control=control)
+    (run / "result.json").write_text(json.dumps(value), encoding="utf-8")
+    paths = generate_report(run, tmp_path / "report")
+    assert "Read-loop control" not in paths["html"].read_text(encoding="utf-8")

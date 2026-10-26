@@ -1,0 +1,114 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Budget Agent · Evaluation</title><style>
+:root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#20302c;background:#f3f6f3}body{margin:0}main{max-width:1200px;margin:0 auto;padding:48px 24px 64px}header{margin-bottom:28px}h1{font-size:clamp(30px,5vw,46px);letter-spacing:-1.5px;margin:8px 0}h2{font-size:19px;overflow-wrap:anywhere}.eyebrow{color:#21735a;letter-spacing:2px;font-size:11px;font-weight:700}.muted{color:#64756e}aside{background:#e5eee7;border-left:4px solid #3a876b;padding:18px 22px;line-height:1.7;border-radius:4px}section{margin-top:24px;background:#fff;border:1px solid #dfe7e0;border-radius:12px;padding:24px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th{color:#66786e;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px}th,td{padding:15px 12px;border-bottom:1px solid #edf0ed;white-space:nowrap}td:first-child{font-weight:600}details{margin-top:18px;color:#64756e;font-size:12px}summary{cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}.warning{background:#fff5db;color:#805600;padding:12px;border-radius:6px}footer{color:#64756e;font-size:12px;margin-top:24px}</style></head><body><main><header><div class="eyebrow">BUDGET AGENT / REPRODUCIBLE EXPERIMENTS</div><h1>Code repair, measured.</h1><p class="muted">Context policies · verified outcomes · complete inference accounting</p></header><aside>Scripted smoke runs verify plumbing only; they are not LLM performance evidence. Unknown cost is not zero. Pending/ungraded tasks are not counted as failures or successes. Official empty patches have no executed tests; infrastructure failures are ungraded and counted separately. A success rate is shown only when every attempt has a verifier outcome and valid budget accounting. Budget overruns and unknown usage invalidate fixed-budget comparisons. Harnesses, configurations, models, splits and token-accounting modes are grouped separately; compare strategies only with matched task fingerprints and repetition labels. API seeds are repetition labels; the Transformers backend resets its RNG per attempt. Neither guarantees cross-hardware reproducibility.</aside>
+<section><div class="eyebrow">EXPERIMENT da991ddec7</div><h2>scripted_smoke · scripted-smoke-v1 · dev · da991ddec7</h2><p class="muted">Context: 16000 · total: 64000 · tokenizer: byte</p>
+<div class="table-wrap"><table><thead><tr><th>Strategy</th><th>Success / graded / attempted</th><th>Infra errors</th><th>Empty patches</th><th>Rate</th><th>Tokens</th><th>Total USD</th><th>USD / success</th><th>Seconds / task</th></tr></thead><tbody>
+<tr><td>mask</td><td>1 / 2 / 2</td><td>0</td><td>0</td><td>50.0%</td><td>42,704</td><td>—</td><td>—</td><td>1.99</td></tr>
+</tbody></table></div>
+<details><summary>Exact comparison conditions</summary><pre>{
+  &quot;actual_models&quot;: [
+    &quot;scripted-smoke-v1&quot;
+  ],
+  &quot;config&quot;: {
+    &quot;allow_local_execution&quot;: false,
+    &quot;api_key_env&quot;: &quot;LLM_API_KEY&quot;,
+    &quot;api_max_tokens_field&quot;: &quot;max_tokens&quot;,
+    &quot;base_url&quot;: &quot;&quot;,
+    &quot;context_tokens&quot;: 16000,
+    &quot;decision_policy&quot;: &quot;direct&quot;,
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;docker_image&quot;: &quot;python:3.11-slim&quot;,
+    &quot;environment&quot;: &quot;local&quot;,
+    &quot;history_format&quot;: &quot;chat&quot;,
+    &quot;input_price_per_million&quot;: null,
+    &quot;loop_policy&quot;: &quot;off&quot;,
+    &quot;max_cost_usd&quot;: null,
+    &quot;max_output_tokens&quot;: 1024,
+    &quot;max_steps&quot;: 12,
+    &quot;min_action_output_tokens&quot;: 128,
+    &quot;model&quot;: &quot;&quot;,
+    &quot;model_dtype&quot;: &quot;bfloat16&quot;,
+    &quot;model_revision&quot;: &quot;&quot;,
+    &quot;output_price_per_million&quot;: null,
+    &quot;provider&quot;: &quot;scripted&quot;,
+    &quot;temperature&quot;: 0.0,
+    &quot;timeout_seconds&quot;: 30,
+    &quot;tokenizer&quot;: &quot;byte&quot;,
+    &quot;total_tokens&quot;: 64000
+  },
+  &quot;evidence_kind&quot;: &quot;scripted_smoke&quot;,
+  &quot;harness&quot;: null,
+  &quot;model&quot;: &quot;scripted-smoke-v1&quot;,
+  &quot;model_metadata&quot;: null,
+  &quot;provider&quot;: &quot;scripted&quot;,
+  &quot;source_fingerprint&quot;: &quot;6234dcbaee573c4504b71dab55af8fb5316a46515f07f203bcd3bbe803c582df&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;task_kind&quot;: &quot;local&quot;,
+  &quot;usage_sources&quot;: [
+    &quot;scripted_estimate&quot;
+  ]
+}</pre></details></section>
+<section><div class="eyebrow">EXPERIMENT 288221392a</div><h2>scripted_smoke · scripted-smoke-v1 · dev · 288221392a</h2><p class="muted">Context: 16000 · total: 64000 · tokenizer: byte</p>
+<div class="table-wrap"><table><thead><tr><th>Strategy</th><th>Success / graded / attempted</th><th>Infra errors</th><th>Empty patches</th><th>Rate</th><th>Tokens</th><th>Total USD</th><th>USD / success</th><th>Seconds / task</th></tr></thead><tbody>
+<tr><td>mask</td><td>1 / 2 / 2</td><td>0</td><td>0</td><td>50.0%</td><td>28,469</td><td>—</td><td>—</td><td>6.38</td></tr>
+</tbody></table></div>
+<details><summary>Exact comparison conditions</summary><pre>{
+  &quot;actual_models&quot;: [
+    &quot;scripted-smoke-v1&quot;
+  ],
+  &quot;config&quot;: {
+    &quot;allow_local_execution&quot;: false,
+    &quot;api_key_env&quot;: &quot;LLM_API_KEY&quot;,
+    &quot;api_max_tokens_field&quot;: &quot;max_tokens&quot;,
+    &quot;base_url&quot;: &quot;&quot;,
+    &quot;context_tokens&quot;: 16000,
+    &quot;decision_policy&quot;: &quot;direct&quot;,
+    &quot;device&quot;: &quot;cuda&quot;,
+    &quot;docker_image&quot;: &quot;python:3.11-slim&quot;,
+    &quot;environment&quot;: &quot;local&quot;,
+    &quot;history_format&quot;: &quot;chat&quot;,
+    &quot;input_price_per_million&quot;: null,
+    &quot;loop_policy&quot;: &quot;recover&quot;,
+    &quot;max_cost_usd&quot;: null,
+    &quot;max_output_tokens&quot;: 1024,
+    &quot;max_steps&quot;: 12,
+    &quot;min_action_output_tokens&quot;: 128,
+    &quot;model&quot;: &quot;&quot;,
+    &quot;model_dtype&quot;: &quot;bfloat16&quot;,
+    &quot;model_revision&quot;: &quot;&quot;,
+    &quot;output_price_per_million&quot;: null,
+    &quot;provider&quot;: &quot;scripted&quot;,
+    &quot;temperature&quot;: 0.0,
+    &quot;timeout_seconds&quot;: 30,
+    &quot;tokenizer&quot;: &quot;byte&quot;,
+    &quot;total_tokens&quot;: 64000
+  },
+  &quot;evidence_kind&quot;: &quot;scripted_smoke&quot;,
+  &quot;harness&quot;: null,
+  &quot;model&quot;: &quot;scripted-smoke-v1&quot;,
+  &quot;model_metadata&quot;: null,
+  &quot;provider&quot;: &quot;scripted&quot;,
+  &quot;source_fingerprint&quot;: &quot;6234dcbaee573c4504b71dab55af8fb5316a46515f07f203bcd3bbe803c582df&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;task_kind&quot;: &quot;local&quot;,
+  &quot;usage_sources&quot;: [
+    &quot;scripted_estimate&quot;
+  ]
+}</pre></details></section>
+<section><h2>Run ledger</h2><div class="table-wrap"><table><thead><tr><th>Task</th><th>Strategy</th><th>Agent status</th><th>Evaluation status</th><th>Verified outcome</th></tr></thead><tbody>
+<tr><td>slugify-digits-edit-after-read</td><td>mask</td><td>finished</td><td>resolved</td><td>success</td></tr>
+<tr><td>slugify-digits-edit-after-read</td><td>mask</td><td>finished</td><td>resolved</td><td>success</td></tr>
+<tr><td>slugify-digits-persistent-read</td><td>mask</td><td>finished</td><td>unresolved</td><td>failed verification</td></tr>
+<tr><td>slugify-digits-persistent-read</td><td>mask</td><td>stalled</td><td>unresolved</td><td>failed verification</td></tr>
+</tbody></table></div></section>
+<section><h2>Run behavior diagnostics</h2><p class="muted">Tool success does not establish a correct repair or a passed test. Repeated observations have identical action, output and recorded revision; repetition does not necessarily indicate an error. unavailable means the result has no stored count. This report does not reanalyze old trajectories.</p><div class="table-wrap"><table><thead><tr><th>Run</th><th>Task</th><th>Strategy</th><th>Successful read</th><th>Successful edit + write</th><th>Successful run</th><th>Successful diff</th><th>Invalid actions</th><th>Failed action repeats</th><th>Identical observation repeats</th></tr></thead><tbody>
+<tr><td>20261026T093656Z-31763196</td><td>slugify-digits-edit-after-read</td><td>mask</td><td>2</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+<tr><td>20261026T093658Z-70e70a82</td><td>slugify-digits-edit-after-read</td><td>mask</td><td>2</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+<tr><td>20261026T093647Z-413f4990</td><td>slugify-digits-persistent-read</td><td>mask</td><td>6</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>5</td></tr>
+<tr><td>20261026T093649Z-b6f86dcb</td><td>slugify-digits-persistent-read</td><td>mask</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td></tr>
+</tbody></table></div></section>
+<section><h2>Read-loop control</h2><p class="muted">Stored controller events only; no trajectory replay. A repeated visible read is not proof of faulty reasoning. off means not monitored; unavailable means the run predates controller logging.</p><div class="table-wrap"><table><thead><tr><th>Run</th><th>Policy</th><th>Observed repeats</th><th>Warnings sent</th><th>Stopped</th><th>Read evidence</th></tr></thead><tbody>
+<tr><td>20261026T093656Z-31763196</td><td>off</td><td>not monitored</td><td>0</td><td>False</td><td>—</td></tr>
+<tr><td>20261026T093658Z-70e70a82</td><td>recover</td><td>1</td><td>1</td><td>False</td><td>e0002 &lt;- e0001: slugify.py:1-6</td></tr>
+<tr><td>20261026T093647Z-413f4990</td><td>off</td><td>not monitored</td><td>0</td><td>False</td><td>—</td></tr>
+<tr><td>20261026T093649Z-b6f86dcb</td><td>recover</td><td>2</td><td>1</td><td>True</td><td>e0002 &lt;- e0001: slugify.py:1-6; e0003 &lt;- e0001: slugify.py:1-6</td></tr>
+</tbody></table></div></section><footer>Generated locally. No external assets, telemetry, or model calls are used by this report.</footer></main></body></html>

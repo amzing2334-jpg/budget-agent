@@ -1,0 +1,48 @@
+{
+  "evidence_kind": "scripted_smoke",
+  "source_fingerprint": "6234dcbaee573c4504b71dab55af8fb5316a46515f07f203bcd3bbe803c582df",
+  "scenarios_on_one_fixture": 2,
+  "cases": [
+    {
+      "scenario": "persistent-read",
+      "policy": "off",
+      "status": "finished",
+      "resolved": false,
+      "calls": 7,
+      "total_tokens": 23513,
+      "warnings_sent": 0,
+      "result": "runs\\slugify-digits-persistent-read__mask__20261026T093647Z-413f4990\\result.json"
+    },
+    {
+      "scenario": "persistent-read",
+      "policy": "recover",
+      "status": "stalled",
+      "resolved": false,
+      "calls": 3,
+      "total_tokens": 8728,
+      "warnings_sent": 1,
+      "result": "runs\\slugify-digits-persistent-read__mask__20261026T093649Z-b6f86dcb\\result.json"
+    },
+    {
+      "scenario": "edit-after-read",
+      "policy": "off",
+      "status": "finished",
+      "resolved": true,
+      "calls": 6,
+      "total_tokens": 19191,
+      "warnings_sent": 0,
+      "result": "runs\\slugify-digits-edit-after-read__mask__20261026T093656Z-31763196\\result.json"
+    },
+    {
+      "scenario": "edit-after-read",
+      "policy": "recover",
+      "status": "finished",
+      "resolved": true,
+      "calls": 6,
+      "total_tokens": 19741,
+      "warnings_sent": 1,
+      "result": "runs\\slugify-digits-edit-after-read__mask__20261026T093658Z-70e70a82\\result.json"
+    }
+  ],
+  "limitations": "Predetermined actions: verifies controller, budget and independent grader only. A scripted edit after feedback is not evidence that a model learned or recovered. Estimated byte tokens and fewer calls do not establish model cost or repair gains."
+}

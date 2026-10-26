@@ -14,6 +14,7 @@ from .budget import Budget, BudgetExceeded, TokenCounter
 from .context import ContextManager, ContextOverflow
 from .diagnostics import analyze_trajectory
 from .environment import EnvironmentError, create_environment
+from .loop_control import ReadLoopMonitor
 from .models import ModelError, OpenAICompatibleModel, ScriptedModel, parse_action
 from .schema import Event, RunConfig, Task
 from .tasks import smoke_actions
@@ -104,15 +105,27 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
     initial_revision = ""
     environment_provenance = None
     code_revision = source_fingerprint()
+    read_loop = ReadLoopMonitor()
+    controls: list[dict] = []
     evaluation = {"resolved": None, "status": "not_evaluated"}
     model_seconds = 0.0
+
+    def record_control(kind: str, **details) -> None:
+        record = {"kind": kind, **details}
+        controls.append(record)
+        _append(run_dir / "controls.jsonl", record)
+
+    def system_prompt() -> str:
+        prompt = decision_prompt(config, budget.remaining_tokens, step, events, revision, initial_revision)
+        if config.loop_policy == "recover" and read_loop.pending_feedback:
+            prompt += "\n" + read_loop.pending_feedback
+        return prompt
 
     def call(messages: list[dict[str, str]], max_output: int, purpose: str) -> str:
         nonlocal unknown_usage, model_seconds
         if purpose == "agent" and config.decision_policy == "budget-aware":
             # A summary may have consumed budget during context construction.
-            messages = [{"role": "system", "content": decision_prompt(
-                config, budget.remaining_tokens, step, events, revision, initial_revision)}, *messages[1:]]
+            messages = [{"role": "system", "content": system_prompt()}, *messages[1:]]
         allowance = budget.reserve(messages, max_output, min_output_tokens=config.min_action_output_tokens if purpose == "agent" else 1)
         call_start = time.monotonic()
         try:
@@ -133,6 +146,10 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         }
         call_records.append(record)
         _append(run_dir / "calls.jsonl", record)
+        if purpose == "agent" and config.loop_policy == "recover" and read_loop.pending_feedback:
+            record_control("warning_sent", step=step, after_event_id=events[-1].id,
+                           request_index=len(call_records), feedback=read_loop.pending_feedback)
+            read_loop.feedback_sent()
         budget.record(response, purpose=purpose)
         return response.content
 
@@ -142,13 +159,14 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         initial_revision = env.revision()
         for step in range(1, config.max_steps + 1):
             revision = env.revision()
+            read_loop.begin_revision(revision)
             context_input_cap = config.context_tokens - config.max_output_tokens
             input_cap = min(context_input_cap, budget.remaining_tokens - config.min_action_output_tokens)
             if input_cap <= 0:
                 raise BudgetExceeded("No token budget remains for a new request")
             try:
                 messages = context.build(
-                    decision_prompt(config, budget.remaining_tokens, step, events, revision, initial_revision),
+                    system_prompt(),
                     task.issue, events, revision, input_cap,
                     summarize_callback=lambda m, n: call(m, n, "summary"),
                 )
@@ -190,6 +208,17 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
             event = Event(f"e{step:04d}", step, action, outcome["output"], env.revision(), outcome["ok"], time.monotonic() - action_start, model_content=content)
             events.append(event)
             _append(run_dir / "trajectory.jsonl", event.to_dict())
+            if config.loop_policy == "recover":
+                # Use the request actually sent (budget-aware prompts can refresh
+                # after a paid summary), never the full archived history.
+                repeat = read_loop.observe(event, call_records[-1]["messages"])
+                if repeat is not None:
+                    record_control("repeated_visible_read", **asdict(repeat))
+                if read_loop.should_stop:
+                    status = "stalled"
+                    error = "Repeated already-visible source after read-loop feedback; independent evaluation retained"
+                    record_control("stopped", event_id=event.id, reason=error)
+                    break
             if status == "finished":
                 break
     except BudgetExceeded as exc:
@@ -231,6 +260,9 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         "elapsed_seconds": time.monotonic() - start, "model_seconds": model_seconds,
         "steps": len(events), "context_stats": context.stats,
         "diagnostics": analyze_trajectory(events, call_records),
+        "loop_control": {"policy": config.loop_policy, "events": controls,
+                         "warnings_sent": sum(row["kind"] == "warning_sent" for row in controls),
+                         "stopped": status == "stalled"},
         "patch_path": str(run_dir / "patch.diff"), "initial_revision": initial_revision,
         "environment_provenance": environment_provenance,
         "source_fingerprint": code_revision,

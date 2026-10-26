@@ -50,6 +50,7 @@ class RunConfig:
     strategy: str = "structured"
     history_format: str = "chat"
     decision_policy: str = "direct"
+    loop_policy: str = "off"
     provider: str = "scripted"
     model: str = ""
     base_url: str = ""
@@ -81,6 +82,8 @@ class RunConfig:
             raise ValueError("history_format must be transcript or chat")
         if self.decision_policy not in {"direct", "budget-aware"}:
             raise ValueError("decision_policy must be direct or budget-aware")
+        if self.loop_policy not in {"off", "recover"}:
+            raise ValueError("loop_policy must be off or recover")
         if self.provider not in {"scripted", "openai-compatible", "transformers"}:
             raise ValueError("unknown provider")
         if self.provider == "transformers":

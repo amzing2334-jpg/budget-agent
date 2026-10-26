@@ -3,19 +3,21 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Sequence
+from dataclasses import asdict
 import json
 from pathlib import Path
 import re
 from typing import Any
 
 from .context import MASKED_OBSERVATION
+from .loop_control import ReadLoopMonitor
+from .observations import parse_read_observation
 from .schema import Event
 
 
 _BROWSE_TOOLS = {"list_files", "search", "read_file"}
 _INTERNAL_TOOLS = {"invalid_action", "remember", "recall", "finish"}
 _EVENT_HEADER = re.compile(r"^\[event_id=([^\s\]]+)(?:\s|\])")
-_READ_LINE = re.compile(r"^(\d+): ")
 
 
 def _response_shape(content: str | None) -> dict[str, Any]:
@@ -129,30 +131,10 @@ def _read_file_coverage(events: Sequence[Event]) -> dict[str, Any]:
         if not event.ok:
             row["status"] = "failed"
             continue
-        header, _, body = event.output.partition("\n")
-        if not header.startswith("read_file "):
+        observation = parse_read_observation(event.output)
+        if observation is None or not event.revision:
             continue
-        try:
-            metadata = json.loads(header.removeprefix("read_file "))
-        except json.JSONDecodeError:
-            continue
-        if not isinstance(metadata, dict):
-            continue
-        path, total = metadata.get("path"), metadata.get("total_lines")
-        start, end = metadata.get("start_line"), metadata.get("end_line")
-        if not isinstance(path, str) or not path or not event.revision or type(total) is not int or total < 0:
-            continue
-        matches = [_READ_LINE.match(line) for line in body.splitlines()]
-        if any(match is None for match in matches):
-            continue
-        numbers = [int(match[1]) for match in matches]
-        if numbers:
-            if (type(start) is not int or type(end) is not int or not 1 <= start <= end <= total
-                    or len(numbers) != end - start + 1
-                    or any(number != start + offset for offset, number in enumerate(numbers))):
-                continue
-        elif start is not None or end is not None:
-            continue
+        path, numbers = observation.path, observation.lines
         previous = seen[(event.revision, path)]
         current = set(numbers)
         new, repeated = len(current - previous), len(current & previous)
@@ -161,7 +143,7 @@ def _read_file_coverage(events: Sequence[Event]) -> dict[str, Any]:
         row.update(path=path, status="measured", returned_lines=len(numbers), new_lines=new,
                    repeated_lines=repeated, covered_intervals=intervals,
                    covered_interval_count=len(intervals),
-                   truncated_line_content=metadata.get("truncated_line_content"))
+                   truncated_line_content=observation.truncated_line_content)
     measured = [row for row in rows if row["status"] == "measured"]
     return {
         "status": "partial" if any(row["status"] == "unknown" for row in rows) else "complete",
@@ -192,6 +174,8 @@ def analyze_trajectory(events: Sequence[Event], calls: Sequence[dict[str, Any]])
     tools: dict[str, dict[str, Any]] = {}
     invalid = []
     alignment_mismatches = []
+    read_loop = ReadLoopMonitor()
+    visible_read_repetitions = []
     first_successful = None
     for index, event in enumerate(events):
         tool = event.action["tool"]
@@ -209,6 +193,9 @@ def analyze_trajectory(events: Sequence[Event], calls: Sequence[dict[str, Any]])
         if paired is not None and event.model_content is not None and event.model_content != paired[1]["response"]["content"]:
             alignment_mismatches.append({"event_id": event.id, "request_index": paired[0]})
             paired = None
+        repeat = read_loop.observe(event, paired[1].get("messages", []) if paired else [])
+        if repeat is not None:
+            visible_read_repetitions.append(asdict(repeat))
         if tool != "invalid_action":
             continue
         content = event.model_content if event.model_content is not None else paired[1]["response"]["content"] if paired else None
@@ -261,9 +248,11 @@ def analyze_trajectory(events: Sequence[Event], calls: Sequence[dict[str, Any]])
         },
         "observation_exposure": _observation_exposure(events, calls),
         "read_file_coverage": _read_file_coverage(events),
+        "visible_read_repetitions": visible_read_repetitions,
         "notes": [
             "Tool success and the first successful action do not establish a correct repair or a passed test.",
             "Repeated observations mean identical action, output, and recorded revision; they do not prove that repeating the check was unnecessary.",
+            "Visible read repetitions compare complete returned line text with explicit evidence in the actual preceding request. Offline detection does not demonstrate recovery or token savings under a new policy.",
             "Reaching an output allowance is evidence of budget pressure, not proof that truncation caused the invalid action; both flags can coexist.",
             "Repeated failures count identical actions at the same recorded revision, excluding invalid_action; different failure messages may be present.",
         ],

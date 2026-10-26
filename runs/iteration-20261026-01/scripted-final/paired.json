@@ -1,0 +1,174 @@
+{
+  "factor": "loop_policy",
+  "baseline": "off",
+  "candidate": "recover",
+  "condition": {
+    "provider": "scripted",
+    "model": "scripted-smoke-v1",
+    "split": "dev",
+    "task_kind": "local",
+    "evidence_kind": "scripted_smoke",
+    "harness": null,
+    "config": {
+      "strategy": "mask",
+      "history_format": "chat",
+      "decision_policy": "direct",
+      "provider": "scripted",
+      "model": "",
+      "base_url": "",
+      "api_key_env": "LLM_API_KEY",
+      "context_tokens": 16000,
+      "total_tokens": 64000,
+      "max_output_tokens": 1024,
+      "min_action_output_tokens": 128,
+      "max_steps": 12,
+      "timeout_seconds": 30,
+      "tokenizer": "byte",
+      "temperature": 0.0,
+      "input_price_per_million": null,
+      "output_price_per_million": null,
+      "max_cost_usd": null,
+      "allow_local_execution": false,
+      "environment": "local",
+      "docker_image": "python:3.11-slim",
+      "api_max_tokens_field": "max_tokens",
+      "model_revision": "",
+      "device": "cuda",
+      "model_dtype": "bfloat16"
+    },
+    "source_fingerprint": "6234dcbaee573c4504b71dab55af8fb5316a46515f07f203bcd3bbe803c582df",
+    "model_metadata": null
+  },
+  "matched_pairs": 2,
+  "eligible_graded_pairs": 2,
+  "outcome_counts": {
+    "baseline": {
+      "success": 1,
+      "failure": 1
+    },
+    "candidate": {
+      "success": 1,
+      "failure": 1
+    }
+  },
+  "candidate_wins": 0,
+  "baseline_wins": 0,
+  "mean_candidate_minus_baseline": {
+    "total_tokens": {
+      "n": 2,
+      "mean": -7117.5
+    },
+    "elapsed_seconds": {
+      "n": 2,
+      "mean": 4.3874183999723755
+    },
+    "cost_usd": {
+      "n": 0,
+      "mean": null
+    },
+    "repeat_reads_same_revision": {
+      "n": 2,
+      "mean": -1.5
+    },
+    "invalid_actions": {
+      "n": 2,
+      "mean": 0
+    },
+    "failed_tool_actions": {
+      "n": 2,
+      "mean": 0
+    }
+  },
+  "pairs": [
+    {
+      "task_id": "slugify-digits-edit-after-read",
+      "task_fingerprint": "5a73c3a6d3cf1b45f710bbc542ee8e54ce279ddda209cc27d17cc8663e87af95",
+      "seed": 0,
+      "evidence_kind": "scripted_smoke",
+      "eligible_graded_pair": true,
+      "baseline": {
+        "outcome": "success",
+        "resolved": true,
+        "budget_valid": true,
+        "status": "finished",
+        "evaluation_status": "resolved",
+        "total_tokens": 19191,
+        "elapsed_seconds": 1.7104689000116196,
+        "cost_usd": null,
+        "repeat_reads_same_revision": 1,
+        "invalid_actions": 0,
+        "failed_tool_actions": 0
+      },
+      "candidate": {
+        "outcome": "success",
+        "resolved": true,
+        "budget_valid": true,
+        "status": "finished",
+        "evaluation_status": "resolved",
+        "total_tokens": 19741,
+        "elapsed_seconds": 5.7013946999795735,
+        "cost_usd": null,
+        "repeat_reads_same_revision": 1,
+        "invalid_actions": 0,
+        "failed_tool_actions": 0
+      },
+      "candidate_minus_baseline": {
+        "total_tokens": 550,
+        "elapsed_seconds": 3.990925799967954,
+        "cost_usd": null,
+        "repeat_reads_same_revision": 0,
+        "invalid_actions": 0,
+        "failed_tool_actions": 0
+      }
+    },
+    {
+      "task_id": "slugify-digits-persistent-read",
+      "task_fingerprint": "9b675ce44cb2b1a2c323bef2e8153c961c93f3c4036e59f5e262828e61d97ba5",
+      "seed": 0,
+      "evidence_kind": "scripted_smoke",
+      "eligible_graded_pair": true,
+      "baseline": {
+        "outcome": "failure",
+        "resolved": false,
+        "budget_valid": true,
+        "status": "finished",
+        "evaluation_status": "unresolved",
+        "total_tokens": 23513,
+        "elapsed_seconds": 2.2655401000229176,
+        "cost_usd": null,
+        "repeat_reads_same_revision": 5,
+        "invalid_actions": 0,
+        "failed_tool_actions": 0
+      },
+      "candidate": {
+        "outcome": "failure",
+        "resolved": false,
+        "budget_valid": true,
+        "status": "stalled",
+        "evaluation_status": "unresolved",
+        "total_tokens": 8728,
+        "elapsed_seconds": 7.049451099999715,
+        "cost_usd": null,
+        "repeat_reads_same_revision": 2,
+        "invalid_actions": 0,
+        "failed_tool_actions": 0
+      },
+      "candidate_minus_baseline": {
+        "total_tokens": -14785,
+        "elapsed_seconds": 4.783910999976797,
+        "cost_usd": null,
+        "repeat_reads_same_revision": -3,
+        "invalid_actions": 0,
+        "failed_tool_actions": 0
+      }
+    }
+  ],
+  "notes": [
+    "Descriptive paired results only; no significance or generalization claim.",
+    "Only the declared factor may differ; task, source, model, other configuration, and repetition labels must match.",
+    "Means and wins exclude ungraded, infrastructure-error, and invalid-budget pairs; all attempts remain in the ledger.",
+    "Repeated reads and failed tool actions are behavior proxies, not proof of wasted work or incorrect reasoning.",
+    "GPU rental and setup cost are not measured by model cost_usd; unknown cost remains null.",
+    "Scripted smoke results are infrastructure evidence, not model capability evidence."
+  ]
+}

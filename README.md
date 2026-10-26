@@ -4,6 +4,8 @@
 
 GitHub：[amzing2334-jpg/budget-agent](https://github.com/amzing2334-jpg/budget-agent)（私有）。代码、测试、文档及选定的 v5 实验记录已纳入版本管理；模型权重、运行环境和云端连接材料保留在本地。仓库范围与历史产物位置见 [仓库说明](docs/REPOSITORY.md)。
 
+**2026-10-26 迭代：新增可关闭的可见源码重读控制，以及 `strategy / decision_policy / loop_policy` 单因素配对评测。** 控制器只对实际请求中已经完整可见的相同行内容反馈，给模型一次纠正机会后才停止；反馈正常计费，原始轨迹和独立评分保留。历史七次尝试回放仅发现三次符合该窄判据的读取，三条 mask 轨迹均不触发，因此不声称解决旧停滞或提高修复率。实现、验收和复现命令见 [本轮验证](docs/READ_LOOP_VALIDATION.md)；后续每四小时工作从[迭代记录](docs/ITERATION_LOG.md)接续，岗位依据见[行业复核](docs/INDUSTRY_REVIEW_2026-10-26.md)。
+
 当前主线是**真实仓库修复、可靠交互与可信评测**。v5 根据[笔记研读与项目回看](docs/FEISHU_NOTE_CAREER_ANALYSIS_2026-10-22.md)，加入有范围/分页的文件工具、可定位的编辑失败反馈、动作输出额度下限、离线行为诊断，以及固定版本 mini-SWE-agent 外部参考入口。后续实测又加入 `mask` 观察压缩和可选预算决策提示，分别进行同源码对照；详见 [v5 后续验收](docs/VALIDATION_V5_FOLLOWUP.md)。默认 `history_format=chat`，旧表示通过 `transcript` 保留。
 
 **v5 新增的七次真实云端尝试仍未证明修复收益。** 固定 Qwen3-4B 的内部动作预留 1/128 对照和真实 mini-SWE 外部参考均为空补丁；同源码 `recent/mask` 配对把调用数从 8 增至 13，但没有产生编辑或测试。后续 `mask × direct/budget-aware` 配对也均无补丁。旧观察占用预算与“重复获取已读源码”已由原始轨迹定位，不能把工具调用更多写成能力提高。七次均为同一道已知开发题，不是七道独立题。最终 CPU 回归 376 项通过、8 项跳过；另有固定上游 6 项 CPU 集成通过。A4000 已在授权时限内归还并由控制台核验。完整输入、补丁、独立官方评分与分析见 [云端产物清单](runs/v5-followup-20261022-01/cloud-comparison.md) 和[失败分析](runs/v5-followup-20261022-01/CLOUD_FAILURE_ANALYSIS.md)。
@@ -84,6 +86,8 @@ python -m budget_agent diagnose --input runs/your-run --output runs/new-diagnost
 ```
 
 输出文件必须是新路径；该命令不运行模型。新运行的结果和 HTML/Markdown 报告自动包含行为统计，旧结果缺失统计时显示 `unavailable`。成功执行工具不能当作真实修复分数。
+
+`loop_policy=off` 是默认对照；`--loop-policy recover` 仅处理同一连续工作区版本内、实际模型请求中完整可见的源码重读。反馈一次后继续连续重读时以 `stalled` 停止；原始观察不改写，独立评分继续执行。隐藏后的源码恢复、部分新增行、截断行、shell 命令和 recall 不按该判据阻止。它不能检测所有停滞，更不强制模型编辑。单独比较这个因素可使用 `python -m budget_agent.paired --runs RUNS --factor loop_policy --baseline off --candidate recover --output paired.json`，其余配置必须相同。
 
 外部参考使用[真正的 mini-SWE-agent 上游循环](docs/MINI_SWE_BASELINE.md)，默认仅打印计划，云端 `--execute` 才运行。它与内部策略分别分组，不能充作纯上下文消融。
 

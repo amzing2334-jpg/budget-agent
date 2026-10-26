@@ -1,0 +1,49 @@
+{
+  "evidence_kind": "cpu_software_validation",
+  "observed_date": "2026-10-26",
+  "command": "python -m pytest -q --junitxml=runs/iteration-20261026-01/cpu-tests.xml",
+  "source_fingerprint": "6234dcbaee573c4504b71dab55af8fb5316a46515f07f203bcd3bbe803c582df",
+  "tests": 444,
+  "passed": 436,
+  "skipped": [
+    {
+      "test": ".tests.test_learning_policy",
+      "reason": "collection skipped"
+    },
+    {
+      "test": ".tests.test_learning_trainer",
+      "reason": "collection skipped"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_format_recovery_submission_and_export",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_repeated_format_error_limit",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_step_limit",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_budget_exception_and_save",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_failed_model_call_keeps_ledger[failure0-ModelError]",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    },
+    {
+      "test": "tests.test_mini_swe_baseline.test_real_upstream_failed_model_call_keeps_ledger[failure1-interrupted]",
+      "reason": "Set MINI_SWE_UPSTREAM_REPO to run the pinned upstream CPU integration"
+    }
+  ],
+  "failures": 0,
+  "errors": 0,
+  "elapsed_seconds": 153.17,
+  "log_sha256": "c69c90207dbe08849180524f978c5c967dde517ce60a7b77d3431af5046a4142",
+  "scripted_acceptance": "scripted-final/receipt.json",
+  "historical_audit": "historical-read-audit.json",
+  "limitations": "CPU software checks and archived-trace audit only. No real model inference, training, new rental or model-performance claim."
+}
