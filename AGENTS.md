@@ -1,6 +1,6 @@
 # Project working agreements
 
-- GitHub repository: `https://github.com/Frank081202/budget-agent` (private, initialized under this account on 2026-10-24). Verify the active account with `gh api user --jq .login` before repository administration. Use the repository-local Frank081202 commit identity; do not change global Git identity.
+- Current GitHub repository: `https://github.com/amzing2334-jpg/budget-agent` (private, selected by the user on 2026-10-26). This project-specific instruction supersedes the workspace's default account preference. Verify the active account with `gh api user --jq .login` before repository administration. Use the repository-local amzing2334-jpg commit identity; do not change global Git identity. The previous Frank081202 repository remains available as remote `frank-original`; preserve its existing history.
 
 - The user explicitly prohibits training on their local computer. Do not start local SFT, RL, GPU training, or automatic training smoke jobs. Future model training must use cloud GPU hardware provided by the user; first state the required GPU and resource estimate.
 - Local work may edit code, inspect saved artifacts, and run CPU-only software checks. The lightweight `.venv` test environment does not include the optional model training stack.

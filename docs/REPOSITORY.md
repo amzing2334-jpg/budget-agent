@@ -1,11 +1,13 @@
 # GitHub 仓库与实验记录范围
 
-2026-10-24 将本地项目纳入 `Frank081202/budget-agent` 私有仓库。迁移前本地 Git 尚无提交，也没有 remote，因此此次建立首个提交和 `main` 分支，没有可转移的历史 GitHub 仓库。
+2026-10-26 按用户要求，将本项目完整 Git 历史上传到 `amzing2334-jpg/budget-agent` 私有仓库，并将其设为本地主要远程 `origin`。
 
-- 仓库：https://github.com/Frank081202/budget-agent
+- 当前仓库：https://github.com/amzing2334-jpg/budget-agent
 - 本地目录：`C:\找工作\budget-agent`
-- 提交身份仅在本仓库配置：`Frank081202 <347248247+Frank081202@users.noreply.github.com>`。
+- 当前提交身份仅在本仓库配置：`amzing2334-jpg <234151135+amzing2334-jpg@users.noreply.github.com>`。
 - `.gitattributes` 禁止自动换行转换，保留源码指纹和实验文件的原始字节。
+
+2026-10-24 最初在 `Frank081202/budget-agent` 建立首个提交及 `main` 分支。旧仓库继续保留，本地以 `frank-original` 远程引用它；已有提交及其原始作者保持不变。此账号选择仅针对 Coding Agent 项目，不改变工作区中其他项目的归属。
 
 ## 纳入版本管理的内容
 
@@ -29,7 +31,7 @@
 需要当前私有仓库的访问权限：
 
 ```bash
-git clone https://github.com/Frank081202/budget-agent.git
+git clone https://github.com/amzing2334-jpg/budget-agent.git
 cd budget-agent
 python -m venv .venv
 # Linux/macOS: source .venv/bin/activate

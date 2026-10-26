@@ -2,7 +2,7 @@
 
 **固定推理预算下的 Coding Agent：上下文管理与代码修复评测。**
 
-GitHub：[Frank081202/budget-agent](https://github.com/Frank081202/budget-agent)（私有）。代码、测试、文档及选定的 v5 实验记录已纳入版本管理；模型权重、运行环境和云端连接材料保留在本地。仓库范围与历史产物位置见 [仓库说明](docs/REPOSITORY.md)。
+GitHub：[amzing2334-jpg/budget-agent](https://github.com/amzing2334-jpg/budget-agent)（私有）。代码、测试、文档及选定的 v5 实验记录已纳入版本管理；模型权重、运行环境和云端连接材料保留在本地。仓库范围与历史产物位置见 [仓库说明](docs/REPOSITORY.md)。
 
 当前主线是**真实仓库修复、可靠交互与可信评测**。v5 根据[笔记研读与项目回看](docs/FEISHU_NOTE_CAREER_ANALYSIS_2026-10-22.md)，加入有范围/分页的文件工具、可定位的编辑失败反馈、动作输出额度下限、离线行为诊断，以及固定版本 mini-SWE-agent 外部参考入口。后续实测又加入 `mask` 观察压缩和可选预算决策提示，分别进行同源码对照；详见 [v5 后续验收](docs/VALIDATION_V5_FOLLOWUP.md)。默认 `history_format=chat`，旧表示通过 `transcript` 保留。
 
