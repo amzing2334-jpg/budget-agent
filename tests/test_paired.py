@@ -168,7 +168,7 @@ def test_infra_flag_overrides_stale_success_status(tmp_path):
     assert report["eligible_graded_pairs"] == report["candidate_wins"] == 0
 
 
-@pytest.mark.parametrize("field, changed", [("actual_models", ["different-model"]), ("usage_sources", [])])
+@pytest.mark.parametrize("field, changed", [("actual_models", ["different-model"]), ("usage_sources", ["estimated"])])
 def test_matching_pairs_cannot_pool_different_model_or_accounting_across_tasks(tmp_path, field, changed):
     runs = [result(tmp_path, "recent"), result(tmp_path, "structured"),
             result(tmp_path, "recent", "task2", **{field: changed}),
@@ -201,3 +201,66 @@ def test_cli_writes_declared_loop_factor(tmp_path, monkeypatch):
     report = json.loads(output.read_text(encoding="utf-8"))
     assert report["factor"] == "loop_policy"
     assert report["matched_pairs"] == report["eligible_graded_pairs"] == 1
+
+
+@pytest.mark.parametrize("failed_side", ["baseline", "candidate"])
+@pytest.mark.parametrize("failed_first", [False, True])
+def test_missing_response_metadata_keeps_failed_pair_and_valid_pair(tmp_path, failed_side, failed_first):
+    valid = [result(tmp_path, "recent", "valid", resolved=False),
+             result(tmp_path, "structured", "valid", total_tokens=800)]
+    failed = [result(tmp_path, "recent", "failed"), result(tmp_path, "structured", "failed")]
+    failed_index = 0 if failed_side == "baseline" else 1
+    failed[failed_index].update(status="model_error", resolved=None, calls=0,
+        usage_unknown=True, actual_models=[], usage_sources=[], total_tokens=0,
+        budget={"unreconciled_request": True, "attempted_calls": 1},
+        evaluation={"status": "unresolved", "resolved": False})
+    runs = failed + valid if failed_first else valid + failed
+    report = analyze_paired(runs, "recent", "structured")
+    assert report["matched_pairs"] == 2 and report["eligible_graded_pairs"] == 1
+    assert report["candidate_wins"] == 1 and report["baseline_wins"] == 0
+    assert report["mean_candidate_minus_baseline"]["total_tokens"] == {"n": 1, "mean": -200}
+    pair = next(pair for pair in report["pairs"] if pair["task_id"] == "failed")
+    assert pair["eligible_graded_pair"] is False
+    assert pair[failed_side]["outcome"] == "infrastructure_error"
+    assert pair[failed_side]["budget_valid"] is False
+    assert pair[failed_side]["actual_models"] == pair[failed_side]["usage_sources"] == []
+    assert f"{failed_side}: missing actual_models" in pair["ineligible_reasons"]
+    assert f"{failed_side}: missing usage_sources" in pair["ineligible_reasons"]
+    assert analyze_paired(list(reversed(runs)), "recent", "structured") == report
+
+
+@pytest.mark.parametrize("field", ["actual_models", "usage_sources"])
+@pytest.mark.parametrize("missing", [False, True])
+def test_missing_metadata_never_qualifies_a_claimed_success(tmp_path, field, missing):
+    left = result(tmp_path, "recent", resolved=False)
+    right = result(tmp_path, "structured")
+    if missing:
+        del right[field]
+    else:
+        right[field] = []
+    report = analyze_paired([left, right], "recent", "structured")
+    assert report["eligible_graded_pairs"] == report["candidate_wins"] == 0
+    pair, = report["pairs"]
+    assert pair["candidate"][field] == (None if missing else [])
+    assert pair["ineligible_reasons"] == [f"candidate: missing {field}"]
+
+
+def test_all_unknown_metadata_stays_unverified(tmp_path):
+    runs = [result(tmp_path, "recent", resolved=False, actual_models=[], usage_sources=[]),
+            result(tmp_path, "structured", actual_models=[], usage_sources=[])]
+    report = analyze_paired(runs, "recent", "structured")
+    assert report["matched_pairs"] == 1 and report["eligible_graded_pairs"] == 0
+    assert report["candidate_wins"] == report["baseline_wins"] == 0
+    assert report["mean_candidate_minus_baseline"]["total_tokens"] == {"n": 0, "mean": None}
+
+
+@pytest.mark.parametrize("field, changed", [("actual_models", ["different-model"]),
+                                           ("usage_sources", ["estimated"])])
+def test_unknown_reference_cannot_hide_known_metadata_conflict(tmp_path, field, changed):
+    unknown = [result(tmp_path, "recent", "unknown", actual_models=[], usage_sources=[]),
+               result(tmp_path, "structured", "unknown", actual_models=[], usage_sources=[])]
+    known = [result(tmp_path, "recent", "known"),
+             result(tmp_path, "structured", "known", **{field: changed})]
+    for runs in [unknown + known, known + unknown]:
+        with pytest.raises(ValueError, match=field):
+            analyze_paired(runs, "recent", "structured")

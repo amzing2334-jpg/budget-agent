@@ -1,0 +1,514 @@
+................................FFFFFFFFF.F                              [100%]
+================================== FAILURES ===================================
+_ test_missing_response_metadata_keeps_failed_pair_and_valid_pair[False-baseline] _
+
+tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-113/test_missing_response_metadata0')
+failed_side = 'baseline', failed_first = False
+
+    @pytest.mark.parametrize("failed_side", ["baseline", "candidate"])
+    @pytest.mark.parametrize("failed_first", [False, True])
+    def test_missing_response_metadata_keeps_failed_pair_and_valid_pair(tmp_path, failed_side, failed_first):
+        valid = [result(tmp_path, "recent", "valid", resolved=False),
+                 result(tmp_path, "structured", "valid", total_tokens=800)]
+        failed = [result(tmp_path, "recent", "failed"), result(tmp_path, "structured", "failed")]
+        failed_index = 0 if failed_side == "baseline" else 1
+        failed[failed_index].update(status="model_error", resolved=None, calls=0,
+            usage_unknown=True, actual_models=[], usage_sources=[], total_tokens=0,
+            budget={"unreconciled_request": True, "attempted_calls": 1},
+            evaluation={"status": "unresolved", "resolved": False})
+        runs = failed + valid if failed_first else valid + failed
+>       report = analyze_paired(runs, "recent", "structured")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_paired.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+results = [{'task_id': 'valid', 'task_fingerprint': 'fingerprint-valid', 'strategy': 'recent', 'provider': 'transformers', ...},...sk_id': 'failed', 'task_fingerprint': 'fingerprint-failed', 'strategy': 'structured', 'provider': 'transformers', ...}]
+baseline = 'recent', candidate = 'structured', factor = 'strategy'
+
+    def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor: str = "strategy") -> dict:
+        if factor not in FACTORS:
+            raise ValueError("factor must be one of " + ", ".join(FACTORS))
+        if baseline == candidate:
+            raise ValueError("Baseline and candidate must differ")
+        indexed: dict[str, dict[tuple, dict]] = {baseline: {}, candidate: {}}
+        for result in results:
+            level = _factor_value(result, factor)
+            if level not in indexed:
+                continue
+            if not result.get("task_fingerprint"):
+                raise ValueError(f"Missing task fingerprint: {result['task_id']}")
+            key = (result["task_id"], result["task_fingerprint"], result["config"].get("seed", 0))
+            if key in indexed[level]:
+                raise ValueError(f"Duplicate attempt for {factor}={level}: {key}")
+            indexed[level][key] = result
+        if not indexed[baseline] or not indexed[candidate]:
+            raise ValueError(f"Both requested {factor} levels need saved results")
+        if indexed[baseline].keys() != indexed[candidate].keys():
+            raise ValueError("Unmatched task/fingerprint/repetition sets; do not silently drop missing attempts")
+        reference = next(iter(indexed[baseline].values()))
+        condition = _condition(reference, factor)
+        pairs = []
+        for key, left in sorted(indexed[baseline].items()):
+            right = indexed[candidate][key]
+            if _condition(left, factor) != condition or _condition(right, factor) != condition:
+                raise ValueError(f"Mismatched model/configuration for {key[0]}")
+            for field in ("actual_models", "usage_sources"):
+                expected = set(reference.get(field, []))
+                if set(left.get(field, [])) != expected or set(right.get(field, [])) != expected:
+>                   raise ValueError(f"Mismatched {field} for {key[0]}")
+E                   ValueError: Mismatched actual_models for failed
+
+src\budget_agent\paired.py:107: ValueError
+_ test_missing_response_metadata_keeps_failed_pair_and_valid_pair[False-candidate] _
+
+tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-113/test_missing_response_metadata1')
+failed_side = 'candidate', failed_first = False
+
+    @pytest.mark.parametrize("failed_side", ["baseline", "candidate"])
+    @pytest.mark.parametrize("failed_first", [False, True])
+    def test_missing_response_metadata_keeps_failed_pair_and_valid_pair(tmp_path, failed_side, failed_first):
+        valid = [result(tmp_path, "recent", "valid", resolved=False),
+                 result(tmp_path, "structured", "valid", total_tokens=800)]
+        failed = [result(tmp_path, "recent", "failed"), result(tmp_path, "structured", "failed")]
+        failed_index = 0 if failed_side == "baseline" else 1
+        failed[failed_index].update(status="model_error", resolved=None, calls=0,
+            usage_unknown=True, actual_models=[], usage_sources=[], total_tokens=0,
+            budget={"unreconciled_request": True, "attempted_calls": 1},
+            evaluation={"status": "unresolved", "resolved": False})
+        runs = failed + valid if failed_first else valid + failed
+>       report = analyze_paired(runs, "recent", "structured")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_paired.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+results = [{'task_id': 'valid', 'task_fingerprint': 'fingerprint-valid', 'strategy': 'recent', 'provider': 'transformers', ...},...sk_id': 'failed', 'task_fingerprint': 'fingerprint-failed', 'strategy': 'structured', 'provider': 'transformers', ...}]
+baseline = 'recent', candidate = 'structured', factor = 'strategy'
+
+    def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor: str = "strategy") -> dict:
+        if factor not in FACTORS:
+            raise ValueError("factor must be one of " + ", ".join(FACTORS))
+        if baseline == candidate:
+            raise ValueError("Baseline and candidate must differ")
+        indexed: dict[str, dict[tuple, dict]] = {baseline: {}, candidate: {}}
+        for result in results:
+            level = _factor_value(result, factor)
+            if level not in indexed:
+                continue
+            if not result.get("task_fingerprint"):
+                raise ValueError(f"Missing task fingerprint: {result['task_id']}")
+            key = (result["task_id"], result["task_fingerprint"], result["config"].get("seed", 0))
+            if key in indexed[level]:
+                raise ValueError(f"Duplicate attempt for {factor}={level}: {key}")
+            indexed[level][key] = result
+        if not indexed[baseline] or not indexed[candidate]:
+            raise ValueError(f"Both requested {factor} levels need saved results")
+        if indexed[baseline].keys() != indexed[candidate].keys():
+            raise ValueError("Unmatched task/fingerprint/repetition sets; do not silently drop missing attempts")
+        reference = next(iter(indexed[baseline].values()))
+        condition = _condition(reference, factor)
+        pairs = []
+        for key, left in sorted(indexed[baseline].items()):
+            right = indexed[candidate][key]
+            if _condition(left, factor) != condition or _condition(right, factor) != condition:
+                raise ValueError(f"Mismatched model/configuration for {key[0]}")
+            for field in ("actual_models", "usage_sources"):
+                expected = set(reference.get(field, []))
+                if set(left.get(field, [])) != expected or set(right.get(field, [])) != expected:
+>                   raise ValueError(f"Mismatched {field} for {key[0]}")
+E                   ValueError: Mismatched actual_models for failed
+
+src\budget_agent\paired.py:107: ValueError
+_ test_missing_response_metadata_keeps_failed_pair_and_valid_pair[True-baseline] _
+
+tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-113/test_missing_response_metadata2')
+failed_side = 'baseline', failed_first = True
+
+    @pytest.mark.parametrize("failed_side", ["baseline", "candidate"])
+    @pytest.mark.parametrize("failed_first", [False, True])
+    def test_missing_response_metadata_keeps_failed_pair_and_valid_pair(tmp_path, failed_side, failed_first):
+        valid = [result(tmp_path, "recent", "valid", resolved=False),
+                 result(tmp_path, "structured", "valid", total_tokens=800)]
+        failed = [result(tmp_path, "recent", "failed"), result(tmp_path, "structured", "failed")]
+        failed_index = 0 if failed_side == "baseline" else 1
+        failed[failed_index].update(status="model_error", resolved=None, calls=0,
+            usage_unknown=True, actual_models=[], usage_sources=[], total_tokens=0,
+            budget={"unreconciled_request": True, "attempted_calls": 1},
+            evaluation={"status": "unresolved", "resolved": False})
+        runs = failed + valid if failed_first else valid + failed
+>       report = analyze_paired(runs, "recent", "structured")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_paired.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+results = [{'task_id': 'failed', 'task_fingerprint': 'fingerprint-failed', 'strategy': 'recent', 'provider': 'transformers', ......task_id': 'valid', 'task_fingerprint': 'fingerprint-valid', 'strategy': 'structured', 'provider': 'transformers', ...}]
+baseline = 'recent', candidate = 'structured', factor = 'strategy'
+
+    def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor: str = "strategy") -> dict:
+        if factor not in FACTORS:
+            raise ValueError("factor must be one of " + ", ".join(FACTORS))
+        if baseline == candidate:
+            raise ValueError("Baseline and candidate must differ")
+        indexed: dict[str, dict[tuple, dict]] = {baseline: {}, candidate: {}}
+        for result in results:
+            level = _factor_value(result, factor)
+            if level not in indexed:
+                continue
+            if not result.get("task_fingerprint"):
+                raise ValueError(f"Missing task fingerprint: {result['task_id']}")
+            key = (result["task_id"], result["task_fingerprint"], result["config"].get("seed", 0))
+            if key in indexed[level]:
+                raise ValueError(f"Duplicate attempt for {factor}={level}: {key}")
+            indexed[level][key] = result
+        if not indexed[baseline] or not indexed[candidate]:
+            raise ValueError(f"Both requested {factor} levels need saved results")
+        if indexed[baseline].keys() != indexed[candidate].keys():
+            raise ValueError("Unmatched task/fingerprint/repetition sets; do not silently drop missing attempts")
+        reference = next(iter(indexed[baseline].values()))
+        condition = _condition(reference, factor)
+        pairs = []
+        for key, left in sorted(indexed[baseline].items()):
+            right = indexed[candidate][key]
+            if _condition(left, factor) != condition or _condition(right, factor) != condition:
+                raise ValueError(f"Mismatched model/configuration for {key[0]}")
+            for field in ("actual_models", "usage_sources"):
+                expected = set(reference.get(field, []))
+                if set(left.get(field, [])) != expected or set(right.get(field, [])) != expected:
+>                   raise ValueError(f"Mismatched {field} for {key[0]}")
+E                   ValueError: Mismatched actual_models for failed
+
+src\budget_agent\paired.py:107: ValueError
+_ test_missing_response_metadata_keeps_failed_pair_and_valid_pair[True-candidate] _
+
+tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-113/test_missing_response_metadata3')
+failed_side = 'candidate', failed_first = True
+
+    @pytest.mark.parametrize("failed_side", ["baseline", "candidate"])
+    @pytest.mark.parametrize("failed_first", [False, True])
+    def test_missing_response_metadata_keeps_failed_pair_and_valid_pair(tmp_path, failed_side, failed_first):
+        valid = [result(tmp_path, "recent", "valid", resolved=False),
+                 result(tmp_path, "structured", "valid", total_tokens=800)]
+        failed = [result(tmp_path, "recent", "failed"), result(tmp_path, "structured", "failed")]
+        failed_index = 0 if failed_side == "baseline" else 1
+        failed[failed_index].update(status="model_error", resolved=None, calls=0,
+            usage_unknown=True, actual_models=[], usage_sources=[], total_tokens=0,
+            budget={"unreconciled_request": True, "attempted_calls": 1},
+            evaluation={"status": "unresolved", "resolved": False})
+        runs = failed + valid if failed_first else valid + failed
+>       report = analyze_paired(runs, "recent", "structured")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_paired.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+results = [{'task_id': 'failed', 'task_fingerprint': 'fingerprint-failed', 'strategy': 'recent', 'provider': 'transformers', ......task_id': 'valid', 'task_fingerprint': 'fingerprint-valid', 'strategy': 'structured', 'provider': 'transformers', ...}]
+baseline = 'recent', candidate = 'structured', factor = 'strategy'
+
+    def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor: str = "strategy") -> dict:
+        if factor not in FACTORS:
+            raise ValueError("factor must be one of " + ", ".join(FACTORS))
+        if baseline == candidate:
+            raise ValueError("Baseline and candidate must differ")
+        indexed: dict[str, dict[tuple, dict]] = {baseline: {}, candidate: {}}
+        for result in results:
+            level = _factor_value(result, factor)
+            if level not in indexed:
+                continue
+            if not result.get("task_fingerprint"):
+                raise ValueError(f"Missing task fingerprint: {result['task_id']}")
+            key = (result["task_id"], result["task_fingerprint"], result["config"].get("seed", 0))
+            if key in indexed[level]:
+                raise ValueError(f"Duplicate attempt for {factor}={level}: {key}")
+            indexed[level][key] = result
+        if not indexed[baseline] or not indexed[candidate]:
+            raise ValueError(f"Both requested {factor} levels need saved results")
+        if indexed[baseline].keys() != indexed[candidate].keys():
+            raise ValueError("Unmatched task/fingerprint/repetition sets; do not silently drop missing attempts")
+        reference = next(iter(indexed[baseline].values()))
+        condition = _condition(reference, factor)
+        pairs = []
+        for key, left in sorted(indexed[baseline].items()):
+            right = indexed[candidate][key]
+            if _condition(left, factor) != condition or _condition(right, factor) != condition:
+                raise ValueError(f"Mismatched model/configuration for {key[0]}")
+            for field in ("actual_models", "usage_sources"):
+                expected = set(reference.get(field, []))
+                if set(left.get(field, [])) != expected or set(right.get(field, [])) != expected:
+>                   raise ValueError(f"Mismatched {field} for {key[0]}")
+E                   ValueError: Mismatched actual_models for failed
+
+src\budget_agent\paired.py:107: ValueError
+_ test_missing_metadata_never_qualifies_a_claimed_success[False-actual_models] _
+
+tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-113/test_missing_metadata_never_qu0')
+field = 'actual_models', missing = False
+
+    @pytest.mark.parametrize("field", ["actual_models", "usage_sources"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_missing_metadata_never_qualifies_a_claimed_success(tmp_path, field, missing):
+        left = result(tmp_path, "recent", resolved=False)
+        right = result(tmp_path, "structured")
+        if missing:
+            del right[field]
+        else:
+            right[field] = []
+>       report = analyze_paired([left, right], "recent", "structured")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_paired.py:241: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+results = [{'task_id': 'task1', 'task_fingerprint': 'fingerprint-task1', 'strategy': 'recent', 'provider': 'transformers', ...}, {'task_id': 'task1', 'task_fingerprint': 'fingerprint-task1', 'strategy': 'structured', 'provider': 'transformers', ...}]
+baseline = 'recent', candidate = 'structured', factor = 'strategy'
+
+    def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor: str = "strategy") -> dict:
+        if factor not in FACTORS:
+            raise ValueError("factor must be one of " + ", ".join(FACTORS))
+        if baseline == candidate:
+            raise ValueError("Baseline and candidate must differ")
+        indexed: dict[str, dict[tuple, dict]] = {baseline: {}, candidate: {}}
+        for result in results:
+            level = _factor_value(result, factor)
+            if level not in indexed:
+                continue
+            if not result.get("task_fingerprint"):
+                raise ValueError(f"Missing task fingerprint: {result['task_id']}")
+            key = (result["task_id"], result["task_fingerprint"], result["config"].get("seed", 0))
+            if key in indexed[level]:
+                raise ValueError(f"Duplicate attempt for {factor}={level}: {key}")
+            indexed[level][key] = result
+        if not indexed[baseline] or not indexed[candidate]:
+            raise ValueError(f"Both requested {factor} levels need saved results")
+        if indexed[baseline].keys() != indexed[candidate].keys():
+            raise ValueError("Unmatched task/fingerprint/repetition sets; do not silently drop missing attempts")
+        reference = next(iter(indexed[baseline].values()))
+        condition = _condition(reference, factor)
+        pairs = []
+        for key, left in sorted(indexed[baseline].items()):
+            right = indexed[candidate][key]
+            if _condition(left, factor) != condition or _condition(right, factor) != condition:
+                raise ValueError(f"Mismatched model/configuration for {key[0]}")
+            for field in ("actual_models", "usage_sources"):
+                expected = set(reference.get(field, []))
+                if set(left.get(field, [])) != expected or set(right.get(field, [])) != expected:
+>                   raise ValueError(f"Mismatched {field} for {key[0]}")
+E                   ValueError: Mismatched actual_models for task1
+
+src\budget_agent\paired.py:107: ValueError
+_ test_missing_metadata_never_qualifies_a_claimed_success[False-usage_sources] _
+
+tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-113/test_missing_metadata_never_qu1')
+field = 'usage_sources', missing = False
+
+    @pytest.mark.parametrize("field", ["actual_models", "usage_sources"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_missing_metadata_never_qualifies_a_claimed_success(tmp_path, field, missing):
+        left = result(tmp_path, "recent", resolved=False)
+        right = result(tmp_path, "structured")
+        if missing:
+            del right[field]
+        else:
+            right[field] = []
+>       report = analyze_paired([left, right], "recent", "structured")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_paired.py:241: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+results = [{'task_id': 'task1', 'task_fingerprint': 'fingerprint-task1', 'strategy': 'recent', 'provider': 'transformers', ...}, {'task_id': 'task1', 'task_fingerprint': 'fingerprint-task1', 'strategy': 'structured', 'provider': 'transformers', ...}]
+baseline = 'recent', candidate = 'structured', factor = 'strategy'
+
+    def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor: str = "strategy") -> dict:
+        if factor not in FACTORS:
+            raise ValueError("factor must be one of " + ", ".join(FACTORS))
+        if baseline == candidate:
+            raise ValueError("Baseline and candidate must differ")
+        indexed: dict[str, dict[tuple, dict]] = {baseline: {}, candidate: {}}
+        for result in results:
+            level = _factor_value(result, factor)
+            if level not in indexed:
+                continue
+            if not result.get("task_fingerprint"):
+                raise ValueError(f"Missing task fingerprint: {result['task_id']}")
+            key = (result["task_id"], result["task_fingerprint"], result["config"].get("seed", 0))
+            if key in indexed[level]:
+                raise ValueError(f"Duplicate attempt for {factor}={level}: {key}")
+            indexed[level][key] = result
+        if not indexed[baseline] or not indexed[candidate]:
+            raise ValueError(f"Both requested {factor} levels need saved results")
+        if indexed[baseline].keys() != indexed[candidate].keys():
+            raise ValueError("Unmatched task/fingerprint/repetition sets; do not silently drop missing attempts")
+        reference = next(iter(indexed[baseline].values()))
+        condition = _condition(reference, factor)
+        pairs = []
+        for key, left in sorted(indexed[baseline].items()):
+            right = indexed[candidate][key]
+            if _condition(left, factor) != condition or _condition(right, factor) != condition:
+                raise ValueError(f"Mismatched model/configuration for {key[0]}")
+            for field in ("actual_models", "usage_sources"):
+                expected = set(reference.get(field, []))
+                if set(left.get(field, [])) != expected or set(right.get(field, [])) != expected:
+>                   raise ValueError(f"Mismatched {field} for {key[0]}")
+E                   ValueError: Mismatched usage_sources for task1
+
+src\budget_agent\paired.py:107: ValueError
+_ test_missing_metadata_never_qualifies_a_claimed_success[True-actual_models] _
+
+tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-113/test_missing_metadata_never_qu2')
+field = 'actual_models', missing = True
+
+    @pytest.mark.parametrize("field", ["actual_models", "usage_sources"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_missing_metadata_never_qualifies_a_claimed_success(tmp_path, field, missing):
+        left = result(tmp_path, "recent", resolved=False)
+        right = result(tmp_path, "structured")
+        if missing:
+            del right[field]
+        else:
+            right[field] = []
+>       report = analyze_paired([left, right], "recent", "structured")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_paired.py:241: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+results = [{'task_id': 'task1', 'task_fingerprint': 'fingerprint-task1', 'strategy': 'recent', 'provider': 'transformers', ...}, {'task_id': 'task1', 'task_fingerprint': 'fingerprint-task1', 'strategy': 'structured', 'provider': 'transformers', ...}]
+baseline = 'recent', candidate = 'structured', factor = 'strategy'
+
+    def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor: str = "strategy") -> dict:
+        if factor not in FACTORS:
+            raise ValueError("factor must be one of " + ", ".join(FACTORS))
+        if baseline == candidate:
+            raise ValueError("Baseline and candidate must differ")
+        indexed: dict[str, dict[tuple, dict]] = {baseline: {}, candidate: {}}
+        for result in results:
+            level = _factor_value(result, factor)
+            if level not in indexed:
+                continue
+            if not result.get("task_fingerprint"):
+                raise ValueError(f"Missing task fingerprint: {result['task_id']}")
+            key = (result["task_id"], result["task_fingerprint"], result["config"].get("seed", 0))
+            if key in indexed[level]:
+                raise ValueError(f"Duplicate attempt for {factor}={level}: {key}")
+            indexed[level][key] = result
+        if not indexed[baseline] or not indexed[candidate]:
+            raise ValueError(f"Both requested {factor} levels need saved results")
+        if indexed[baseline].keys() != indexed[candidate].keys():
+            raise ValueError("Unmatched task/fingerprint/repetition sets; do not silently drop missing attempts")
+        reference = next(iter(indexed[baseline].values()))
+        condition = _condition(reference, factor)
+        pairs = []
+        for key, left in sorted(indexed[baseline].items()):
+            right = indexed[candidate][key]
+            if _condition(left, factor) != condition or _condition(right, factor) != condition:
+                raise ValueError(f"Mismatched model/configuration for {key[0]}")
+            for field in ("actual_models", "usage_sources"):
+                expected = set(reference.get(field, []))
+                if set(left.get(field, [])) != expected or set(right.get(field, [])) != expected:
+>                   raise ValueError(f"Mismatched {field} for {key[0]}")
+E                   ValueError: Mismatched actual_models for task1
+
+src\budget_agent\paired.py:107: ValueError
+_ test_missing_metadata_never_qualifies_a_claimed_success[True-usage_sources] _
+
+tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-113/test_missing_metadata_never_qu3')
+field = 'usage_sources', missing = True
+
+    @pytest.mark.parametrize("field", ["actual_models", "usage_sources"])
+    @pytest.mark.parametrize("missing", [False, True])
+    def test_missing_metadata_never_qualifies_a_claimed_success(tmp_path, field, missing):
+        left = result(tmp_path, "recent", resolved=False)
+        right = result(tmp_path, "structured")
+        if missing:
+            del right[field]
+        else:
+            right[field] = []
+>       report = analyze_paired([left, right], "recent", "structured")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_paired.py:241: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+results = [{'task_id': 'task1', 'task_fingerprint': 'fingerprint-task1', 'strategy': 'recent', 'provider': 'transformers', ...}, {'task_id': 'task1', 'task_fingerprint': 'fingerprint-task1', 'strategy': 'structured', 'provider': 'transformers', ...}]
+baseline = 'recent', candidate = 'structured', factor = 'strategy'
+
+    def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor: str = "strategy") -> dict:
+        if factor not in FACTORS:
+            raise ValueError("factor must be one of " + ", ".join(FACTORS))
+        if baseline == candidate:
+            raise ValueError("Baseline and candidate must differ")
+        indexed: dict[str, dict[tuple, dict]] = {baseline: {}, candidate: {}}
+        for result in results:
+            level = _factor_value(result, factor)
+            if level not in indexed:
+                continue
+            if not result.get("task_fingerprint"):
+                raise ValueError(f"Missing task fingerprint: {result['task_id']}")
+            key = (result["task_id"], result["task_fingerprint"], result["config"].get("seed", 0))
+            if key in indexed[level]:
+                raise ValueError(f"Duplicate attempt for {factor}={level}: {key}")
+            indexed[level][key] = result
+        if not indexed[baseline] or not indexed[candidate]:
+            raise ValueError(f"Both requested {factor} levels need saved results")
+        if indexed[baseline].keys() != indexed[candidate].keys():
+            raise ValueError("Unmatched task/fingerprint/repetition sets; do not silently drop missing attempts")
+        reference = next(iter(indexed[baseline].values()))
+        condition = _condition(reference, factor)
+        pairs = []
+        for key, left in sorted(indexed[baseline].items()):
+            right = indexed[candidate][key]
+            if _condition(left, factor) != condition or _condition(right, factor) != condition:
+                raise ValueError(f"Mismatched model/configuration for {key[0]}")
+            for field in ("actual_models", "usage_sources"):
+                expected = set(reference.get(field, []))
+                if set(left.get(field, [])) != expected or set(right.get(field, [])) != expected:
+>                   raise ValueError(f"Mismatched {field} for {key[0]}")
+E                   ValueError: Mismatched usage_sources for task1
+
+src\budget_agent\paired.py:107: ValueError
+_________________ test_all_unknown_metadata_stays_unverified __________________
+
+tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-113/test_all_unknown_metadata_stay0')
+
+    def test_all_unknown_metadata_stays_unverified(tmp_path):
+        runs = [result(tmp_path, "recent", resolved=False, actual_models=[], usage_sources=[]),
+                result(tmp_path, "structured", actual_models=[], usage_sources=[])]
+        report = analyze_paired(runs, "recent", "structured")
+>       assert report["matched_pairs"] == 1 and report["eligible_graded_pairs"] == 0
+E       assert (1 == 1 and 1 == 0)
+
+tests\test_paired.py:252: AssertionError
+_ test_unknown_reference_cannot_hide_known_metadata_conflict[usage_sources-changed1] _
+
+tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-113/test_unknown_reference_cannot_1')
+field = 'usage_sources', changed = ['estimated']
+
+    @pytest.mark.parametrize("field, changed", [("actual_models", ["different-model"]),
+                                               ("usage_sources", ["estimated"])])
+    def test_unknown_reference_cannot_hide_known_metadata_conflict(tmp_path, field, changed):
+        unknown = [result(tmp_path, "recent", "unknown", actual_models=[], usage_sources=[]),
+                   result(tmp_path, "structured", "unknown", actual_models=[], usage_sources=[])]
+        known = [result(tmp_path, "recent", "known"),
+                 result(tmp_path, "structured", "known", **{field: changed})]
+        for runs in [unknown + known, known + unknown]:
+>           with pytest.raises(ValueError, match=field):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: Regex pattern did not match.
+E             Expected regex: 'usage_sources'
+E             Actual message: 'Mismatched actual_models for known'
+
+tests\test_paired.py:265: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_paired.py::test_missing_response_metadata_keeps_failed_pair_and_valid_pair[False-baseline]
+FAILED tests/test_paired.py::test_missing_response_metadata_keeps_failed_pair_and_valid_pair[False-candidate]
+FAILED tests/test_paired.py::test_missing_response_metadata_keeps_failed_pair_and_valid_pair[True-baseline]
+FAILED tests/test_paired.py::test_missing_response_metadata_keeps_failed_pair_and_valid_pair[True-candidate]
+FAILED tests/test_paired.py::test_missing_metadata_never_qualifies_a_claimed_success[False-actual_models]
+FAILED tests/test_paired.py::test_missing_metadata_never_qualifies_a_claimed_success[False-usage_sources]
+FAILED tests/test_paired.py::test_missing_metadata_never_qualifies_a_claimed_success[True-actual_models]
+FAILED tests/test_paired.py::test_missing_metadata_never_qualifies_a_claimed_success[True-usage_sources]
+FAILED tests/test_paired.py::test_all_unknown_metadata_stays_unverified - ass...
+FAILED tests/test_paired.py::test_unknown_reference_cannot_hide_known_metadata_conflict[usage_sources-changed1]
+10 failed, 33 passed in 0.36s

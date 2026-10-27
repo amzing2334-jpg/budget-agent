@@ -1,0 +1,56 @@
+{
+  "kind": "cpu_software_validation_not_model_evaluation",
+  "created_at_utc": "2026-10-27T04:21:16.728581+00:00",
+  "source_fingerprint": "ef11d510f9ad840b30c9cd1143d249c0c1d2445d66aff49b0545a316ffd7d67a",
+  "base_commit": "4a3bd99aa6333537b2f541bf4ddeda253e8a86a9",
+  "grader_regression_before": {
+    "failed": 12,
+    "passed": 46
+  },
+  "paired_regression_before": {
+    "failed": 10,
+    "passed": 33
+  },
+  "legacy_grader_regression_before": {
+    "failed": 3,
+    "passed": 36
+  },
+  "full_suite": {
+    "passed": 561,
+    "skipped": 8,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 36.964
+  },
+  "skip_reasons": {
+    "optional_torch_modules_unavailable": 2,
+    "pinned_mini_swe_upstream_path_unset": 6
+  },
+  "checks": [
+    "real_local_verifier_missing_dependency_and_early_exit_no_episode",
+    "completed_verifier_failure_reward_zero_success_reward_one",
+    "docker_grader_contract_with_cpu_process_double",
+    "legacy_fixture_verdict_ungraded_in_report_and_paired_original_bytes_unchanged",
+    "paired_unknown_metadata_preserves_ledger_and_known_conflicts_still_rejected",
+    "paired_input_order_invariance"
+  ],
+  "real_model_requests": 0,
+  "new_rentals": 0,
+  "local_training": false,
+  "independent_review": "Completed tests retain valid negative rewards. Import-time failures conservatively ungraded; no RL efficacy claim.",
+  "cloud_check": {
+    "checked_at": "2026-10-27 12:05 Asia/Shanghai",
+    "running_instances_visible": 0,
+    "available_offers_visible": 0,
+    "billing_verified": false
+  },
+  "sha256": {
+    "grader-before.txt": "8cd499982be9663a7e5f8e7d7a33c656fd922e379a66f4443e20bc61e2e836c0",
+    "legacy-grader-before.txt": "0b84d4aadd3e4389ee9e5b29b6f8f6ca3bcdf7ffb9d30288679aad23b7f323aa",
+    "paired-before.txt": "88d2d59536d002a8a0029f8f757cf69427989205c8e777a6816c08d2fa590d93",
+    "paired-contract.json": "b96a4cdaef037705db403c70a36e80d93d2b3a77807ab3f317af550bf2c34b47",
+    "pytest-pre-legacy.xml": "d2c1461d805013e952af91510c087bc8529ee00be7d8b6b43ff2cbcedfca520d",
+    "pytest.xml": "8f3eb241fab67937a46f2d2a50dcecce658aaec81a13e13b0caa9e39b3a81f21",
+    "reference-plan.json": "adf17c3c7bbaa22d2c6260dddefa37cb43da8864e75a10b08094170279569f55"
+  }
+}

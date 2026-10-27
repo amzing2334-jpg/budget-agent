@@ -25,6 +25,8 @@ v2 在 v1 执行与评分环境上增加开源模型、LoRA、SFT 和真实的�
 
 历史 v2 的 SFT 验证与 RL 试跑详见 [v2 验证记录](VALIDATION_V2.md)。`runs/learning-v2/grpo` 中受评分解析错误影响的更新仍然无效；代码修复不会追溯性地使旧更新变有效，后续必须从有效检查点在云端重新采样。当前真实仓库方向的 7B 推理验证与本节 0.5B 训练流程不同，推理或评分通过都不等于完成了 SFT 或 RL。
 
+2026-10-27 评分合同补充：只有完成了有效独立测试，或明确违反补丁规则，才有终局奖励。缺少完成标记、零测试和全部跳过现在返回 `None/grading_error`，保留 `grade.json / trajectory.jsonl / patch.diff`，不生成可训练 `episode.json`。模型造成的源码导入期错误暂时也会保守终止该组；正式 RL 前需进一步区分模型错误与环境装配错误。本次只用固定假策略做 CPU 验收，没有训练效果结论，见[完整边界](GRADING_COMPLETENESS_VALIDATION.md)。
+
 ## 环境与命令
 
 当前 Featurize 云端 Linux 已完成 RTX 4090 24GB 的 CUDA/BF16 运算和 Docker 执行检查，具体环境见 [云端配置记录](CLOUD_SETUP_FEATURIZE.md)。这些检查证明环境可用，不证明任何模型训练已经成功。

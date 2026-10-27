@@ -56,6 +56,11 @@ def is_infrastructure_error(result: dict[str, Any]) -> bool:
 def verified_outcome(result: dict[str, Any]) -> bool | None:
     """One verifier interpretation for aggregate reports and paired comparisons."""
     evaluation = result.get("evaluation", {})
+    # Older fixture graders encoded incomplete verification as resolved=False.
+    if evaluation.get("status") in {"resolved", "unresolved"} and "test_results" in evaluation:
+        verdict = evaluation["test_results"]
+        if verdict is None or verdict["tests_run"] <= verdict["skipped"]:
+            return None
     ungraded = {"official_empty_patch", "pending_official_evaluation", "not_evaluated", "pending", "ungraded"}
     if (is_infrastructure_error(result) or result.get("status") == "interrupted"
             or result.get("status") in ungraded or evaluation.get("status") in ungraded

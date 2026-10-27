@@ -243,17 +243,20 @@ def _verification_command(python: str) -> tuple[list[str], str]:
     return [python, "-c", code], marker
 
 
-def _verified(result: dict[str, Any], marker: str) -> tuple[bool, dict[str, Any] | None]:
+def _verified(result: dict[str, Any], marker: str) -> tuple[bool | None, dict[str, Any] | None]:
+    """An incomplete verifier has no outcome, even when its process exits zero."""
     if not result["ok"]:
-        return False, None
+        return None, None
     for line in result["output"].splitlines():
         if marker in line:
             try:
                 verdict = json.loads(line.partition(marker)[2])
-                return (bool(verdict["successful"] and verdict["tests_run"] > verdict["skipped"]), verdict)
+                if verdict["tests_run"] <= verdict["skipped"]:
+                    return None, verdict
+                return bool(verdict["successful"]), verdict
             except (ValueError, KeyError, TypeError):
-                return False, None
-    return False, None
+                return None, None
+    return None, None
 
 
 class LocalEnvironment:
@@ -351,7 +354,8 @@ class LocalEnvironment:
                 command, marker = _verification_command(sys.executable)
                 result = _process(command, grading, self.config.timeout_seconds)
             resolved, verdict = _verified(result, marker)
-            return {"resolved": resolved, "status": "resolved" if resolved else "unresolved", "output": result["output"], "test_results": verdict, "duration_seconds": time.monotonic() - started}
+            status = "grading_error" if resolved is None else "resolved" if resolved else "unresolved"
+            return {"resolved": resolved, "status": status, "output": result["output"], "test_results": verdict, "duration_seconds": time.monotonic() - started}
         except (OSError, EnvironmentError) as exc:
             return {"resolved": None, "status": "infrastructure_error", "output": str(exc), "duration_seconds": time.monotonic() - started}
 
@@ -507,7 +511,8 @@ print(h.hexdigest())'''
         if result.get("returncode") in {125, 126, 127} and not result.get("timed_out"):
             return {"resolved": None, "status": "infrastructure_error", "output": result["output"], "test_results": None, "duration_seconds": time.monotonic() - started}
         resolved, verdict = _verified(result, marker)
-        return {"resolved": resolved, "status": "resolved" if resolved else "unresolved", "output": result["output"], "test_results": verdict, "duration_seconds": time.monotonic() - started}
+        status = "grading_error" if resolved is None else "resolved" if resolved else "unresolved"
+        return {"resolved": resolved, "status": status, "output": result["output"], "test_results": verdict, "duration_seconds": time.monotonic() - started}
 
     def close(self) -> None:
         _process(["docker", "rm", "-f", self.container], self.run_dir, 15)

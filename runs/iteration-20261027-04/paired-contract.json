@@ -1,0 +1,302 @@
+{
+  "kind": "synthetic_cpu_contract_example_not_model_result",
+  "source_fingerprint": "ef11d510f9ad840b30c9cd1143d249c0c1d2445d66aff49b0545a316ffd7d67a",
+  "input_records": [
+    {
+      "task_id": "completed-fixture",
+      "task_fingerprint": "cpu-fixture-completed-fixture",
+      "source_fingerprint": "ef11d510f9ad840b30c9cd1143d249c0c1d2445d66aff49b0545a316ffd7d67a",
+      "strategy": "recent",
+      "provider": "scripted",
+      "model": "cpu-fixture",
+      "actual_models": [
+        "cpu-fixture"
+      ],
+      "usage_sources": [
+        "synthetic"
+      ],
+      "split": "dev",
+      "task_kind": "local",
+      "evidence_kind": "scripted_smoke",
+      "config": {
+        "strategy": "recent",
+        "seed": 0,
+        "total_tokens": 64000
+      },
+      "status": "finished",
+      "resolved": false,
+      "budget": {},
+      "usage_unknown": false,
+      "total_tokens": 1000,
+      "elapsed_seconds": 10,
+      "cost_usd": null,
+      "_result_path": "synthetic-only/completed-fixture-recent/result.json"
+    },
+    {
+      "task_id": "completed-fixture",
+      "task_fingerprint": "cpu-fixture-completed-fixture",
+      "source_fingerprint": "ef11d510f9ad840b30c9cd1143d249c0c1d2445d66aff49b0545a316ffd7d67a",
+      "strategy": "structured",
+      "provider": "scripted",
+      "model": "cpu-fixture",
+      "actual_models": [
+        "cpu-fixture"
+      ],
+      "usage_sources": [
+        "synthetic"
+      ],
+      "split": "dev",
+      "task_kind": "local",
+      "evidence_kind": "scripted_smoke",
+      "config": {
+        "strategy": "structured",
+        "seed": 0,
+        "total_tokens": 64000
+      },
+      "status": "finished",
+      "resolved": true,
+      "budget": {},
+      "usage_unknown": false,
+      "total_tokens": 800,
+      "elapsed_seconds": 10,
+      "cost_usd": null,
+      "_result_path": "synthetic-only/completed-fixture-structured/result.json"
+    },
+    {
+      "task_id": "request-failed-fixture",
+      "task_fingerprint": "cpu-fixture-request-failed-fixture",
+      "source_fingerprint": "ef11d510f9ad840b30c9cd1143d249c0c1d2445d66aff49b0545a316ffd7d67a",
+      "strategy": "recent",
+      "provider": "scripted",
+      "model": "cpu-fixture",
+      "actual_models": [
+        "cpu-fixture"
+      ],
+      "usage_sources": [
+        "synthetic"
+      ],
+      "split": "dev",
+      "task_kind": "local",
+      "evidence_kind": "scripted_smoke",
+      "config": {
+        "strategy": "recent",
+        "seed": 0,
+        "total_tokens": 64000
+      },
+      "status": "finished",
+      "resolved": false,
+      "budget": {},
+      "usage_unknown": false,
+      "total_tokens": 1000,
+      "elapsed_seconds": 10,
+      "cost_usd": null,
+      "_result_path": "synthetic-only/request-failed-fixture-recent/result.json"
+    },
+    {
+      "task_id": "request-failed-fixture",
+      "task_fingerprint": "cpu-fixture-request-failed-fixture",
+      "source_fingerprint": "ef11d510f9ad840b30c9cd1143d249c0c1d2445d66aff49b0545a316ffd7d67a",
+      "strategy": "structured",
+      "provider": "scripted",
+      "model": "cpu-fixture",
+      "actual_models": [],
+      "usage_sources": [],
+      "split": "dev",
+      "task_kind": "local",
+      "evidence_kind": "scripted_smoke",
+      "config": {
+        "strategy": "structured",
+        "seed": 0,
+        "total_tokens": 64000
+      },
+      "status": "model_error",
+      "resolved": null,
+      "budget": {
+        "unreconciled_request": true,
+        "attempted_calls": 1
+      },
+      "usage_unknown": true,
+      "total_tokens": 0,
+      "elapsed_seconds": 10,
+      "cost_usd": null,
+      "_result_path": "synthetic-only/request-failed-fixture-structured/result.json",
+      "calls": 0
+    }
+  ],
+  "report": {
+    "factor": "strategy",
+    "baseline": "recent",
+    "candidate": "structured",
+    "condition": {
+      "provider": "scripted",
+      "model": "cpu-fixture",
+      "split": "dev",
+      "task_kind": "local",
+      "evidence_kind": "scripted_smoke",
+      "harness": null,
+      "config": {
+        "total_tokens": 64000
+      },
+      "source_fingerprint": "ef11d510f9ad840b30c9cd1143d249c0c1d2445d66aff49b0545a316ffd7d67a",
+      "model_metadata": null
+    },
+    "matched_pairs": 2,
+    "eligible_graded_pairs": 1,
+    "outcome_counts": {
+      "baseline": {
+        "failure": 2
+      },
+      "candidate": {
+        "success": 1,
+        "infrastructure_error": 1
+      }
+    },
+    "candidate_wins": 1,
+    "baseline_wins": 0,
+    "mean_candidate_minus_baseline": {
+      "total_tokens": {
+        "n": 1,
+        "mean": -200
+      },
+      "elapsed_seconds": {
+        "n": 1,
+        "mean": 0
+      },
+      "cost_usd": {
+        "n": 0,
+        "mean": null
+      },
+      "repeat_reads_same_revision": {
+        "n": 0,
+        "mean": null
+      },
+      "invalid_actions": {
+        "n": 0,
+        "mean": null
+      },
+      "failed_tool_actions": {
+        "n": 0,
+        "mean": null
+      }
+    },
+    "pairs": [
+      {
+        "task_id": "completed-fixture",
+        "task_fingerprint": "cpu-fixture-completed-fixture",
+        "seed": 0,
+        "evidence_kind": "scripted_smoke",
+        "eligible_graded_pair": true,
+        "ineligible_reasons": [],
+        "baseline": {
+          "outcome": "failure",
+          "resolved": false,
+          "budget_valid": true,
+          "status": "finished",
+          "evaluation_status": null,
+          "actual_models": [
+            "cpu-fixture"
+          ],
+          "usage_sources": [
+            "synthetic"
+          ],
+          "total_tokens": 1000,
+          "elapsed_seconds": 10,
+          "cost_usd": null,
+          "repeat_reads_same_revision": null,
+          "invalid_actions": null,
+          "failed_tool_actions": null
+        },
+        "candidate": {
+          "outcome": "success",
+          "resolved": true,
+          "budget_valid": true,
+          "status": "finished",
+          "evaluation_status": null,
+          "actual_models": [
+            "cpu-fixture"
+          ],
+          "usage_sources": [
+            "synthetic"
+          ],
+          "total_tokens": 800,
+          "elapsed_seconds": 10,
+          "cost_usd": null,
+          "repeat_reads_same_revision": null,
+          "invalid_actions": null,
+          "failed_tool_actions": null
+        },
+        "candidate_minus_baseline": {
+          "total_tokens": -200,
+          "elapsed_seconds": 0,
+          "cost_usd": null,
+          "repeat_reads_same_revision": null,
+          "invalid_actions": null,
+          "failed_tool_actions": null
+        }
+      },
+      {
+        "task_id": "request-failed-fixture",
+        "task_fingerprint": "cpu-fixture-request-failed-fixture",
+        "seed": 0,
+        "evidence_kind": "scripted_smoke",
+        "eligible_graded_pair": false,
+        "ineligible_reasons": [
+          "candidate: infrastructure_error",
+          "candidate: invalid_budget",
+          "candidate: missing actual_models",
+          "candidate: missing usage_sources"
+        ],
+        "baseline": {
+          "outcome": "failure",
+          "resolved": false,
+          "budget_valid": true,
+          "status": "finished",
+          "evaluation_status": null,
+          "actual_models": [
+            "cpu-fixture"
+          ],
+          "usage_sources": [
+            "synthetic"
+          ],
+          "total_tokens": 1000,
+          "elapsed_seconds": 10,
+          "cost_usd": null,
+          "repeat_reads_same_revision": null,
+          "invalid_actions": null,
+          "failed_tool_actions": null
+        },
+        "candidate": {
+          "outcome": "infrastructure_error",
+          "resolved": null,
+          "budget_valid": false,
+          "status": "model_error",
+          "evaluation_status": null,
+          "actual_models": [],
+          "usage_sources": [],
+          "total_tokens": 0,
+          "elapsed_seconds": 10,
+          "cost_usd": null,
+          "repeat_reads_same_revision": null,
+          "invalid_actions": null,
+          "failed_tool_actions": null
+        },
+        "candidate_minus_baseline": {
+          "total_tokens": -1000,
+          "elapsed_seconds": 0,
+          "cost_usd": null,
+          "repeat_reads_same_revision": null,
+          "invalid_actions": null,
+          "failed_tool_actions": null
+        }
+      }
+    ],
+    "notes": [
+      "Descriptive paired results only; no significance or generalization claim.",
+      "Only the declared factor may differ; task, source, model, other configuration, and repetition labels must match.",
+      "Means and wins exclude ungraded, infrastructure-error, invalid-budget, and missing-metadata pairs; all attempts remain in the ledger.",
+      "Repeated reads and failed tool actions are behavior proxies, not proof of wasted work or incorrect reasoning.",
+      "GPU rental and setup cost are not measured by model cost_usd; unknown cost remains null.",
+      "Scripted smoke results are infrastructure evidence, not model capability evidence."
+    ]
+  }
+}

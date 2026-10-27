@@ -8,6 +8,7 @@ from budget_agent.report import aggregate, generate_report
 
 def row(**changes):
     item = {"task_id": "task-a", "split": "dev", "task_kind": "local", "provider": "scripted", "model": "fixture", "strategy": "full", "config": {"context_tokens": 4000, "total_tokens": 16000, "tokenizer": "byte", "seed": 0, "strategy": "full"}, "resolved": True, "status": "resolved", "input_tokens": 100, "output_tokens": 20, "cost_usd": None, "elapsed_seconds": 1, "evidence_kind": "scripted_smoke", "usage_sources": ["estimated"]}
+    item["actual_models"] = ["fixture"]
     item.update(changes)
     return item
 
@@ -226,6 +227,50 @@ def test_aggregate_html_and_paired_share_verifier_interpretation(tmp_path, chang
     assert paired["candidate_wins"] == paired["eligible_graded_pairs"] == 0
     assert "<td>0 / 0 / 1</td>" in paths["html"].read_text(encoding="utf-8")
     assert "<td>success</td>" not in paths["html"].read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("verdict", [None,
+    {"successful": True, "tests_run": 0, "skipped": 0},
+    {"successful": True, "tests_run": 2, "skipped": 2}])
+def test_legacy_incomplete_fixture_grade_stays_ungraded_without_rewriting_evidence(tmp_path, verdict):
+    from budget_agent.paired import analyze_paired
+
+    run = tmp_path / "run"
+    run.mkdir()
+    candidate = row(task_fingerprint="same", resolved=False,
+                    evaluation={"status": "unresolved", "resolved": False, "test_results": verdict},
+                    _result_path=str(run / "result.json"))
+    path = Path(candidate["_result_path"])
+    path.write_text(json.dumps(candidate), encoding="utf-8")
+    before = path.read_bytes()
+    baseline = row(strategy="recent", task_fingerprint="same",
+                   config={**candidate["config"], "strategy": "recent"},
+                   _result_path=str(tmp_path / "baseline" / "result.json"))
+    grouped = aggregate([candidate])[0]
+    paired = analyze_paired([baseline, candidate], "recent", "full")
+    report = generate_report(run, tmp_path / "report")
+    assert grouped["attempted"] == grouped["pending_or_ungraded"] == 1
+    assert grouped["graded"] == 0 and grouped["success_rate"] is None
+    assert paired["eligible_graded_pairs"] == paired["baseline_wins"] == 0
+    assert paired["pairs"][0]["ineligible_reasons"] == ["candidate: ungraded"]
+    assert "<td>0 / 0 / 1</td>" in report["html"].read_text(encoding="utf-8")
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("evaluation", [
+    {"status": "unresolved", "resolved": False,
+     "test_results": {"successful": False, "tests_run": 1, "skipped": 0}},
+    {"status": "invalid_patch", "resolved": False},
+    {"status": "official_swebench", "resolved": False},
+])
+def test_completed_failures_and_explicit_patch_rejection_still_count(evaluation):
+    from budget_agent.report import verified_outcome
+
+    record = row(resolved=False, evaluation=evaluation)
+    if evaluation["status"] == "official_swebench":
+        record["task_kind"] = "swebench"
+    assert verified_outcome(record) is False
+    assert aggregate([record])[0]["graded"] == 1
 
 
 def test_read_loop_report_uses_stored_signals_and_preserves_legacy_unknowns(tmp_path):

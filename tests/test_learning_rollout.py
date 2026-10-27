@@ -140,3 +140,40 @@ def test_environment_is_closed_when_generation_fails(tmp_path, monkeypatch, task
 def test_local_model_execution_requires_explicit_opt_in(tmp_path, task):
     with pytest.raises(EnvironmentError, match="not sandboxed"):
         sample_episode(task, TokenPolicy([]), TrainingConfig(environment="local"), tmp_path)
+
+
+@pytest.mark.parametrize("mode", ["missing_dependency", "early_exit", "failure", "success"])
+def test_real_grader_only_completed_tests_create_training_episode(tmp_path, mode):
+    repo = tmp_path / "source"
+    repo.mkdir()
+    (repo / "solution.py").write_text("VALUE = 0\n", encoding="utf-8")
+    verifier = tmp_path / "verifier.py"
+    verifier.write_text(
+        "import missing_budget_agent_verifier_dependency\n" if mode == "missing_dependency" else
+        "import unittest\nfrom solution import VALUE\n"
+        "class Tests(unittest.TestCase):\n"
+        "    def test_value(self): self.assertEqual(VALUE, 1)\n", encoding="utf-8")
+    task = Task("reward-contract", "Fix VALUE", "train", repo=str(repo), verifier=str(verifier))
+    actions = []
+    if mode in {"early_exit", "success"}:
+        actions.append(json.dumps({"tool": "write_file", "path": "solution.py",
+                                   "content": "import os\nos._exit(0)\n" if mode == "early_exit" else "VALUE = 1\n"}))
+    actions.append('{"tool":"finish"}')
+    config = TrainingConfig(environment="local", allow_local_execution=True,
+                            context_tokens=4096, total_tokens=16000)
+    run = tmp_path / "run"
+    if mode in {"missing_dependency", "early_exit"}:
+        with pytest.raises(EnvironmentError, match="No training reward: grader returned grading_error"):
+            sample_episode(task, TokenPolicy(actions), config, run)
+        assert not (run / "episode.json").exists()
+        grade = json.loads((run / "grade.json").read_text())
+        assert grade["resolved"] is None and grade["test_results"] is None
+        if mode == "missing_dependency":
+            assert "ModuleNotFoundError" in grade["output"]
+    else:
+        episode = sample_episode(task, TokenPolicy(actions), config, run)
+        assert episode.resolved is (mode == "success")
+        assert episode.reward == float(mode == "success")
+        assert (run / "episode.json").is_file()
+    assert (run / "patch.diff").is_file()
+    assert (run / "trajectory.jsonl").is_file()

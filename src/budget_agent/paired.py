@@ -97,30 +97,39 @@ def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor
     reference = next(iter(indexed[baseline].values()))
     condition = _condition(reference, factor)
     pairs = []
+    known_metadata: dict[str, set[str]] = {}
     for key, left in sorted(indexed[baseline].items()):
         right = indexed[candidate][key]
         if _condition(left, factor) != condition or _condition(right, factor) != condition:
             raise ValueError(f"Mismatched model/configuration for {key[0]}")
         for field in ("actual_models", "usage_sources"):
-            expected = set(reference.get(field, []))
-            if set(left.get(field, [])) != expected or set(right.get(field, [])) != expected:
-                raise ValueError(f"Mismatched {field} for {key[0]}")
+            for result in (left, right):
+                observed = set(result.get(field) or [])
+                if observed and observed != known_metadata.setdefault(field, observed):
+                    raise ValueError(f"Mismatched {field} for {key[0]}")
         outcomes = [_outcome(left), _outcome(right)]
-        eligible = (all(outcome in {"success", "failure"} for outcome in outcomes)
-                    and _budget_valid(left) and _budget_valid(right))
-        records = []
-        for result, outcome in zip((left, right), outcomes):
+        records, ineligible_reasons = [], []
+        for side, result, outcome in zip(("baseline", "candidate"), (left, right), outcomes):
+            budget_valid = _budget_valid(result)
+            if outcome not in {"success", "failure"}:
+                ineligible_reasons.append(f"{side}: {outcome}")
+            if not budget_valid:
+                ineligible_reasons.append(f"{side}: invalid_budget")
+            for field in ("actual_models", "usage_sources"):
+                if not result.get(field):
+                    ineligible_reasons.append(f"{side}: missing {field}")
             records.append({"outcome": outcome, "resolved": result.get("resolved"),
-                            "budget_valid": _budget_valid(result), "status": result["status"],
+                            "budget_valid": budget_valid, "status": result["status"],
                             "evaluation_status": result.get("evaluation", {}).get("status"),
-                            **{field: result.get(field) for field in ("total_tokens", "elapsed_seconds", "cost_usd")},
+                            **{field: result.get(field) for field in ("actual_models", "usage_sources", "total_tokens", "elapsed_seconds", "cost_usd")},
                             **_behavior(result)})
         deltas = {}
         for field in ("total_tokens", "elapsed_seconds", "cost_usd", "repeat_reads_same_revision", "invalid_actions", "failed_tool_actions"):
             values = [record[field] for record in records]
             deltas[field] = values[1] - values[0] if all(isinstance(value, (int, float)) for value in values) else None
         pairs.append({"task_id": key[0], "task_fingerprint": key[1], "seed": key[2],
-                      "evidence_kind": left.get("evidence_kind"), "eligible_graded_pair": eligible,
+                      "evidence_kind": left.get("evidence_kind"), "eligible_graded_pair": not ineligible_reasons,
+                      "ineligible_reasons": ineligible_reasons,
                       "baseline": records[0], "candidate": records[1], "candidate_minus_baseline": deltas})
     eligible_pairs = [pair for pair in pairs if pair["eligible_graded_pair"]]
     means = {}
@@ -136,7 +145,7 @@ def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor
             "mean_candidate_minus_baseline": means, "pairs": pairs,
             "notes": ["Descriptive paired results only; no significance or generalization claim.",
                       "Only the declared factor may differ; task, source, model, other configuration, and repetition labels must match.",
-                      "Means and wins exclude ungraded, infrastructure-error, and invalid-budget pairs; all attempts remain in the ledger.",
+                      "Means and wins exclude ungraded, infrastructure-error, invalid-budget, and missing-metadata pairs; all attempts remain in the ledger.",
                       "Repeated reads and failed tool actions are behavior proxies, not proof of wasted work or incorrect reasoning.",
                       "GPU rental and setup cost are not measured by model cost_usd; unknown cost remains null.",
                       "Scripted smoke results are infrastructure evidence, not model capability evidence."]}

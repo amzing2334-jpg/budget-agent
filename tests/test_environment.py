@@ -113,8 +113,65 @@ def test_zero_exit_during_import_cannot_fake_test_success(tmp_path):
     env = create_environment(load_task(), RunConfig(), tmp_path / "run")
     env.execute({"tool": "write_file", "path": "slugify.py", "content": "import os\nos._exit(0)\n"})
     result = env.grade()
-    assert result["resolved"] is False
+    assert result["resolved"] is None
+    assert result["status"] == "grading_error"
     assert result["test_results"] is None
+
+
+@pytest.mark.parametrize("verifier", [
+    "import missing_budget_agent_verifier_dependency\n",
+    "# No tests discovered\n",
+    "import unittest\n@unittest.skip('dependency unavailable')\n"
+    "class Tests(unittest.TestCase):\n    def test_skipped(self): pass\n",
+])
+def test_unscored_local_verifier_is_not_a_failed_repair(tmp_path, verifier):
+    task = load_task()
+    path = tmp_path / "verifier.py"
+    path.write_text(verifier, encoding="utf-8")
+    task.verifier = str(path)
+    result = create_environment(task, RunConfig(), tmp_path / "run").grade()
+    assert result["resolved"] is None
+    assert result["status"] == "grading_error"
+
+
+@pytest.mark.parametrize("output,ok", [
+    ("missing result marker", True),
+    ("GRADE_not-json", True),
+    ("GRADE_{}", True),
+    ("GRADE_" + json.dumps({"successful": True, "tests_run": 1, "skipped": 0}), False),
+])
+def test_incomplete_verification_cannot_produce_reward(output, ok):
+    assert _verified({"ok": ok, "output": output}, "GRADE_") == (None, None)
+
+
+@pytest.mark.parametrize("verdict,expected", [
+    (None, None),
+    ({"successful": True, "tests_run": 0, "skipped": 0}, None),
+    ({"successful": False, "tests_run": 1, "skipped": 0}, False),
+    ({"successful": True, "tests_run": 1, "skipped": 0}, True),
+])
+def test_docker_grading_distinguishes_unscored_from_failure(tmp_path, monkeypatch, verdict, expected):
+    import budget_agent.environment as module
+
+    env = DockerEnvironment.__new__(DockerEnvironment)
+    env.task, env.config = load_task(), RunConfig(environment="docker")
+    env.run_dir = tmp_path / "run"
+    env.local = create_environment(env.task, RunConfig(), env.run_dir)
+
+    def process(command, *args):
+        # Exercise the real grading command and verdict parser without starting Docker.
+        import re
+        marker = re.search(r"BUDGET_AGENT_GRADE_[a-f0-9]+", command[-1])[0]
+        output = "ModuleNotFoundError" if verdict is None else marker + json.dumps(verdict)
+        return {"ok": verdict is not None, "output": output,
+                "returncode": 1 if verdict is None else 0, "timed_out": False}
+
+    monkeypatch.setattr(module, "_process", process)
+    result = env.grade()
+    assert result["resolved"] is expected
+    assert result["status"] == ("grading_error" if expected is None else
+                                "resolved" if expected else "unresolved")
+    assert result["test_results"] == verdict
 
 
 def test_docker_patch_refuses_truncation_and_uses_original_commit():
