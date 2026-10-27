@@ -10,7 +10,7 @@ from statistics import mean
 from .report import is_infrastructure_error, load_results, verified_outcome
 
 
-FACTORS = ("strategy", "decision_policy", "loop_policy")
+FACTORS = ("strategy", "decision_policy", "loop_policy", "reflection_policy")
 
 
 def _factor_value(result: dict, factor: str) -> str:
@@ -19,7 +19,7 @@ def _factor_value(result: dict, factor: str) -> str:
         value = config.get("strategy", result.get("strategy"))
         if "strategy" in result and result["strategy"] != value:
             raise ValueError(f"Mismatched strategy fields for {result['task_id']}")
-    elif factor == "loop_policy":
+    elif factor in {"loop_policy", "reflection_policy"}:
         # Legacy runs predate loop control. This default applies only when it
         # is the explicitly selected comparison factor, not to other settings.
         value = config.get(factor, "off")

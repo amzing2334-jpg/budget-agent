@@ -2,6 +2,22 @@
 
 本文件是后续每 4 小时评估的入口。先读项目 AGENTS.md 和最新一轮记录，再选择一个有证据的瓶颈；不是每轮必须增加功能。所有模型效果结论必须对应真实运行和独立评分。招聘页面重新访问不等于新开 HC。
 
+## 2026-10-27 · 企业工程候选：反思、独立多维评测与执行治理
+
+用户明确要求深读 Reflexion、OpenJudge、Claw-Eval、AIG 并结合项目。本轮按固定上游commit阅读关键源码、反例与许可，实施有预算的反馈优化和可验收执行链路；详见 [设计与生产缺口](ENTERPRISE_AGENT_DESIGN.md)。不是完成全部上游基准或企业部署认证。
+
+实际交付：默认关闭的单次修复内反思，actor/summary/reflection同一账本，记忆有event/revision来源；restricted禁止自由shell、public_test只执行可信manifest argv、文件权限拒绝结构化记录且不触发反思；任务指纹纳入公开测试命令。quality/budget/safety各自pass/fail/unknown，任一失败或未知不能通过；真实OpenJudge BaseGrader/GradingRunner可选适配，GraderError不能被加权平均或CLI回退掩盖。新增audit命令、HTML合同表、候选配置与离线正负演示。
+
+深读依据：[Reflexion](UPSTREAM_REFLEXION_REVIEW.md)记录了旧实现隐式重试、宿主exec、空测试与论文快照差异；[OpenJudge/Claw-Eval](UPSTREAM_EVALUATION_REVIEW.md)记录错误聚合、评分阶段隔离、统计口径差异，纠正Claw-Eval为北大/港大团队而非阿里独立项目；[AIG](UPSTREAM_AIG_REVIEW.md)记录扫描失败与无确认漏洞的区别。没有直接部署扫描平台，没有执行AIG外部扫描或Claw-Eval300题。
+
+最终完整CPU **656 passed / 11 skipped**；专用官方OpenJudge源码环境 **42 passed / 0 skipped**，包括真实grader异常→CLI非零退出。11个主套件跳过记录是Torch模块2、固定mini-SWE6、可选OpenJudge3（对应的实际上游用例已在专用环境运行）。初次全回归16项失败来自旧Docker测试替身缺config，补齐测试契约而不是给生产代码默认放行。原始JUnit与阶段回执均保留，见 [cpu-validation.json](../runs/enterprise-contract-v1/cpu-validation.json)。
+
+[最终演示](../runs/enterprise-contract-v1/demo-final/report/report.html)是固定动作软件证据：失败锚点→一次反思→拒绝自由shell→修改→公开测试→独立评分通过；另一条公开测试通过但未修复的样本被独立评分拒绝。内置与真实OpenJudge审计都保留一正一负，因此整批退出1符合预期；不是模型成功率或抗注入成功率。
+
+能力边界：公开测试内部仍能执行源码并产生容器内副作用；未证明grader抵御恶意同进程代码；授权日志尚无外部签名存储；没有多租户服务、真实负载和AIG红队覆盖。下一步先完成已有授权的真实参考，再分别进行固定预算的反思消融和干净/注入仓库安全对照；目前还不能写量化修复收益或RL效果。
+
+本轮没有付费调用、训练或新租用。旧≤10元参考授权仍只用于那次待执行试跑，新候选实验不复用。对应 [更新参考计划](../runs/enterprise-contract-v1/reference-plan.json)冻结新源码但仍reflection=off/execution=sandbox，模型、题目、token/次数/时限不变。后续以本轮代码继续，不部署旧归档。三臂消融中的“显式重呈失败证据”条件尚待实现，不能声称已完成三臂实验。
+
 ## 2026-10-27 · 第五轮：评分完成性与失败记录
 
 状态：代码、独立审查与完整 CPU 验收完成，**561 passed / 8 skipped**。详见 [问题复现、官方来源与能力边界](GRADING_COMPLETENESS_VALIDATION.md)。本轮没有真实模型调用、租用或训练。

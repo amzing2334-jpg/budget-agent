@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -21,6 +22,7 @@ import uuid
 from typing import Any
 
 from .schema import RunConfig, Task
+from .security import execute_authorized
 
 
 class EnvironmentError(RuntimeError):
@@ -99,13 +101,13 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
         normalized = value.replace("\\", "/")
         relative = PurePosixPath(normalized)
         if not normalized or relative.is_absolute() or ":" in normalized or ".." in relative.parts or any(part.rstrip(". ").lower() == ".git" for part in relative.parts):
-            raise ValueError("path must remain inside the repository; .git is not accessible")
+            raise PermissionError("path must remain inside the repository; .git is not accessible")
         path = root.joinpath(*relative.parts)
         if path.is_symlink() or any(parent.is_symlink() for parent in path.parents if parent != root.parent):
-            raise ValueError("symlink paths are not accessible")
+            raise PermissionError("symlink paths are not accessible")
         resolved = path.resolve()
         if not resolved.is_relative_to(root):
-            raise ValueError("path escapes the workspace")
+            raise PermissionError("path escapes the workspace")
         return resolved
 
     def header(**metadata: Any) -> str:
@@ -199,7 +201,7 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
     parts = path.relative_to(root).parts
     permitted = relative in editable if editable is not None else not any(part in {"tests", "test", ".git"} for part in parts) and not path.name.startswith(("test_", "_private_"))
     if not permitted:
-        raise ValueError("this task only permits source edits; tests and verifier are protected")
+        raise PermissionError("this task only permits source edits; tests and verifier are protected")
     if tool == "write_file":
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(action["content"], encoding="utf-8")
@@ -290,6 +292,9 @@ class LocalEnvironment:
         return not any(p in {"tests", "test", ".git"} for p in parts) and not PurePosixPath(relative).name.startswith(("test_", "_private_"))
 
     def execute(self, action: dict[str, Any]) -> dict[str, Any]:
+        return execute_authorized(action, self.config, self.task, self._execute)
+
+    def _execute(self, action: dict[str, Any]) -> dict[str, Any]:
         started = time.monotonic()
         try:
             tool = action.get("tool")
@@ -297,11 +302,16 @@ class LocalEnvironment:
                 text = _repository_tool(self.workspace, action, self.task.metadata.get("editable"))
             elif tool == "run":
                 return _process(str(action["command"]), self.workspace, self.config.timeout_seconds, shell=True)
+            elif tool == "public_test":
+                return _process(self.task.test_command, self.workspace, self.config.timeout_seconds)
             elif tool == "diff":
                 text = self.patch()
             else:
                 raise EnvironmentError(f"unknown environment tool: {tool}")
             return {"output": text[:100_000], "ok": True, "duration_seconds": time.monotonic() - started}
+        except PermissionError as exc:
+            return {"output": str(exc), "ok": False, "policy_denial": "repository_boundary",
+                    "duration_seconds": time.monotonic() - started}
         except (KeyError, ValueError, OSError, EnvironmentError) as exc:
             return {"output": str(exc), "ok": False, "duration_seconds": time.monotonic() - started}
 
@@ -416,13 +426,17 @@ class DockerEnvironment:
         return result
 
     def execute(self, action: dict[str, Any]) -> dict[str, Any]:
-        if self.local is not None and action.get("tool") != "run":
-            return self.local.execute(action)
+        return execute_authorized(action, self.config, self.task, self._execute)
+
+    def _execute(self, action: dict[str, Any]) -> dict[str, Any]:
+        if self.local is not None and action.get("tool") not in {"run", "public_test"}:
+            return self.local._execute(action)
         tool = action.get("tool")
-        if tool == "run":
+        if tool in {"run", "public_test"}:
             # Official SWE-bench images activate testbed through root's bash profile.
             shell = "bash" if self.task.kind == "swebench" else "sh"
-            return self._exec([shell, "-lc", str(action["command"])])
+            command = shlex.join(self.task.test_command) if tool == "public_test" else str(action["command"])
+            return self._exec([shell, "-lc", command])
         if tool == "diff":
             return {"output": self.patch(), "ok": True, "duration_seconds": 0.0}
         # Inline file tools run inside the container, not on the host. The payload
@@ -432,11 +446,17 @@ import json, sys
 from pathlib import Path
 try:
     print(_repository_tool(Path.cwd(), json.loads(sys.argv[1]), json.loads(sys.argv[2])))
+except PermissionError as exc:
+    print(str(exc))
+    sys.exit(77)
 except (KeyError, ValueError, OSError) as exc:
     print(str(exc))
     sys.exit(1)
 '''
-        return self._exec(["python", "-c", code, json.dumps(action, ensure_ascii=False), json.dumps(self.task.metadata.get("editable"))])
+        result = self._exec(["python", "-c", code, json.dumps(action, ensure_ascii=False), json.dumps(self.task.metadata.get("editable"))])
+        if result.get("returncode") == 77:
+            result["policy_denial"] = "repository_boundary"
+        return result
 
     def revision(self) -> str:
         if self.local is not None:

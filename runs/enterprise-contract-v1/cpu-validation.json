@@ -1,0 +1,80 @@
+{
+  "kind": "cpu_contract_validation_not_model_benchmark",
+  "created_at_utc": "2026-10-27T05:02:22.580880+00:00",
+  "base_commit": "c4621ee3e25c1dcc2168a9aadab1088059d538b3",
+  "source_fingerprint": "91059008ca886ac032044a503d92c94659376250172f2263ed0be1d2c3eab8f3",
+  "full_suite": {
+    "passed": 656,
+    "skipped": 11,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 47.135
+  },
+  "initial_full_suite": {
+    "passed": 631,
+    "skipped": 10,
+    "failed": 16,
+    "errors": 0,
+    "seconds": 45.95
+  },
+  "actual_openjudge_integrated": {
+    "passed": 42,
+    "skipped": 0,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 2.723
+  },
+  "skip_explanation": {
+    "optional_torch_modules": 2,
+    "pinned_mini_swe_unset": 6,
+    "optional_openjudge_skip_records": 3,
+    "actual_openjudge_tests_separately_executed": true
+  },
+  "demo": {
+    "kind": "predetermined_actions",
+    "guarded_repair": "pass",
+    "unchanged_public_pass": "fail",
+    "builtin_audit_exit": 1,
+    "actual_openjudge_audit_exit": 1,
+    "report": "demo-final/report/report.html"
+  },
+  "upstream_commits": {
+    "Reflexion": "218cf0ef1df84b05ce379dd4a8e47f17766733a0",
+    "OpenJudge": "c2fdc38314cd971b03d4d9333cd2c9f24d85c27f",
+    "Claw-Eval": "5680b8b11ff2ee5dd2b07b89086a29a5c5c984d7",
+    "AIG": "33768c58942dbef693dae5e929d633daa0568b34"
+  },
+  "real_model_requests": 0,
+  "training": false,
+  "new_rentals": 0,
+  "upstream_aig_scan_executed": false,
+  "claw_eval_benchmark_executed": false,
+  "sha256": {
+    "audit-final.json": "6eb3da75aafd17393ca715c29f74654b9847a7ab754287b8c1ef39e23b3ae090",
+    "audit.json": "224d6fb4e91c551e2cf9a399cceef6e64c2fc6a997fdbc4c9ca21807bb650a8f",
+    "demo-final/acceptance.json": "a46a67429c09853675bc23eb8fed0f694f9aa832a00abb7eb74d0f8f9295fabc",
+    "demo-final/guarded-repair/slugify-digits__recent__20261027T050050Z-9f1e0d71/calls.jsonl": "6f68a18e52c5b16149533776c3b85e71bbb6564cacdb7d2bb65bc56aff35eab4",
+    "demo-final/guarded-repair/slugify-digits__recent__20261027T050050Z-9f1e0d71/patch.diff": "9819bed5f66f685747f05eb3b25143e964980fce224c1b18e4b34003e2708a18",
+    "demo-final/guarded-repair/slugify-digits__recent__20261027T050050Z-9f1e0d71/reflections.jsonl": "4490f24e2ff40c314fe259bb15336aa8ea8c0f4d0a78f69d5dfb7de828b6b96f",
+    "demo-final/guarded-repair/slugify-digits__recent__20261027T050050Z-9f1e0d71/result.json": "fdec7486157ce0505d7203c9a0405891b630d440d1a86ea60e19bc1b64714a84",
+    "demo-final/guarded-repair/slugify-digits__recent__20261027T050050Z-9f1e0d71/security.jsonl": "4a456a0e7480f13ad12f41b19998b60b77d7a7009a9de59c5d7135ce3a8ff15b",
+    "demo-final/guarded-repair/slugify-digits__recent__20261027T050050Z-9f1e0d71/trajectory.jsonl": "0b6885da6d836d83806515bf2067d5c668442a258664666d526c8f3c3c8ea90e",
+    "demo-final/public-pass-without-repair/slugify-digits__recent__20261027T050050Z-d9ec6744/calls.jsonl": "7b029a67013d43b111fe63c770835dd09c3feb3abc492ef1c143f566950fe6ce",
+    "demo-final/public-pass-without-repair/slugify-digits__recent__20261027T050050Z-d9ec6744/patch.diff": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "demo-final/public-pass-without-repair/slugify-digits__recent__20261027T050050Z-d9ec6744/result.json": "bd3678a6597f4a20f40470db8355808381a9b7abbd18335381c1dcbefc64ce68",
+    "demo-final/public-pass-without-repair/slugify-digits__recent__20261027T050050Z-d9ec6744/security.jsonl": "82e66a0de8708d80b0ceaa5d87e8db50ecc76141d99db1d6ebb699859b7fbf03",
+    "demo-final/public-pass-without-repair/slugify-digits__recent__20261027T050050Z-d9ec6744/trajectory.jsonl": "7ecd482190ba60e0e0d382032251e5a0efefbc0b780f408568685e3c06f8acd7",
+    "demo-final/report/report.html": "6ce4c80f2b97b383f00671ade192e86a3f1fe39704ea5bc2992b2036dc25acbd",
+    "demo-final/report/report.md": "7ab32499822fe65b768f295409e59d3d0ad9f595eb781544ce15ec607838528d",
+    "demo-final/report/summary.csv": "a22e11f88babc2942fa47eb73f997157b2f86ffb05da67f65de0d7cb3445295b",
+    "openjudge-cli-final.xml": "2af5661c0a88f6a89448bbe42eb1a3319e78c8fd997b4e1f4517af2eeed3f892",
+    "openjudge-contract.json": "66022db111de66060d57deef479ea7635dd885ce00374951bb49db1cbba2be77",
+    "openjudge-contract.xml": "ab3bb42543594d82c3cee3772f2e1d426bab631e7bc24d2034414e2440b0660d",
+    "openjudge-demo-audit.json": "950cc25a3362f6ed0539f7b1ee5b9f77ee094e32ddf737333f34894812c51137",
+    "openjudge-final.xml": "c0f94e8c43df0be2e51c3e6d601abc368b503d05b4f609fda554a89163774dc2",
+    "openjudge-integrated-final.xml": "61236eb108c7e1bca8b4f1b50023011f235deb74d0dccd6f123f69ae2c3e6391",
+    "pytest-initial.xml": "d55d8d37eb81d022193f8c0ea79044b44fdd007b1fcd4b9c77569dcd96718b54",
+    "pytest.xml": "cdf1bb5281ecd22f78c707a209e467cd27bdf7593930680f757378281b6fb202",
+    "reference-plan.json": "9ddc123ff33ec6329647252178241f23f0936a036ea11d35649533ed833a3d5a"
+  }
+}

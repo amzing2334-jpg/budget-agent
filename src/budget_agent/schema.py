@@ -51,6 +51,10 @@ class RunConfig:
     history_format: str = "chat"
     decision_policy: str = "direct"
     loop_policy: str = "off"
+    reflection_policy: str = "off"
+    max_reflections: int = 1
+    reflection_max_output_tokens: int = 256
+    execution_policy: str = "sandbox"
     provider: str = "scripted"
     model: str = ""
     base_url: str = ""
@@ -86,6 +90,16 @@ class RunConfig:
             raise ValueError("decision_policy must be direct or budget-aware")
         if self.loop_policy not in {"off", "recover"}:
             raise ValueError("loop_policy must be off or recover")
+        if self.reflection_policy not in {"off", "failure"}:
+            raise ValueError("reflection_policy must be off or failure")
+        if type(self.max_reflections) is not int or self.max_reflections < 1:
+            raise ValueError("max_reflections must be a positive integer")
+        if type(self.reflection_max_output_tokens) is not int or self.reflection_max_output_tokens < 1:
+            raise ValueError("reflection_max_output_tokens must be a positive integer")
+        if self.execution_policy not in {"sandbox", "restricted"}:
+            raise ValueError("execution_policy must be sandbox or restricted")
+        if self.execution_policy == "restricted" and self.provider != "scripted" and self.environment != "docker":
+            raise ValueError("restricted execution with a real provider requires Docker")
         if self.provider not in {"scripted", "openai-compatible", "transformers"}:
             raise ValueError("unknown provider")
         if self.provider == "transformers":

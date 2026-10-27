@@ -1,0 +1,15 @@
+--- a/slugify.py
++++ b/slugify.py
+@@ -1,6 +1,6 @@
+-"""Small URL slug helper."""
+-import re
+-
+-
+-def slugify(text):
+-    return re.sub(r"[^a-z]+", "-", text.lower()).strip("-")
++"""Small URL slug helper."""
++import re
++
++
++def slugify(text):
++    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")

@@ -1,0 +1,32 @@
+{
+  "kind": "cpu_actual_upstream_contract_not_model_evaluation",
+  "upstream_repository": "https://github.com/agentscope-ai/OpenJudge",
+  "upstream_commit": "c2fdc38314cd971b03d4d9333cd2c9f24d85c27f",
+  "upstream_module_file": "C:\\找工作\\.budget-agent-research\\openjudge\\openjudge\\__init__.py",
+  "upstream_version_string": "0.2.0",
+  "python": "3.13.5",
+  "platform": "Windows",
+  "direct_dependencies": {
+    "pydantic": "2.12.5",
+    "loguru": "0.7.3",
+    "tqdm": "4.67.3",
+    "pytest": "9.0.2"
+  },
+  "passed": 30,
+  "skipped": 0,
+  "failed": 0,
+  "model_calls": 0,
+  "training": false,
+  "validation_scope": [
+    "Actual BaseGrader aevaluate and upstream score/error types",
+    "Actual GradingRunner async scheduling",
+    "Actual WeightedSumAggregator missing-error counterexample"
+  ],
+  "sha256": {
+    "src/budget_agent/evaluation.py": "6f89d70cf384f91f8c7ddecb93977527ae71ddb94160a2565a160627ec9b22e2",
+    "src/budget_agent/openjudge_adapter.py": "6999df2de2aeac2f2240c6ff74a04a3af0da5b23b8d768bb6c670357fe1611d1",
+    "tests/test_evaluation.py": "97f584e3b71e8da7361898556ca9609da065085acb2466e487a16ff7d8889ca1",
+    "tests/test_openjudge_adapter.py": "c19032b1486969ec34a5eb68f36787854e609f2ee9dc13f9a5ad19df5fca3b69",
+    "runs/enterprise-contract-v1/openjudge-contract.xml": "ab3bb42543594d82c3cee3772f2e1d426bab631e7bc24d2034414e2440b0660d"
+  }
+}

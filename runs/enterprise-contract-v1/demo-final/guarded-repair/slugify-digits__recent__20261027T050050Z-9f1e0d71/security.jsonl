@@ -1,0 +1,6 @@
+{"event_id": "e0001", "tool": "read_file", "decision": {"policy": "restricted", "allowed": true, "rule": "tool_allowed"}}
+{"event_id": "e0002", "tool": "edit_file", "decision": {"policy": "restricted", "allowed": true, "rule": "tool_allowed"}}
+{"event_id": "e0003", "tool": "run", "decision": {"policy": "restricted", "allowed": false, "rule": "free_shell_disabled"}}
+{"event_id": "e0004", "tool": "write_file", "decision": {"policy": "restricted", "allowed": true, "rule": "tool_allowed"}}
+{"event_id": "e0005", "tool": "public_test", "decision": {"policy": "restricted", "allowed": true, "rule": "tool_allowed"}}
+{"event_id": "e0006", "tool": "diff", "decision": {"policy": "restricted", "allowed": true, "rule": "tool_allowed"}}

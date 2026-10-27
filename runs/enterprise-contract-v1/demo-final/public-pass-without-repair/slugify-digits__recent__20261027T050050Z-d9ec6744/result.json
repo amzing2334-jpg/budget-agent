@@ -1,0 +1,270 @@
+{
+  "run_id": "20261027T050050Z-d9ec6744",
+  "task_id": "slugify-digits",
+  "split": "dev",
+  "task_kind": "local",
+  "provider": "scripted",
+  "model": "scripted-smoke-v1",
+  "actual_models": [
+    "scripted-smoke-v1"
+  ],
+  "strategy": "recent",
+  "config": {
+    "strategy": "recent",
+    "history_format": "chat",
+    "decision_policy": "direct",
+    "loop_policy": "off",
+    "reflection_policy": "failure",
+    "max_reflections": 1,
+    "reflection_max_output_tokens": 256,
+    "execution_policy": "restricted",
+    "provider": "scripted",
+    "model": "",
+    "base_url": "",
+    "api_key_env": "LLM_API_KEY",
+    "context_tokens": 16000,
+    "total_tokens": 64000,
+    "max_output_tokens": 1536,
+    "min_action_output_tokens": 128,
+    "read_memory_tokens": 1024,
+    "max_steps": 30,
+    "timeout_seconds": 30,
+    "tokenizer": "byte",
+    "temperature": 0.0,
+    "seed": 1,
+    "input_price_per_million": null,
+    "output_price_per_million": null,
+    "max_cost_usd": null,
+    "allow_local_execution": false,
+    "environment": "local",
+    "docker_image": "python:3.11-slim",
+    "api_max_tokens_field": "max_tokens",
+    "api_enable_thinking": null,
+    "model_revision": "",
+    "device": "cuda",
+    "model_dtype": "bfloat16"
+  },
+  "status": "finished",
+  "error": null,
+  "resolved": false,
+  "evaluation": {
+    "resolved": false,
+    "status": "unresolved",
+    "output": "test_digits (private_verifier.HiddenTests.test_digits) ... FAIL\r\ntest_edges (private_verifier.HiddenTests.test_edges) ... FAIL\r\ntest_regression (private_verifier.HiddenTests.test_regression) ... ok\r\n\r\n======================================================================\r\nFAIL: test_digits (private_verifier.HiddenTests.test_digits)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"_private_verifier.py\", line 7, in test_digits\r\n    self.assertEqual(slugify(\"Release 2026 v2\"), \"release-2026-v2\")\r\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: 'release-v' != 'release-2026-v2'\r\n- release-v\r\n+ release-2026-v2\r\n?         +++++ +\r\n\r\n\r\n======================================================================\r\nFAIL: test_edges (private_verifier.HiddenTests.test_edges)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"_private_verifier.py\", line 11, in test_edges\r\n    self.assertEqual(slugify(\"__A9___B0__\"), \"a9-b0\")\r\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: 'a-b' != 'a9-b0'\r\n- a-b\r\n+ a9-b0\r\n?  +  +\r\n\r\n\r\n----------------------------------------------------------------------\r\nRan 3 tests in 0.001s\r\n\r\nFAILED (failures=2)\r\nBUDGET_AGENT_GRADE_f38f6cd0988e48eea0ef7d27ead63fb1{\"tests_run\": 3, \"failures\": 2, \"errors\": 0, \"skipped\": 0, \"successful\": false}\r\n",
+    "test_results": {
+      "tests_run": 3,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0,
+      "successful": false
+    },
+    "duration_seconds": 0.10390440000628587
+  },
+  "evidence_kind": "scripted_smoke",
+  "input_tokens": 5336,
+  "output_tokens": 41,
+  "total_tokens": 5377,
+  "calls": 2,
+  "cost_usd": null,
+  "known_cost_usd": null,
+  "usage_unknown": false,
+  "usage_sources": [
+    "scripted_estimate"
+  ],
+  "budget": {
+    "input_tokens": 5336,
+    "output_tokens": 41,
+    "total_tokens": 5377,
+    "remaining_tokens": 58623,
+    "calls": 2,
+    "cost_usd": null,
+    "cost_kind": "unknown_prices",
+    "usage_sources": [
+      "scripted_estimate"
+    ],
+    "preflight_counter": "byte",
+    "preflight_description": "UTF-8 byte upper estimate + framing estimate",
+    "usage_is_estimated": true,
+    "overrun": false,
+    "unreconciled_request": false,
+    "attempted_calls": 2,
+    "pending_reservation": null,
+    "requests": [
+      {
+        "purpose": "agent",
+        "input_tokens": 2466,
+        "output_tokens": 23,
+        "estimated_input_tokens": 2466,
+        "reserved_output_tokens": 1536,
+        "usage_source": "scripted_estimate",
+        "model": "scripted-smoke-v1",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 2870,
+        "output_tokens": 18,
+        "estimated_input_tokens": 2870,
+        "reserved_output_tokens": 1536,
+        "usage_source": "scripted_estimate",
+        "model": "scripted-smoke-v1",
+        "overrun_reasons": []
+      }
+    ]
+  },
+  "elapsed_seconds": 0.3480079000000842,
+  "model_seconds": 3.850000211969018e-05,
+  "steps": 2,
+  "context_stats": {
+    "builds": 2,
+    "compactions": 0,
+    "summary_calls": 0,
+    "excerpted_events": 0,
+    "last_input_tokens": 2870,
+    "last_visible_events": 1,
+    "last_omitted_events": 0,
+    "last_masked_events": 0,
+    "last_read_memory_tokens": 0,
+    "last_read_memory_lines": 0,
+    "last_read_memory_events": 0
+  },
+  "diagnostics": {
+    "schema_version": 1,
+    "counts": {
+      "events": 2,
+      "invalid_actions": 0,
+      "invalid_actions_at_output_limit": 0,
+      "repeated_failed_actions": 0,
+      "repeated_observations": 0,
+      "successful_read_file": 0,
+      "successful_edit_file": 0,
+      "successful_write_file": 0,
+      "successful_run": 0,
+      "successful_diff": 0
+    },
+    "first_successful_tool_action": {
+      "event_id": "e0001",
+      "step": 1,
+      "tool": "public_test"
+    },
+    "invalid_actions": [],
+    "repeated_failed_actions": [],
+    "repeated_observations": [],
+    "tools": {
+      "public_test": {
+        "calls": 1,
+        "successful": 1,
+        "failed": 0,
+        "duration_seconds": 0.09296070000709733,
+        "output_characters": 223
+      },
+      "finish": {
+        "calls": 1,
+        "successful": 1,
+        "failed": 0,
+        "duration_seconds": 0.0025231000036001205,
+        "output_characters": 43
+      }
+    },
+    "usage": {
+      "calls": 2,
+      "calls_with_response": 2,
+      "unknown_usage_calls": 0,
+      "input_tokens": 5336,
+      "output_tokens": 41,
+      "total_tokens": 5377,
+      "input_fraction": 0.9923749302585084,
+      "usage_sources": [
+        "scripted_estimate"
+      ],
+      "recorded_model_seconds": 5.509999755304307e-05
+    },
+    "call_alignment": {
+      "method": "ordered_agent_responses",
+      "agent_responses": 2,
+      "events": 2,
+      "raw_content_mismatches": [],
+      "unpaired_events": 0,
+      "unpaired_agent_responses": 0
+    },
+    "observation_exposure": {
+      "events": [
+        {
+          "event_id": "e0001",
+          "tool": "public_test",
+          "original_output_characters": 223,
+          "visible_observation_characters": 223,
+          "request_indices": [
+            2
+          ],
+          "masked_messages": 0,
+          "masked_marker_characters": 0,
+          "masked_request_indices": [],
+          "associated_request_input_tokens": 2870
+        }
+      ],
+      "visible_observation_characters": 223,
+      "masked_messages": 0,
+      "masked_marker_characters": 0,
+      "measurement": "Characters in explicit event observation messages, including excerpt markers but excluding masked placeholders. Associated request tokens include all input, are not event token costs, and overlap across events. Free-text summaries and recalled payloads are not attributed back to their source events."
+    },
+    "read_file_coverage": {
+      "status": "complete",
+      "events": [],
+      "measured_events": 0,
+      "unknown_events": 0,
+      "failed_events": 0,
+      "measured_returned_lines": 0,
+      "measured_new_lines": 0,
+      "measured_repeated_lines": 0,
+      "paths": [],
+      "measurement": "Actual numbered lines validated against read_file output header; grouped by revision and canonical output path. New/repeated is relative to supported prior outputs only; unknown legacy formats are excluded, not guessed. Line coverage does not establish complete line content, comprehension, or unnecessary rereading."
+    },
+    "visible_read_repetitions": [],
+    "notes": [
+      "Tool success and the first successful action do not establish a correct repair or a passed test.",
+      "Repeated observations mean identical action, output, and recorded revision; they do not prove that repeating the check was unnecessary.",
+      "Visible read repetitions compare complete returned line text with explicit evidence in the actual preceding request. Offline detection does not demonstrate recovery or token savings under a new policy.",
+      "Reaching an output allowance is evidence of budget pressure, not proof that truncation caused the invalid action; both flags can coexist.",
+      "Repeated failures count identical actions at the same recorded revision, excluding invalid_action; different failure messages may be present."
+    ]
+  },
+  "loop_control": {
+    "policy": "off",
+    "events": [],
+    "warnings_sent": 0,
+    "stopped": false
+  },
+  "reflection": {
+    "policy": "failure",
+    "events": [],
+    "calls": 0,
+    "notes": []
+  },
+  "safety": {
+    "policy": "restricted",
+    "scope": "direct_tool_authorization",
+    "evaluated_actions": 1,
+    "blocked_actions": 0,
+    "complete": true,
+    "violations": []
+  },
+  "patch_path": "C:\\找工作\\budget-agent\\runs\\enterprise-contract-v1\\demo-final\\public-pass-without-repair\\slugify-digits__recent__20261027T050050Z-d9ec6744\\patch.diff",
+  "initial_revision": "9288e2cd29f2abef",
+  "environment_provenance": {
+    "kind": "local"
+  },
+  "source_fingerprint": "91059008ca886ac032044a503d92c94659376250172f2263ed0be1d2c3eab8f3",
+  "public_test_command": [
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "task_fingerprint": "7c5ba26943fa1e3d0bf2e5ba2d66e44f05251c404dcf1f137d7a589e912019bd",
+  "created_at": "2026-10-27T05:00:50.987596+00:00",
+  "result_path": "C:\\找工作\\budget-agent\\runs\\enterprise-contract-v1\\demo-final\\public-pass-without-repair\\slugify-digits__recent__20261027T050050Z-d9ec6744\\result.json"
+}

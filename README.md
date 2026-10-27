@@ -4,6 +4,8 @@
 
 GitHub：[amzing2334-jpg/budget-agent](https://github.com/amzing2334-jpg/budget-agent)（私有）。代码、测试、文档及选定的 v5 实验记录已纳入版本管理；模型权重、运行环境和云端连接材料保留在本地。仓库范围与历史产物位置见 [仓库说明](docs/REPOSITORY.md)。
 
+**2026-10-27：新增企业工程候选首版。** 基于固定源码研读 Reflexion、AgentScope OpenJudge、Claw-Eval 和腾讯 AIG，接入有总预算和次数上限的失败反思、严格工具/文件权限判决、固定公开测试命令、独立质量/预算/授权三态验收，以及真实 OpenJudge 异步适配。默认策略保持关闭反思；候选配置显式启用，不能把单次合同通过当生产认证。完整 CPU **656 项通过、11 项跳过**，专用真实 OpenJudge 集成 **42 项通过**，没有模型推理或训练。见[设计、源码映射与生产缺口](docs/ENTERPRISE_AGENT_DESIGN.md)、[可查看的脚本化正负演示](runs/enterprise-contract-v1/demo-final/report/report.html)和[验收回执](runs/enterprise-contract-v1/cpu-validation.json)。
+
 **2026-10-27 第五轮：修复未完成评分被当作负奖励，以及首请求失败导致整批配对中断。** verifier 缺依赖、提前退出、零测试或全部跳过现在明确为未评分，不生成可训练 Episode；正常测试失败仍给 0 分。旧格式结果重新报告时使用同一判据，原始证据不改。配对保留缺失模型/用量来源的失败记录及排除原因，已知模型冲突仍拒绝。CPU **561 项通过、8 项跳过**；详见[复现、验收和能力边界](docs/GRADING_COMPLETENESS_VALIDATION.md)。云端仍无可用实例，本轮没有真实模型请求或训练。
 
 **2026-10-27 第四轮：模型请求禁止隐式重定向。** 本地双HTTP服务复现了默认urllib在301/302/303后转发Authorization并接受跳转目标用量的问题；现在所有自动重定向均被拒绝，用量未知时保存记录并中止批量。正常请求不变，完整CPU套件529项通过、8项跳过，见[复现与验收](docs/API_REDIRECT_VALIDATION.md)。真实参考试跑已获本轮预算及配置授权，百炼专用Key已准备，但云主机分配504超时；[接入记录](docs/REFERENCE_PREFLIGHT_2026-10-27.md)与后续[迭代记录](docs/ITERATION_LOG.md)保留实际状态。尚无本轮真实模型修复结果。

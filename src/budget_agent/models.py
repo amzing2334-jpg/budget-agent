@@ -104,6 +104,8 @@ class ScriptedModel:
     def complete(self, messages: list[dict[str, str]], max_output_tokens: int, *, purpose: str = "agent") -> ModelResponse:
         if purpose == "summary":
             text = "Offline fixture summary: inspect the source, preserve the issue requirements, verify the current revision before finishing."
+        elif purpose == "reflection":
+            text = "Offline fixture reflection: inspect the failed tool evidence and check the current source before retrying. This is not a verified repair."
         else:
             action = self.actions[self.index] if self.index < len(self.actions) else {"tool": "finish"}
             self.index += 1
@@ -126,9 +128,11 @@ def parse_action(text: str) -> dict[str, Any]:
         raise ValueError("Return exactly one JSON object with a 'tool' field; no prose") from exc
     if not isinstance(action, dict) or not isinstance(action.get("tool"), str):
         raise ValueError("Action must be a JSON object with a string 'tool' field")
-    allowed = {"list_files", "read_file", "search", "write_file", "edit_file", "run", "diff", "remember", "recall", "finish"}
+    allowed = {"list_files", "read_file", "search", "write_file", "edit_file", "run", "public_test", "diff", "remember", "recall", "finish"}
     if action["tool"] not in allowed:
         raise ValueError("Unknown tool; allowed: " + ", ".join(sorted(allowed)))
+    if action["tool"] == "public_test" and set(action) != {"tool"}:
+        raise ValueError("public_test accepts no parameters; its command comes from the task manifest")
     string_fields = {
         "read_file": ("path",), "search": ("query",),
         "write_file": ("path", "content"), "run": ("command",),

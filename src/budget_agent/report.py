@@ -260,6 +260,27 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
             md.append("| " + " | ".join(value.replace("|", "\\|").replace("\n", " ") for value in cells) + " |")
             body.append("<tr>" + "".join(f"<td>{value}</td>" for value in cells) + "</tr>")
         body.append('</tbody></table></div></section>')
+    if any("safety" in result or "reflection" in result for result in results):
+        from .evaluation import evaluate_run
+        notice = ("Per-run recorded contracts only: not production certification. Safety covers direct tool authorization, "
+                  "not arbitrary behavior inside tests. Unknown evidence cannot pass; reflection text is a hypothesis. "
+                  "Scripted runs remain software checks, not model capability evidence.")
+        headers = ["Run", "Quality", "Token ledger", "Tool policy", "Acceptance", "Reflection calls", "Blocked tools"]
+        md.extend(["", "## Run acceptance contracts", "", notice, "",
+                   "| " + " | ".join(headers) + " |", "|" + "---|" * len(headers)])
+        body.append('<section><h2>Run acceptance contracts</h2><p class="muted">' + html.escape(notice)
+                    + '</p><div class="table-wrap"><table><thead><tr>'
+                    + ''.join('<th>' + label + '</th>' for label in headers) + '</tr></thead><tbody>')
+        for result in results:
+            contract = evaluate_run(result)
+            values = [result.get("run_id", "unavailable"),
+                      *[contract["dimensions"][key]["status"] for key in ("quality", "budget", "safety")],
+                      contract["acceptance_status"], result.get("reflection", {}).get("calls", "unavailable"),
+                      result.get("safety", {}).get("blocked_actions", "unavailable")]
+            cells = [html.escape(str(value)) for value in values]
+            md.append("| " + " | ".join(value.replace("|", "\\|") for value in cells) + " |")
+            body.append("<tr>" + "".join(f"<td>{value}</td>" for value in cells) + "</tr>")
+        body.append('</tbody></table></div></section>')
     paths["markdown"].write_text("\n".join(md) + "\n", encoding="utf-8")
     template = """<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Budget Agent · Evaluation</title><style>
 :root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#20302c;background:#f3f6f3}body{margin:0}main{max-width:1200px;margin:0 auto;padding:48px 24px 64px}header{margin-bottom:28px}h1{font-size:clamp(30px,5vw,46px);letter-spacing:-1.5px;margin:8px 0}h2{font-size:19px;overflow-wrap:anywhere}.eyebrow{color:#21735a;letter-spacing:2px;font-size:11px;font-weight:700}.muted{color:#64756e}aside{background:#e5eee7;border-left:4px solid #3a876b;padding:18px 22px;line-height:1.7;border-radius:4px}section{margin-top:24px;background:#fff;border:1px solid #dfe7e0;border-radius:12px;padding:24px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th{color:#66786e;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px}th,td{padding:15px 12px;border-bottom:1px solid #edf0ed;white-space:nowrap}td:first-child{font-weight:600}details{margin-top:18px;color:#64756e;font-size:12px}summary{cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}.warning{background:#fff5db;color:#805600;padding:12px;border-radius:6px}footer{color:#64756e;font-size:12px;margin-top:24px}</style></head><body><main><header><div class="eyebrow">BUDGET AGENT / REPRODUCIBLE EXPERIMENTS</div><h1>Code repair, measured.</h1><p class="muted">Context policies · verified outcomes · complete inference accounting</p></header>__BODY__<footer>Generated locally. No external assets, telemetry, or model calls are used by this report.</footer></main></body></html>"""

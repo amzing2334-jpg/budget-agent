@@ -1,0 +1,1 @@
+{"event_id": "e0001", "tool": "public_test", "decision": {"policy": "restricted", "allowed": true, "rule": "tool_allowed"}}

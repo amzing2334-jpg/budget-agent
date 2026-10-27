@@ -50,9 +50,9 @@ def add_run_arguments(parser):
     parser.add_argument("--task", action="append", dest="task_ids")
     parser.add_argument("--split", choices=["dev", "test", "all"], default="dev")
     parser.add_argument("--output", type=Path, default=Path("runs/pilot"))
-    for name in ("strategy", "history_format", "decision_policy", "loop_policy", "provider", "model", "base_url", "api_key_env", "tokenizer", "environment", "docker_image", "api_max_tokens_field", "model_revision", "device", "model_dtype"):
+    for name in ("strategy", "history_format", "decision_policy", "loop_policy", "reflection_policy", "execution_policy", "provider", "model", "base_url", "api_key_env", "tokenizer", "environment", "docker_image", "api_max_tokens_field", "model_revision", "device", "model_dtype"):
         parser.add_argument("--" + name.replace("_", "-"))
-    for name in ("context_tokens", "total_tokens", "max_output_tokens", "min_action_output_tokens", "read_memory_tokens", "max_steps", "timeout_seconds", "seed"):
+    for name in ("context_tokens", "total_tokens", "max_output_tokens", "min_action_output_tokens", "read_memory_tokens", "max_reflections", "reflection_max_output_tokens", "max_steps", "timeout_seconds", "seed"):
         parser.add_argument("--" + name.replace("_", "-"), type=int)
     for name in ("temperature", "input_price_per_million", "output_price_per_million", "max_cost_usd"):
         parser.add_argument("--" + name.replace("_", "-"), type=float)
@@ -79,6 +79,10 @@ def build_parser():
     diagnose = sub.add_parser("diagnose", help="Analyze saved trajectories without model calls or rewriting runs")
     diagnose.add_argument("--input", required=True, type=Path)
     diagnose.add_argument("--output", required=True, type=Path)
+    audit = sub.add_parser("audit", help="Offline independent quality, budget and direct-tool policy checks; no model calls")
+    audit.add_argument("--input", required=True, type=Path)
+    audit.add_argument("--output", required=True, type=Path)
+    audit.add_argument("--engine", choices=["builtin", "openjudge"], default="builtin")
     doctor = sub.add_parser("doctor", help="Inspect prerequisites without exposing secrets")
     doctor.add_argument("--config", type=Path)
     imp = sub.add_parser("swe-import", help="Sanitize downloaded SWE-bench JSON/JSONL into a task manifest")
@@ -124,6 +128,35 @@ def main(argv=None) -> int:
             paths = generate_report(args.input, args.output)
             print(json.dumps({k: str(v) for k, v in paths.items()}, indent=2))
             return 0
+        if args.command == "audit":
+            from .evaluation import evaluate_run
+            from .report import load_results
+            results = load_results(args.input)
+            report = {"kind": "single_run_contract_audit", "runs": [
+                {"task_id": result["task_id"], "run_id": result["run_id"],
+                 "source_result": result["_result_path"], "evaluation": evaluate_run(result)}
+                for result in results]}
+            upstream_ok = True
+            if args.engine == "openjudge":
+                import asyncio
+                try:
+                    from .openjudge_adapter import evaluate_openjudge
+                except ModuleNotFoundError as exc:
+                    if exc.name != "openjudge":
+                        raise
+                    raise ValueError("OpenJudge is optional; configure the pinned contract environment described in docs/UPSTREAM_EVALUATION_REVIEW.md") from exc
+                report["openjudge"] = asyncio.run(evaluate_openjudge(results))
+                upstream_ok = all(
+                    len(report["openjudge"].get(name, [])) == len(results)
+                    and all(grade.get("score") == 1 and "error" not in grade
+                            for grade in report["openjudge"][name])
+                    for name in ("quality", "budget", "safety", "acceptance"))
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            with args.output.open("x", encoding="utf-8") as stream:
+                json.dump(report, stream, ensure_ascii=False, indent=2)
+                stream.write("\n")
+            print(f"Audited {len(results)} saved runs: {args.output}")
+            return 0 if upstream_ok and all(row["evaluation"]["acceptance_status"] == "pass" for row in report["runs"]) else 1
         if args.command == "diagnose":
             from .diagnostics import diagnose_run
             from .report import load_results

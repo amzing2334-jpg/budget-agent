@@ -94,6 +94,7 @@ def test_repeated_reads_require_same_revision_and_range(tmp_path):
 @pytest.mark.parametrize("factor, baseline, candidate", [
     ("decision_policy", "direct", "budget-aware"),
     ("loop_policy", "off", "recover"),
+    ("reflection_policy", "off", "failure"),
 ])
 def test_declared_factor_varies_while_context_strategy_stays_fixed(tmp_path, factor, baseline, candidate):
     left = result(tmp_path, "mask", resolved=False)

@@ -1,0 +1,119 @@
+{
+  "kind": "single_run_contract_audit",
+  "runs": [
+    {
+      "task_id": "slugify-digits",
+      "run_id": "20261027T050050Z-9f1e0d71",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\enterprise-contract-v1\\demo-final\\guarded-repair\\slugify-digits__recent__20261027T050050Z-9f1e0d71\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "slugify-digits",
+        "run_id": "20261027T050050Z-9f1e0d71",
+        "evidence_kind": "scripted_smoke",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 31607,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ]
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 6,
+              "blocked_actions": 1,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "pass",
+        "blocking_dimensions": [],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "slugify-digits",
+      "run_id": "20261027T050050Z-d9ec6744",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\enterprise-contract-v1\\demo-final\\public-pass-without-repair\\slugify-digits__recent__20261027T050050Z-d9ec6744\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "slugify-digits",
+        "run_id": "20261027T050050Z-d9ec6744",
+        "evidence_kind": "scripted_smoke",
+        "dimensions": {
+          "quality": {
+            "status": "fail",
+            "score": 0,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "unresolved",
+              "resolved": false
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 5377,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ]
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 1,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "fail",
+        "blocking_dimensions": [
+          "quality"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    }
+  ]
+}

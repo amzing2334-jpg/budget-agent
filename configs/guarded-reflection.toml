@@ -1,0 +1,21 @@
+# Candidate profile, not a validated model improvement or production certification.
+# The operator must review tasks[].test_command before public_test can execute it.
+[run]
+provider = "openai-compatible"
+environment = "docker"
+execution_policy = "restricted"
+reflection_policy = "failure"
+max_reflections = 1
+reflection_max_output_tokens = 512
+strategy = "recent"
+history_format = "chat"
+decision_policy = "direct"
+loop_policy = "off"
+context_tokens = 32768
+total_tokens = 128000
+max_output_tokens = 2048
+min_action_output_tokens = 256
+max_steps = 30
+timeout_seconds = 120
+tokenizer = "byte"
+temperature = 0.0

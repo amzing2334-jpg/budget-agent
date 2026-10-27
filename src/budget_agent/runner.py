@@ -16,6 +16,7 @@ from .diagnostics import analyze_trajectory
 from .environment import EnvironmentError, create_environment
 from .loop_control import ReadLoopMonitor
 from .models import ModelError, OpenAICompatibleModel, ScriptedModel, parse_action
+from .reflection import ReflectionNote, reflection_messages, reflection_trigger
 from .schema import Event, RunConfig, Task
 from .tasks import smoke_actions
 
@@ -28,6 +29,7 @@ read_file: path; optional start_line (1), end_line (default 100 lines, max 200).
 edit_file: path, old, new. old must be nonempty and match exactly once.
 write_file: path, content. This overwrites the entire file; never supply a fragment.
 run: command, chosen from the repository's test documentation/configuration.
+public_test: no arguments. Execute the fixed public test command from the trusted task manifest.
 diff: no arguments.
 remember: note (short working hypothesis), source (existing event ID).
 recall: event_id; optional offset (0), limit (8000, max 16000 characters).
@@ -108,6 +110,11 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
     code_revision = source_fingerprint()
     read_loop = ReadLoopMonitor()
     controls: list[dict] = []
+    notes: list[ReflectionNote] = []
+    reflections: list[dict] = []
+    reflection_count = 0
+    safety_records: list[dict] = []
+    external_actions = 0
     evaluation = {"resolved": None, "status": "not_evaluated"}
     model_seconds = 0.0
 
@@ -118,9 +125,17 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
 
     def system_prompt() -> str:
         prompt = decision_prompt(config, budget.remaining_tokens, step, events, revision, initial_revision)
+        if config.execution_policy == "restricted":
+            prompt += "\nExecution policy: restricted. Free-form run commands are denied. Use public_test for the manifest's fixed test command; source file tools and diff remain available."
         if config.loop_policy == "recover" and read_loop.pending_feedback:
             prompt += "\n" + read_loop.pending_feedback
         return prompt
+
+    def record_reflection(status: str, event: Event, **details) -> None:
+        record = {"status": status, "source_event_id": event.id,
+                  "source_revision": event.revision, **details}
+        reflections.append(record)
+        _append(run_dir / "reflections.jsonl", record)
 
     def call(messages: list[dict[str, str]], max_output: int, purpose: str) -> str:
         nonlocal unknown_usage, model_seconds
@@ -166,17 +181,23 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
             if input_cap <= 0:
                 raise BudgetExceeded("No token budget remains for a new request")
             try:
+                memory = [note.message(revision) for note in notes]
+                memory_tokens = counter.messages(memory) - counter.messages([])
                 messages = context.build(
                     system_prompt(),
-                    task.issue, events, revision, input_cap,
+                    task.issue, events, revision, input_cap - memory_tokens,
                     summarize_callback=lambda m, n: call(m, n, "summary"),
                 )
+                messages = messages[:2] + memory + messages[2:]
+                context.stats["last_input_tokens"] = counter.messages(messages)
             except ContextOverflow as exc:
                 if input_cap < context_input_cap:
                     raise BudgetExceeded(f"Remaining budget cannot fit the selected context and action output reserve: {exc}") from exc
                 raise
             content = call(messages, config.max_output_tokens, "agent")
+            actor_messages = call_records[-1]["messages"]
             action_start = time.monotonic()
+            policy_decision = None
             try:
                 action = parse_action(content)
             except ValueError as exc:
@@ -205,14 +226,20 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
                         source_revision = source.action.get("source_revision", source.revision)
                         outcome = {"output": json.dumps({"event_id": source.id, "source_revision": source_revision, "current_revision": revision, "stale": source_revision != revision, "offset": offset, "total_characters": len(source.output), "output": source.output[offset:offset + limit]}, ensure_ascii=False), "ok": True}
                 else:
+                    external_actions += 1
                     outcome = env.execute(action)
+                    policy_decision = outcome.get("policy_decision")
+                    security_record = {"event_id": f"e{step:04d}", "tool": tool,
+                                       "decision": policy_decision}
+                    safety_records.append(security_record)
+                    _append(run_dir / "security.jsonl", security_record)
             event = Event(f"e{step:04d}", step, action, outcome["output"], env.revision(), outcome["ok"], time.monotonic() - action_start, model_content=content)
             events.append(event)
             _append(run_dir / "trajectory.jsonl", event.to_dict())
             if config.loop_policy == "recover":
                 # Use the request actually sent (budget-aware prompts can refresh
                 # after a paid summary), never the full archived history.
-                repeat = read_loop.observe(event, call_records[-1]["messages"])
+                repeat = read_loop.observe(event, actor_messages)
                 if repeat is not None:
                     record_control("repeated_visible_read", **asdict(repeat))
                 if read_loop.should_stop:
@@ -222,6 +249,30 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
                     break
             if status == "finished":
                 break
+            blocked = policy_decision is not None and not policy_decision["allowed"]
+            if (config.reflection_policy == "failure" and step < config.max_steps
+                    and reflection_count < config.max_reflections
+                    and reflection_trigger(event, blocked=blocked)):
+                review = reflection_messages(actor_messages, event)
+                inputs = counter.messages(review)
+                if inputs >= min(config.context_tokens, budget.remaining_tokens):
+                    record_reflection("skipped", event, reason="reflection_prompt_does_not_fit")
+                    continue
+                reflection_count += 1
+                try:
+                    text = call(review, config.reflection_max_output_tokens, "reflection")
+                except BudgetExceeded:
+                    # A preflight rejection costs nothing. A reconciled overrun
+                    # is a run failure and must never become an optional skip.
+                    if budget.overrun:
+                        raise
+                    record_reflection("skipped", event, reason="reflection_cost_budget_does_not_fit")
+                    continue
+                note = ReflectionNote(event.id, event.revision, text)
+                record_reflection("generated" if text.strip() else "empty", event,
+                                  request_index=len(call_records), note=note.to_dict())
+                if text.strip():
+                    notes.append(note)
     except BudgetExceeded as exc:
         status, error = "budget_exhausted", str(exc)
     except ContextOverflow as exc:
@@ -264,10 +315,20 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         "loop_control": {"policy": config.loop_policy, "events": controls,
                          "warnings_sent": sum(row["kind"] == "warning_sent" for row in controls),
                          "stopped": status == "stalled"},
+        "reflection": {"policy": config.reflection_policy, "events": reflections,
+                       "calls": sum(row["purpose"] == "reflection" for row in call_records),
+                       "notes": [note.to_dict() for note in notes]},
+        "safety": {"policy": config.execution_policy, "scope": "direct_tool_authorization",
+                   "evaluated_actions": len(safety_records),
+                   "blocked_actions": sum(row["decision"] is not None and not row["decision"]["allowed"] for row in safety_records),
+                   "complete": env is not None and len(safety_records) == external_actions
+                               and all(row["decision"] is not None for row in safety_records),
+                   "violations": []},
         "patch_path": str(run_dir / "patch.diff"), "initial_revision": initial_revision,
         "environment_provenance": environment_provenance,
         "source_fingerprint": code_revision,
-        "task_fingerprint": hashlib.sha256(json.dumps({"id": task.id, "issue": task.issue, "revision": initial_revision, "image": task.image, "environment": environment_provenance, "metadata": task.metadata}, sort_keys=True).encode()).hexdigest(),
+        "public_test_command": task.test_command,
+        "task_fingerprint": hashlib.sha256(json.dumps({"id": task.id, "issue": task.issue, "revision": initial_revision, "image": task.image, "environment": environment_provenance, "metadata": task.metadata, "public_test_command": task.test_command}, sort_keys=True).encode()).hexdigest(),
         "created_at": datetime.now(timezone.utc).isoformat(),
         "result_path": str(run_dir / "result.json"),
     }

@@ -25,11 +25,13 @@ def edit_environment(tmp_path, request):
     env = DockerEnvironment.__new__(DockerEnvironment)
     env.local = None
     env.task = task
+    env.config = RunConfig()
 
     def execute_inline(command):
         assert command[:2] == ["python", "-c"]
         result = subprocess.run([sys.executable, *command[1:]], cwd=root, capture_output=True, text=True, encoding="utf-8")
-        return {"ok": result.returncode == 0, "output": result.stdout + result.stderr}
+        return {"ok": result.returncode == 0, "output": result.stdout + result.stderr,
+                "returncode": result.returncode}
 
     env._exec = execute_inline
     return env, root
