@@ -1,0 +1,19 @@
+{
+  "task_id": "unexpected_success",
+  "run_id": "cpu-verifier-unexpected_success",
+  "evidence_kind": "cpu_verifier_only",
+  "status": "finished",
+  "resolved": false,
+  "evaluation": {
+    "status": "unresolved",
+    "resolved": false,
+    "test_results": {
+      "tests_run": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "successful": false,
+      "tests_executed": true
+    }
+  }
+}

@@ -23,6 +23,7 @@ from typing import Any
 
 from .schema import RunConfig, Task
 from .security import execute_authorized
+from .verification import VerificationResult, fixture_outcome
 
 
 class EnvironmentError(RuntimeError):
@@ -235,12 +236,13 @@ def _verification_command(python: str) -> tuple[list[str], str]:
     """Require a completed test run, not just a subprocess that exits with zero."""
     marker = "BUDGET_AGENT_GRADE_" + uuid.uuid4().hex
     code = (
-        "import json,runpy,sys,types,unittest; "
+        "import json,runpy,sys,types,unittest\n" + inspect.getsource(VerificationResult) + "\n"
         "ns=runpy.run_path('_private_verifier.py',run_name='private_verifier'); "
         "suite=unittest.defaultTestLoader.loadTestsFromModule(types.SimpleNamespace(**ns)); "
-        "result=unittest.TextTestRunner(stream=sys.stdout,verbosity=2).run(suite); "
+        "result=unittest.TextTestRunner(stream=sys.stdout,verbosity=2,resultclass=VerificationResult).run(suite); "
         "print(" + repr(marker) + "+json.dumps({'tests_run':result.testsRun,'failures':len(result.failures),"
-        "'errors':len(result.errors),'skipped':len(result.skipped),'successful':result.wasSuccessful()}))"
+        "'errors':len(result.errors),'skipped':len(result.skipped),'successful':result.wasSuccessful(),"
+        "'tests_executed':result.tests_executed()}))"
     )
     return [python, "-c", code], marker
 
@@ -253,10 +255,8 @@ def _verified(result: dict[str, Any], marker: str) -> tuple[bool | None, dict[st
         if marker in line:
             try:
                 verdict = json.loads(line.partition(marker)[2])
-                if verdict["tests_run"] <= verdict["skipped"]:
-                    return None, verdict
-                return bool(verdict["successful"]), verdict
-            except (ValueError, KeyError, TypeError):
+                return fixture_outcome(verdict), verdict
+            except ValueError:
                 return None, None
     return None, None
 

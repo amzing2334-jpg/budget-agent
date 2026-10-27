@@ -10,6 +10,8 @@ import math
 from pathlib import Path
 from typing import Any
 
+from .verification import fixture_outcome
+
 
 def load_results(root: Path) -> list[dict[str, Any]]:
     root = Path(root)
@@ -62,19 +64,11 @@ def verified_outcome(result: dict[str, Any]) -> bool | None:
         return None
     # A stored fixture verdict must agree with its summary before it is counted.
     if status in {"resolved", "unresolved"} and "test_results" in evaluation:
-        verdict = evaluation["test_results"]
-        if not isinstance(verdict, dict):
+        try:
+            outcome = fixture_outcome(evaluation["test_results"])
+        except ValueError:
             return None
-        counts = [verdict.get(key) for key in ("tests_run", "skipped")]
-        counts.extend(verdict[key] for key in ("failures", "errors") if key in verdict)
-        if (any(type(count) is not int or count < 0 for count in counts)
-                or verdict["tests_run"] <= verdict["skipped"]
-                or type(verdict.get("successful")) is not bool
-                or verdict["successful"] is not value):
-            return None
-        # Subtest failures may exceed tests_run; zero counts do not rule out an
-        # unexpectedSuccess, which also makes unittest.wasSuccessful() false.
-        if value and any(verdict.get(key, 0) > 0 for key in ("failures", "errors")):
+        if outcome is None or outcome is not value:
             return None
     ungraded = {"official_empty_patch", "pending_official_evaluation", "not_evaluated", "pending", "ungraded"}
     if (is_infrastructure_error(result) or result.get("status") == "interrupted"

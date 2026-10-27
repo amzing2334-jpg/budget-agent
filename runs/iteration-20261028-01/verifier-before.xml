@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="17" skipped="0" tests="20" time="2.663" timestamp="2026-10-28T03:08:30.068717+08:00" hostname="LAPTOP-MMKN5UT6"><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[mixed-pass-skip]" time="0.118"><failure message="assert None is True">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ0')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        with self.subTest(part='skip'):\...     self.skipTest('not available')\n        with self.subTest(part='pass'):\n            self.assertEqual(1 + 1, 2)\n"
+expected = True
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+&gt;       assert outcome is expected
+E       assert None is True
+
+tests\test_verifier_execution.py:73: AssertionError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[mixed-failure-skip]" time="0.114"><failure message="assert None is False">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ1')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        with self.subTest(part='skip'):\...     self.skipTest('not available')\n        with self.subTest(part='pass'):\n            self.assertEqual(1 + 1, 3)\n"
+expected = False
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+&gt;       assert outcome is expected
+E       assert None is False
+
+tests\test_verifier_execution.py:73: AssertionError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[mixed-error-skip]" time="0.118"><failure message="assert None is False">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ2')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        with self.subTest(part='skip'):\...elf.skipTest('not available')\n        with self.subTest(part='pass'):\n            raise RuntimeError('test error')\n"
+expected = False
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+&gt;       assert outcome is expected
+E       assert None is False
+
+tests\test_verifier_execution.py:73: AssertionError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[all-subtests-skipped]" time="0.108"><failure message="KeyError: 'tests_executed'">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ3')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        for part in range(2):\n            with self.subTest(part=part):\n                self.skipTest('not available')\n"
+expected = None
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+        assert outcome is expected
+        if verdict is not None:
+&gt;           assert verdict["tests_executed"] is (expected is not None)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'tests_executed'
+
+tests\test_verifier_execution.py:75: KeyError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[method-skipped]" time="0.110"><failure message="KeyError: 'tests_executed'">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ4')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    @unittest.skip('unavailable')\n    def test_value(self): pass\n"
+expected = None
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+        assert outcome is expected
+        if verdict is not None:
+&gt;           assert verdict["tests_executed"] is (expected is not None)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'tests_executed'
+
+tests\test_verifier_execution.py:75: KeyError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[empty-suite]" time="0.112"><failure message="KeyError: 'tests_executed'">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ5')
+source = 'import unittest\n', expected = None
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+        assert outcome is expected
+        if verdict is not None:
+&gt;           assert verdict["tests_executed"] is (expected is not None)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'tests_executed'
+
+tests\test_verifier_execution.py:75: KeyError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[import-exits-zero]" time="0.102" /><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[unexpected-success]" time="0.111"><failure message="KeyError: 'tests_executed'">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ7')
+source = 'import unittest\nclass Tests(unittest.TestCase):\n    @unittest.expectedFailure\n    def test_value(self): pass\n'
+expected = False
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+        assert outcome is expected
+        if verdict is not None:
+&gt;           assert verdict["tests_executed"] is (expected is not None)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'tests_executed'
+
+tests\test_verifier_execution.py:75: KeyError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[expected-failure]" time="0.111"><failure message="KeyError: 'tests_executed'">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ8')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    @unittest.expectedFailure\n    def test_value(self): self.fail('expected')\n"
+expected = True
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+        assert outcome is expected
+        if verdict is not None:
+&gt;           assert verdict["tests_executed"] is (expected is not None)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'tests_executed'
+
+tests\test_verifier_execution.py:75: KeyError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[nested-pass-multiple-skips]" time="0.117"><failure message="assert None is True">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ9')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        for part in range(2):\n         ...ith self.subTest(part='outer'):\n            with self.subTest(part='inner'):\n                self.assertTrue(True)\n"
+expected = True
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+&gt;       assert outcome is expected
+E       assert None is True
+
+tests\test_verifier_execution.py:73: AssertionError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[class-setup-error]" time="0.119"><failure message="KeyError: 'tests_executed'">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ10')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    @classmethod\n    def setUpClass(cls): raise RuntimeError('setup')\n    def test_value(self): pass\n"
+expected = None
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+        assert outcome is expected
+        if verdict is not None:
+&gt;           assert verdict["tests_executed"] is (expected is not None)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'tests_executed'
+
+tests\test_verifier_execution.py:75: KeyError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_verifier_uses_observed_non_skip_outcomes[method-setup-error]" time="0.113"><failure message="KeyError: 'tests_executed'">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_verifier_uses_observ11')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    def setUp(self): raise RuntimeError('setup')\n    def test_value(self): pass\n"
+expected = False
+
+    @pytest.mark.parametrize("source,expected", [
+        pytest.param(MIXED_PASS, True, id="mixed-pass-skip"),
+        pytest.param(MIXED_FAIL, False, id="mixed-failure-skip"),
+        pytest.param(MIXED_PASS.replace("self.assertEqual(1 + 1, 2)", "raise RuntimeError('test error')"),
+                     False, id="mixed-error-skip"),
+        pytest.param(ALL_SKIP, None, id="all-subtests-skipped"),
+        pytest.param(verifier("@unittest.skip('unavailable')\ndef test_value(self): pass\n"),
+                     None, id="method-skipped"),
+        pytest.param("import unittest\n", None, id="empty-suite"),
+        pytest.param("import os\nos._exit(0)\n", None, id="import-exits-zero"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): pass\n"),
+                     False, id="unexpected-success"),
+        pytest.param(verifier("@unittest.expectedFailure\ndef test_value(self): self.fail('expected')\n"),
+                     True, id="expected-failure"),
+        pytest.param(verifier('''\
+            def test_value(self):
+                for part in range(2):
+                    with self.subTest(part=part):
+                        self.skipTest('unavailable')
+                with self.subTest(part='outer'):
+                    with self.subTest(part='inner'):
+                        self.assertTrue(True)
+        '''), True, id="nested-pass-multiple-skips"),
+        pytest.param(verifier("@classmethod\ndef setUpClass(cls): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), None, id="class-setup-error"),
+        pytest.param(verifier("def setUp(self): raise RuntimeError('setup')\n"
+                             "def test_value(self): pass\n"), False, id="method-setup-error"),
+    ])
+    def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
+        (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
+        command, marker = _verification_command(sys.executable)
+        process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+        outcome, verdict = _verified({"ok": process.returncode == 0,
+                                     "output": process.stdout + process.stderr}, marker)
+        assert outcome is expected
+        if verdict is not None:
+&gt;           assert verdict["tests_executed"] is (expected is not None)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'tests_executed'
+
+tests\test_verifier_execution.py:75: KeyError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_local_grader_controls_episode_reward_without_a_model[import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        with self.subTest(part='skip'):\n            self.skipTest('not available')\n        with self.subTest(part='pass'):\n            self.assertEqual(1 + 1, 2)\n-True]" time="0.285"><failure message="budget_agent.environment.EnvironmentError: No training reward: grader returned grading_error; see C:\Users\98341\AppData\Local\Temp\pytest-of-98341\pytest-148\test_real_local_grader_control0\run\grade.json">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_local_grader_control0')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        with self.subTest(part='skip'):\...     self.skipTest('not available')\n        with self.subTest(part='pass'):\n            self.assertEqual(1 + 1, 2)\n"
+expected = True
+
+    @pytest.mark.parametrize("source,expected", [(MIXED_PASS, True), (MIXED_FAIL, False), (ALL_SKIP, None)])
+    def test_real_local_grader_controls_episode_reward_without_a_model(tmp_path, source, expected):
+        repo = tmp_path / "source"
+        repo.mkdir()
+        (repo / "solution.py").write_text("VALUE = 0\n", encoding="utf-8")
+        path = tmp_path / "verifier.py"
+        path.write_text(source, encoding="utf-8")
+        task = Task("subtest-reward", "Fix VALUE", "train", repo=str(repo), verifier=str(path))
+        config = TrainingConfig(environment="local", allow_local_execution=True,
+                                context_tokens=4096, total_tokens=16000)
+        policy = TokenPolicy(['{"tool":"finish"}'])
+        run = tmp_path / "run"
+        if expected is None:
+            with pytest.raises(EnvironmentError, match="No training reward: grader returned grading_error"):
+                sample_episode(task, policy, config, run)
+            assert not (run / "episode.json").exists()
+        else:
+&gt;           episode = sample_episode(task, policy, config, run)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_verifier_execution.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+task = Task(id='subtest-reward', issue='Fix VALUE', split='train', kind='local', repo='C:\\Users\\98341\\AppData\\Local\\Temp...ytest-of-98341\\pytest-148\\test_real_local_grader_control0\\verifier.py', image='', workdir='/workspace', metadata={})
+policy = &lt;test_learning_rollout.TokenPolicy object at 0x00000235AFBB2E40&gt;
+config = TrainingConfig(model='Qwen/Qwen2.5-Coder-0.5B-Instruct', revision=None, adapter_path=None, device='cuda', lora_r=8, te...allow_local_execution=True, group_size=4, updates=3, learning_rate=5e-05, clip_epsilon=0.2, max_grad_norm=1.0, seed=42)
+run_dir = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_local_grader_control0/run')
+
+    def sample_episode(task: Task, policy, config: TrainingConfig, run_dir: Path) -&gt; Episode:
+        """Sample each turn from the current policy; only the final verifier rewards it."""
+        run_dir = Path(run_dir)
+        run_dir.mkdir(parents=True, exist_ok=True)
+        execution = RunConfig(
+            provider="openai-compatible", environment=config.environment,
+            docker_image=config.docker_image, timeout_seconds=config.tool_timeout,
+            allow_local_execution=config.allow_local_execution,
+        )
+        env = create_environment(task, execution, run_dir)
+        messages = initial_messages(task)
+        steps, trace = [], []
+        input_tokens = output_tokens = 0
+        status = "max_steps"
+        try:
+            for step in range(config.max_steps):
+                prompt_ids = policy.encode(messages)
+                context_left = config.context_tokens - len(prompt_ids)
+                budget_left = config.total_tokens - input_tokens - output_tokens - len(prompt_ids)
+                allowance = min(config.max_new_tokens, context_left, budget_left)
+                if allowance &lt;= 0:
+                    status = "context_exhausted" if context_left &lt;= 0 else "budget_exhausted"
+                    break
+    
+                prompt_messages = list(messages)
+                sample = policy.sample(messages, max_new_tokens=allowance)
+                steps.append(sample)
+                input_tokens += len(sample.prompt_ids)
+                output_tokens += len(sample.completion_ids)
+                messages.append({"role": "assistant", "content": sample.text})
+                action = None
+                try:
+                    action = parse_action(sample.text)
+                    if action["tool"] in {"remember", "recall"}:
+                        raise ValueError("This agent uses full history; remember/recall are not available")
+                except ValueError as exc:
+                    result = {"ok": False, "output": str(exc)}
+                else:
+                    result = ({"ok": True, "output": "Finished."} if action["tool"] == "finish"
+                              else env.execute(action))
+                trace.append({"step": step, "messages": prompt_messages,
+                              "completion": sample.text, "action": action, "result": result})
+                if action and action["tool"] == "finish":
+                    status = "finished"
+                    break
+                messages.append(observation(result))
+    
+            patch = env.patch()
+            (run_dir / "patch.diff").write_text(patch, encoding="utf-8")
+            (run_dir / "trajectory.jsonl").write_text(
+                "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in trace), encoding="utf-8")
+            grade = env.grade()
+            (run_dir / "grade.json").write_text(json.dumps(grade, indent=2), encoding="utf-8")
+            if grade["resolved"] is None:
+&gt;               raise EnvironmentError(f"No training reward: grader returned {grade['status']}; see {run_dir / 'grade.json'}")
+E               budget_agent.environment.EnvironmentError: No training reward: grader returned grading_error; see C:\Users\98341\AppData\Local\Temp\pytest-of-98341\pytest-148\test_real_local_grader_control0\run\grade.json
+
+src\budget_agent\learning\rollout.py:91: EnvironmentError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_local_grader_controls_episode_reward_without_a_model[import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        with self.subTest(part='skip'):\n            self.skipTest('not available')\n        with self.subTest(part='pass'):\n            self.assertEqual(1 + 1, 3)\n-False]" time="0.260"><failure message="budget_agent.environment.EnvironmentError: No training reward: grader returned grading_error; see C:\Users\98341\AppData\Local\Temp\pytest-of-98341\pytest-148\test_real_local_grader_control1\run\grade.json">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_local_grader_control1')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        with self.subTest(part='skip'):\...     self.skipTest('not available')\n        with self.subTest(part='pass'):\n            self.assertEqual(1 + 1, 3)\n"
+expected = False
+
+    @pytest.mark.parametrize("source,expected", [(MIXED_PASS, True), (MIXED_FAIL, False), (ALL_SKIP, None)])
+    def test_real_local_grader_controls_episode_reward_without_a_model(tmp_path, source, expected):
+        repo = tmp_path / "source"
+        repo.mkdir()
+        (repo / "solution.py").write_text("VALUE = 0\n", encoding="utf-8")
+        path = tmp_path / "verifier.py"
+        path.write_text(source, encoding="utf-8")
+        task = Task("subtest-reward", "Fix VALUE", "train", repo=str(repo), verifier=str(path))
+        config = TrainingConfig(environment="local", allow_local_execution=True,
+                                context_tokens=4096, total_tokens=16000)
+        policy = TokenPolicy(['{"tool":"finish"}'])
+        run = tmp_path / "run"
+        if expected is None:
+            with pytest.raises(EnvironmentError, match="No training reward: grader returned grading_error"):
+                sample_episode(task, policy, config, run)
+            assert not (run / "episode.json").exists()
+        else:
+&gt;           episode = sample_episode(task, policy, config, run)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_verifier_execution.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+task = Task(id='subtest-reward', issue='Fix VALUE', split='train', kind='local', repo='C:\\Users\\98341\\AppData\\Local\\Temp...ytest-of-98341\\pytest-148\\test_real_local_grader_control1\\verifier.py', image='', workdir='/workspace', metadata={})
+policy = &lt;test_learning_rollout.TokenPolicy object at 0x00000235AFC27B10&gt;
+config = TrainingConfig(model='Qwen/Qwen2.5-Coder-0.5B-Instruct', revision=None, adapter_path=None, device='cuda', lora_r=8, te...allow_local_execution=True, group_size=4, updates=3, learning_rate=5e-05, clip_epsilon=0.2, max_grad_norm=1.0, seed=42)
+run_dir = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_local_grader_control1/run')
+
+    def sample_episode(task: Task, policy, config: TrainingConfig, run_dir: Path) -&gt; Episode:
+        """Sample each turn from the current policy; only the final verifier rewards it."""
+        run_dir = Path(run_dir)
+        run_dir.mkdir(parents=True, exist_ok=True)
+        execution = RunConfig(
+            provider="openai-compatible", environment=config.environment,
+            docker_image=config.docker_image, timeout_seconds=config.tool_timeout,
+            allow_local_execution=config.allow_local_execution,
+        )
+        env = create_environment(task, execution, run_dir)
+        messages = initial_messages(task)
+        steps, trace = [], []
+        input_tokens = output_tokens = 0
+        status = "max_steps"
+        try:
+            for step in range(config.max_steps):
+                prompt_ids = policy.encode(messages)
+                context_left = config.context_tokens - len(prompt_ids)
+                budget_left = config.total_tokens - input_tokens - output_tokens - len(prompt_ids)
+                allowance = min(config.max_new_tokens, context_left, budget_left)
+                if allowance &lt;= 0:
+                    status = "context_exhausted" if context_left &lt;= 0 else "budget_exhausted"
+                    break
+    
+                prompt_messages = list(messages)
+                sample = policy.sample(messages, max_new_tokens=allowance)
+                steps.append(sample)
+                input_tokens += len(sample.prompt_ids)
+                output_tokens += len(sample.completion_ids)
+                messages.append({"role": "assistant", "content": sample.text})
+                action = None
+                try:
+                    action = parse_action(sample.text)
+                    if action["tool"] in {"remember", "recall"}:
+                        raise ValueError("This agent uses full history; remember/recall are not available")
+                except ValueError as exc:
+                    result = {"ok": False, "output": str(exc)}
+                else:
+                    result = ({"ok": True, "output": "Finished."} if action["tool"] == "finish"
+                              else env.execute(action))
+                trace.append({"step": step, "messages": prompt_messages,
+                              "completion": sample.text, "action": action, "result": result})
+                if action and action["tool"] == "finish":
+                    status = "finished"
+                    break
+                messages.append(observation(result))
+    
+            patch = env.patch()
+            (run_dir / "patch.diff").write_text(patch, encoding="utf-8")
+            (run_dir / "trajectory.jsonl").write_text(
+                "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in trace), encoding="utf-8")
+            grade = env.grade()
+            (run_dir / "grade.json").write_text(json.dumps(grade, indent=2), encoding="utf-8")
+            if grade["resolved"] is None:
+&gt;               raise EnvironmentError(f"No training reward: grader returned {grade['status']}; see {run_dir / 'grade.json'}")
+E               budget_agent.environment.EnvironmentError: No training reward: grader returned grading_error; see C:\Users\98341\AppData\Local\Temp\pytest-of-98341\pytest-148\test_real_local_grader_control1\run\grade.json
+
+src\budget_agent\learning\rollout.py:91: EnvironmentError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_real_local_grader_controls_episode_reward_without_a_model[import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        for part in range(2):\n            with self.subTest(part=part):\n                self.skipTest('not available')\n-None]" time="0.262"><failure message="KeyError: 'tests_executed'">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-148/test_real_local_grader_control2')
+source = "import unittest\nclass Tests(unittest.TestCase):\n    def test_value(self):\n        for part in range(2):\n            with self.subTest(part=part):\n                self.skipTest('not available')\n"
+expected = None
+
+    @pytest.mark.parametrize("source,expected", [(MIXED_PASS, True), (MIXED_FAIL, False), (ALL_SKIP, None)])
+    def test_real_local_grader_controls_episode_reward_without_a_model(tmp_path, source, expected):
+        repo = tmp_path / "source"
+        repo.mkdir()
+        (repo / "solution.py").write_text("VALUE = 0\n", encoding="utf-8")
+        path = tmp_path / "verifier.py"
+        path.write_text(source, encoding="utf-8")
+        task = Task("subtest-reward", "Fix VALUE", "train", repo=str(repo), verifier=str(path))
+        config = TrainingConfig(environment="local", allow_local_execution=True,
+                                context_tokens=4096, total_tokens=16000)
+        policy = TokenPolicy(['{"tool":"finish"}'])
+        run = tmp_path / "run"
+        if expected is None:
+            with pytest.raises(EnvironmentError, match="No training reward: grader returned grading_error"):
+                sample_episode(task, policy, config, run)
+            assert not (run / "episode.json").exists()
+        else:
+            episode = sample_episode(task, policy, config, run)
+            assert episode.resolved is expected
+            assert episode.reward == float(expected)
+            assert (run / "episode.json").is_file()
+        grade = json.loads((run / "grade.json").read_text(encoding="utf-8"))
+        assert grade["resolved"] is expected
+&gt;       assert grade["test_results"]["tests_executed"] is (expected is not None)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'tests_executed'
+
+tests\test_verifier_execution.py:108: KeyError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_explicit_execution_evidence_is_not_coerced_or_replaced[1-1]" time="0.001"><failure message="assert True is None">executed = 1, tests_run = 1
+
+    @pytest.mark.parametrize("executed,tests_run", [(1, 1), ("true", 1), (True, 0), (False, 3)])
+    def test_explicit_execution_evidence_is_not_coerced_or_replaced(executed, tests_run):
+        verdict = {"successful": True, "tests_run": tests_run, "skipped": 0,
+                   "tests_executed": executed}
+        outcome, _ = _verified({"ok": True, "output": "GRADE_" + json.dumps(verdict)}, "GRADE_")
+&gt;       assert outcome is None
+E       assert True is None
+
+tests\test_verifier_execution.py:118: AssertionError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_explicit_execution_evidence_is_not_coerced_or_replaced[true-1]" time="0.000"><failure message="assert True is None">executed = 'true', tests_run = 1
+
+    @pytest.mark.parametrize("executed,tests_run", [(1, 1), ("true", 1), (True, 0), (False, 3)])
+    def test_explicit_execution_evidence_is_not_coerced_or_replaced(executed, tests_run):
+        verdict = {"successful": True, "tests_run": tests_run, "skipped": 0,
+                   "tests_executed": executed}
+        outcome, _ = _verified({"ok": True, "output": "GRADE_" + json.dumps(verdict)}, "GRADE_")
+&gt;       assert outcome is None
+E       assert True is None
+
+tests\test_verifier_execution.py:118: AssertionError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_explicit_execution_evidence_is_not_coerced_or_replaced[True-0]" time="0.000" /><testcase classname="tests.test_verifier_execution" name="test_explicit_execution_evidence_is_not_coerced_or_replaced[False-3]" time="0.000"><failure message="assert True is None">executed = False, tests_run = 3
+
+    @pytest.mark.parametrize("executed,tests_run", [(1, 1), ("true", 1), (True, 0), (False, 3)])
+    def test_explicit_execution_evidence_is_not_coerced_or_replaced(executed, tests_run):
+        verdict = {"successful": True, "tests_run": tests_run, "skipped": 0,
+                   "tests_executed": executed}
+        outcome, _ = _verified({"ok": True, "output": "GRADE_" + json.dumps(verdict)}, "GRADE_")
+&gt;       assert outcome is None
+E       assert True is None
+
+tests\test_verifier_execution.py:118: AssertionError</failure></testcase><testcase classname="tests.test_verifier_execution" name="test_legacy_counts_do_not_invent_missing_subtest_evidence" time="0.000" /></testsuite></testsuites>

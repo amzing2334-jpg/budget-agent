@@ -2,6 +2,18 @@
 
 本文件是后续每 4 小时评估的入口。先读项目 AGENTS.md 和最新一轮记录，再选择一个有证据的瓶颈；不是每轮必须增加功能。所有模型效果结论必须对应真实运行和独立评分。招聘页面重新访问不等于新开 HC。
 
+## 2026-10-28 · 第九轮：用明确结果回调判断子测试是否可评分
+
+状态：修复已知混合子测试漏评，CPU **781 passed / 13 skipped**、真实 OpenJudge **142 passed / 0 skipped**；见[完整验收](SUBTEST_EXECUTION_VALIDATION.md)。没有真实模型、训练、实际 Docker 或新增费用。
+
+实际子进程复现12类verifier，旧方法数与跳过条数比较会丢失混合成功/失败/异常与跳过的结果；新增回归修复前17 failed/3 passed，修复后20 passed。VerificationResult用两个公开回调及既有unittest结果记录生成tests_executed布尔值；fixture_outcome统一在线与离线解释，旧记录缺字段仍保留原判据。Python -I -S验证生成命令只依赖标准库。
+
+真实Local→固定TokenPolicy数据链路现在允许混合正例reward=1、负例reward=0，全部跳过仍无Episode；没有更新权重，不是RL成绩。内置与真实OpenJudge实际审计12条仅verifier证据，质量4 pass/4 fail/4 unknown，预算/权限证据缺失时不伪装整体通过。59份固定历史产物的字节、哈希和解释均不变。[回执](../runs/iteration-20261028-01/cpu-validation.json)保留前后JUnit、输出与38份证据哈希。
+
+03:06北京时间复核百度J101404、Seed和SWE-bench/Python官方资料，核心需求未变，未确认新HC。J96208直接页仍仅登录，本轮没有检索全文。不能以本轮软件检查替代真实修复参考。
+
+边界：跳过子测试后仅有普通成功断言、没有非跳过结果回调时仍保守未评分；新字段不代表断言覆盖完整，未证明同进程verifier抗恶意代码。云库存/账单/报价本轮未重新核验；原≤10元参考试跑不扩范围，[新冻结计划](../runs/iteration-20261028-01/reference-plan.json)仅更新源码。下一步仍先获得真实补丁与独立评分，再做反馈/上下文对照。
+
 ## 2026-10-27 · 第八轮：测试明细与成功总结必须一致
 
 状态：完成外部保存评分证据的一致性修复，生产代码仅修改共享 `verified_outcome()`；CPU **761 passed / 13 skipped**，专用真实 OpenJudge **122 passed / 0 skipped**。详见[复现、来源与验收](VERIFIER_CONSISTENCY_VALIDATION.md)。

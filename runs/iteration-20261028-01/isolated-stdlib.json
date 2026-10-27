@@ -1,0 +1,18 @@
+{
+  "command_flags": [
+    "-I",
+    "-S"
+  ],
+  "returncode": 0,
+  "resolved": true,
+  "verdict": {
+    "tests_run": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "successful": true,
+    "tests_executed": true
+  },
+  "output": "test_case (private_verifier.Tests.test_case) ... \n  test_case (private_verifier.Tests.test_case) (part='skip') ... skipped 'optional'\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK (skipped=1)\nBUDGET_AGENT_GRADE_a553eb49791c465385034d9883ce020b{\"tests_run\": 1, \"failures\": 0, \"errors\": 0, \"skipped\": 1, \"successful\": true, \"tests_executed\": true}\n",
+  "actual_docker": false
+}

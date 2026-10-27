@@ -1,0 +1,697 @@
+{
+  "kind": "single_run_contract_audit",
+  "runs": [
+    {
+      "task_id": "all_subtests_skipped",
+      "run_id": "cpu-verifier-all_subtests_skipped",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\all_subtests_skipped\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "all_subtests_skipped",
+        "run_id": "cpu-verifier-all_subtests_skipped",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "unknown",
+            "score": null,
+            "reason": "No completed independent verifier outcome",
+            "evidence": {
+              "evaluation_status": "grading_error",
+              "resolved": null
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "quality",
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "early_exit",
+      "run_id": "cpu-verifier-early_exit",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\early_exit\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "early_exit",
+        "run_id": "cpu-verifier-early_exit",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "unknown",
+            "score": null,
+            "reason": "No completed independent verifier outcome",
+            "evidence": {
+              "evaluation_status": "grading_error",
+              "resolved": null
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "quality",
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "empty_suite",
+      "run_id": "cpu-verifier-empty_suite",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\empty_suite\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "empty_suite",
+        "run_id": "cpu-verifier-empty_suite",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "unknown",
+            "score": null,
+            "reason": "No completed independent verifier outcome",
+            "evidence": {
+              "evaluation_status": "grading_error",
+              "resolved": null
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "quality",
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "error_skip",
+      "run_id": "cpu-verifier-error_skip",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\error_skip\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "error_skip",
+        "run_id": "cpu-verifier-error_skip",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "fail",
+            "score": 0,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "unresolved",
+              "resolved": false
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "fail",
+        "blocking_dimensions": [
+          "quality",
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "expected_failure",
+      "run_id": "cpu-verifier-expected_failure",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\expected_failure\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "expected_failure",
+        "run_id": "cpu-verifier-expected_failure",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "fail_skip",
+      "run_id": "cpu-verifier-fail_skip",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\fail_skip\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "fail_skip",
+        "run_id": "cpu-verifier-fail_skip",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "fail",
+            "score": 0,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "unresolved",
+              "resolved": false
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "fail",
+        "blocking_dimensions": [
+          "quality",
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "nested_pass_skip",
+      "run_id": "cpu-verifier-nested_pass_skip",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\nested_pass_skip\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "nested_pass_skip",
+        "run_id": "cpu-verifier-nested_pass_skip",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "pass_skip",
+      "run_id": "cpu-verifier-pass_skip",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\pass_skip\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "pass_skip",
+        "run_id": "cpu-verifier-pass_skip",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "plain_failure",
+      "run_id": "cpu-verifier-plain_failure",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\plain_failure\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "plain_failure",
+        "run_id": "cpu-verifier-plain_failure",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "fail",
+            "score": 0,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "unresolved",
+              "resolved": false
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "fail",
+        "blocking_dimensions": [
+          "quality",
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "plain_pass",
+      "run_id": "cpu-verifier-plain_pass",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\plain_pass\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "plain_pass",
+        "run_id": "cpu-verifier-plain_pass",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "unexpected_success",
+      "run_id": "cpu-verifier-unexpected_success",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\unexpected_success\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "unexpected_success",
+        "run_id": "cpu-verifier-unexpected_success",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "fail",
+            "score": 0,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "unresolved",
+              "resolved": false
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "fail",
+        "blocking_dimensions": [
+          "quality",
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "whole_test_skipped",
+      "run_id": "cpu-verifier-whole_test_skipped",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261028-01\\cases\\whole_test_skipped\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "whole_test_skipped",
+        "run_id": "cpu-verifier-whole_test_skipped",
+        "evidence_kind": "cpu_verifier_only",
+        "dimensions": {
+          "quality": {
+            "status": "unknown",
+            "score": null,
+            "reason": "No completed independent verifier outcome",
+            "evidence": {
+              "evaluation_status": "grading_error",
+              "resolved": null
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Token ledger is missing required accounting fields",
+            "evidence": {
+              "total_tokens": null,
+              "limit_tokens": null,
+              "usage_is_estimated": null,
+              "usage_sources": null
+            }
+          },
+          "safety": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Complete restricted tool-policy evidence is unavailable",
+            "evidence": {
+              "policy": null,
+              "scope": null,
+              "complete": null,
+              "evaluated_actions": null,
+              "blocked_actions": null,
+              "violations": null
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "quality",
+          "budget",
+          "safety"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    }
+  ]
+}

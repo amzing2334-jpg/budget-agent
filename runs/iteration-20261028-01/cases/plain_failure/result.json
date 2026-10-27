@@ -1,0 +1,19 @@
+{
+  "task_id": "plain_failure",
+  "run_id": "cpu-verifier-plain_failure",
+  "evidence_kind": "cpu_verifier_only",
+  "status": "finished",
+  "resolved": false,
+  "evaluation": {
+    "status": "unresolved",
+    "resolved": false,
+    "test_results": {
+      "tests_run": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "successful": false,
+      "tests_executed": true
+    }
+  }
+}

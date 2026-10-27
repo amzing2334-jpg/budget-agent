@@ -1,0 +1,19 @@
+{
+  "task_id": "all_subtests_skipped",
+  "run_id": "cpu-verifier-all_subtests_skipped",
+  "evidence_kind": "cpu_verifier_only",
+  "status": "finished",
+  "resolved": null,
+  "evaluation": {
+    "status": "grading_error",
+    "resolved": null,
+    "test_results": {
+      "tests_run": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2,
+      "successful": true,
+      "tests_executed": false
+    }
+  }
+}

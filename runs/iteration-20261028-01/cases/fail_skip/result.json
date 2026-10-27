@@ -1,0 +1,19 @@
+{
+  "task_id": "fail_skip",
+  "run_id": "cpu-verifier-fail_skip",
+  "evidence_kind": "cpu_verifier_only",
+  "status": "finished",
+  "resolved": false,
+  "evaluation": {
+    "status": "unresolved",
+    "resolved": false,
+    "test_results": {
+      "tests_run": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 1,
+      "successful": false,
+      "tests_executed": true
+    }
+  }
+}

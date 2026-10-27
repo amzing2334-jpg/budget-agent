@@ -1,0 +1,16 @@
+{
+  "kind": "unobserved_plain_assertion_after_subtest_skip",
+  "fixture_source": "import unittest\nclass Tests(unittest.TestCase):\n    def test_case(self):\n        with self.subTest(part='skip'): self.skipTest('optional')\n        self.assertTrue(True)\n",
+  "returncode": 0,
+  "resolved": null,
+  "verdict": {
+    "tests_run": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "successful": true,
+    "tests_executed": false
+  },
+  "output": "test_case (private_verifier.Tests.test_case) ... \n  test_case (private_verifier.Tests.test_case) (part='skip') ... skipped 'optional'\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK (skipped=1)\nBUDGET_AGENT_GRADE_8f3836e08dbe46e0859bd6060c4fab6b{\"tests_run\": 1, \"failures\": 0, \"errors\": 0, \"skipped\": 1, \"successful\": true, \"tests_executed\": false}\n",
+  "limitation": "Only observable non-skip unittest results are recorded; individual assertions are not traced."
+}

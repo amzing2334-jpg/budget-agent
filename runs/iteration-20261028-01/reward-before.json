@@ -1,0 +1,65 @@
+{
+  "kind": "cpu_deterministic_policy_reward_boundary_no_training",
+  "cases": [
+    {
+      "case": "pass_skip",
+      "reward": null,
+      "resolved": null,
+      "error": "No training reward: grader returned grading_error; see C:\\Users\\98341\\AppData\\Local\\Temp\\budget-reward-before-81ggu996\\run\\grade.json",
+      "grade": {
+        "resolved": null,
+        "status": "grading_error",
+        "output": "test_case (private_verifier.Tests.test_case) ... \r\n  test_case (private_verifier.Tests.test_case) (part='skip') ... skipped 'optional'\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.000s\r\n\r\nOK (skipped=1)\r\nBUDGET_AGENT_GRADE_3a2f8d86c13646188162c29468192144{\"tests_run\": 1, \"failures\": 0, \"errors\": 0, \"skipped\": 1, \"successful\": true}\r\n",
+        "test_results": {
+          "tests_run": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "successful": true
+        },
+        "duration_seconds": 0.0976613000020734
+      },
+      "episode_written": false
+    },
+    {
+      "case": "fail_skip",
+      "reward": null,
+      "resolved": null,
+      "error": "No training reward: grader returned grading_error; see C:\\Users\\98341\\AppData\\Local\\Temp\\budget-reward-before-ukikoomv\\run\\grade.json",
+      "grade": {
+        "resolved": null,
+        "status": "grading_error",
+        "output": "test_case (private_verifier.Tests.test_case) ... \r\n  test_case (private_verifier.Tests.test_case) (part='failure') ... FAIL\r\n  test_case (private_verifier.Tests.test_case) (part='skip') ... skipped 'optional'\r\n\r\n======================================================================\r\nFAIL: test_case (private_verifier.Tests.test_case) (part='failure')\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"_private_verifier.py\", line 4, in test_case\r\n    with self.subTest(part='failure'): self.assertTrue(False)\r\n                                       ~~~~~~~~~~~~~~~^^^^^^^\r\nAssertionError: False is not true\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.001s\r\n\r\nFAILED (failures=1, skipped=1)\r\nBUDGET_AGENT_GRADE_39a6de63f21248f3a7a4479367b4fe9e{\"tests_run\": 1, \"failures\": 1, \"errors\": 0, \"skipped\": 1, \"successful\": false}\r\n",
+        "test_results": {
+          "tests_run": 1,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 1,
+          "successful": false
+        },
+        "duration_seconds": 0.1076418000011472
+      },
+      "episode_written": false
+    },
+    {
+      "case": "all_subtests_skipped",
+      "reward": null,
+      "resolved": null,
+      "error": "No training reward: grader returned grading_error; see C:\\Users\\98341\\AppData\\Local\\Temp\\budget-reward-before-053t0pkt\\run\\grade.json",
+      "grade": {
+        "resolved": null,
+        "status": "grading_error",
+        "output": "test_case (private_verifier.Tests.test_case) ... \r\n  test_case (private_verifier.Tests.test_case) (i=0) ... skipped 'optional'\r\n  test_case (private_verifier.Tests.test_case) (i=1) ... skipped 'optional'\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.000s\r\n\r\nOK (skipped=2)\r\nBUDGET_AGENT_GRADE_0306af8d57704c0a91ea093becdb3369{\"tests_run\": 1, \"failures\": 0, \"errors\": 0, \"skipped\": 2, \"successful\": true}\r\n",
+        "test_results": {
+          "tests_run": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "successful": true
+        },
+        "duration_seconds": 0.11165430000255583
+      },
+      "episode_written": false
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "task_id": "early_exit",
+  "run_id": "cpu-verifier-early_exit",
+  "evidence_kind": "cpu_verifier_only",
+  "status": "finished",
+  "resolved": null,
+  "evaluation": {
+    "status": "grading_error",
+    "resolved": null,
+    "test_results": null
+  }
+}

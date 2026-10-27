@@ -1,0 +1,236 @@
+{
+  "kind": "cpu_fixture_execution_contract_not_training",
+  "created_at_utc": "2026-10-27T19:12:23.234470+00:00",
+  "base_commit": "2c89fb0dcb51715680ef2f6bf71772f3055dc073",
+  "source_fingerprint": "9eca5b00e98924a444330d2a1dca975330739743f8efc6c4b3103d21eb0d205c",
+  "full_suite": {
+    "passed": 781,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 13,
+    "seconds": 54.76
+  },
+  "actual_openjudge": {
+    "passed": 142,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 5.506
+  },
+  "focused_before": {
+    "passed": 3,
+    "failed": 17,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 2.663
+  },
+  "focused_after": {
+    "passed": 20,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 2.164
+  },
+  "targeted": {
+    "passed": 115,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 1,
+    "seconds": 10.111
+  },
+  "historical_results": {
+    "count": 59,
+    "changed": 0,
+    "original_hashes_preserved": true,
+    "selection": "same paths frozen in iteration7; synthetic audit records excluded"
+  },
+  "actual_subprocess_fixtures": 12,
+  "changed_outcomes": [
+    "pass_skip",
+    "fail_skip",
+    "error_skip",
+    "nested_pass_skip"
+  ],
+  "quality_counts": {
+    "pass": 4,
+    "fail": 4,
+    "unknown": 4
+  },
+  "audit_exit_codes": {
+    "builtin": 1,
+    "openjudge": 1
+  },
+  "audit_limit": "CPU verifier-only records have no agent budget/tool-policy evidence; acceptance is not pass.",
+  "optional_skips": {
+    "torch_modules": 2,
+    "pinned_mini_swe_unconfigured": 6,
+    "openjudge_skip_records": 5,
+    "openjudge_executed_in_dedicated_environment": true
+  },
+  "upstream_openjudge_commit": "c2fdc38314cd971b03d4d9333cd2c9f24d85c27f",
+  "real_model_requests": 0,
+  "training": false,
+  "actual_docker_started": false,
+  "new_rentals": 0,
+  "cloud_inventory_checked": false,
+  "limitations": [
+    "Observed non-skip unittest callbacks only; no assertion coverage measurement.",
+    "Legacy records lack new execution evidence and retain prior interpretation.",
+    "Deterministic TokenPolicy reward checks do not update weights or establish RL performance.",
+    "Verifier command standard-library isolation is not a sandbox security certification."
+  ],
+  "files": [
+    {
+      "path": "runs/iteration-20261028-01/audit.json",
+      "sha256": "f2355e85ec83246bd603db2aa68181b4ea71824bb725ff1bd8cf32edb3d00418"
+    },
+    {
+      "path": "runs/iteration-20261028-01/before.json",
+      "sha256": "0076b4381976650d7d6f0b72d8098200990c21771df4b286c0f77b26763924d2"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/all_subtests_skipped/result.json",
+      "sha256": "4764d4ba86626155b5432b4dae964ea2e663730be7b9af20eb2f596c791cfc3c"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/early_exit/result.json",
+      "sha256": "a84b2dfa6e8fe9c013753207978e9d530de756dcb9add11d454fadef8e61e1d5"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/empty_suite/result.json",
+      "sha256": "1ee051debf37e674d5b8011435b6d5c4e63bb704e9dd4fb554be181c379b1642"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/error_skip/result.json",
+      "sha256": "04669a462cdc2d67c520f182ca544fbb2451d154dbf644668ff0d0ea1cee150a"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/expected_failure/result.json",
+      "sha256": "990cd6f57765d516365a5c74285c53a5165b969aef30b0386ca377a312992f4f"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/fail_skip/result.json",
+      "sha256": "e6345cc87179ae4b771d5cb6df71e9c76b74d51d559eef8068f108b98b854858"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/nested_pass_skip/result.json",
+      "sha256": "7d5f32ef7c630692bffd17db5326c713f0858b4ad308df56aa3641ee5bfbe4b7"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/pass_skip/result.json",
+      "sha256": "5b2d0299923d45cf1398204766d4793abf0bcc7d4f71579447c5befd23c28baa"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/plain_failure/result.json",
+      "sha256": "6a27bc182ae03f29ed77ea3836b26cc12b36c67b82341a7fe597e45085da0cf6"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/plain_pass/result.json",
+      "sha256": "b17bab4d2ccae7ab527cc1395b22be632c188e7b6d892ae2009f6f5fa0c4b7aa"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/unexpected_success/result.json",
+      "sha256": "24aed2ce3587a971ac0d97fa27045c9f2461cb391e7a5fb355411425a4eb17dc"
+    },
+    {
+      "path": "runs/iteration-20261028-01/cases/whole_test_skipped/result.json",
+      "sha256": "3def230a97a82d62941909295828bcad5ac25aab71987a92af0137a412945b21"
+    },
+    {
+      "path": "runs/iteration-20261028-01/comparison.json",
+      "sha256": "b08c01e32bffd17625f39252a30dfc816ebb889659bd52bce2ab983801a6a98d"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/all_subtests_skipped.py",
+      "sha256": "7a4aac8635b94c7123f378a772a8fcf1474df38e5f91b8fe9d0b24db2aa00623"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/early_exit.py",
+      "sha256": "356c654718355f29fa807c6883b586ec778ff2de59758d4a3df005aa920e0a5d"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/empty_suite.py",
+      "sha256": "dc8b2c5f30f447c927cbfbc344b4243b8052f492d4e1fcbe72eb15a12761d78e"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/error_skip.py",
+      "sha256": "930e9336cae2add67e7075bf166e1763e117ae61808c64d89da89cfb9b8d2e06"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/expected_failure.py",
+      "sha256": "c23bbfabc3547377305ccae37158a6f3c7bc99fd7437676df1f0ad090849aff4"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/fail_skip.py",
+      "sha256": "63a545dfa61cd6740c6b48df62ca344ba8f20813e123a69aa9f6623d1526b19b"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/nested_pass_skip.py",
+      "sha256": "2ed7ce0acf4dad3a70862f7fd438892686a615b94f13a3f5e17d936d99971072"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/pass_skip.py",
+      "sha256": "ee17e66f3e74d97ee59f0ef05390bf0b36c3ada2519e7ffe475eb700ea0ccc1e"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/plain_failure.py",
+      "sha256": "ca01dcc951adf52899ef128231442862219a449644a58c25913cdfbfbb9e2a05"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/plain_pass.py",
+      "sha256": "a15638632fba22450bb82b463313b4ec00698f0dac02e3b3318ebf3888f8a126"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/unexpected_success.py",
+      "sha256": "03f4c22fb34bbaca3af9d75049e6964b4707fe42b458801abcee8f0472868da6"
+    },
+    {
+      "path": "runs/iteration-20261028-01/fixtures/whole_test_skipped.py",
+      "sha256": "f11ea25bac4cd28115379175e8782c5cccdf23e0a86358d0287222ff9b52750b"
+    },
+    {
+      "path": "runs/iteration-20261028-01/isolated-stdlib.json",
+      "sha256": "b394e6262f74e8bbc0d0cfbc61369cd0e3484f608c0479bf138ab3ccd12764b8"
+    },
+    {
+      "path": "runs/iteration-20261028-01/known-callback-limitation.json",
+      "sha256": "869f41fcaa72294cfc35a60b56c511260cbef34b6f19e3a6e704ced54f6de23d"
+    },
+    {
+      "path": "runs/iteration-20261028-01/openjudge-audit.json",
+      "sha256": "d311fca7e4666315c72174fb5ae796a401d19600688ef35b7342b26d13351ccd"
+    },
+    {
+      "path": "runs/iteration-20261028-01/openjudge.xml",
+      "sha256": "bef56a2e9ea7ac785eb4acb41a71a488e19e35f0ecef18b3cd44b0e8d4463004"
+    },
+    {
+      "path": "runs/iteration-20261028-01/pytest.xml",
+      "sha256": "3d3ee234b06eb22759be9429992c8048f79d77b09a389e476a7721e78c38c60a"
+    },
+    {
+      "path": "runs/iteration-20261028-01/reference-plan.json",
+      "sha256": "c6185c2e1f001386f0e6cd8c3fcaca893e28cf9ed18ab72dccb9843fc46936ec"
+    },
+    {
+      "path": "runs/iteration-20261028-01/reward-after.json",
+      "sha256": "59f7d5e49889559b5e93ce977fe9434f7519bbac7386dcc8858423a9bb510069"
+    },
+    {
+      "path": "runs/iteration-20261028-01/reward-before.json",
+      "sha256": "5a4c85acb6a384e8af147dc5e05320f601a58a1a785bb98c5993d71528e7cf53"
+    },
+    {
+      "path": "runs/iteration-20261028-01/targeted.xml",
+      "sha256": "c10c864a87ce82f0c89ab20b5431e40017decc1026da1b43540027d6ee6d9de0"
+    },
+    {
+      "path": "runs/iteration-20261028-01/verifier-after.xml",
+      "sha256": "e5c96a917706fb0b62fa8e4ae86d021116d387c4812a278fe6fde104981200b4"
+    },
+    {
+      "path": "runs/iteration-20261028-01/verifier-before.xml",
+      "sha256": "9f188893fa0c8dcdcb1372262b50ebd1781a53c2263357664660298d42442ca9"
+    }
+  ]
+}
