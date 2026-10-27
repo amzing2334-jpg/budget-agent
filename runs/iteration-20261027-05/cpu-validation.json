@@ -1,0 +1,99 @@
+{
+  "kind": "cpu_feedback_control_validation_not_model_benchmark",
+  "created_at_utc": "2026-10-27T07:08:39.433825+00:00",
+  "base_commit": "65e089611763ee4e6f95c28b690d8f8eda5d4051",
+  "source_fingerprint": "bd2aaca7319b96affa7afb5664d10f426c4a688a17b143762b7a801bafeae9d3",
+  "full_suite": {
+    "passed": 684,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 11,
+    "seconds": 53.645
+  },
+  "actual_openjudge": {
+    "passed": 43,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 3.201
+  },
+  "targeted_runner_and_pairing": {
+    "passed": 72,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 9.807
+  },
+  "optional_skips": {
+    "torch_modules": 2,
+    "pinned_mini_swe_unconfigured": 6,
+    "openjudge_skip_records": 3,
+    "openjudge_executed_in_dedicated_environment": true
+  },
+  "demo_rows": [
+    {
+      "policy": "off",
+      "resolved": true,
+      "calls": 6,
+      "reflection_calls": 0,
+      "total_tokens": 21743,
+      "memory_input_tokens": 0
+    },
+    {
+      "policy": "evidence",
+      "resolved": true,
+      "calls": 6,
+      "reflection_calls": 0,
+      "total_tokens": 24560,
+      "memory_input_tokens": 2817
+    },
+    {
+      "policy": "failure",
+      "resolved": true,
+      "calls": 7,
+      "reflection_calls": 1,
+      "total_tokens": 25904,
+      "memory_input_tokens": 2009
+    }
+  ],
+  "upstream_openjudge_commit": "c2fdc38314cd971b03d4d9333cd2c9f24d85c27f",
+  "real_model_requests": 0,
+  "training": false,
+  "new_rentals": 0,
+  "cloud_inventory_checked": false,
+  "limitations": [
+    "Actions are predetermined and do not respond to feedback.",
+    "Equal total ceiling is not equal actual spend or equal information.",
+    "No success-rate, causal reasoning benefit or provider billing claim."
+  ],
+  "sha256": {
+    "demo-final/evidence/slugify-digits__recent__20261027T070744Z-a4c8678c/calls.jsonl": "0bacc7ef004303f16c0f32b8eac6d9683f5263097a2efb5664769164bf92fe97",
+    "demo-final/evidence/slugify-digits__recent__20261027T070744Z-a4c8678c/patch.diff": "9819bed5f66f685747f05eb3b25143e964980fce224c1b18e4b34003e2708a18",
+    "demo-final/evidence/slugify-digits__recent__20261027T070744Z-a4c8678c/reflections.jsonl": "d3a313259ccfdd179bfeaa556301e87378f26c4a5746d743666ad7b8b8935e75",
+    "demo-final/evidence/slugify-digits__recent__20261027T070744Z-a4c8678c/result.json": "e824e9a4489cda6d8d89e73817afba63b6599004ad08193e7c28571ee99500cf",
+    "demo-final/evidence/slugify-digits__recent__20261027T070744Z-a4c8678c/security.jsonl": "adf7881834af1e410fbdde6b4f03842953979ce5d3c003269b607dd85802ba9b",
+    "demo-final/evidence/slugify-digits__recent__20261027T070744Z-a4c8678c/trajectory.jsonl": "7d64aaed877c83c215324500c080a560b117024b489ee49fe5d554ce910719ca",
+    "demo-final/failure/slugify-digits__recent__20261027T070745Z-8622c220/calls.jsonl": "9f45b6a18eb7fe5fde378350f821bf29df868d65d1a1569c36b8483fd55edb1f",
+    "demo-final/failure/slugify-digits__recent__20261027T070745Z-8622c220/patch.diff": "9819bed5f66f685747f05eb3b25143e964980fce224c1b18e4b34003e2708a18",
+    "demo-final/failure/slugify-digits__recent__20261027T070745Z-8622c220/reflections.jsonl": "4490f24e2ff40c314fe259bb15336aa8ea8c0f4d0a78f69d5dfb7de828b6b96f",
+    "demo-final/failure/slugify-digits__recent__20261027T070745Z-8622c220/result.json": "4f44a99f479f1fd65a2ea500e979fe33499a6f0d45b476898df354c33c3ef6cf",
+    "demo-final/failure/slugify-digits__recent__20261027T070745Z-8622c220/security.jsonl": "adf7881834af1e410fbdde6b4f03842953979ce5d3c003269b607dd85802ba9b",
+    "demo-final/failure/slugify-digits__recent__20261027T070745Z-8622c220/trajectory.jsonl": "b3f208ec10f1ae1c78343e1f8b5b50a7d8be14469b8757aff8a9aa390d9cd90f",
+    "demo-final/off/slugify-digits__recent__20261027T070744Z-059bde10/calls.jsonl": "0119b318e58f1aae927716a1c3d5e14e4ef4c10fa2111fb4bc2a28f614f66e06",
+    "demo-final/off/slugify-digits__recent__20261027T070744Z-059bde10/patch.diff": "9819bed5f66f685747f05eb3b25143e964980fce224c1b18e4b34003e2708a18",
+    "demo-final/off/slugify-digits__recent__20261027T070744Z-059bde10/result.json": "4062bab505e0a9eaa0be6acf7de00b86d417d8d27cc32ea3af0bfe6aebd902c3",
+    "demo-final/off/slugify-digits__recent__20261027T070744Z-059bde10/security.jsonl": "adf7881834af1e410fbdde6b4f03842953979ce5d3c003269b607dd85802ba9b",
+    "demo-final/off/slugify-digits__recent__20261027T070744Z-059bde10/trajectory.jsonl": "bb5a35cdefaa9dc5f22daf2f703a52bc1321df160553fe3eebbf141d8d491ed8",
+    "demo-final/paired-evidence-failure.json": "03a57f9aaaa8e6e2f9dd9c9c91fc1239a587568e7963e18ea21474413d0f346d",
+    "demo-final/paired-off-evidence.json": "fa0062af1bcd30ba98b6c41a069660046c73a70c2dc481d26f88688220f071af",
+    "demo-final/paired-off-failure.json": "cfa0e90c389cce71056933a3921689d371be79daf0ec1918819b8ab9b6e0b358",
+    "demo-final/report/report.html": "d6776bf996fab55b1e752b54a9f826b6911bfdf56b71def147fb2827d8234ac8",
+    "demo-final/report/report.md": "f84e3c2fb041edcd952eaa38ea14086d3a09e4d9ff02952a4d418fb00e8905a7",
+    "demo-final/report/summary.csv": "6458f517d4188eca82d9585be7ee6374cca1363c2303c0f3aaabb789ba038834",
+    "demo-final/summary.json": "918a779e9cfa65af0dab131c9bdfd73f2195c00b6e3dd5b353a0dcbef3b7de8d",
+    "evidence-runner-tests.xml": "93c74b9a55bdc1047b36f003d0fe98a23a2fb1030bdf002ec11e1728b2ed0c20",
+    "openjudge.xml": "e8f3b5347be52c2fcf9933dd8961f32bc425fce0863f6d1c4413320a9c324876",
+    "pytest.xml": "32087fc6f87ba0befaef3b1199833018de97d63abe57b344d7fedd4a2e929647",
+    "reference-plan.json": "9237d2c06a4be552fdfa72ebf13dc9993ba7f904d89a2289d81b1f4b583a56e1"
+  }
+}

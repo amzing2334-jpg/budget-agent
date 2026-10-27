@@ -202,3 +202,128 @@ def test_large_failed_observation_records_explicit_skip_without_extra_request(ta
     assert record["status"] == "skipped" and record["reason"] == "reflection_prompt_does_not_fit"
     assert read_jsonl(result, "reflections.jsonl") == [record]
     assert result["resolved"] is False and result["status"] == "finished"
+
+
+@pytest.mark.parametrize("failure", [{"tool": "public_test"}, BAD_EDIT])
+def test_evidence_replays_observation_without_model_diagnosis_or_private_feedback(task, tmp_path, monkeypatch, failure):
+    graded_after = []
+    grade = LocalEnvironment.grade
+
+    def counted_grade(env):
+        graded_after.append(len((env.run_dir / "calls.jsonl").read_text(encoding="utf-8").splitlines()))
+        return grade(env)
+
+    monkeypatch.setattr(LocalEnvironment, "grade", counted_grade)
+    actions = [failure, FIX, {"tool": "public_test"}, {"tool": "finish"}]
+    result, counter = run_fixture(task, tmp_path, actions, reflection_policy="evidence")
+    calls = read_jsonl(result, "calls.jsonl")
+    assert [row["purpose"] for row in calls] == ["agent"] * len(actions)
+    assert graded_after == [len(actions)]
+    assert result["reflection"]["calls"] == 0 and result["resolved"] is True
+    assert PRIVATE_MARKER not in json.dumps(calls)
+    assert PRIVATE_MARKER in result["evaluation"]["output"]
+    replay, = result["reflection"]["events"]
+    assert replay["status"] == "replayed"
+    assert read_jsonl(result, "reflections.jsonl") == [replay]
+    note, = result["reflection"]["notes"]
+    event = read_jsonl(result, "trajectory.jsonl")[0]
+    assert note["source_event_id"] == event["id"] == "e0001"
+    assert note["source_revision"] == event["revision"]
+    assert note["tool"] == failure["tool"]
+    assert note["output"] == event["output"][note["output_offset"]:]
+    assert note["original_output_characters"] == len(event["output"])
+    assert counter.count(note["output"]) <= result["config"]["reflection_max_output_tokens"]
+
+    before_edit = next(message for message in calls[1]["messages"]
+                       if '"kind": "failure_evidence"' in message["content"])
+    after_edit = next(message for message in calls[2]["messages"]
+                      if '"kind": "failure_evidence"' in message["content"])
+    assert before_edit["role"] == after_edit["role"] == "user"
+    assert json.loads(before_edit["content"])["stale"] is False
+    assert json.loads(after_edit["content"])["stale"] is True
+    assert calls[1]["response"]["input_tokens"] == counter.messages(calls[1]["messages"])
+    without_note = [message for message in calls[1]["messages"] if message is not before_edit]
+    assert calls[1]["response"]["input_tokens"] - counter.messages(without_note) == counter.messages([before_edit]) - counter.messages([])
+    assert result["total_tokens"] == sum(row["input_tokens"] + row["output_tokens"]
+                                         for row in result["budget"]["requests"])
+    assert all(row["purpose"] == "agent" for row in result["budget"]["requests"])
+
+
+@pytest.mark.parametrize("limit", [1, 2])
+def test_evidence_interventions_are_capped_even_without_generation_calls(task, tmp_path, limit):
+    result, _ = run_fixture(task, tmp_path, [BAD_EDIT, BAD_EDIT, BAD_EDIT, {"tool": "finish"}],
+                            reflection_policy="evidence", max_reflections=limit)
+    assert result["reflection"]["calls"] == 0 and result["calls"] == 4
+    assert len(result["reflection"]["notes"]) == len(result["reflection"]["events"]) == limit
+    assert [row["source_event_id"] for row in result["reflection"]["notes"]] == [f"e{step:04d}" for step in range(1, limit + 1)]
+
+
+@pytest.mark.parametrize("denied", [
+    {"tool": "run", "command": "echo should-not-run"},
+    {"tool": "edit_file", "path": "tests/test_public.py", "old": "VALUE, 1", "new": "VALUE, 0"},
+])
+def test_evidence_does_not_replay_tool_or_file_policy_denials(task, tmp_path, denied):
+    result, _ = run_fixture(task, tmp_path, [denied, {"tool": "finish"}], reflection_policy="evidence")
+    assert result["safety"]["blocked_actions"] == 1
+    assert result["reflection"] == {"policy": "evidence", "calls": 0, "events": [], "notes": []}
+    assert not Path(result["result_path"]).with_name("reflections.jsonl").exists()
+
+
+def test_evidence_last_step_does_not_create_unusable_memory(task, tmp_path):
+    result, _ = run_fixture(task, tmp_path, [BAD_EDIT], reflection_policy="evidence", max_steps=1)
+    assert result["status"] == "max_steps" and result["calls"] == 1
+    assert result["reflection"]["events"] == result["reflection"]["notes"] == []
+
+
+def test_evidence_and_off_have_identical_first_request(task, tmp_path):
+    actions = [BAD_EDIT, {"tool": "finish"}]
+    baseline, _ = run_fixture(task, tmp_path / "off", actions, reflection_policy="off", strategy="full")
+    candidate, _ = run_fixture(task, tmp_path / "evidence", actions, reflection_policy="evidence", strategy="full")
+    baseline_calls = read_jsonl(baseline, "calls.jsonl")
+    candidate_calls = read_jsonl(candidate, "calls.jsonl")
+    assert candidate_calls[0]["messages"] == baseline_calls[0]["messages"]
+    assert candidate_calls[0]["response"] == baseline_calls[0]["response"]
+    candidate_messages = candidate_calls[1]["messages"]
+    without_note = [message for message in candidate_messages if '"kind": "failure_evidence"' not in message["content"]]
+    assert without_note == baseline_calls[1]["messages"]
+    assert candidate["reflection"]["calls"] == baseline["reflection"]["calls"] == 0
+    assert candidate["input_tokens"] > baseline["input_tokens"]
+
+
+def test_evidence_memory_must_fit_remaining_shared_budget(task, tmp_path):
+    actions = [BAD_EDIT, {"tool": "finish"}]
+    measured, _ = run_fixture(task, tmp_path / "measure", actions, reflection_policy="off", strategy="full")
+    first, second = measured["budget"]["requests"]
+    first_cost = first["input_tokens"] + first["output_tokens"]
+    limit = first_cost + second["input_tokens"] + measured["config"]["min_action_output_tokens"]
+    baseline, _ = run_fixture(task, tmp_path / "off", actions,
+                              reflection_policy="off", strategy="full", total_tokens=limit)
+    candidate, _ = run_fixture(task, tmp_path / "evidence", actions,
+                               reflection_policy="evidence", strategy="full", total_tokens=limit)
+    assert baseline["status"] == "finished" and baseline["calls"] == 2
+    assert candidate["status"] == "budget_exhausted" and candidate["calls"] == candidate["steps"] == 1
+    assert len(candidate["reflection"]["notes"]) == 1 and candidate["reflection"]["calls"] == 0
+    assert candidate["total_tokens"] == first_cost < limit
+    assert not candidate["budget"]["overrun"] and not candidate["budget"]["unreconciled_request"]
+
+
+def test_evidence_large_failure_keeps_bounded_original_tail_without_request(task, tmp_path):
+    public = Path(task.repo) / "tests" / "test_public.py"
+    public.write_text(
+        "import unittest\nclass Tests(unittest.TestCase):\n"
+        "    def test_large_output(self):\n        print('X' * 20000)\n        self.fail('visible failure')\n",
+        encoding="utf-8")
+    result, counter = run_fixture(task, tmp_path, [{"tool": "public_test"}, {"tool": "finish"}],
+                                  reflection_policy="evidence", reflection_max_output_tokens=128)
+    event = read_jsonl(result, "trajectory.jsonl")[0]
+    note, = result["reflection"]["notes"]
+    assert note["output_offset"] > 0
+    assert note["output"] and event["output"].endswith(note["output"])
+    assert note["output"] == event["output"][note["output_offset"]:]
+    assert note["original_output_characters"] == len(event["output"]) > 128
+    assert counter.count(note["output"]) <= 128
+    assert result["status"] == "finished" and result["calls"] == 2
+    assert result["reflection"]["calls"] == 0
+    message = next(message for message in read_jsonl(result, "calls.jsonl")[1]["messages"]
+                   if '"kind": "failure_evidence"' in message["content"])
+    assert json.loads(message["content"])["truncated"] is True

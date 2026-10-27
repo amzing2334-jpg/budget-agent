@@ -1,0 +1,4 @@
+﻿group_id,strategy,provider,model,split,evidence_kind,attempted,graded,pending_or_ungraded,infrastructure_errors,official_empty_patches,successes,success_rate,matched_tasks_and_repetition_labels,invalid_budget_attempts,comparison_valid,input_tokens,output_tokens,total_tokens,mean_tokens,total_cost_usd,cost_per_success_usd,mean_elapsed_seconds
+9d4f9076a9,recent,scripted,scripted-smoke-v1,dev,scripted_smoke,1,1,0,0,0,1,1.0,True,0,True,24294,266,24560,24560.0,,,0.39922569999907864
+98a895ca93,recent,scripted,scripted-smoke-v1,dev,scripted_smoke,1,1,0,0,0,1,1.0,True,0,True,25501,403,25904,25904.0,,,0.4016574999986915
+42a8f28f57,recent,scripted,scripted-smoke-v1,dev,scripted_smoke,1,1,0,0,0,1,1.0,True,0,True,21477,266,21743,21743.0,,,0.416789200004132

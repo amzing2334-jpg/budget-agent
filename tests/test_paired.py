@@ -95,6 +95,8 @@ def test_repeated_reads_require_same_revision_and_range(tmp_path):
     ("decision_policy", "direct", "budget-aware"),
     ("loop_policy", "off", "recover"),
     ("reflection_policy", "off", "failure"),
+    ("reflection_policy", "off", "evidence"),
+    ("reflection_policy", "evidence", "failure"),
 ])
 def test_declared_factor_varies_while_context_strategy_stays_fixed(tmp_path, factor, baseline, candidate):
     left = result(tmp_path, "mask", resolved=False)
@@ -119,6 +121,20 @@ def test_loop_comparison_rejects_a_second_changed_factor(tmp_path, extra):
         right["strategy"] = extra["strategy"]
     with pytest.raises(ValueError, match="Mismatched"):
         analyze_paired([left, right], "off", "recover", factor="loop_policy")
+
+
+@pytest.mark.parametrize("extra", [
+    {"total_tokens": 128000}, {"max_reflections": 2},
+    {"reflection_max_output_tokens": 512}, {"execution_policy": "sandbox"},
+])
+def test_evidence_comparison_rejects_a_second_changed_factor(tmp_path, extra):
+    left, right = result(tmp_path, "mask"), result(tmp_path, "mask")
+    for row, policy in [(left, "evidence"), (right, "failure")]:
+        row["config"].update(reflection_policy=policy, max_reflections=1,
+                             reflection_max_output_tokens=256, execution_policy="restricted")
+    right["config"].update(extra)
+    with pytest.raises(ValueError, match="Mismatched"):
+        analyze_paired([left, right], "evidence", "failure", factor="reflection_policy")
 
 
 def test_legacy_loop_default_is_narrow_and_explicit(tmp_path):

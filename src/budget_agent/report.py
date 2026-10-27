@@ -265,7 +265,8 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
         notice = ("Per-run recorded contracts only: not production certification. Safety covers direct tool authorization, "
                   "not arbitrary behavior inside tests. Unknown evidence cannot pass; reflection text is a hypothesis. "
                   "Scripted runs remain software checks, not model capability evidence.")
-        headers = ["Run", "Quality", "Token ledger", "Tool policy", "Acceptance", "Reflection calls", "Blocked tools"]
+        headers = ["Run", "Quality", "Token ledger", "Tool policy", "Acceptance",
+                   "Feedback policy", "Memory notes", "Reflection calls", "Blocked tools"]
         md.extend(["", "## Run acceptance contracts", "", notice, "",
                    "| " + " | ".join(headers) + " |", "|" + "---|" * len(headers)])
         body.append('<section><h2>Run acceptance contracts</h2><p class="muted">' + html.escape(notice)
@@ -275,7 +276,9 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
             contract = evaluate_run(result)
             values = [result.get("run_id", "unavailable"),
                       *[contract["dimensions"][key]["status"] for key in ("quality", "budget", "safety")],
-                      contract["acceptance_status"], result.get("reflection", {}).get("calls", "unavailable"),
+                      contract["acceptance_status"], result.get("reflection", {}).get("policy", "unavailable"),
+                      len(result["reflection"]["notes"]) if "reflection" in result else "unavailable",
+                      result.get("reflection", {}).get("calls", "unavailable"),
                       result.get("safety", {}).get("blocked_actions", "unavailable")]
             cells = [html.escape(str(value)) for value in values]
             md.append("| " + " | ".join(value.replace("|", "\\|") for value in cells) + " |")

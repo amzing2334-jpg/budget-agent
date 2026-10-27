@@ -90,8 +90,8 @@ class RunConfig:
             raise ValueError("decision_policy must be direct or budget-aware")
         if self.loop_policy not in {"off", "recover"}:
             raise ValueError("loop_policy must be off or recover")
-        if self.reflection_policy not in {"off", "failure"}:
-            raise ValueError("reflection_policy must be off or failure")
+        if self.reflection_policy not in {"off", "failure", "evidence"}:
+            raise ValueError("reflection_policy must be off, failure, or evidence")
         if type(self.max_reflections) is not int or self.max_reflections < 1:
             raise ValueError("max_reflections must be a positive integer")
         if type(self.reflection_max_output_tokens) is not int or self.reflection_max_output_tokens < 1:

@@ -101,13 +101,14 @@ def test_invalid_governance_configuration_fails_before_execution(changes):
         RunConfig(**changes).validate()
 
 
-def test_governance_flags_are_explicit_and_default_off():
+@pytest.mark.parametrize("policy", ["failure", "evidence"])
+def test_governance_flags_are_explicit_and_default_off(policy):
     defaults = load_config(build_parser().parse_args(["run"]))
     assert defaults.reflection_policy == "off" and defaults.execution_policy == "sandbox"
     configured = load_config(build_parser().parse_args([
-        "run", "--reflection-policy", "failure", "--max-reflections", "2",
+        "run", "--reflection-policy", policy, "--max-reflections", "2",
         "--reflection-max-output-tokens", "512", "--execution-policy", "restricted"]))
-    assert configured.reflection_policy == "failure" and configured.max_reflections == 2
+    assert configured.reflection_policy == policy and configured.max_reflections == 2
     assert configured.reflection_max_output_tokens == 512 and configured.environment == "docker"
     assert parse_action('{"tool":"public_test"}') == {"tool": "public_test"}
     with pytest.raises(ValueError, match="no parameters"):

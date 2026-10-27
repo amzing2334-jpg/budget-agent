@@ -16,7 +16,7 @@ from .diagnostics import analyze_trajectory
 from .environment import EnvironmentError, create_environment
 from .loop_control import ReadLoopMonitor
 from .models import ModelError, OpenAICompatibleModel, ScriptedModel, parse_action
-from .reflection import ReflectionNote, reflection_messages, reflection_trigger
+from .reflection import EvidenceNote, ReflectionNote, evidence_note, reflection_messages, reflection_trigger
 from .schema import Event, RunConfig, Task
 from .tasks import smoke_actions
 
@@ -110,9 +110,9 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
     code_revision = source_fingerprint()
     read_loop = ReadLoopMonitor()
     controls: list[dict] = []
-    notes: list[ReflectionNote] = []
+    notes: list[ReflectionNote | EvidenceNote] = []
     reflections: list[dict] = []
-    reflection_count = 0
+    feedback_count = 0
     safety_records: list[dict] = []
     external_actions = 0
     evaluation = {"resolved": None, "status": "not_evaluated"}
@@ -250,15 +250,23 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
             if status == "finished":
                 break
             blocked = policy_decision is not None and not policy_decision["allowed"]
-            if (config.reflection_policy == "failure" and step < config.max_steps
-                    and reflection_count < config.max_reflections
+            if (config.reflection_policy != "off" and step < config.max_steps
+                    and feedback_count < config.max_reflections
                     and reflection_trigger(event, blocked=blocked)):
+                if config.reflection_policy == "evidence":
+                    note = evidence_note(event, counter, config.reflection_max_output_tokens)
+                    notes.append(note)
+                    feedback_count += 1
+                    record_reflection("replayed", event, note=note.to_dict(),
+                                      excerpt_tokens=counter.count(note.output),
+                                      text_token_limit=config.reflection_max_output_tokens)
+                    continue
                 review = reflection_messages(actor_messages, event)
                 inputs = counter.messages(review)
                 if inputs >= min(config.context_tokens, budget.remaining_tokens):
                     record_reflection("skipped", event, reason="reflection_prompt_does_not_fit")
                     continue
-                reflection_count += 1
+                feedback_count += 1
                 try:
                     text = call(review, config.reflection_max_output_tokens, "reflection")
                 except BudgetExceeded:

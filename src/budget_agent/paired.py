@@ -148,7 +148,10 @@ def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor
                       "Means and wins exclude ungraded, infrastructure-error, invalid-budget, and missing-metadata pairs; all attempts remain in the ledger.",
                       "Repeated reads and failed tool actions are behavior proxies, not proof of wasted work or incorrect reasoning.",
                       "GPU rental and setup cost are not measured by model cost_usd; unknown cost remains null.",
-                      "Scripted smoke results are infrastructure evidence, not model capability evidence."]}
+                      "Scripted smoke results are infrastructure evidence, not model capability evidence."]
+                     + (["Feedback policies share a total-token ceiling, not equal actual spend or information: "
+                         "generated reflection consumes a separate request; evidence replay does not."]
+                        if factor == "reflection_policy" else [])}
 
 
 def main() -> None:
