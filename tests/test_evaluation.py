@@ -100,3 +100,85 @@ def test_safety_distinguishes_blocked_attempts_violations_and_missing_audit(chan
     report = evaluate_run(result)
     assert report["dimensions"]["safety"]["status"] == status
     assert report["acceptance_status"] == status
+
+
+@pytest.mark.parametrize("requests", [None, {}, "unavailable", [None], ["row"], [1]])
+def test_request_ledger_invalid_container_or_row_is_unknown(requests):
+    result = complete_result()
+    result["budget"]["requests"] = requests
+    report = evaluate_run(result)
+    assert report["dimensions"]["budget"]["status"] == "unknown"
+    assert report["acceptance_status"] == "unknown"
+
+
+@pytest.mark.parametrize("field", [
+    "input_tokens", "output_tokens", "estimated_input_tokens",
+    "reserved_output_tokens", "overrun_reasons",
+])
+def test_request_ledger_missing_required_field_is_unknown(field):
+    result = complete_result()
+    del result["budget"]["requests"][0][field]
+    assert evaluate_run(result)["dimensions"]["budget"]["status"] == "unknown"
+
+
+@pytest.mark.parametrize("field,value", [
+    ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+    ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+    ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+    ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+    ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+    ("input_tokens", "10"), ("output_tokens", None),
+    ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+    ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+])
+def test_request_ledger_invalid_field_is_unknown(field, value):
+    result = complete_result()
+    result["budget"]["requests"][0][field] = value
+    report = evaluate_run(result)
+    assert report["dimensions"]["budget"]["status"] == "unknown"
+    assert report["acceptance_status"] == "unknown"
+
+
+def test_request_negative_usage_cannot_cancel_across_rows_into_a_pass():
+    result = complete_result()
+    first = result["budget"]["requests"][0]
+    second = deepcopy(first)
+    first["input_tokens"], first["output_tokens"] = -1, 0
+    second["input_tokens"], second["output_tokens"] = 11, 2
+    result["budget"]["requests"].append(second)
+    result["budget"]["calls"] = 2
+    # Both aggregate totals still reconcile, but a negative request is invalid.
+    assert sum(row["input_tokens"] for row in result["budget"]["requests"]) == result["budget"]["input_tokens"]
+    assert sum(row["output_tokens"] for row in result["budget"]["requests"]) == result["budget"]["output_tokens"]
+    assert evaluate_run(result)["dimensions"]["budget"]["status"] == "unknown"
+
+
+@pytest.mark.parametrize("change", [
+    {"overrun_reasons": ["provider output exceeded reserved output cap"]},
+    {"reserved_output_tokens": 1},
+    {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+])
+def test_request_overrun_is_fail_even_when_summary_flag_is_false(change):
+    result = complete_result()
+    result["budget"]["requests"][0].update(change)
+    assert result["budget"]["overrun"] is False
+    report = evaluate_run(result)
+    assert report["dimensions"]["budget"]["status"] == "fail"
+    assert report["acceptance_status"] == "fail"
+
+
+@pytest.mark.parametrize("bad_first", [False, True])
+@pytest.mark.parametrize("change", [
+    {"overrun_reasons": ["known request overrun"]},
+    {"reserved_output_tokens": 1},
+    {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+])
+def test_known_request_overrun_is_not_hidden_by_another_invalid_row(change, bad_first):
+    result = complete_result()
+    known = result["budget"]["requests"][0]
+    known.update(change)
+    result["budget"]["requests"] = [None, known] if bad_first else [known, None]
+    result["budget"]["calls"] = 2
+    report = evaluate_run(result)
+    assert report["dimensions"]["budget"]["status"] == "fail"
+    assert report["acceptance_status"] == "fail"

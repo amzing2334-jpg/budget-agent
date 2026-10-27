@@ -1,0 +1,431 @@
+{
+  "kind": "single_run_contract_audit",
+  "runs": [
+    {
+      "task_id": "missing_input",
+      "run_id": "missing_input",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-06\\cases\\missing_input\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "missing_input",
+        "run_id": "missing_input",
+        "evidence_kind": "synthetic_ledger_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Request ledger contains missing or invalid accounting fields",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [
+                0
+              ],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "budget"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "negative_cancel",
+      "run_id": "negative_cancel",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-06\\cases\\negative_cancel\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "negative_cancel",
+        "run_id": "negative_cancel",
+        "evidence_kind": "synthetic_ledger_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Request ledger contains missing or invalid accounting fields",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [
+                0
+              ],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "budget"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "null_requests",
+      "run_id": "null_requests",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-06\\cases\\null_requests\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "null_requests",
+        "run_id": "null_requests",
+        "evidence_kind": "synthetic_ledger_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Request ledger must be a list of request records",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ]
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "budget"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "output_cap",
+      "run_id": "output_cap",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-06\\cases\\output_cap\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "output_cap",
+        "run_id": "output_cap",
+        "evidence_kind": "synthetic_ledger_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "fail",
+            "score": 0,
+            "reason": "Request evidence records usage beyond its reservation",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": [
+                0
+              ]
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "fail",
+        "blocking_dimensions": [
+          "budget"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "recorded_overrun",
+      "run_id": "recorded_overrun",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-06\\cases\\recorded_overrun\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "recorded_overrun",
+        "run_id": "recorded_overrun",
+        "evidence_kind": "synthetic_ledger_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "fail",
+            "score": 0,
+            "reason": "Request evidence records usage beyond its reservation",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": [
+                0
+              ]
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "fail",
+        "blocking_dimensions": [
+          "budget"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "total_reservation",
+      "run_id": "total_reservation",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-06\\cases\\total_reservation\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "total_reservation",
+        "run_id": "total_reservation",
+        "evidence_kind": "synthetic_ledger_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "fail",
+            "score": 0,
+            "reason": "Request evidence records usage beyond its reservation",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": [
+                0
+              ]
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "fail",
+        "blocking_dimensions": [
+          "budget"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "valid",
+      "run_id": "valid",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-06\\cases\\valid\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "valid",
+        "run_id": "valid",
+        "evidence_kind": "synthetic_ledger_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "pass",
+        "blocking_dimensions": [],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    }
+  ]
+}

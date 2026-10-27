@@ -143,3 +143,38 @@ def test_openjudge_grader_error_cannot_fall_back_to_builtin_success(tmp_path, mo
     audit = json.loads(output.read_text())
     assert audit["runs"][0]["evaluation"]["acceptance_status"] == "pass"
     assert "error" in audit["openjudge"]["quality"][0]
+
+
+@pytest.mark.parametrize("engine", ["builtin", "openjudge"])
+def test_audit_keeps_valid_and_damaged_ledgers_in_one_report(tmp_path, engine):
+    if engine == "openjudge":
+        pytest.importorskip("openjudge", reason="Optional OpenJudge contract environment is not configured")
+    from test_evaluation import complete_result
+    inputs = tmp_path / "inputs"
+    originals = {}
+    for case in ("valid", "missing_input", "null_requests", "request_overrun"):
+        result = complete_result()
+        result.update(task_id=case, run_id=case)
+        if case == "missing_input":
+            del result["budget"]["requests"][0]["input_tokens"]
+        elif case == "null_requests":
+            result["budget"]["requests"] = None
+        elif case == "request_overrun":
+            result["budget"]["requests"][0]["reserved_output_tokens"] = 0
+        path = inputs / case / "result.json"
+        path.parent.mkdir(parents=True)
+        path.write_text(json.dumps(result), encoding="utf-8")
+        originals[path] = path.read_bytes()
+    output = tmp_path / "audit.json"
+    assert main(["audit", "--engine", engine, "--input", str(inputs), "--output", str(output)]) == 1
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert {row["task_id"]: row["evaluation"]["acceptance_status"] for row in report["runs"]} == {
+        "valid": "pass", "missing_input": "unknown", "null_requests": "unknown", "request_overrun": "fail"}
+    assert all(path.read_bytes() == content for path, content in originals.items())
+    if engine == "openjudge":
+        for row, grade in zip(report["runs"], report["openjudge"]["budget"]):
+            if row["task_id"] in {"missing_input", "null_requests"}:
+                assert grade["error"] == "insufficient_evidence"
+                assert "score" not in grade
+            else:
+                assert grade["score"] == int(row["task_id"] == "valid")

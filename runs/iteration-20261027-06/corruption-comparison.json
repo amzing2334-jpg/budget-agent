@@ -1,0 +1,71 @@
+{
+  "kind": "synthetic_artifact_mutation_not_observed_runtime_failure",
+  "source_result": "runs/iteration-20261027-05/demo-final/off/slugify-digits__recent__20261027T070744Z-059bde10/result.json",
+  "source_sha256": "4062bab505e0a9eaa0be6acf7de00b86d417d8d27cc32ea3af0bfe6aebd902c3",
+  "source_fingerprint": "9a08bc7ed672de55d75b85289800b0523bd8755518b75a460ac44731dbc0e341",
+  "cases": [
+    {
+      "case": "valid",
+      "path": "cases/valid/result.json",
+      "before": {
+        "status": "pass"
+      },
+      "after": "pass",
+      "budget_reason": "Recorded usage reconciles within the token limit; not a billing audit"
+    },
+    {
+      "case": "missing_input",
+      "path": "cases/missing_input/result.json",
+      "before": {
+        "exception": "KeyError"
+      },
+      "after": "unknown",
+      "budget_reason": "Request ledger contains missing or invalid accounting fields"
+    },
+    {
+      "case": "null_requests",
+      "path": "cases/null_requests/result.json",
+      "before": {
+        "exception": "TypeError"
+      },
+      "after": "unknown",
+      "budget_reason": "Request ledger must be a list of request records"
+    },
+    {
+      "case": "negative_cancel",
+      "path": "cases/negative_cancel/result.json",
+      "before": {
+        "status": "pass"
+      },
+      "after": "unknown",
+      "budget_reason": "Request ledger contains missing or invalid accounting fields"
+    },
+    {
+      "case": "recorded_overrun",
+      "path": "cases/recorded_overrun/result.json",
+      "before": {
+        "status": "pass"
+      },
+      "after": "fail",
+      "budget_reason": "Request evidence records usage beyond its reservation"
+    },
+    {
+      "case": "output_cap",
+      "path": "cases/output_cap/result.json",
+      "before": {
+        "status": "pass"
+      },
+      "after": "fail",
+      "budget_reason": "Request evidence records usage beyond its reservation"
+    },
+    {
+      "case": "total_reservation",
+      "path": "cases/total_reservation/result.json",
+      "before": {
+        "status": "pass"
+      },
+      "after": "fail",
+      "budget_reason": "Request evidence records usage beyond its reservation"
+    }
+  ]
+}

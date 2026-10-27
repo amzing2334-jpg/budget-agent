@@ -1,0 +1,89 @@
+{
+  "kind": "offline_request_ledger_validation_not_model_benchmark",
+  "created_at_utc": "2026-10-27T11:17:12.285279+00:00",
+  "base_commit": "6b3ab66f3bcf23ad3738cf72eaa5057a0a4bb505",
+  "source_fingerprint": "9a08bc7ed672de55d75b85289800b0523bd8755518b75a460ac44731dbc0e341",
+  "full_suite": {
+    "passed": 724,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 12,
+    "seconds": 50.887
+  },
+  "actual_openjudge": {
+    "passed": 84,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 3.18
+  },
+  "request_tests_before": {
+    "passed": 33,
+    "failed": 33,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 0.331
+  },
+  "request_tests_after": {
+    "passed": 66,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 0.068
+  },
+  "historical_results": {
+    "count": 59,
+    "before": {
+      "unknown": 42,
+      "fail": 9,
+      "pass": 8
+    },
+    "after": {
+      "unknown": 42,
+      "fail": 9,
+      "pass": 8
+    },
+    "changed": 0,
+    "original_hashes_preserved": true
+  },
+  "synthetic_cases": 7,
+  "audit_exit_codes": {
+    "builtin": 1,
+    "openjudge": 1
+  },
+  "optional_skips": {
+    "torch_modules": 2,
+    "pinned_mini_swe_unconfigured": 6,
+    "openjudge_skip_records": 4,
+    "openjudge_executed_in_dedicated_environment": true
+  },
+  "upstream_openjudge_commit": "c2fdc38314cd971b03d4d9333cd2c9f24d85c27f",
+  "real_model_requests": 0,
+  "training": false,
+  "new_rentals": 0,
+  "cloud_inventory_checked": false,
+  "limitations": [
+    "Synthetic corruption cases are not observed historical runtime failures.",
+    "Audit checks recorded request consistency, not external billing or authentic logs.",
+    "This change does not validate every malformed result field or quality-evidence contradiction."
+  ],
+  "sha256": {
+    "audit.json": "2955a5e309f64d482f090fdd6cb07a92593fd9e7aaa1f57a3029944b41d22994",
+    "cases/missing_input/result.json": "78889e7cceb1d0b34c91728945de55581e9916a0da3ddf62b42ea83c563efbb1",
+    "cases/negative_cancel/result.json": "6d8d1ccfe66f7cd4247682ac44ade66f1da2827c623011300c340151c902c54e",
+    "cases/null_requests/result.json": "6ebf07756c82917db7326cb4d28d53976991029b86b5df3be59ccf1b8d2bb09a",
+    "cases/output_cap/result.json": "3b33f9ea9a5d3fbc7f6f12fe177c74c89e6c4cf54a79aeda08bf534c755c1fad",
+    "cases/recorded_overrun/result.json": "70c4735d405040aa0abccc59818cbcba22cc24ee3212be7dd616fa71c777081a",
+    "cases/total_reservation/result.json": "17fee14e8f6722f28021c4a44907c58c7193f5654e20a8ee0d5de791f1a3343f",
+    "cases/valid/result.json": "d51748500fc468d5fa2e849b37b0fc414c1d9dc4cf906728f6e7676e06558fd5",
+    "corruption-comparison.json": "555cb78d1d15405d15178cf95eff8c475193764cf6d8c83c98f472c322769d8c",
+    "historical-audit.json": "6792a7c2b743a4b6887cc774111c0e76400f185e823a0b5fa0490d4154abe2a3",
+    "openjudge-audit.json": "bfb2e2a791fc5095f39991a884b8a40bb77b0864d433acbf92b624dcea56fd8f",
+    "openjudge.xml": "dcaaa9261d1decb990997b51be9c1d68c378d67f2acc5d79b6d6c60803d2ffee",
+    "pytest.xml": "a37f84c0567934e1e48107c2e80f7a37d80382d3a9321167607d94226ca2c082",
+    "reference-plan.json": "224daa0c34f23f2444197254e755567a0c39cf2d1f9fa10cc9f009fb9c7d7275",
+    "request-ledger-after.xml": "80d538529803984abee3fdbbd7245c6642b0e8cf14c297e4afaa642f6ccdf7ae",
+    "request-ledger-before.xml": "33fe59271af0ee59b3e88d622e2b4c1b764a93e1b2dc814909240b1fa8039d4f",
+    "targeted.xml": "3d2e88f6d5ba400978b55a3201b53e077fbcf9b67ec3f5df4b750881772ad414"
+  }
+}

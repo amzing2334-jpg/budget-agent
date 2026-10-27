@@ -1,0 +1,426 @@
+{
+  "run_id": "recorded_overrun",
+  "task_id": "recorded_overrun",
+  "split": "dev",
+  "task_kind": "local",
+  "provider": "scripted",
+  "model": "scripted-smoke-v1",
+  "actual_models": [
+    "scripted-smoke-v1"
+  ],
+  "strategy": "recent",
+  "config": {
+    "strategy": "recent",
+    "history_format": "chat",
+    "decision_policy": "direct",
+    "loop_policy": "off",
+    "reflection_policy": "off",
+    "max_reflections": 1,
+    "reflection_max_output_tokens": 256,
+    "execution_policy": "restricted",
+    "provider": "scripted",
+    "model": "",
+    "base_url": "",
+    "api_key_env": "LLM_API_KEY",
+    "context_tokens": 16000,
+    "total_tokens": 64000,
+    "max_output_tokens": 1536,
+    "min_action_output_tokens": 128,
+    "read_memory_tokens": 1024,
+    "max_steps": 30,
+    "timeout_seconds": 30,
+    "tokenizer": "byte",
+    "temperature": 0.0,
+    "seed": 0,
+    "input_price_per_million": null,
+    "output_price_per_million": null,
+    "max_cost_usd": null,
+    "allow_local_execution": false,
+    "environment": "local",
+    "docker_image": "python:3.11-slim",
+    "api_max_tokens_field": "max_tokens",
+    "api_enable_thinking": null,
+    "model_revision": "",
+    "device": "cuda",
+    "model_dtype": "bfloat16"
+  },
+  "status": "finished",
+  "error": null,
+  "resolved": true,
+  "evaluation": {
+    "resolved": true,
+    "status": "resolved",
+    "output": "test_digits (private_verifier.HiddenTests.test_digits) ... ok\r\ntest_edges (private_verifier.HiddenTests.test_edges) ... ok\r\ntest_regression (private_verifier.HiddenTests.test_regression) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 3 tests in 0.000s\r\n\r\nOK\r\nBUDGET_AGENT_GRADE_1ba277c432b3416eb68c117b3da72e64{\"tests_run\": 3, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"successful\": true}\r\n",
+    "test_results": {
+      "tests_run": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "successful": true
+    },
+    "duration_seconds": 0.10635849999380298
+  },
+  "evidence_kind": "synthetic_ledger_mutation",
+  "input_tokens": 21477,
+  "output_tokens": 266,
+  "total_tokens": 21743,
+  "calls": 6,
+  "cost_usd": null,
+  "known_cost_usd": null,
+  "usage_unknown": false,
+  "usage_sources": [
+    "scripted_estimate"
+  ],
+  "budget": {
+    "input_tokens": 21477,
+    "output_tokens": 266,
+    "total_tokens": 21743,
+    "remaining_tokens": 42257,
+    "calls": 6,
+    "cost_usd": null,
+    "cost_kind": "unknown_prices",
+    "usage_sources": [
+      "scripted_estimate"
+    ],
+    "preflight_counter": "byte",
+    "preflight_description": "UTF-8 byte upper estimate + framing estimate",
+    "usage_is_estimated": true,
+    "overrun": false,
+    "unreconciled_request": false,
+    "attempted_calls": 6,
+    "pending_reservation": null,
+    "requests": [
+      {
+        "purpose": "agent",
+        "input_tokens": 2466,
+        "output_tokens": 43,
+        "estimated_input_tokens": 2466,
+        "reserved_output_tokens": 1536,
+        "usage_source": "scripted_estimate",
+        "model": "scripted-smoke-v1",
+        "overrun_reasons": [
+          "synthetic known overrun"
+        ]
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 2945,
+        "output_tokens": 84,
+        "estimated_input_tokens": 2945,
+        "reserved_output_tokens": 1536,
+        "usage_source": "scripted_estimate",
+        "model": "scripted-smoke-v1",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 3421,
+        "output_tokens": 82,
+        "estimated_input_tokens": 3421,
+        "reserved_output_tokens": 1536,
+        "usage_source": "scripted_estimate",
+        "model": "scripted-smoke-v1",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 3784,
+        "output_tokens": 23,
+        "estimated_input_tokens": 3784,
+        "reserved_output_tokens": 1536,
+        "usage_source": "scripted_estimate",
+        "model": "scripted-smoke-v1",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 4188,
+        "output_tokens": 16,
+        "estimated_input_tokens": 4188,
+        "reserved_output_tokens": 1536,
+        "usage_source": "scripted_estimate",
+        "model": "scripted-smoke-v1",
+        "overrun_reasons": []
+      },
+      {
+        "purpose": "agent",
+        "input_tokens": 4673,
+        "output_tokens": 18,
+        "estimated_input_tokens": 4673,
+        "reserved_output_tokens": 1536,
+        "usage_source": "scripted_estimate",
+        "model": "scripted-smoke-v1",
+        "overrun_reasons": []
+      }
+    ]
+  },
+  "elapsed_seconds": 0.416789200004132,
+  "model_seconds": 0.00010999999358318746,
+  "steps": 6,
+  "context_stats": {
+    "builds": 6,
+    "compactions": 0,
+    "summary_calls": 0,
+    "excerpted_events": 0,
+    "last_input_tokens": 4673,
+    "last_visible_events": 5,
+    "last_omitted_events": 0,
+    "last_masked_events": 0,
+    "last_read_memory_tokens": 0,
+    "last_read_memory_lines": 0,
+    "last_read_memory_events": 0
+  },
+  "diagnostics": {
+    "schema_version": 1,
+    "counts": {
+      "events": 6,
+      "invalid_actions": 0,
+      "invalid_actions_at_output_limit": 0,
+      "repeated_failed_actions": 0,
+      "repeated_observations": 0,
+      "successful_read_file": 1,
+      "successful_edit_file": 1,
+      "successful_write_file": 0,
+      "successful_run": 0,
+      "successful_diff": 1
+    },
+    "first_successful_tool_action": {
+      "event_id": "e0001",
+      "step": 1,
+      "tool": "read_file"
+    },
+    "invalid_actions": [],
+    "repeated_failed_actions": [],
+    "repeated_observations": [],
+    "tools": {
+      "read_file": {
+        "calls": 1,
+        "successful": 1,
+        "failed": 0,
+        "duration_seconds": 0.004353199998149648,
+        "output_characters": 278
+      },
+      "edit_file": {
+        "calls": 2,
+        "successful": 1,
+        "failed": 1,
+        "duration_seconds": 0.008769200001552235,
+        "output_characters": 250
+      },
+      "public_test": {
+        "calls": 1,
+        "successful": 1,
+        "failed": 0,
+        "duration_seconds": 0.1048367000039434,
+        "output_characters": 223
+      },
+      "diff": {
+        "calls": 1,
+        "successful": 1,
+        "failed": 0,
+        "duration_seconds": 0.0069852999949944206,
+        "output_characters": 311
+      },
+      "finish": {
+        "calls": 1,
+        "successful": 1,
+        "failed": 0,
+        "duration_seconds": 0.0024322000026586466,
+        "output_characters": 43
+      }
+    },
+    "usage": {
+      "calls": 6,
+      "calls_with_response": 6,
+      "unknown_usage_calls": 0,
+      "input_tokens": 21477,
+      "output_tokens": 266,
+      "total_tokens": 21743,
+      "input_fraction": 0.9877661776203835,
+      "usage_sources": [
+        "scripted_estimate"
+      ],
+      "recorded_model_seconds": 0.00015580000035697594
+    },
+    "call_alignment": {
+      "method": "ordered_agent_responses",
+      "agent_responses": 6,
+      "events": 6,
+      "raw_content_mismatches": [],
+      "unpaired_events": 0,
+      "unpaired_agent_responses": 0
+    },
+    "observation_exposure": {
+      "events": [
+        {
+          "event_id": "e0001",
+          "tool": "read_file",
+          "original_output_characters": 278,
+          "visible_observation_characters": 1390,
+          "request_indices": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "masked_messages": 0,
+          "masked_marker_characters": 0,
+          "masked_request_indices": [],
+          "associated_request_input_tokens": 19011
+        },
+        {
+          "event_id": "e0002",
+          "tool": "edit_file",
+          "original_output_characters": 233,
+          "visible_observation_characters": 932,
+          "request_indices": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "masked_messages": 0,
+          "masked_marker_characters": 0,
+          "masked_request_indices": [],
+          "associated_request_input_tokens": 16066
+        },
+        {
+          "event_id": "e0004",
+          "tool": "public_test",
+          "original_output_characters": 223,
+          "visible_observation_characters": 446,
+          "request_indices": [
+            5,
+            6
+          ],
+          "masked_messages": 0,
+          "masked_marker_characters": 0,
+          "masked_request_indices": [],
+          "associated_request_input_tokens": 8861
+        },
+        {
+          "event_id": "e0005",
+          "tool": "diff",
+          "original_output_characters": 311,
+          "visible_observation_characters": 311,
+          "request_indices": [
+            6
+          ],
+          "masked_messages": 0,
+          "masked_marker_characters": 0,
+          "masked_request_indices": [],
+          "associated_request_input_tokens": 4673
+        },
+        {
+          "event_id": "e0003",
+          "tool": "edit_file",
+          "original_output_characters": 17,
+          "visible_observation_characters": 51,
+          "request_indices": [
+            4,
+            5,
+            6
+          ],
+          "masked_messages": 0,
+          "masked_marker_characters": 0,
+          "masked_request_indices": [],
+          "associated_request_input_tokens": 12645
+        }
+      ],
+      "visible_observation_characters": 3130,
+      "masked_messages": 0,
+      "masked_marker_characters": 0,
+      "measurement": "Characters in explicit event observation messages, including excerpt markers but excluding masked placeholders. Associated request tokens include all input, are not event token costs, and overlap across events. Free-text summaries and recalled payloads are not attributed back to their source events."
+    },
+    "read_file_coverage": {
+      "status": "complete",
+      "events": [
+        {
+          "event_id": "e0001",
+          "revision": "9288e2cd29f2abef",
+          "path": "slugify.py",
+          "status": "measured",
+          "returned_lines": 6,
+          "new_lines": 6,
+          "repeated_lines": 0,
+          "covered_intervals": [
+            [
+              1,
+              6
+            ]
+          ],
+          "covered_interval_count": 1,
+          "truncated_line_content": false
+        }
+      ],
+      "measured_events": 1,
+      "unknown_events": 0,
+      "failed_events": 0,
+      "measured_returned_lines": 6,
+      "measured_new_lines": 6,
+      "measured_repeated_lines": 0,
+      "paths": [
+        {
+          "revision": "9288e2cd29f2abef",
+          "path": "slugify.py",
+          "unique_lines": 6,
+          "covered_intervals": [
+            [
+              1,
+              6
+            ]
+          ],
+          "covered_interval_count": 1
+        }
+      ],
+      "measurement": "Actual numbered lines validated against read_file output header; grouped by revision and canonical output path. New/repeated is relative to supported prior outputs only; unknown legacy formats are excluded, not guessed. Line coverage does not establish complete line content, comprehension, or unnecessary rereading."
+    },
+    "visible_read_repetitions": [],
+    "notes": [
+      "Tool success and the first successful action do not establish a correct repair or a passed test.",
+      "Repeated observations mean identical action, output, and recorded revision; they do not prove that repeating the check was unnecessary.",
+      "Visible read repetitions compare complete returned line text with explicit evidence in the actual preceding request. Offline detection does not demonstrate recovery or token savings under a new policy.",
+      "Reaching an output allowance is evidence of budget pressure, not proof that truncation caused the invalid action; both flags can coexist.",
+      "Repeated failures count identical actions at the same recorded revision, excluding invalid_action; different failure messages may be present."
+    ]
+  },
+  "loop_control": {
+    "policy": "off",
+    "events": [],
+    "warnings_sent": 0,
+    "stopped": false
+  },
+  "reflection": {
+    "policy": "off",
+    "events": [],
+    "calls": 0,
+    "notes": []
+  },
+  "safety": {
+    "policy": "restricted",
+    "scope": "direct_tool_authorization",
+    "evaluated_actions": 5,
+    "blocked_actions": 0,
+    "complete": true,
+    "violations": []
+  },
+  "patch_path": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-05\\demo-final\\off\\slugify-digits__recent__20261027T070744Z-059bde10\\patch.diff",
+  "initial_revision": "9288e2cd29f2abef",
+  "environment_provenance": {
+    "kind": "local"
+  },
+  "source_fingerprint": "bd2aaca7319b96affa7afb5664d10f426c4a688a17b143762b7a801bafeae9d3",
+  "public_test_command": [
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "task_fingerprint": "7c5ba26943fa1e3d0bf2e5ba2d66e44f05251c404dcf1f137d7a589e912019bd",
+  "created_at": "2026-10-27T07:07:44.803573+00:00",
+  "result_path": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-05\\demo-final\\off\\slugify-digits__recent__20261027T070744Z-059bde10\\result.json"
+}

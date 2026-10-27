@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="33" skipped="0" tests="66" time="0.331" timestamp="2026-10-27T19:09:44.674646+08:00" hostname="LAPTOP-MMKN5UT6"><testcase classname="tests.test_evaluation" name="test_complete_contract_preserves_scope_and_does_not_mutate_input" time="0.000" /><testcase classname="tests.test_evaluation" name="test_missing_evidence_never_becomes_pass[evaluation-quality]" time="0.001" /><testcase classname="tests.test_evaluation" name="test_missing_evidence_never_becomes_pass[budget-budget]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_missing_evidence_never_becomes_pass[safety-safety]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_ungraded_final_outcome_is_unknown[evaluation0]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_ungraded_final_outcome_is_unknown[evaluation1]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_ungraded_final_outcome_is_unknown[evaluation2]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_ungraded_final_outcome_is_unknown[evaluation3]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_ungraded_final_outcome_is_unknown[evaluation4]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_known_failure_is_not_hidden_by_high_scores_or_unknown_axis" time="0.000" /><testcase classname="tests.test_evaluation" name="test_budget_uses_complete_reconciled_ledger[change0-fail]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_budget_uses_complete_reconciled_ledger[change1-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_budget_uses_complete_reconciled_ledger[change2-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_budget_uses_complete_reconciled_ledger[change3-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_budget_uses_complete_reconciled_ledger[change4-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_budget_uses_complete_reconciled_ledger[change5-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_budget_uses_complete_reconciled_ledger[change6-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_budget_uses_complete_reconciled_ledger[change7-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_token_limit_overrun_does_not_depend_on_stored_overrun_flag" time="0.000" /><testcase classname="tests.test_evaluation" name="test_unknown_usage_is_not_known_free_usage" time="0.000" /><testcase classname="tests.test_evaluation" name="test_safety_distinguishes_blocked_attempts_violations_and_missing_audit[change0-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_safety_distinguishes_blocked_attempts_violations_and_missing_audit[change1-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_safety_distinguishes_blocked_attempts_violations_and_missing_audit[change2-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_safety_distinguishes_blocked_attempts_violations_and_missing_audit[change3-pass]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_safety_distinguishes_blocked_attempts_violations_and_missing_audit[change4-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_safety_distinguishes_blocked_attempts_violations_and_missing_audit[change5-unknown]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_safety_distinguishes_blocked_attempts_violations_and_missing_audit[change6-fail]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_container_or_row_is_unknown[None]" time="0.000"><failure message="TypeError: object of type 'NoneType' has no len()">requests = None
+
+    @pytest.mark.parametrize("requests", [None, {}, "unavailable", [None], ["row"], [1]])
+    def test_request_ledger_invalid_container_or_row_is_unknown(requests):
+        result = complete_result()
+        result["budget"]["requests"] = requests
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'task_id': 'task', 'run_id': 'run', 'evidence_kind': 'scripted_smoke', 'status': 'finished', ...}
+
+    def _budget(result: dict) -&gt; dict:
+        budget = result.get("budget", {})
+        evidence = {"total_tokens": budget.get("total_tokens"),
+                    "limit_tokens": result.get("config", {}).get("total_tokens"),
+                    "usage_is_estimated": budget.get("usage_is_estimated"),
+                    "usage_sources": budget.get("usage_sources")}
+        if budget.get("overrun") is True or result.get("status") == "budget_overrun":
+            return _dimension("fail", "Recorded inference budget overrun", evidence)
+        if result.get("usage_unknown") or budget.get("unreconciled_request"):
+            return _dimension("unknown", "Request usage has not been reconciled", evidence)
+        required = {"input_tokens", "output_tokens", "total_tokens", "calls", "requests",
+                    "overrun", "unreconciled_request"}
+        if (not required.issubset(budget) or result.get("usage_unknown") is not False
+                or budget["overrun"] is not False or budget["unreconciled_request"] is not False):
+            return _dimension("unknown", "Token ledger is missing required accounting fields", evidence)
+        counts = [budget[key] for key in ("input_tokens", "output_tokens", "total_tokens", "calls")]
+        limit = evidence["limit_tokens"]
+        if any(type(value) is not int or value &lt; 0 for value in counts) or type(limit) is not int or limit &lt;= 0:
+            return _dimension("unknown", "Token ledger or configured limit is invalid", evidence)
+        requests = budget["requests"]
+&gt;       if (len(requests) != budget["calls"]
+            ^^^^^^^^^^^^^
+                or budget["input_tokens"] + budget["output_tokens"] != budget["total_tokens"]
+                or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+                or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E               TypeError: object of type 'NoneType' has no len()
+
+src\budget_agent\evaluation.py:47: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_container_or_row_is_unknown[requests1]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_container_or_row_is_unknown[unavailable]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_container_or_row_is_unknown[requests3]" time="0.000"><failure message="TypeError: 'NoneType' object is not subscriptable">requests = [None]
+
+    @pytest.mark.parametrize("requests", [None, {}, "unavailable", [None], ["row"], [1]])
+    def test_request_ledger_invalid_container_or_row_is_unknown(requests):
+        result = complete_result()
+        result["budget"]["requests"] = requests
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:49: in _budget
+    or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF63D4A30&gt;
+
+&gt;   or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+           ^^^^^^^^^^^^^^^^^^^
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E   TypeError: 'NoneType' object is not subscriptable
+
+src\budget_agent\evaluation.py:49: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_container_or_row_is_unknown[requests4]" time="0.000"><failure message="TypeError: string indices must be integers, not 'str'">requests = ['row']
+
+    @pytest.mark.parametrize("requests", [None, {}, "unavailable", [None], ["row"], [1]])
+    def test_request_ledger_invalid_container_or_row_is_unknown(requests):
+        result = complete_result()
+        result["budget"]["requests"] = requests
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:49: in _budget
+    or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF63D4760&gt;
+
+&gt;   or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+           ^^^^^^^^^^^^^^^^^^^
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E   TypeError: string indices must be integers, not 'str'
+
+src\budget_agent\evaluation.py:49: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_container_or_row_is_unknown[requests5]" time="0.000"><failure message="TypeError: 'int' object is not subscriptable">requests = [1]
+
+    @pytest.mark.parametrize("requests", [None, {}, "unavailable", [None], ["row"], [1]])
+    def test_request_ledger_invalid_container_or_row_is_unknown(requests):
+        result = complete_result()
+        result["budget"]["requests"] = requests
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:49: in _budget
+    or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF6C76A70&gt;
+
+&gt;   or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+           ^^^^^^^^^^^^^^^^^^^
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E   TypeError: 'int' object is not subscriptable
+
+src\budget_agent\evaluation.py:49: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_missing_required_field_is_unknown[input_tokens]" time="0.000"><failure message="KeyError: 'input_tokens'">field = 'input_tokens'
+
+    @pytest.mark.parametrize("field", [
+        "input_tokens", "output_tokens", "estimated_input_tokens",
+        "reserved_output_tokens", "overrun_reasons",
+    ])
+    def test_request_ledger_missing_required_field_is_unknown(field):
+        result = complete_result()
+        del result["budget"]["requests"][0][field]
+&gt;       assert evaluate_run(result)["dimensions"]["budget"]["status"] == "unknown"
+               ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:121: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:49: in _budget
+    or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF6C779D0&gt;
+
+&gt;   or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+           ^^^^^^^^^^^^^^^^^^^
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E   KeyError: 'input_tokens'
+
+src\budget_agent\evaluation.py:49: KeyError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_missing_required_field_is_unknown[output_tokens]" time="0.000"><failure message="KeyError: 'output_tokens'">field = 'output_tokens'
+
+    @pytest.mark.parametrize("field", [
+        "input_tokens", "output_tokens", "estimated_input_tokens",
+        "reserved_output_tokens", "overrun_reasons",
+    ])
+    def test_request_ledger_missing_required_field_is_unknown(field):
+        result = complete_result()
+        del result["budget"]["requests"][0][field]
+&gt;       assert evaluate_run(result)["dimensions"]["budget"]["status"] == "unknown"
+               ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:121: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:50: in _budget
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF6C779A0&gt;
+
+&gt;   or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+           ^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'output_tokens'
+
+src\budget_agent\evaluation.py:50: KeyError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_missing_required_field_is_unknown[estimated_input_tokens]" time="0.001"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'estimated_input_tokens'
+
+    @pytest.mark.parametrize("field", [
+        "input_tokens", "output_tokens", "estimated_input_tokens",
+        "reserved_output_tokens", "overrun_reasons",
+    ])
+    def test_request_ledger_missing_required_field_is_unknown(field):
+        result = complete_result()
+        del result["budget"]["requests"][0][field]
+&gt;       assert evaluate_run(result)["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:121: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_missing_required_field_is_unknown[reserved_output_tokens]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'reserved_output_tokens'
+
+    @pytest.mark.parametrize("field", [
+        "input_tokens", "output_tokens", "estimated_input_tokens",
+        "reserved_output_tokens", "overrun_reasons",
+    ])
+    def test_request_ledger_missing_required_field_is_unknown(field):
+        result = complete_result()
+        del result["budget"]["requests"][0][field]
+&gt;       assert evaluate_run(result)["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:121: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_missing_required_field_is_unknown[overrun_reasons]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'overrun_reasons'
+
+    @pytest.mark.parametrize("field", [
+        "input_tokens", "output_tokens", "estimated_input_tokens",
+        "reserved_output_tokens", "overrun_reasons",
+    ])
+    def test_request_ledger_missing_required_field_is_unknown(field):
+        result = complete_result()
+        del result["budget"]["requests"][0][field]
+&gt;       assert evaluate_run(result)["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:121: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[input_tokens--1]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[input_tokens-True]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[input_tokens-10.0]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'input_tokens', value = 10.0
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[output_tokens--1]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[output_tokens-False]" time="0.000" /><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[output_tokens-2.0]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'output_tokens', value = 2.0
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[estimated_input_tokens--1]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'estimated_input_tokens', value = -1
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[estimated_input_tokens-True]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'estimated_input_tokens', value = True
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[estimated_input_tokens-10.0]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'estimated_input_tokens', value = 10.0
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[reserved_output_tokens--1]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'reserved_output_tokens', value = -1
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[reserved_output_tokens-False]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'reserved_output_tokens', value = False
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[reserved_output_tokens-10.0]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'reserved_output_tokens', value = 10.0
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[input_tokens-10]" time="0.000"><failure message="TypeError: unsupported operand type(s) for +: 'int' and 'str'">field = 'input_tokens', value = '10'
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'task_id': 'task', 'run_id': 'run', 'evidence_kind': 'scripted_smoke', 'status': 'finished', ...}
+
+    def _budget(result: dict) -&gt; dict:
+        budget = result.get("budget", {})
+        evidence = {"total_tokens": budget.get("total_tokens"),
+                    "limit_tokens": result.get("config", {}).get("total_tokens"),
+                    "usage_is_estimated": budget.get("usage_is_estimated"),
+                    "usage_sources": budget.get("usage_sources")}
+        if budget.get("overrun") is True or result.get("status") == "budget_overrun":
+            return _dimension("fail", "Recorded inference budget overrun", evidence)
+        if result.get("usage_unknown") or budget.get("unreconciled_request"):
+            return _dimension("unknown", "Request usage has not been reconciled", evidence)
+        required = {"input_tokens", "output_tokens", "total_tokens", "calls", "requests",
+                    "overrun", "unreconciled_request"}
+        if (not required.issubset(budget) or result.get("usage_unknown") is not False
+                or budget["overrun"] is not False or budget["unreconciled_request"] is not False):
+            return _dimension("unknown", "Token ledger is missing required accounting fields", evidence)
+        counts = [budget[key] for key in ("input_tokens", "output_tokens", "total_tokens", "calls")]
+        limit = evidence["limit_tokens"]
+        if any(type(value) is not int or value &lt; 0 for value in counts) or type(limit) is not int or limit &lt;= 0:
+            return _dimension("unknown", "Token ledger or configured limit is invalid", evidence)
+        requests = budget["requests"]
+        if (len(requests) != budget["calls"]
+                or budget["input_tokens"] + budget["output_tokens"] != budget["total_tokens"]
+&gt;               or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E               TypeError: unsupported operand type(s) for +: 'int' and 'str'
+
+src\budget_agent\evaluation.py:49: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[output_tokens-None]" time="0.000"><failure message="TypeError: unsupported operand type(s) for +: 'int' and 'NoneType'">field = 'output_tokens', value = None
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'task_id': 'task', 'run_id': 'run', 'evidence_kind': 'scripted_smoke', 'status': 'finished', ...}
+
+    def _budget(result: dict) -&gt; dict:
+        budget = result.get("budget", {})
+        evidence = {"total_tokens": budget.get("total_tokens"),
+                    "limit_tokens": result.get("config", {}).get("total_tokens"),
+                    "usage_is_estimated": budget.get("usage_is_estimated"),
+                    "usage_sources": budget.get("usage_sources")}
+        if budget.get("overrun") is True or result.get("status") == "budget_overrun":
+            return _dimension("fail", "Recorded inference budget overrun", evidence)
+        if result.get("usage_unknown") or budget.get("unreconciled_request"):
+            return _dimension("unknown", "Request usage has not been reconciled", evidence)
+        required = {"input_tokens", "output_tokens", "total_tokens", "calls", "requests",
+                    "overrun", "unreconciled_request"}
+        if (not required.issubset(budget) or result.get("usage_unknown") is not False
+                or budget["overrun"] is not False or budget["unreconciled_request"] is not False):
+            return _dimension("unknown", "Token ledger is missing required accounting fields", evidence)
+        counts = [budget[key] for key in ("input_tokens", "output_tokens", "total_tokens", "calls")]
+        limit = evidence["limit_tokens"]
+        if any(type(value) is not int or value &lt; 0 for value in counts) or type(limit) is not int or limit &lt;= 0:
+            return _dimension("unknown", "Token ledger or configured limit is invalid", evidence)
+        requests = budget["requests"]
+        if (len(requests) != budget["calls"]
+                or budget["input_tokens"] + budget["output_tokens"] != budget["total_tokens"]
+                or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+&gt;               or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               TypeError: unsupported operand type(s) for +: 'int' and 'NoneType'
+
+src\budget_agent\evaluation.py:50: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[overrun_reasons-None]" time="0.001"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'overrun_reasons', value = None
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[overrun_reasons-exceeded]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'overrun_reasons', value = 'exceeded'
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[overrun_reasons-value16]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'overrun_reasons', value = [1]
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_ledger_invalid_field_is_unknown[overrun_reasons-value17]" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">field = 'overrun_reasons', value = [None]
+
+    @pytest.mark.parametrize("field,value", [
+        ("input_tokens", -1), ("input_tokens", True), ("input_tokens", 10.0),
+        ("output_tokens", -1), ("output_tokens", False), ("output_tokens", 2.0),
+        ("estimated_input_tokens", -1), ("estimated_input_tokens", True),
+        ("estimated_input_tokens", 10.0), ("reserved_output_tokens", -1),
+        ("reserved_output_tokens", False), ("reserved_output_tokens", 10.0),
+        ("input_tokens", "10"), ("output_tokens", None),
+        ("overrun_reasons", None), ("overrun_reasons", "exceeded"),
+        ("overrun_reasons", [1]), ("overrun_reasons", [None]),
+    ])
+    def test_request_ledger_invalid_field_is_unknown(field, value):
+        result = complete_result()
+        result["budget"]["requests"][0][field] = value
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:138: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_negative_usage_cannot_cancel_across_rows_into_a_pass" time="0.000"><failure message="AssertionError: assert 'pass' == 'unknown'&#10;  &#10;  - unknown&#10;  + pass">def test_request_negative_usage_cannot_cancel_across_rows_into_a_pass():
+        result = complete_result()
+        first = result["budget"]["requests"][0]
+        second = deepcopy(first)
+        first["input_tokens"], first["output_tokens"] = -1, 0
+        second["input_tokens"], second["output_tokens"] = 11, 2
+        result["budget"]["requests"].append(second)
+        result["budget"]["calls"] = 2
+        # Both aggregate totals still reconcile, but a negative request is invalid.
+        assert sum(row["input_tokens"] for row in result["budget"]["requests"]) == result["budget"]["input_tokens"]
+        assert sum(row["output_tokens"] for row in result["budget"]["requests"]) == result["budget"]["output_tokens"]
+&gt;       assert evaluate_run(result)["dimensions"]["budget"]["status"] == "unknown"
+E       AssertionError: assert 'pass' == 'unknown'
+E         
+E         - unknown
+E         + pass
+
+tests\test_evaluation.py:153: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_overrun_is_fail_even_when_summary_flag_is_false[change0]" time="0.000"><failure message="AssertionError: assert 'pass' == 'fail'&#10;  &#10;  - fail&#10;  + pass">change = {'overrun_reasons': ['provider output exceeded reserved output cap']}
+
+    @pytest.mark.parametrize("change", [
+        {"overrun_reasons": ["provider output exceeded reserved output cap"]},
+        {"reserved_output_tokens": 1},
+        {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+    ])
+    def test_request_overrun_is_fail_even_when_summary_flag_is_false(change):
+        result = complete_result()
+        result["budget"]["requests"][0].update(change)
+        assert result["budget"]["overrun"] is False
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "fail"
+E       AssertionError: assert 'pass' == 'fail'
+E         
+E         - fail
+E         + pass
+
+tests\test_evaluation.py:166: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_overrun_is_fail_even_when_summary_flag_is_false[change1]" time="0.000"><failure message="AssertionError: assert 'pass' == 'fail'&#10;  &#10;  - fail&#10;  + pass">change = {'reserved_output_tokens': 1}
+
+    @pytest.mark.parametrize("change", [
+        {"overrun_reasons": ["provider output exceeded reserved output cap"]},
+        {"reserved_output_tokens": 1},
+        {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+    ])
+    def test_request_overrun_is_fail_even_when_summary_flag_is_false(change):
+        result = complete_result()
+        result["budget"]["requests"][0].update(change)
+        assert result["budget"]["overrun"] is False
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "fail"
+E       AssertionError: assert 'pass' == 'fail'
+E         
+E         - fail
+E         + pass
+
+tests\test_evaluation.py:166: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_request_overrun_is_fail_even_when_summary_flag_is_false[change2]" time="0.000"><failure message="AssertionError: assert 'pass' == 'fail'&#10;  &#10;  - fail&#10;  + pass">change = {'estimated_input_tokens': 0, 'reserved_output_tokens': 10}
+
+    @pytest.mark.parametrize("change", [
+        {"overrun_reasons": ["provider output exceeded reserved output cap"]},
+        {"reserved_output_tokens": 1},
+        {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+    ])
+    def test_request_overrun_is_fail_even_when_summary_flag_is_false(change):
+        result = complete_result()
+        result["budget"]["requests"][0].update(change)
+        assert result["budget"]["overrun"] is False
+        report = evaluate_run(result)
+&gt;       assert report["dimensions"]["budget"]["status"] == "fail"
+E       AssertionError: assert 'pass' == 'fail'
+E         
+E         - fail
+E         + pass
+
+tests\test_evaluation.py:166: AssertionError</failure></testcase><testcase classname="tests.test_evaluation" name="test_known_request_overrun_is_not_hidden_by_another_invalid_row[change0-False]" time="0.000"><failure message="TypeError: 'NoneType' object is not subscriptable">change = {'overrun_reasons': ['known request overrun']}, bad_first = False
+
+    @pytest.mark.parametrize("bad_first", [False, True])
+    @pytest.mark.parametrize("change", [
+        {"overrun_reasons": ["known request overrun"]},
+        {"reserved_output_tokens": 1},
+        {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+    ])
+    def test_known_request_overrun_is_not_hidden_by_another_invalid_row(change, bad_first):
+        result = complete_result()
+        known = result["budget"]["requests"][0]
+        known.update(change)
+        result["budget"]["requests"] = [None, known] if bad_first else [known, None]
+        result["budget"]["calls"] = 2
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:49: in _budget
+    or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF6C74C10&gt;
+
+&gt;   or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+           ^^^^^^^^^^^^^^^^^^^
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E   TypeError: 'NoneType' object is not subscriptable
+
+src\budget_agent\evaluation.py:49: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_known_request_overrun_is_not_hidden_by_another_invalid_row[change0-True]" time="0.000"><failure message="TypeError: 'NoneType' object is not subscriptable">change = {'overrun_reasons': ['known request overrun']}, bad_first = True
+
+    @pytest.mark.parametrize("bad_first", [False, True])
+    @pytest.mark.parametrize("change", [
+        {"overrun_reasons": ["known request overrun"]},
+        {"reserved_output_tokens": 1},
+        {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+    ])
+    def test_known_request_overrun_is_not_hidden_by_another_invalid_row(change, bad_first):
+        result = complete_result()
+        known = result["budget"]["requests"][0]
+        known.update(change)
+        result["budget"]["requests"] = [None, known] if bad_first else [known, None]
+        result["budget"]["calls"] = 2
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:49: in _budget
+    or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF6C76650&gt;
+
+&gt;   or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+           ^^^^^^^^^^^^^^^^^^^
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E   TypeError: 'NoneType' object is not subscriptable
+
+src\budget_agent\evaluation.py:49: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_known_request_overrun_is_not_hidden_by_another_invalid_row[change1-False]" time="0.000"><failure message="TypeError: 'NoneType' object is not subscriptable">change = {'reserved_output_tokens': 1}, bad_first = False
+
+    @pytest.mark.parametrize("bad_first", [False, True])
+    @pytest.mark.parametrize("change", [
+        {"overrun_reasons": ["known request overrun"]},
+        {"reserved_output_tokens": 1},
+        {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+    ])
+    def test_known_request_overrun_is_not_hidden_by_another_invalid_row(change, bad_first):
+        result = complete_result()
+        known = result["budget"]["requests"][0]
+        known.update(change)
+        result["budget"]["requests"] = [None, known] if bad_first else [known, None]
+        result["budget"]["calls"] = 2
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:49: in _budget
+    or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF6D2B760&gt;
+
+&gt;   or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+           ^^^^^^^^^^^^^^^^^^^
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E   TypeError: 'NoneType' object is not subscriptable
+
+src\budget_agent\evaluation.py:49: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_known_request_overrun_is_not_hidden_by_another_invalid_row[change1-True]" time="0.000"><failure message="TypeError: 'NoneType' object is not subscriptable">change = {'reserved_output_tokens': 1}, bad_first = True
+
+    @pytest.mark.parametrize("bad_first", [False, True])
+    @pytest.mark.parametrize("change", [
+        {"overrun_reasons": ["known request overrun"]},
+        {"reserved_output_tokens": 1},
+        {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+    ])
+    def test_known_request_overrun_is_not_hidden_by_another_invalid_row(change, bad_first):
+        result = complete_result()
+        known = result["budget"]["requests"][0]
+        known.update(change)
+        result["budget"]["requests"] = [None, known] if bad_first else [known, None]
+        result["budget"]["calls"] = 2
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:49: in _budget
+    or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF6C773A0&gt;
+
+&gt;   or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+           ^^^^^^^^^^^^^^^^^^^
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E   TypeError: 'NoneType' object is not subscriptable
+
+src\budget_agent\evaluation.py:49: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_known_request_overrun_is_not_hidden_by_another_invalid_row[change2-False]" time="0.000"><failure message="TypeError: 'NoneType' object is not subscriptable">change = {'estimated_input_tokens': 0, 'reserved_output_tokens': 10}
+bad_first = False
+
+    @pytest.mark.parametrize("bad_first", [False, True])
+    @pytest.mark.parametrize("change", [
+        {"overrun_reasons": ["known request overrun"]},
+        {"reserved_output_tokens": 1},
+        {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+    ])
+    def test_known_request_overrun_is_not_hidden_by_another_invalid_row(change, bad_first):
+        result = complete_result()
+        known = result["budget"]["requests"][0]
+        known.update(change)
+        result["budget"]["requests"] = [None, known] if bad_first else [known, None]
+        result["budget"]["calls"] = 2
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:49: in _budget
+    or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF6C75B10&gt;
+
+&gt;   or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+           ^^^^^^^^^^^^^^^^^^^
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E   TypeError: 'NoneType' object is not subscriptable
+
+src\budget_agent\evaluation.py:49: TypeError</failure></testcase><testcase classname="tests.test_evaluation" name="test_known_request_overrun_is_not_hidden_by_another_invalid_row[change2-True]" time="0.000"><failure message="TypeError: 'NoneType' object is not subscriptable">change = {'estimated_input_tokens': 0, 'reserved_output_tokens': 10}
+bad_first = True
+
+    @pytest.mark.parametrize("bad_first", [False, True])
+    @pytest.mark.parametrize("change", [
+        {"overrun_reasons": ["known request overrun"]},
+        {"reserved_output_tokens": 1},
+        {"estimated_input_tokens": 0, "reserved_output_tokens": 10},
+    ])
+    def test_known_request_overrun_is_not_hidden_by_another_invalid_row(change, bad_first):
+        result = complete_result()
+        known = result["budget"]["requests"][0]
+        known.update(change)
+        result["budget"]["requests"] = [None, known] if bad_first else [known, None]
+        result["budget"]["calls"] = 2
+&gt;       report = evaluate_run(result)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_evaluation.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\evaluation.py:74: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                                                         ^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:49: in _budget
+    or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x0000023FF6C751E0&gt;
+
+&gt;   or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
+           ^^^^^^^^^^^^^^^^^^^
+    or sum(row["output_tokens"] for row in requests) != budget["output_tokens"]):
+E   TypeError: 'NoneType' object is not subscriptable
+
+src\budget_agent\evaluation.py:49: TypeError</failure></testcase></testsuite></testsuites>

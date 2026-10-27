@@ -44,6 +44,31 @@ def _budget(result: dict) -> dict:
     if any(type(value) is not int or value < 0 for value in counts) or type(limit) is not int or limit <= 0:
         return _dimension("unknown", "Token ledger or configured limit is invalid", evidence)
     requests = budget["requests"]
+    if not isinstance(requests, list):
+        return _dimension("unknown", "Request ledger must be a list of request records", evidence)
+    invalid_requests, overrun_requests = [], []
+    for index, row in enumerate(requests):
+        if not isinstance(row, dict):
+            invalid_requests.append(index)
+            continue
+        values = [row.get(key) for key in
+                  ("input_tokens", "output_tokens", "estimated_input_tokens", "reserved_output_tokens")]
+        valid_counts = all(type(value) is int and value >= 0 for value in values)
+        reasons = row.get("overrun_reasons")
+        valid_reasons = isinstance(reasons, list) and all(isinstance(reason, str) for reason in reasons)
+        if not valid_counts or not valid_reasons:
+            invalid_requests.append(index)
+        exceeded = valid_reasons and bool(reasons)
+        if valid_counts:
+            inputs, outputs, estimated_inputs, reserved_outputs = values
+            exceeded = exceeded or outputs > reserved_outputs or inputs + outputs > estimated_inputs + reserved_outputs
+        if exceeded:
+            overrun_requests.append(index)
+    evidence.update(invalid_request_indices=invalid_requests, overrun_request_indices=overrun_requests)
+    if overrun_requests:
+        return _dimension("fail", "Request evidence records usage beyond its reservation", evidence)
+    if invalid_requests:
+        return _dimension("unknown", "Request ledger contains missing or invalid accounting fields", evidence)
     if (len(requests) != budget["calls"]
             or budget["input_tokens"] + budget["output_tokens"] != budget["total_tokens"]
             or sum(row["input_tokens"] for row in requests) != budget["input_tokens"]
