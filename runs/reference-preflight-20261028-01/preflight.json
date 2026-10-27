@@ -1,0 +1,81 @@
+{
+  "kind": "read_only_reference_preflight_not_model_experiment",
+  "recorded_at_utc": "2026-10-27T23:11:06.732225+00:00",
+  "source_commit": "eca6db84e6c1743bcc55865597914a31572a275a",
+  "source_fingerprint": "9eca5b00e98924a444330d2a1dca975330739743f8efc6c4b3103d21eb0d205c",
+  "archive_sha256": "2bae6cca282c3e824624d6f0bbd9d80418d2d7b4cfe93b80d4425bb6736f9c30",
+  "static_checks": {
+    "shell_syntax_exit_code": 0,
+    "embedded_python_ast_blocks": 7,
+    "cloud_control_ast": true,
+    "stage_script_sha256": "04ef37c400347176886486c9b4c52d6c4f0ea7c94716ea82c757efe372636737"
+  },
+  "browser": {
+    "surface": "iab",
+    "chrome_connection_present": false,
+    "page": "https://featurize.cn/vm/available",
+    "observation_window_utc": [
+      "2026-10-27T22:59:31Z",
+      "2026-10-27T23:11:06.738537+00:00"
+    ],
+    "logged_in": false,
+    "login_dialog_observed": true,
+    "read_only_inventory_visible": true,
+    "billing_checked": false,
+    "rented_instances_checked": false
+  },
+  "preferred_offer": {
+    "name": "RTX 4090",
+    "listed_available": 1,
+    "vcpus": 14,
+    "cpu": "AMD EPYC 9354",
+    "memory_gb": 60.1,
+    "disk_gb_minimum_listed": 400.0,
+    "hourly_cny": 1.87,
+    "purpose": "CPU Docker sandbox and grading only; no local/cloud GPU inference",
+    "allocation_confirmed": false,
+    "final_quote_confirmed": false
+  },
+  "previous_v100_offer": {
+    "listed_available": 0,
+    "hourly_cny": 1.17
+  },
+  "api_pricing": {
+    "model": "qwen3.8-max-0902",
+    "region": "Beijing",
+    "source": "https://help.aliyun.com/zh/model-studio/model-pricing",
+    "accessed_at_utc": "2026-10-27T23:01:50Z/2026-10-27T23:02:11Z",
+    "input_cny_per_million": 12,
+    "output_cny_per_million": 36,
+    "planned_total_tokens": 136000,
+    "worst_rate_estimate_cny": 4.896,
+    "hard_billing_cap": false,
+    "account_permissions_and_billing_verified": false
+  },
+  "planned_host_plus_api_estimate_cny": 6.766,
+  "estimate_limitations": [
+    "Uses one hour at listed host price; no final checkout or extra fee verification.",
+    "Provider estimates are not an enforced billing cap.",
+    "Public stock counts are not proof of successful allocation."
+  ],
+  "pending_conditions": [
+    "User completes Featurize login in retained IAB tab.",
+    "Verify old504 request allocation and billing before another order.",
+    "Recheck final quote, host disk charges, image and actual free space.",
+    "Record billing start; install and verify platform release timer at t0+55minutes.",
+    "Pass separate t0+45minute model / t0+52minute grading deadlines to workload script.",
+    "Confirm actual endpoint/key permission without logging credentials; use approved scope only."
+  ],
+  "authorization_scope_changed": false,
+  "new_rentals": 0,
+  "model_requests": 0,
+  "training": false,
+  "core_code_changed": false,
+  "full_test_suite_rerun": false,
+  "existing_ci": {
+    "url": "https://github.com/amzing2334-jpg/budget-agent/actions/runs/40567323431",
+    "head_sha": "eca6db84e6c1743bcc55865597914a31572a275a",
+    "conclusion": "success"
+  },
+  "privacy": "No credentials, account screenshots, connection material or private billing values included."
+}
