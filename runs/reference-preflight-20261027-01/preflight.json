@@ -1,0 +1,62 @@
+{
+  "recorded_at_utc": "2026-10-27T02:19:25.532Z",
+  "status": "blocked_cloud_allocation",
+  "source_commit": "8b1d8379204f862e6e998a85f811372176e07385",
+  "source_archive_sha256": "e701bef9eb02459eaeb58014837a1317adc98f5bc7ed62e7180e303cb76e4eaf",
+  "authorization": {
+    "total_cap_cny": 10,
+    "api_cap_cny": 5,
+    "host_hourly_cap_cny": 5,
+    "host_max_minutes": 60,
+    "dedicated_key_creation_and_cloud_use_confirmed": true,
+    "six_cpu_host_change_confirmed": true
+  },
+  "model_access": {
+    "provider": "dashscope",
+    "region": "cn-beijing",
+    "model": "qwen3.8-max-0902",
+    "dedicated_key_created": true,
+    "allowed_models": ["Qwen3.8-Max-0902"],
+    "credential_storage": "outside_repository_current_user_acl",
+    "real_request_verified": false,
+    "provider_bill_or_credit_verified": false,
+    "platform_key_expiry_or_spend_hardcap_configured": false
+  },
+  "cloud_attempt": {
+    "provider": "Featurize",
+    "submitted_at_utc": "2026-10-27T02:07:54.126Z",
+    "submission_count": 1,
+    "host_offer": "Tesla V100 16G",
+    "compute_use": "cpu_only",
+    "cpu_count": 6,
+    "listed_memory_gb": 60.9,
+    "listed_disk_gb": 383.2,
+    "image": "Ubuntu 22.04 纯净版",
+    "billing": "pay_as_you_go",
+    "hourly_price_cny": 1.17,
+    "page_error": "Request failed with status code 504",
+    "instance_id": null,
+    "last_instance_list_observation": "未找到实例",
+    "last_instance_list_observed_at_utc": "2026-10-27T02:19:25.532Z",
+    "refreshed_offer_availability": "sold_out",
+    "host_cost_cny": null,
+    "host_cost_status": "billing_not_verified",
+    "release_timer_installed": false
+  },
+  "execution": {
+    "model_calls": 0,
+    "api_cost_cny": 0,
+    "cloud_preflight_executed": false,
+    "grading_controls_executed": false,
+    "protocol_executed": false,
+    "swe_executed": false,
+    "local_training_or_inference": false
+  },
+  "prepared_local_artifacts": {
+    "stage_script_sha256": "04ef37c400347176886486c9b4c52d6c4f0ea7c94716ea82c757efe372636737",
+    "stage_script_checks": ["bash -n", "seven_embedded_python_blocks_ast_parse"],
+    "ssh_transport_check": "python_py_compile",
+    "executed_on_cloud": false
+  },
+  "resume_gate": "Inspect current instances and billing for delayed allocation before any new rental request; keep this round's original time and cost caps."
+}
