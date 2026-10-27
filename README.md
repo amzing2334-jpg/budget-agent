@@ -4,6 +4,8 @@
 
 GitHub：[amzing2334-jpg/budget-agent](https://github.com/amzing2334-jpg/budget-agent)（私有）。代码、测试、文档及选定的 v5 实验记录已纳入版本管理；模型权重、运行环境和云端连接材料保留在本地。仓库范围与历史产物位置见 [仓库说明](docs/REPOSITORY.md)。
 
+**2026-10-27 第四轮：模型请求禁止隐式重定向。** 本地双HTTP服务复现了默认urllib在301/302/303后转发Authorization并接受跳转目标用量的问题；现在所有自动重定向均被拒绝，用量未知时保存记录并中止批量。正常请求不变，完整CPU套件529项通过、8项跳过，见[复现与验收](docs/API_REDIRECT_VALIDATION.md)。真实参考试跑已获本轮预算及配置授权，百炼专用Key已准备，但云主机分配504超时；[接入记录](docs/REFERENCE_PREFLIGHT_2026-10-27.md)与后续[迭代记录](docs/ITERATION_LOG.md)保留实际状态。尚无本轮真实模型修复结果。
+
 **2026-10-27 第三轮：修复批量用量异常后的继续调度，准备固定模型参考试跑。** 未知、未对账或实际超额的请求现在会中止后续任务/策略/重复次数并保存部分报告；正常已知预算耗尽仍可继续对照。新增显式思考模式参数与 `qwen3.8-max-0902` 非思考候选配置，尚未调用真实服务。CPU 套件 516 项通过、8 项跳过，见[验收](docs/BATCH_STOP_VALIDATION.md)；下一轮具体模型、任务、云端资源和待授权费用见[参考方案](docs/REFERENCE_PILOT_2026-10-27.md)。
 
 **2026-10-27 迭代：新增 `mask-read` 有界源码保留候选。** 在 mask 的全部动作和最近两条完整观察之外，利用明确的额外输入额度保留当前连续工作区版本的旧源码整行，按实际路径/行去重并保留来源。`read_memory_tokens=0` 与 mask 请求完全相同；默认 1024 是输入增量上限，所有内容照常计入总预算。历史前缀回放仅用于测可见性与成本，不是新模型实验或修复收益。详见[实现与验收](docs/READ_MEMORY_VALIDATION.md)和[本轮行业复核](docs/INDUSTRY_REVIEW_2026-10-27.md)。
@@ -97,6 +99,8 @@ python -m budget_agent diagnose --input runs/your-run --output runs/new-diagnost
 外部参考使用[真正的 mini-SWE-agent 上游循环](docs/MINI_SWE_BASELINE.md)，默认仅打印计划，云端 `--execute` 才运行。它与内部策略分别分组，不能充作纯上下文消融。
 
 本地计数用于调用前检查；服务端返回的 `usage` 用于实际对账。默认 `byte` 是 UTF-8 字节加消息开销的保守估算，**不是模型 tokenizer，也不是收费 token**。实际用量超过预留时，先记录真实用量，再停止后续执行；不能保证远端一次请求绝不会超额。请求超时、响应损坏或缺少用量时停止，记为 `usage_unknown`，不自动重试可能已经计费的请求。
+
+兼容API客户端也不跟随HTTP重定向，包括同源地址迁移。收到3xx时按未知用量停止，凭证不会随Location转发；需要迁移端点时先核对供应商地址，再显式设置 `base_url`。
 
 `provider=transformers` 使用固定 commit 的 tokenizer 和 chat template，同一份输入 token ID 用于计数与生成，生成数量按实际 ID 计数（含结束 token）。每个任务/策略重置 PyTorch RNG；这不保证跨设备逐位复现。模型加载一次，各次尝试使用独立上下文与容器。云端配置示例为 [cloud-qwen7b.toml](configs/cloud-qwen7b.toml)，7B 模型是受控诊断基线，不代表当前最强模型。安装仅推理依赖可使用 `pip install -e ".[inference]"`，无需安装 LoRA/RL 包。
 

@@ -1,0 +1,40 @@
+{
+  "kind": "cpu_software_validation_not_model_evaluation",
+  "created_at_utc": "2026-10-27T03:06:08.099700+00:00",
+  "source_fingerprint": "d8baa90ea60c07af538a0ac41c5e2f80f2abba9a8c7073d921bf8777c4c52266",
+  "base_commit": "355d5e587197dbf2333b5229a2aa049fa1f6c8fd",
+  "redirect_regression_before": {
+    "failed": 8,
+    "passed": 5
+  },
+  "redirect_and_existing_model_tests_after": {
+    "passed": 47
+  },
+  "full_suite": {
+    "passed": 529,
+    "skipped": 8,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 36.21
+  },
+  "skip_reasons": {
+    "optional_torch_modules_unavailable": 2,
+    "pinned_mini_swe_upstream_path_unset": 6
+  },
+  "checks": [
+    "same_and_cross_origin_301_302_303_307_308",
+    "malformed_location",
+    "direct_200_authorization_and_usage",
+    "real_cli_batch_stops_after_first_request",
+    "dummy_credentials_and_location_not_in_results"
+  ],
+  "real_model_requests": 0,
+  "new_rentals": 0,
+  "local_training": false,
+  "independent_review": "passed; instance opener isolation and error response closure checked in memory",
+  "sha256": {
+    "pytest.xml": "459aa6c53c1061001acc8562d6603a9863bdf9c6d66b59321e934ede12a588c3",
+    "redirect-before.txt": "41f2dd18708ecd5dc8aca0a91e9b091258d24a6a8517252763ccab7d5cfad3ce",
+    "reference-plan.json": "8f8ff32ed13d88642225ab0774562fff5b77ebda2687ee24c9c8723f77b6dc91"
+  }
+}

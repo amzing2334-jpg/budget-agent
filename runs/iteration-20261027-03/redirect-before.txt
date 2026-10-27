@@ -1,0 +1,81 @@
+F                                                            [100%]
+================================== FAILURES ===================================
+____________ test_no_redirected_request_or_credentials[False-301] _____________
+tests\test_api_redirects.py:66: in test_no_redirected_request_or_credentials
+    with pytest.raises(ModelError, match=f"HTTP {status}.*usage may be unknown"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ModelError
+____________ test_no_redirected_request_or_credentials[False-302] _____________
+tests\test_api_redirects.py:66: in test_no_redirected_request_or_credentials
+    with pytest.raises(ModelError, match=f"HTTP {status}.*usage may be unknown"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ModelError
+____________ test_no_redirected_request_or_credentials[False-303] _____________
+tests\test_api_redirects.py:66: in test_no_redirected_request_or_credentials
+    with pytest.raises(ModelError, match=f"HTTP {status}.*usage may be unknown"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ModelError
+_____________ test_no_redirected_request_or_credentials[True-301] _____________
+tests\test_api_redirects.py:66: in test_no_redirected_request_or_credentials
+    with pytest.raises(ModelError, match=f"HTTP {status}.*usage may be unknown"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ModelError
+_____________ test_no_redirected_request_or_credentials[True-302] _____________
+tests\test_api_redirects.py:66: in test_no_redirected_request_or_credentials
+    with pytest.raises(ModelError, match=f"HTTP {status}.*usage may be unknown"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ModelError
+_____________ test_no_redirected_request_or_credentials[True-303] _____________
+tests\test_api_redirects.py:66: in test_no_redirected_request_or_credentials
+    with pytest.raises(ModelError, match=f"HTTP {status}.*usage may be unknown"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ModelError
+_______________ test_redirect_location_is_not_parsed_or_exposed _______________
+tests\test_api_redirects.py:79: in test_redirect_location_is_not_parsed_or_exposed
+    api_model(origin).complete([], 20)
+src\budget_agent\models.py:51: in complete
+    with urllib.request.urlopen(request, timeout=self.config.timeout_seconds) as response:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\98341\miniconda3\Lib\urllib\request.py:189: in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\98341\miniconda3\Lib\urllib\request.py:495: in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+C:\Users\98341\miniconda3\Lib\urllib\request.py:604: in http_response
+    response = self.parent.error(
+C:\Users\98341\miniconda3\Lib\urllib\request.py:527: in error
+    result = self._call_chain(*args)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\98341\miniconda3\Lib\urllib\request.py:466: in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+C:\Users\98341\miniconda3\Lib\urllib\request.py:673: in http_error_302
+    urlparts = urlparse(newurl)
+               ^^^^^^^^^^^^^^^^
+C:\Users\98341\miniconda3\Lib\urllib\parse.py:395: in urlparse
+    splitresult = urlsplit(url, scheme, allow_fragments)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\98341\miniconda3\Lib\urllib\parse.py:514: in urlsplit
+    raise ValueError("Invalid IPv6 URL")
+E   ValueError: Invalid IPv6 URL
+____________ test_redirect_stops_batch_and_preserves_unknown_usage ____________
+tests\test_api_redirects.py:105: in test_redirect_stops_batch_and_preserves_unknown_usage
+    assert code == 1
+E   assert 0 == 1
+---------------------------- Captured stdout call -----------------------------
+slugify-digits               recent     finished             resolved=False tokens=12 evaluation=unresolved
+slugify-digits               mask       finished             resolved=False tokens=12 evaluation=unresolved
+slugify-digits               recent     finished             resolved=False tokens=12 evaluation=unresolved
+slugify-digits               mask       finished             resolved=False tokens=12 evaluation=unresolved
+Report: C:\Users\98341\AppData\Local\Temp\pytest-of-98341\pytest-109\test_redirect_stops_batch_and_0\runs\report\report.html
+=========================== short test summary info ===========================
+FAILED tests/test_api_redirects.py::test_no_redirected_request_or_credentials[False-301]
+FAILED tests/test_api_redirects.py::test_no_redirected_request_or_credentials[False-302]
+FAILED tests/test_api_redirects.py::test_no_redirected_request_or_credentials[False-303]
+FAILED tests/test_api_redirects.py::test_no_redirected_request_or_credentials[True-301]
+FAILED tests/test_api_redirects.py::test_no_redirected_request_or_credentials[True-302]
+FAILED tests/test_api_redirects.py::test_no_redirected_request_or_credentials[True-303]
+FAILED tests/test_api_redirects.py::test_redirect_location_is_not_parsed_or_exposed
+FAILED tests/test_api_redirects.py::test_redirect_stops_batch_and_preserves_unknown_usage
+8 failed, 5 passed in 16.64s

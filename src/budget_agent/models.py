@@ -16,6 +16,17 @@ class ModelError(RuntimeError):
     pass
 
 
+class _NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def http_error_302(self, request, response, code, message, headers):
+        # A billed completion and its credentials belong only to the configured endpoint.
+        raise urllib.error.HTTPError(request.full_url, code, "Redirects disabled", headers, response)
+
+    http_error_301 = http_error_302
+    http_error_303 = http_error_302
+    http_error_307 = http_error_302
+    http_error_308 = http_error_302
+
+
 class OpenAICompatibleModel:
     def __init__(self, config: RunConfig):
         self.config = config
@@ -31,6 +42,7 @@ class OpenAICompatibleModel:
         if not self.key and parsed.hostname not in {"localhost", "127.0.0.1", "::1"}:
             raise ValueError(f"Missing API key environment variable: {config.api_key_env}")
         self.url = config.base_url.rstrip("/") + "/chat/completions"
+        self._opener = urllib.request.build_opener(_NoRedirectHandler())
 
     def complete(self, messages: list[dict[str, str]], max_output_tokens: int, *, purpose: str = "agent") -> ModelResponse:
         body: dict[str, Any] = {
@@ -47,14 +59,15 @@ class OpenAICompatibleModel:
             headers["Authorization"] = "Bearer " + self.key
         request = urllib.request.Request(self.url, data=json.dumps(body).encode("utf-8"), headers=headers, method="POST")
         try:
-            # Do not automatically retry billed requests: a timeout has unknown usage.
-            with urllib.request.urlopen(request, timeout=self.config.timeout_seconds) as response:
+            # No retry or redirect: failed billed requests have unknown usage.
+            with self._opener.open(request, timeout=self.config.timeout_seconds) as response:
                 raw = response.read(8_000_001)
             if len(raw) > 8_000_000:
                 raise ModelError("Provider response exceeds the 8 MB response limit; usage unknown")
             data = json.loads(raw)
         except urllib.error.HTTPError as exc:
             # Provider error bodies can echo keys or full prompts. Never persist them.
+            exc.close()
             raise ModelError(f"Provider HTTP {exc.code}; request was not retried; usage may be unknown") from None
         except (OSError, json.JSONDecodeError, UnicodeError, http.client.HTTPException) as exc:
             raise ModelError(f"Provider transport/JSON failure ({type(exc).__name__}); usage unknown; no retry") from None
