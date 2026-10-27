@@ -2,6 +2,18 @@
 
 本文件是后续每 4 小时评估的入口。先读项目 AGENTS.md 和最新一轮记录，再选择一个有证据的瓶颈；不是每轮必须增加功能。所有模型效果结论必须对应真实运行和独立评分。招聘页面重新访问不等于新开 HC。
 
+## 2026-10-27 · 第八轮：测试明细与成功总结必须一致
+
+状态：完成外部保存评分证据的一致性修复，生产代码仅修改共享 `verified_outcome()`；CPU **761 passed / 13 skipped**，专用真实 OpenJudge **122 passed / 0 skipped**。详见[复现、来源与验收](VERIFIER_CONSISTENCY_VALIDATION.md)。
+
+从有效结果副本构造反例：测试明细失败或含非零失败数、负计数、矛盾状态时，旧结果仍可能为成功；缺 tests_run 会抛 KeyError。新回归修复前 28 failed/9 passed/1 skipped，修复后 37 passed/1 skipped。现在矛盾或非法的显式 fixture verdict 为 unknown，聚合、HTML、配对和 OpenJudge 同步排除；保留一致负例、旧汇总和官方 SWE-bench 语义。没有修改在线 verifier 或训练奖励入口。
+
+[前后对照](../runs/iteration-20261027-07/comparison.json)确认同一59份历史记录质量、整体验收、解释结果及原字节均不变。内置和真实OpenJudge实际CLI对8条合成记录完整输出1 pass/6 unknown/1 fail，退出1符合预期；它们明确标为合成损坏，不是新模型尝试。证据、JUnit与哈希见[回执](../runs/iteration-20261027-07/cpu-validation.json)。
+
+23:08–23:09北京时间复核官方来源：百度J101404仍7月21日，J96208仍仅导航壳，Seed仍列Code Agent RL/Long Horizon/Memory；未确认新HC或实质要求变化。SWE-bench官方指南区分完成报告、修复成功与不可评分；本项目仍需真实有效补丁和独立评分，软件修复不能代替它。
+
+已实际核对unexpectedSuccess与失败subtests语义；另保留原有部分跳过子测试被保守判未评分的限制，未在本轮扩修。没有模型调用、训练、租用或实时库存/账单复核。原待执行≤10元参考授权不变，[冻结计划](../runs/iteration-20261027-07/reference-plan.json)只更新源码，不新增实验范围。
+
 ## 2026-10-27 · 第七轮：请求明细不能被预算汇总掩盖
 
 状态：修复外部请求账本的缺字段崩溃、负数抵消以及已知单请求超额漏判；不改变Agent策略或在线模型调用。完整CPU **724 passed / 12 skipped**，专用真实OpenJudge **84 passed / 0 skipped**。详见[复现、官方复核与验收](REQUEST_LEDGER_VALIDATION.md)。

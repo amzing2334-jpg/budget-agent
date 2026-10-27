@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="28" skipped="1" tests="38" time="0.944" timestamp="2026-10-27T23:10:05.733385+08:00" hostname="LAPTOP-MMKN5UT6"><testcase classname="tests.test_verifier_consistency" name="test_contradictory_verifier_evidence_stays_unknown[evaluation_change0-verdict_change0-True]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">evaluation_change = {}, verdict_change = {'successful': False}, resolved = True
+
+    @pytest.mark.parametrize("evaluation_change,verdict_change,resolved", [
+        ({}, {"successful": False}, True),
+        ({"status": "unresolved", "resolved": False}, {"successful": True}, False),
+        ({"status": "unresolved"}, {}, True),
+        ({"status": "resolved", "resolved": False}, {"successful": False}, False),
+        ({"status": "invalid_patch"}, {}, True),
+        ({}, {"failures": 1}, True),
+        ({}, {"errors": 1}, True),
+    ])
+    def test_contradictory_verifier_evidence_stays_unknown(evaluation_change, verdict_change, resolved):
+        record = result_record()
+        record["resolved"] = resolved
+        record["evaluation"].update(evaluation_change)
+        record["evaluation"]["test_results"].update(verdict_change)
+        original = deepcopy(record)
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:37: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_contradictory_verifier_evidence_stays_unknown[evaluation_change1-verdict_change1-False]" time="0.002"><failure message="AssertionError: assert False is None&#10; +  where False = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">evaluation_change = {'status': 'unresolved', 'resolved': False}
+verdict_change = {'successful': True}, resolved = False
+
+    @pytest.mark.parametrize("evaluation_change,verdict_change,resolved", [
+        ({}, {"successful": False}, True),
+        ({"status": "unresolved", "resolved": False}, {"successful": True}, False),
+        ({"status": "unresolved"}, {}, True),
+        ({"status": "resolved", "resolved": False}, {"successful": False}, False),
+        ({"status": "invalid_patch"}, {}, True),
+        ({}, {"failures": 1}, True),
+        ({}, {"errors": 1}, True),
+    ])
+    def test_contradictory_verifier_evidence_stays_unknown(evaluation_change, verdict_change, resolved):
+        record = result_record()
+        record["resolved"] = resolved
+        record["evaluation"].update(evaluation_change)
+        record["evaluation"]["test_results"].update(verdict_change)
+        original = deepcopy(record)
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert False is None
+E        +  where False = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:37: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_contradictory_verifier_evidence_stays_unknown[evaluation_change2-verdict_change2-True]" time="0.002"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">evaluation_change = {'status': 'unresolved'}, verdict_change = {}
+resolved = True
+
+    @pytest.mark.parametrize("evaluation_change,verdict_change,resolved", [
+        ({}, {"successful": False}, True),
+        ({"status": "unresolved", "resolved": False}, {"successful": True}, False),
+        ({"status": "unresolved"}, {}, True),
+        ({"status": "resolved", "resolved": False}, {"successful": False}, False),
+        ({"status": "invalid_patch"}, {}, True),
+        ({}, {"failures": 1}, True),
+        ({}, {"errors": 1}, True),
+    ])
+    def test_contradictory_verifier_evidence_stays_unknown(evaluation_change, verdict_change, resolved):
+        record = result_record()
+        record["resolved"] = resolved
+        record["evaluation"].update(evaluation_change)
+        record["evaluation"]["test_results"].update(verdict_change)
+        original = deepcopy(record)
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:37: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_contradictory_verifier_evidence_stays_unknown[evaluation_change3-verdict_change3-False]" time="0.001"><failure message="AssertionError: assert False is None&#10; +  where False = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">evaluation_change = {'status': 'resolved', 'resolved': False}
+verdict_change = {'successful': False}, resolved = False
+
+    @pytest.mark.parametrize("evaluation_change,verdict_change,resolved", [
+        ({}, {"successful": False}, True),
+        ({"status": "unresolved", "resolved": False}, {"successful": True}, False),
+        ({"status": "unresolved"}, {}, True),
+        ({"status": "resolved", "resolved": False}, {"successful": False}, False),
+        ({"status": "invalid_patch"}, {}, True),
+        ({}, {"failures": 1}, True),
+        ({}, {"errors": 1}, True),
+    ])
+    def test_contradictory_verifier_evidence_stays_unknown(evaluation_change, verdict_change, resolved):
+        record = result_record()
+        record["resolved"] = resolved
+        record["evaluation"].update(evaluation_change)
+        record["evaluation"]["test_results"].update(verdict_change)
+        original = deepcopy(record)
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert False is None
+E        +  where False = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:37: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_contradictory_verifier_evidence_stays_unknown[evaluation_change4-verdict_change4-True]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">evaluation_change = {'status': 'invalid_patch'}, verdict_change = {}
+resolved = True
+
+    @pytest.mark.parametrize("evaluation_change,verdict_change,resolved", [
+        ({}, {"successful": False}, True),
+        ({"status": "unresolved", "resolved": False}, {"successful": True}, False),
+        ({"status": "unresolved"}, {}, True),
+        ({"status": "resolved", "resolved": False}, {"successful": False}, False),
+        ({"status": "invalid_patch"}, {}, True),
+        ({}, {"failures": 1}, True),
+        ({}, {"errors": 1}, True),
+    ])
+    def test_contradictory_verifier_evidence_stays_unknown(evaluation_change, verdict_change, resolved):
+        record = result_record()
+        record["resolved"] = resolved
+        record["evaluation"].update(evaluation_change)
+        record["evaluation"]["test_results"].update(verdict_change)
+        original = deepcopy(record)
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:37: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_contradictory_verifier_evidence_stays_unknown[evaluation_change5-verdict_change5-True]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">evaluation_change = {}, verdict_change = {'failures': 1}, resolved = True
+
+    @pytest.mark.parametrize("evaluation_change,verdict_change,resolved", [
+        ({}, {"successful": False}, True),
+        ({"status": "unresolved", "resolved": False}, {"successful": True}, False),
+        ({"status": "unresolved"}, {}, True),
+        ({"status": "resolved", "resolved": False}, {"successful": False}, False),
+        ({"status": "invalid_patch"}, {}, True),
+        ({}, {"failures": 1}, True),
+        ({}, {"errors": 1}, True),
+    ])
+    def test_contradictory_verifier_evidence_stays_unknown(evaluation_change, verdict_change, resolved):
+        record = result_record()
+        record["resolved"] = resolved
+        record["evaluation"].update(evaluation_change)
+        record["evaluation"]["test_results"].update(verdict_change)
+        original = deepcopy(record)
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:37: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_contradictory_verifier_evidence_stays_unknown[evaluation_change6-verdict_change6-True]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">evaluation_change = {}, verdict_change = {'errors': 1}, resolved = True
+
+    @pytest.mark.parametrize("evaluation_change,verdict_change,resolved", [
+        ({}, {"successful": False}, True),
+        ({"status": "unresolved", "resolved": False}, {"successful": True}, False),
+        ({"status": "unresolved"}, {}, True),
+        ({"status": "resolved", "resolved": False}, {"successful": False}, False),
+        ({"status": "invalid_patch"}, {}, True),
+        ({}, {"failures": 1}, True),
+        ({}, {"errors": 1}, True),
+    ])
+    def test_contradictory_verifier_evidence_stays_unknown(evaluation_change, verdict_change, resolved):
+        record = result_record()
+        record["resolved"] = resolved
+        record["evaluation"].update(evaluation_change)
+        record["evaluation"]["test_results"].update(verdict_change)
+        original = deepcopy(record)
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:37: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[tests_run-True]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'tests_run', value = True
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[tests_run--1]" time="0.001" /><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[tests_run-1]" time="0.001"><failure message="TypeError: '&lt;=' not supported between instances of 'str' and 'int'">field = 'tests_run', value = '1'
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_verifier_consistency.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...}
+
+    def verified_outcome(result: dict[str, Any]) -&gt; bool | None:
+        """One verifier interpretation for aggregate reports and paired comparisons."""
+        evaluation = result.get("evaluation", {})
+        # Older fixture graders encoded incomplete verification as resolved=False.
+        if evaluation.get("status") in {"resolved", "unresolved"} and "test_results" in evaluation:
+            verdict = evaluation["test_results"]
+&gt;           if verdict is None or verdict["tests_run"] &lt;= verdict["skipped"]:
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: '&lt;=' not supported between instances of 'str' and 'int'
+
+src\budget_agent\report.py:62: TypeError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[skipped-False]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'skipped', value = False
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[skipped--1]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'skipped', value = -1
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[skipped-0.0]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'skipped', value = 0.0
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[failures-True]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'failures', value = True
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[failures--1]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'failures', value = -1
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[failures-None]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'failures', value = None
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[errors-False]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'errors', value = False
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[errors--1]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'errors', value = -1
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[errors-0]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'errors', value = '0'
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[successful-1]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'successful', value = 1
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[successful-true]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'successful', value = 'true'
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verifier_fields_are_unknown_without_coercion[successful-None]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'successful', value = None
+
+    @pytest.mark.parametrize("field,value", [
+        ("tests_run", True), ("tests_run", -1), ("tests_run", "1"),
+        ("skipped", False), ("skipped", -1), ("skipped", 0.0),
+        ("failures", True), ("failures", -1), ("failures", None),
+        ("errors", False), ("errors", -1), ("errors", "0"),
+        ("successful", 1), ("successful", "true"), ("successful", None),
+    ])
+    def test_invalid_verifier_fields_are_unknown_without_coercion(field, value):
+        record = result_record()
+        record["evaluation"]["test_results"][field] = value
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:53: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_missing_required_verifier_field_does_not_crash_or_pass[tests_run]" time="0.001"><failure message="KeyError: 'tests_run'">field = 'tests_run'
+
+    @pytest.mark.parametrize("field", ["tests_run", "skipped", "successful"])
+    def test_missing_required_verifier_field_does_not_crash_or_pass(field):
+        record = result_record()
+        del record["evaluation"]["test_results"][field]
+&gt;       assert verified_outcome(record) is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_verifier_consistency.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...}
+
+    def verified_outcome(result: dict[str, Any]) -&gt; bool | None:
+        """One verifier interpretation for aggregate reports and paired comparisons."""
+        evaluation = result.get("evaluation", {})
+        # Older fixture graders encoded incomplete verification as resolved=False.
+        if evaluation.get("status") in {"resolved", "unresolved"} and "test_results" in evaluation:
+            verdict = evaluation["test_results"]
+&gt;           if verdict is None or verdict["tests_run"] &lt;= verdict["skipped"]:
+                                  ^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'tests_run'
+
+src\budget_agent\report.py:62: KeyError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_missing_required_verifier_field_does_not_crash_or_pass[skipped]" time="0.001"><failure message="KeyError: 'skipped'">field = 'skipped'
+
+    @pytest.mark.parametrize("field", ["tests_run", "skipped", "successful"])
+    def test_missing_required_verifier_field_does_not_crash_or_pass(field):
+        record = result_record()
+        del record["evaluation"]["test_results"][field]
+&gt;       assert verified_outcome(record) is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_verifier_consistency.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...}
+
+    def verified_outcome(result: dict[str, Any]) -&gt; bool | None:
+        """One verifier interpretation for aggregate reports and paired comparisons."""
+        evaluation = result.get("evaluation", {})
+        # Older fixture graders encoded incomplete verification as resolved=False.
+        if evaluation.get("status") in {"resolved", "unresolved"} and "test_results" in evaluation:
+            verdict = evaluation["test_results"]
+&gt;           if verdict is None or verdict["tests_run"] &lt;= verdict["skipped"]:
+                                                          ^^^^^^^^^^^^^^^^^^
+E           KeyError: 'skipped'
+
+src\budget_agent\report.py:62: KeyError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_missing_required_verifier_field_does_not_crash_or_pass[successful]" time="0.001"><failure message="AssertionError: assert True is None&#10; +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})">field = 'successful'
+
+    @pytest.mark.parametrize("field", ["tests_run", "skipped", "successful"])
+    def test_missing_required_verifier_field_does_not_crash_or_pass(field):
+        record = result_record()
+        del record["evaluation"]["test_results"][field]
+&gt;       assert verified_outcome(record) is None
+E       AssertionError: assert True is None
+E        +  where True = verified_outcome({'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...})
+
+tests\test_verifier_consistency.py:61: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verdict_container_is_unknown[None]" time="0.001" /><testcase classname="tests.test_verifier_consistency" name="test_invalid_verdict_container_is_unknown[verdict1]" time="0.001"><failure message="TypeError: list indices must be integers or slices, not str">verdict = []
+
+    @pytest.mark.parametrize("verdict", [None, [], "not a verdict"])
+    def test_invalid_verdict_container_is_unknown(verdict):
+        record = result_record()
+        record["evaluation"]["test_results"] = verdict
+&gt;       assert verified_outcome(record) is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_verifier_consistency.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...}
+
+    def verified_outcome(result: dict[str, Any]) -&gt; bool | None:
+        """One verifier interpretation for aggregate reports and paired comparisons."""
+        evaluation = result.get("evaluation", {})
+        # Older fixture graders encoded incomplete verification as resolved=False.
+        if evaluation.get("status") in {"resolved", "unresolved"} and "test_results" in evaluation:
+            verdict = evaluation["test_results"]
+&gt;           if verdict is None or verdict["tests_run"] &lt;= verdict["skipped"]:
+                                  ^^^^^^^^^^^^^^^^^^^^
+E           TypeError: list indices must be integers or slices, not str
+
+src\budget_agent\report.py:62: TypeError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_invalid_verdict_container_is_unknown[not a verdict]" time="0.002"><failure message="TypeError: string indices must be integers, not 'str'">verdict = 'not a verdict'
+
+    @pytest.mark.parametrize("verdict", [None, [], "not a verdict"])
+    def test_invalid_verdict_container_is_unknown(verdict):
+        record = result_record()
+        record["evaluation"]["test_results"] = verdict
+&gt;       assert verified_outcome(record) is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_verifier_consistency.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'task_id': 'task', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...}
+
+    def verified_outcome(result: dict[str, Any]) -&gt; bool | None:
+        """One verifier interpretation for aggregate reports and paired comparisons."""
+        evaluation = result.get("evaluation", {})
+        # Older fixture graders encoded incomplete verification as resolved=False.
+        if evaluation.get("status") in {"resolved", "unresolved"} and "test_results" in evaluation:
+            verdict = evaluation["test_results"]
+&gt;           if verdict is None or verdict["tests_run"] &lt;= verdict["skipped"]:
+                                  ^^^^^^^^^^^^^^^^^^^^
+E           TypeError: string indices must be integers, not 'str'
+
+src\budget_agent\report.py:62: TypeError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_consistent_failures_and_legacy_or_official_verdicts_remain_graded[evaluation0-True]" time="0.001" /><testcase classname="tests.test_verifier_consistency" name="test_consistent_failures_and_legacy_or_official_verdicts_remain_graded[evaluation1-False]" time="0.001" /><testcase classname="tests.test_verifier_consistency" name="test_consistent_failures_and_legacy_or_official_verdicts_remain_graded[evaluation2-False]" time="0.001" /><testcase classname="tests.test_verifier_consistency" name="test_consistent_failures_and_legacy_or_official_verdicts_remain_graded[evaluation3-False]" time="0.001" /><testcase classname="tests.test_verifier_consistency" name="test_consistent_failures_and_legacy_or_official_verdicts_remain_graded[evaluation4-False]" time="0.001" /><testcase classname="tests.test_verifier_consistency" name="test_consistent_failures_and_legacy_or_official_verdicts_remain_graded[evaluation5-True]" time="0.001" /><testcase classname="tests.test_verifier_consistency" name="test_consistent_failures_and_legacy_or_official_verdicts_remain_graded[evaluation6-False]" time="0.001" /><testcase classname="tests.test_verifier_consistency" name="test_contradiction_is_excluded_from_success_rate_paired_wins_and_html" time="0.026"><failure message="assert 1 == 0">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-144/test_contradiction_is_excluded0')
+
+    def test_contradiction_is_excluded_from_success_rate_paired_wins_and_html(tmp_path):
+        candidate = result_record()
+        candidate["evaluation"]["test_results"]["successful"] = False
+        path = tmp_path / "run" / "result.json"
+        path.parent.mkdir()
+        candidate["_result_path"] = str(path)
+        path.write_text(json.dumps(candidate), encoding="utf-8")
+        original = path.read_bytes()
+        baseline = result_record()
+        baseline.update(strategy="recent", _result_path=str(tmp_path / "baseline" / "result.json"))
+        baseline["config"]["strategy"] = "recent"
+        group = aggregate([candidate])[0]
+&gt;       assert group["attempted"] == group["pending_or_ungraded"] == 1
+E       assert 1 == 0
+
+tests\test_verifier_consistency.py:108: AssertionError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_mixed_quality_batch_keeps_unknown_and_valid_negative_results[builtin]" time="0.055"><failure message="KeyError: 'tests_run'">tmp_path = WindowsPath('C:/Users/98341/AppData/Local/Temp/pytest-of-98341/pytest-144/test_mixed_quality_batch_keeps0')
+engine = 'builtin'
+
+    @pytest.mark.parametrize("engine", ["builtin", "openjudge"])
+    def test_mixed_quality_batch_keeps_unknown_and_valid_negative_results(tmp_path, engine):
+        if engine == "openjudge":
+            pytest.importorskip("openjudge", reason="Optional OpenJudge contract environment is not configured")
+        inputs = tmp_path / "inputs"
+        originals = {}
+        expected = {"valid": "pass", "contradictory": "unknown", "missing_count": "unknown", "negative": "fail"}
+        for name in expected:
+            record = result_record()
+            record.update(task_id=name, run_id=name)
+            if name == "contradictory":
+                record["evaluation"]["test_results"]["successful"] = False
+            elif name == "missing_count":
+                del record["evaluation"]["test_results"]["tests_run"]
+            elif name == "negative":
+                record["resolved"] = False
+                record["evaluation"].update(status="unresolved", resolved=False)
+                record["evaluation"]["test_results"].update(successful=False, failures=1, errors=0)
+            path = inputs / name / "result.json"
+            path.parent.mkdir(parents=True)
+            path.write_text(json.dumps(record), encoding="utf-8")
+            originals[path] = path.read_bytes()
+        output = tmp_path / "audit.json"
+&gt;       assert main(["audit", "--engine", engine, "--input", str(inputs), "--output", str(output)]) == 1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_verifier_consistency.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\budget_agent\cli.py:137: in main
+    "source_result": result["_result_path"], "evaluation": evaluate_run(result)}
+                                                           ^^^^^^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:99: in evaluate_run
+    dimensions = {"quality": _quality(result), "budget": _budget(result), "safety": _safety(result)}
+                             ^^^^^^^^^^^^^^^^
+src\budget_agent\evaluation.py:21: in _quality
+    outcome = verified_outcome(result)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'task_id': 'missing_count', 'split': 'dev', 'task_kind': 'local', 'provider': 'scripted', ...}
+
+    def verified_outcome(result: dict[str, Any]) -&gt; bool | None:
+        """One verifier interpretation for aggregate reports and paired comparisons."""
+        evaluation = result.get("evaluation", {})
+        # Older fixture graders encoded incomplete verification as resolved=False.
+        if evaluation.get("status") in {"resolved", "unresolved"} and "test_results" in evaluation:
+            verdict = evaluation["test_results"]
+&gt;           if verdict is None or verdict["tests_run"] &lt;= verdict["skipped"]:
+                                  ^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'tests_run'
+
+src\budget_agent\report.py:62: KeyError</failure></testcase><testcase classname="tests.test_verifier_consistency" name="test_mixed_quality_batch_keeps_unknown_and_valid_negative_results[openjudge]" time="0.003"><skipped type="pytest.skip" message="Optional OpenJudge contract environment is not configured">C:\找工作\budget-agent\tests\test_verifier_consistency.py:124: Optional OpenJudge contract environment is not configured</skipped></testcase></testsuite></testsuites>

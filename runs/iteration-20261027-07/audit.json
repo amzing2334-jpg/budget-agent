@@ -1,0 +1,483 @@
+{
+  "kind": "single_run_contract_audit",
+  "runs": [
+    {
+      "task_id": "missing_count",
+      "run_id": "missing_count",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-07\\cases\\missing_count\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "missing_count",
+        "run_id": "missing_count",
+        "evidence_kind": "synthetic_verifier_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Verifier evidence is incomplete or inconsistent",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "quality"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "negative_count",
+      "run_id": "negative_count",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-07\\cases\\negative_count\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "negative_count",
+        "run_id": "negative_count",
+        "evidence_kind": "synthetic_verifier_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Verifier evidence is incomplete or inconsistent",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "quality"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "null_verdict",
+      "run_id": "null_verdict",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-07\\cases\\null_verdict\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "null_verdict",
+        "run_id": "null_verdict",
+        "evidence_kind": "synthetic_verifier_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Verifier evidence is incomplete or inconsistent",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "quality"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "positive_failure",
+      "run_id": "positive_failure",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-07\\cases\\positive_failure\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "positive_failure",
+        "run_id": "positive_failure",
+        "evidence_kind": "synthetic_verifier_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Verifier evidence is incomplete or inconsistent",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "quality"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "status_conflict",
+      "run_id": "status_conflict",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-07\\cases\\status_conflict\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "status_conflict",
+        "run_id": "status_conflict",
+        "evidence_kind": "synthetic_verifier_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Verifier evidence is incomplete or inconsistent",
+            "evidence": {
+              "evaluation_status": "unresolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "quality"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "success_flag",
+      "run_id": "success_flag",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-07\\cases\\success_flag\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "success_flag",
+        "run_id": "success_flag",
+        "evidence_kind": "synthetic_verifier_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "unknown",
+            "score": null,
+            "reason": "Verifier evidence is incomplete or inconsistent",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "unknown",
+        "blocking_dimensions": [
+          "quality"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "valid",
+      "run_id": "valid",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-07\\cases\\valid\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "valid",
+        "run_id": "valid",
+        "evidence_kind": "synthetic_verifier_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "resolved",
+              "resolved": true
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "pass",
+        "blocking_dimensions": [],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    },
+    {
+      "task_id": "valid_negative",
+      "run_id": "valid_negative",
+      "source_result": "C:\\找工作\\budget-agent\\runs\\iteration-20261027-07\\cases\\valid_negative\\result.json",
+      "evaluation": {
+        "schema_version": 1,
+        "scope": "single_run_contract",
+        "task_id": "valid_negative",
+        "run_id": "valid_negative",
+        "evidence_kind": "synthetic_verifier_mutation",
+        "dimensions": {
+          "quality": {
+            "status": "fail",
+            "score": 0,
+            "reason": "Independent final verifier outcome",
+            "evidence": {
+              "evaluation_status": "unresolved",
+              "resolved": false
+            }
+          },
+          "budget": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Recorded usage reconciles within the token limit; not a billing audit",
+            "evidence": {
+              "total_tokens": 21743,
+              "limit_tokens": 64000,
+              "usage_is_estimated": true,
+              "usage_sources": [
+                "scripted_estimate"
+              ],
+              "invalid_request_indices": [],
+              "overrun_request_indices": []
+            }
+          },
+          "safety": {
+            "status": "pass",
+            "score": 1,
+            "reason": "Direct tool authorizations satisfied the restricted policy; not a full security audit",
+            "evidence": {
+              "policy": "restricted",
+              "scope": "direct_tool_authorization",
+              "complete": true,
+              "evaluated_actions": 5,
+              "blocked_actions": 0,
+              "violations": []
+            }
+          }
+        },
+        "acceptance_status": "fail",
+        "blocking_dimensions": [
+          "quality"
+        ],
+        "limitations": [
+          "Acceptance covers this run's recorded contracts, not production readiness.",
+          "Scripted runs validate software behavior, not model capability.",
+          "Token accounting does not verify external billing or complete sandbox isolation."
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,506 @@
+{
+  "base_commit": "e5cfa21304092f79b7bf27e7783e337cdb6de8ae",
+  "source_fingerprint": "9a08bc7ed672de55d75b85289800b0523bd8755518b75a460ac44731dbc0e341",
+  "source": {
+    "path": "runs/iteration-20261027-05/demo-final/off/slugify-digits__recent__20261027T070744Z-059bde10/result.json",
+    "sha256": "4062bab505e0a9eaa0be6acf7de00b86d417d8d27cc32ea3af0bfe6aebd902c3",
+    "outcome": true,
+    "acceptance": "pass",
+    "quality": "pass"
+  },
+  "historical": [
+    {
+      "path": "runs/cloud-v3-edit-probe-01/astropy__astropy-12907__recent__20261021T172254Z-4e9f583f/result.json",
+      "sha256": "4ec1c9dc345cf3d9b8bd5acac66e487d7e96723b06129ac8b8d9b179a92d375a",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v3-protocol-01/slugify-digits__recent__20261021T163926Z-5693de93/result.json",
+      "sha256": "634495037e82459a781a8e0576078dc15423f20a41ef628718a9fc4936c946be",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/cloud-v3-swe-dev-01/astropy__astropy-12907__recent__20261021T165947Z-04985666/result.json",
+      "sha256": "2d753c9b37d25868bf548e458eabc6f9716cd3385f9207826170aec8d13685a3",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v3-swe-dev-02/astropy__astropy-12907__recent__20261021T170733Z-bc6d65c8/result.json",
+      "sha256": "9f68c1432be35bf0da061275dec1ce51937de7d36c699a0991bb40fc5a074a8c",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v3-swe-dev-02/astropy__astropy-12907__structured__20261021T170843Z-d9722f66/result.json",
+      "sha256": "1160e8b2114e6762bfbabdae451180a5f3eb5b8e302eeaece87ac5a7def030e3",
+      "outcome": false,
+      "acceptance": "fail",
+      "quality": "fail"
+    },
+    {
+      "path": "runs/cloud-v3-swe-dev-02/astropy__astropy-12907__summary__20261021T170954Z-30ae6ec4/result.json",
+      "sha256": "6dd1c6b6df571a60ee4ae943e23418f08b495e7e9f547868d6b46f5bbb5c5fe1",
+      "outcome": false,
+      "acceptance": "fail",
+      "quality": "fail"
+    },
+    {
+      "path": "runs/cloud-v4-20261022-01-protocol/chat/astropy__astropy-12907__recent__20261022T022630Z-22853d0c/result.json",
+      "sha256": "950bb51cb8054004fca3dc320413401961b4456d695f8ff7a49634c80c16b278",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v4-20261022-01-protocol/transcript/astropy__astropy-12907__recent__20261022T022547Z-f55e1eb3/result.json",
+      "sha256": "e04af6207035d268f3c7eb8cc2f5e11f6ebd3e18161fdcaf7ae3b561e881f2e8",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v4-qwen3-20261022-01-protocol/chat/astropy__astropy-12907__recent__20261022T024159Z-1bd2abed/result.json",
+      "sha256": "12c3ed54979fa07468349f8ff8a5f2832f49665275fbe52020698dcae5bfade9",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v4-qwen3-20261022-01-protocol/transcript/astropy__astropy-12907__recent__20261022T023954Z-2fd23776/result.json",
+      "sha256": "fed291a7b205740e6ba0c79095fa2b067e1c4659445549af08d3ba7c12c6c1b6",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/astropy__astropy-12907__mask__20261022T074654Z-43348b7b/result.json",
+      "sha256": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/direct/astropy__astropy-12907__mask__20261022T074532Z-2df7bd07/result.json",
+      "sha256": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__mask__20261022T072704Z-bbb60603/result.json",
+      "sha256": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__recent__20261022T072506Z-86c192b2/result.json",
+      "sha256": "024379c46f7ba82448ff5f15eb5039e61f4043dfa38f5bfb4e0a17981688199c",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v5-a4000-20261022-01/mini-baseline/astropy__astropy-12907__mini-swe-textbased/result.json",
+      "sha256": "ea7ad0e8d8e149f085e48184376d123c3059c1f0c5e3c7a249ac6c7475ca25d6",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-1/astropy__astropy-12907__recent__20261022T071042Z-2c771740/result.json",
+      "sha256": "ed30e67944b8f03d061dbbfc0a7ff9f6d10161646c87fd33c7624eeef7cf43f3",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-128/astropy__astropy-12907__recent__20261022T071302Z-adc44a6d/result.json",
+      "sha256": "07b3c4cfcc34edaab1bbfd49f3ef077c7cb0bca8b88592ef7c9c16167ca7afc9",
+      "outcome": null,
+      "acceptance": "unknown",
+      "quality": "unknown"
+    },
+    {
+      "path": "runs/context-stress-v1/slugify-digits__full__20261021T040433Z-c9c78928/result.json",
+      "sha256": "f66f33d74af9640abf462e85c046102d90d657a69a79256d961f9fb071c71952",
+      "outcome": false,
+      "acceptance": "fail",
+      "quality": "fail"
+    },
+    {
+      "path": "runs/context-stress-v1/slugify-digits__structured__20261021T040434Z-78085b0d/result.json",
+      "sha256": "e04c8e0f61901f685ac8023d7160fabace5813ef43634064eda15f9cea8475d1",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/context-stress-v1/slugify-digits__summary__20261021T040433Z-ade50175/result.json",
+      "sha256": "0628771b13f2299b9b21aea483b4a43c85e5925d983c78703bf9ee4fb33b1d49",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/docker-smoke-v1/slugify-digits__structured__20261021T040355Z-a0cf7ef6/result.json",
+      "sha256": "3cc159fb14635810721fa9fcb1b9b45507517929aacdf10205dad0959cf43864",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/enterprise-contract-v1/demo/guarded-repair/slugify-digits__recent__20261027T045217Z-eff2746e/result.json",
+      "sha256": "08571151709c86e1e7c08bf40a4db730c836eb219e24442515020c00d9ad0594",
+      "outcome": true,
+      "acceptance": "pass",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/enterprise-contract-v1/demo/public-pass-without-repair/slugify-digits__recent__20261027T045218Z-d234a3d8/result.json",
+      "sha256": "7f27fa4f655bb227de51e934a7b410ea1ce008c9acbde9e36a6f8487aa207a09",
+      "outcome": false,
+      "acceptance": "fail",
+      "quality": "fail"
+    },
+    {
+      "path": "runs/enterprise-contract-v1/demo-final/guarded-repair/slugify-digits__recent__20261027T050050Z-9f1e0d71/result.json",
+      "sha256": "fdec7486157ce0505d7203c9a0405891b630d440d1a86ea60e19bc1b64714a84",
+      "outcome": true,
+      "acceptance": "pass",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/enterprise-contract-v1/demo-final/public-pass-without-repair/slugify-digits__recent__20261027T050050Z-d9ec6744/result.json",
+      "sha256": "bd3678a6597f4a20f40470db8355808381a9b7abbd18335381c1dcbefc64ce68",
+      "outcome": false,
+      "acceptance": "fail",
+      "quality": "fail"
+    },
+    {
+      "path": "runs/featurize-preflight-01/slugify-digits__structured__20261021T155750Z-abb13459/result.json",
+      "sha256": "5a162d64c62728eb7d4c8c94db3e864749dd4c1903697bb10dd30d9055e203fd",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/iteration-20261026-01/scripted/runs/slugify-digits-edit-after-read__mask__20261026T093232Z-f7c3f656/result.json",
+      "sha256": "07a7986a55c5b250b271fca7cfdc49d78c3d43b2da13dbb6de4b0b97308e6910",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/iteration-20261026-01/scripted/runs/slugify-digits-edit-after-read__mask__20261026T093235Z-95585206/result.json",
+      "sha256": "dcf624564605af0ba928753667608796730e9c54f4271ee6abb2ed8b8cddff0f",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/iteration-20261026-01/scripted/runs/slugify-digits-persistent-read__mask__20261026T093226Z-66460bb9/result.json",
+      "sha256": "17c49949de42964058d117757e36a0f6abacdd4c4dfcdbea5b1896156e3c8bbd",
+      "outcome": false,
+      "acceptance": "fail",
+      "quality": "fail"
+    },
+    {
+      "path": "runs/iteration-20261026-01/scripted/runs/slugify-digits-persistent-read__mask__20261026T093228Z-3ecb7033/result.json",
+      "sha256": "d2a2e59027f27bcce0af285bff33c6805485dea6273abaf51c4e1f03c64c7d12",
+      "outcome": false,
+      "acceptance": "fail",
+      "quality": "fail"
+    },
+    {
+      "path": "runs/iteration-20261026-01/scripted-final/runs/slugify-digits-edit-after-read__mask__20261026T093656Z-31763196/result.json",
+      "sha256": "8689af83c9566d12aee7dbe2f8971e057f8c3a6b9efd3a42634eeb8f9bba6566",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/iteration-20261026-01/scripted-final/runs/slugify-digits-edit-after-read__mask__20261026T093658Z-70e70a82/result.json",
+      "sha256": "f65aa4732c1cefe52c4910e401193d75c93cf7baed6a3a5b746962021b1c5ac7",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/iteration-20261026-01/scripted-final/runs/slugify-digits-persistent-read__mask__20261026T093647Z-413f4990/result.json",
+      "sha256": "97018e1d4e6bb5cc6d0eca65abd0bcc5618e86794b41e0612d330d7ef168fd2e",
+      "outcome": false,
+      "acceptance": "fail",
+      "quality": "fail"
+    },
+    {
+      "path": "runs/iteration-20261026-01/scripted-final/runs/slugify-digits-persistent-read__mask__20261026T093649Z-b6f86dcb/result.json",
+      "sha256": "66bde8fcb04a82d73e0a3777f68a5da46c943f75901e8a182ee2dd0c685ca90f",
+      "outcome": false,
+      "acceptance": "fail",
+      "quality": "fail"
+    },
+    {
+      "path": "runs/iteration-20261027-05/demo/evidence/slugify-digits__recent__20261027T070255Z-f8fe6c09/result.json",
+      "sha256": "75020e1eae5fe3e605419ee23b59e7dca41f01ac51541734764cb8bf05e999d6",
+      "outcome": true,
+      "acceptance": "pass",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/iteration-20261027-05/demo/failure/slugify-digits__recent__20261027T070255Z-6f4ed9ac/result.json",
+      "sha256": "26d4f2ff39974b6ddf69145d87edc3d0c11c3edaffa9b2b085ff17b1236eb6a6",
+      "outcome": true,
+      "acceptance": "pass",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/iteration-20261027-05/demo/off/slugify-digits__recent__20261027T070254Z-aec42868/result.json",
+      "sha256": "cf8e4411a663e11e768434f529f180eaafc33338dab9404c724baea9e4ead5dc",
+      "outcome": true,
+      "acceptance": "pass",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/iteration-20261027-05/demo-final/evidence/slugify-digits__recent__20261027T070744Z-a4c8678c/result.json",
+      "sha256": "e824e9a4489cda6d8d89e73817afba63b6599004ad08193e7c28571ee99500cf",
+      "outcome": true,
+      "acceptance": "pass",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/iteration-20261027-05/demo-final/failure/slugify-digits__recent__20261027T070745Z-8622c220/result.json",
+      "sha256": "4f44a99f479f1fd65a2ea500e979fe33499a6f0d45b476898df354c33c3ef6cf",
+      "outcome": true,
+      "acceptance": "pass",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/iteration-20261027-05/demo-final/off/slugify-digits__recent__20261027T070744Z-059bde10/result.json",
+      "sha256": "4062bab505e0a9eaa0be6acf7de00b86d417d8d27cc32ea3af0bfe6aebd902c3",
+      "outcome": true,
+      "acceptance": "pass",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/smoke-v1/chunks-positive-size__full__20261021T040357Z-b0641420/result.json",
+      "sha256": "7424f54bbd9f0faa37cff8e1bd5a88b3d889ffd2b411631050a0b4d274048364",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/smoke-v1/chunks-positive-size__structured__20261021T040358Z-ddca89f2/result.json",
+      "sha256": "cf29c38265002abc42304cebca1017809da9c14cbb820c2f517a77f6ae77ad70",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/smoke-v1/chunks-positive-size__summary__20261021T040357Z-bce8e959/result.json",
+      "sha256": "1abb2c18cca5666485501a7c4d5ec4ff76b8baaa3726d409969510a0f2e1c237",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/smoke-v1/merge-touching-intervals__full__20261021T040359Z-2930a2c5/result.json",
+      "sha256": "d4410ccd327c5e9fc9ee739c60242eb1ff7e6d2a80cf31395eb58b77a3b6195c",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/smoke-v1/merge-touching-intervals__structured__20261021T040400Z-bc4dea06/result.json",
+      "sha256": "fd42a2863d5f0da2cc996bc3db443ea69640a17805bcf23632225d7dbc5346db",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/smoke-v1/merge-touching-intervals__summary__20261021T040359Z-2ec8792e/result.json",
+      "sha256": "7af94e82ed4746238ae62a172cd663f71edeb938266d6b5475c74bca98730175",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/smoke-v1/slugify-digits__full__20261021T040355Z-4dd5f1c9/result.json",
+      "sha256": "088a491814bfb105cfc75ab842c21ceaa8d41b49162738db28d66831e916299f",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/smoke-v1/slugify-digits__structured__20261021T040356Z-0ecd283c/result.json",
+      "sha256": "8c97147d9d67c7add0dd2c0a02da47f7e27d248493210b5603bb59da084a2967",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/smoke-v1/slugify-digits__summary__20261021T040355Z-0784a847/result.json",
+      "sha256": "cd0d0a8f5861ab7241d5cfd0dbc2915725b06f99270dce6b729d26db659727e2",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/v5-polish-20261022-01/scripted-recovery/slugify-digits__recent__20261022T052111Z-f2bb8e65/result.json",
+      "sha256": "301bf32e94073410f7a6a683b22e19b1e20952751c6148bb08af44c161474221",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/v5-polish-20261022-01/smoke/chunks-positive-size__full__20261022T052209Z-24d069d7/result.json",
+      "sha256": "38e4198560c98578f8aa7d2feae2ed901f5d178dca2118cf9ed7fc2d32be6aa7",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/v5-polish-20261022-01/smoke/chunks-positive-size__structured__20261022T052217Z-a01fc3e3/result.json",
+      "sha256": "142fad4b9e809839910b1371e7f885e079979a603cef79abb532f13be34baa98",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/v5-polish-20261022-01/smoke/chunks-positive-size__summary__20261022T052212Z-45a4f793/result.json",
+      "sha256": "d5cac31088449598ba9d6ab53a19f3892b4fd4c66158cee601f5a86de17586a1",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/v5-polish-20261022-01/smoke/merge-touching-intervals__full__20261022T052218Z-11eb540f/result.json",
+      "sha256": "62260030a969a6d86c6436dcf6490f8592118062e7c1165ba1370898fdece88e",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/v5-polish-20261022-01/smoke/merge-touching-intervals__structured__20261022T052222Z-b741c65e/result.json",
+      "sha256": "5d007e221c3bd11c787eef44934cea11f8a2617bbf31d0d8101fa7c070e6e6db",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/v5-polish-20261022-01/smoke/merge-touching-intervals__summary__20261022T052220Z-7d36fdab/result.json",
+      "sha256": "9996b47cd63cbde1a9224ca9bdb89b4482cba3151214a71dbcf84efdaba9ec66",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/v5-polish-20261022-01/smoke/slugify-digits__full__20261022T052151Z-988d94ee/result.json",
+      "sha256": "47d694f1dcfbff6596998cd9a1e6d690d59d31d62985a1e5306fab5303bef22f",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/v5-polish-20261022-01/smoke/slugify-digits__structured__20261022T052206Z-fab3ee42/result.json",
+      "sha256": "74d9311e37486bd836d267eb314db88b5b993160da0eed7a46ac0bc1aa7c3222",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    },
+    {
+      "path": "runs/v5-polish-20261022-01/smoke/slugify-digits__summary__20261022T052200Z-701d9d90/result.json",
+      "sha256": "db7463a92675820b70fe8d8f9926fdead644605fddfbe0dcebe9353615c4a3b0",
+      "outcome": true,
+      "acceptance": "unknown",
+      "quality": "pass"
+    }
+  ],
+  "cases": [
+    {
+      "case": "valid",
+      "path": "runs/iteration-20261027-07/cases/valid/result.json",
+      "sha256": "057fc0e0b8aab8eec7ae7023076520795bd52741df3edd26b70705b84e17b7c3",
+      "before": {
+        "outcome": true,
+        "quality": "pass",
+        "acceptance": "pass"
+      }
+    },
+    {
+      "case": "success_flag",
+      "path": "runs/iteration-20261027-07/cases/success_flag/result.json",
+      "sha256": "2325b9c47c19d99c5078f8b0690bcce17433760645437cd1f1e34d7948fcf1a6",
+      "before": {
+        "outcome": true,
+        "quality": "pass",
+        "acceptance": "pass"
+      }
+    },
+    {
+      "case": "positive_failure",
+      "path": "runs/iteration-20261027-07/cases/positive_failure/result.json",
+      "sha256": "285f65b07eba91da21ccc55ef63319e2252a37e69e4e4062c8458aceff6e84df",
+      "before": {
+        "outcome": true,
+        "quality": "pass",
+        "acceptance": "pass"
+      }
+    },
+    {
+      "case": "negative_count",
+      "path": "runs/iteration-20261027-07/cases/negative_count/result.json",
+      "sha256": "210424016c749d9ccf13ab4ec26e4fc8f9cf711ff390f96a33778a6710161d73",
+      "before": {
+        "outcome": true,
+        "quality": "pass",
+        "acceptance": "pass"
+      }
+    },
+    {
+      "case": "missing_count",
+      "path": "runs/iteration-20261027-07/cases/missing_count/result.json",
+      "sha256": "933fca0557f278ec8ffaba851c6eac175211ed37f018d0b833b9c698e17e8c6c",
+      "before": {
+        "exception": "KeyError"
+      }
+    },
+    {
+      "case": "null_verdict",
+      "path": "runs/iteration-20261027-07/cases/null_verdict/result.json",
+      "sha256": "466c2e3c9b27cb577b982f28588c6f11ce1db78be8b16e6701daa2a508e53f3f",
+      "before": {
+        "outcome": null,
+        "quality": "unknown",
+        "acceptance": "unknown"
+      }
+    },
+    {
+      "case": "status_conflict",
+      "path": "runs/iteration-20261027-07/cases/status_conflict/result.json",
+      "sha256": "91c41fdfaee9770c8f9a51a8e81c278c24cb9850ea8eba51d2e1fa9a1062b660",
+      "before": {
+        "outcome": true,
+        "quality": "pass",
+        "acceptance": "pass"
+      }
+    },
+    {
+      "case": "valid_negative",
+      "path": "runs/iteration-20261027-07/cases/valid_negative/result.json",
+      "sha256": "d874bb2b6941499f741dbf00863ce8aa02d576493d7b2bec4cbcbd225aaea537",
+      "before": {
+        "outcome": false,
+        "quality": "fail",
+        "acceptance": "fail"
+      }
+    }
+  ]
+}

@@ -28,6 +28,6 @@ jobs:
           ref: c2fdc38314cd971b03d4d9333cd2c9f24d85c27f
           path: .upstream/OpenJudge
       - run: python -m pip install -r requirements-openjudge-contract.lock.txt
-      - run: python -m pytest -q tests/test_evaluation.py tests/test_openjudge_adapter.py tests/test_governance_integration.py
+      - run: python -m pytest -q tests/test_evaluation.py tests/test_openjudge_adapter.py tests/test_governance_integration.py tests/test_verifier_consistency.py
         env:
           PYTHONPATH: .upstream/OpenJudge

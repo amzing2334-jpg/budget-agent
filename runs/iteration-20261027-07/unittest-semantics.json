@@ -1,0 +1,28 @@
+[
+  {
+    "case": "Unexpected",
+    "verdict": {
+      "tests_run": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "successful": false
+    },
+    "unexpected_successes": 1,
+    "interpreted_outcome": false,
+    "output": "u\n======================================================================\nUNEXPECTED SUCCESS: test_passes (__main__.Unexpected.test_passes)\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nFAILED (unexpected successes=1)\n"
+  },
+  {
+    "case": "Subtests",
+    "verdict": {
+      "tests_run": 1,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0,
+      "successful": false
+    },
+    "unexpected_successes": 0,
+    "interpreted_outcome": false,
+    "output": "FFF\n======================================================================\nFAIL: test_subtests (__main__.Subtests.test_subtests) (index=0)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<stdin>\", line 35, in test_subtests\nAssertionError: deliberate failure\n\n======================================================================\nFAIL: test_subtests (__main__.Subtests.test_subtests) (index=1)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<stdin>\", line 35, in test_subtests\nAssertionError: deliberate failure\n\n======================================================================\nFAIL: test_subtests (__main__.Subtests.test_subtests) (index=2)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<stdin>\", line 35, in test_subtests\nAssertionError: deliberate failure\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nFAILED (failures=3)\n"
+  }
+]

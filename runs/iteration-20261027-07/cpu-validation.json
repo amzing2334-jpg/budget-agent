@@ -1,0 +1,145 @@
+{
+  "kind": "saved_verifier_consistency_validation_not_model_benchmark",
+  "created_at_utc": "2026-10-27T15:14:23.154336+00:00",
+  "base_commit": "e5cfa21304092f79b7bf27e7783e337cdb6de8ae",
+  "source_fingerprint": "0c8ea35fc28360575f30991f9fe68485825d40035f8ac62499635e1940d8458d",
+  "full_suite": {
+    "passed": 761,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 13,
+    "seconds": 72.126
+  },
+  "actual_openjudge": {
+    "passed": 122,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 4.832
+  },
+  "focused_before": {
+    "passed": 9,
+    "failed": 28,
+    "errors": 0,
+    "skipped": 1,
+    "seconds": 0.944
+  },
+  "focused_after": {
+    "passed": 37,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 1,
+    "seconds": 0.199
+  },
+  "historical_results": {
+    "count": 59,
+    "changed": 0,
+    "original_hashes_preserved": true,
+    "selection": "same 59 paths frozen in previous iteration; excludes synthetic corruption copies"
+  },
+  "synthetic_cases": 8,
+  "synthetic_after": {
+    "pass": 1,
+    "unknown": 6,
+    "fail": 1
+  },
+  "audit_exit_codes": {
+    "builtin": 1,
+    "openjudge": 1
+  },
+  "optional_skips": {
+    "torch_modules": 2,
+    "pinned_mini_swe_unconfigured": 6,
+    "openjudge_skip_records": 5,
+    "openjudge_executed_in_dedicated_environment": true
+  },
+  "upstream_openjudge_commit": "c2fdc38314cd971b03d4d9333cd2c9f24d85c27f",
+  "real_model_requests": 0,
+  "training": false,
+  "new_rentals": 0,
+  "cloud_inventory_checked": false,
+  "limitations": [
+    "Saved result internal consistency only; no log authentication or raw verifier re-execution.",
+    "Online environment._verified and learning reward parser are unchanged.",
+    "Existing partial skipped subtest completeness limitation remains.",
+    "No new model repair or enterprise production-readiness claim."
+  ],
+  "files": [
+    {
+      "path": "runs/iteration-20261027-07/audit.json",
+      "sha256": "a7cabea3a90981133412e4d1fdada95f4dd33d855af3bb054b91f56f7518d810"
+    },
+    {
+      "path": "runs/iteration-20261027-07/before.json",
+      "sha256": "88f0c8f1e0b6707c1681b5276e19251ac1cf969478b269b4843d30c91ade3976"
+    },
+    {
+      "path": "runs/iteration-20261027-07/cases/missing_count/result.json",
+      "sha256": "933fca0557f278ec8ffaba851c6eac175211ed37f018d0b833b9c698e17e8c6c"
+    },
+    {
+      "path": "runs/iteration-20261027-07/cases/negative_count/result.json",
+      "sha256": "210424016c749d9ccf13ab4ec26e4fc8f9cf711ff390f96a33778a6710161d73"
+    },
+    {
+      "path": "runs/iteration-20261027-07/cases/null_verdict/result.json",
+      "sha256": "466c2e3c9b27cb577b982f28588c6f11ce1db78be8b16e6701daa2a508e53f3f"
+    },
+    {
+      "path": "runs/iteration-20261027-07/cases/positive_failure/result.json",
+      "sha256": "285f65b07eba91da21ccc55ef63319e2252a37e69e4e4062c8458aceff6e84df"
+    },
+    {
+      "path": "runs/iteration-20261027-07/cases/status_conflict/result.json",
+      "sha256": "91c41fdfaee9770c8f9a51a8e81c278c24cb9850ea8eba51d2e1fa9a1062b660"
+    },
+    {
+      "path": "runs/iteration-20261027-07/cases/success_flag/result.json",
+      "sha256": "2325b9c47c19d99c5078f8b0690bcce17433760645437cd1f1e34d7948fcf1a6"
+    },
+    {
+      "path": "runs/iteration-20261027-07/cases/valid/result.json",
+      "sha256": "057fc0e0b8aab8eec7ae7023076520795bd52741df3edd26b70705b84e17b7c3"
+    },
+    {
+      "path": "runs/iteration-20261027-07/cases/valid_negative/result.json",
+      "sha256": "d874bb2b6941499f741dbf00863ce8aa02d576493d7b2bec4cbcbd225aaea537"
+    },
+    {
+      "path": "runs/iteration-20261027-07/comparison.json",
+      "sha256": "49bbe8a6679daefaafdf61f81bb5b6c238261aece271c710980b4fbc04080b29"
+    },
+    {
+      "path": "runs/iteration-20261027-07/known-subtest-limitation.json",
+      "sha256": "82655c819dc365d099eaf8144dada3fe7e6ae250e50b39d3b8f9dff31cb2a2f5"
+    },
+    {
+      "path": "runs/iteration-20261027-07/openjudge-audit.json",
+      "sha256": "5afa740ef0d8f33edaca631ac9dc42a720784f0eceaa840a5bc34d7a76327208"
+    },
+    {
+      "path": "runs/iteration-20261027-07/openjudge.xml",
+      "sha256": "072c3465ef9746b2b23a8b00e34bc0f058a396132097612b09ddfe4cfebd1c04"
+    },
+    {
+      "path": "runs/iteration-20261027-07/pytest.xml",
+      "sha256": "204730a7282560cb9d7ec68e93673a5b20723e1f00b0ef0c2c02ef3a7ba339bf"
+    },
+    {
+      "path": "runs/iteration-20261027-07/reference-plan.json",
+      "sha256": "f3ae440305c463f07f2b28fdcce4b7ea9942c88a004401f0f7a0beffb148fc74"
+    },
+    {
+      "path": "runs/iteration-20261027-07/unittest-semantics.json",
+      "sha256": "5e373b91c6129d31f0a77f108169c8be4684618ef6f354aa71c55b9f7714695e"
+    },
+    {
+      "path": "runs/iteration-20261027-07/verifier-after.xml",
+      "sha256": "f2b6fed00a348f9e3f6be853649b030e7932e469943da68918689235d6ec302e"
+    },
+    {
+      "path": "runs/iteration-20261027-07/verifier-before.xml",
+      "sha256": "988214fdac305072f19e8bb4e0afc92fd387695a5a6a1e0eb5788312b8cccd9e"
+    }
+  ]
+}

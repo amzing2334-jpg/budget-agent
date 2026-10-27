@@ -1,0 +1,13 @@
+{
+  "kind": "preexisting_unittest_partial_subtest_skip_limitation",
+  "verdict": {
+    "tests_run": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "successful": true
+  },
+  "interpreted_outcome": null,
+  "output": "s\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK (skipped=1)\n",
+  "fixed_in_this_iteration": false
+}

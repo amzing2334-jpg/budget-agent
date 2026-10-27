@@ -4,6 +4,8 @@
 
 GitHub：[amzing2334-jpg/budget-agent](https://github.com/amzing2334-jpg/budget-agent)（私有）。代码、测试、文档及选定的 v5 实验记录已纳入版本管理；模型权重、运行环境和云端连接材料保留在本地。仓库范围与历史产物位置见 [仓库说明](docs/REPOSITORY.md)。
 
+**2026-10-27 第八轮：评分结论与测试明细一致性。** 顶层成功、评分状态和测试明细矛盾时保持未评分，不进入成功率、配对胜负或 OpenJudge 通过项；非法明细不再使批次中断。59份历史产物判定与哈希不变。CPU **761项通过、13项跳过**，真实OpenJudge **122项通过**。见[复现、官方需求与边界](docs/VERIFIER_CONSISTENCY_VALIDATION.md)。本轮没有模型效果或新费用。
+
 **2026-10-27 第七轮：请求级预算审计修复。** 缺失/非法请求记录保留为unknown；明确单请求超额不能被正常汇总标志掩盖。59份历史产物结论不变，合成损坏批次完整落盘。CPU **724项通过、12项跳过**，真实OpenJudge **84项通过**。见[复现、官方需求复核与边界](docs/REQUEST_LEDGER_VALIDATION.md)。本轮没有模型效果或新费用。
 
 **2026-10-27 第六轮：补齐失败证据重呈对照。** 新增`reflection_policy=evidence`，在相同总预算下比较普通历史、确定性错误摘录和生成反思；原文有来源/版本/偏移，所有再输入正常计费，没有额外生成调用。CPU **684项通过、11项跳过**，真实OpenJudge **43项通过**。三条件流程已具备，真实模型收益尚未验证；见[设计与官方需求复核](docs/FEEDBACK_CONTROL_VALIDATION.md)和[固定动作演示](runs/iteration-20261027-05/demo-final/report/report.html)。

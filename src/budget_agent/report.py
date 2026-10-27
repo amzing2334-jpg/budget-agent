@@ -56,10 +56,25 @@ def is_infrastructure_error(result: dict[str, Any]) -> bool:
 def verified_outcome(result: dict[str, Any]) -> bool | None:
     """One verifier interpretation for aggregate reports and paired comparisons."""
     evaluation = result.get("evaluation", {})
-    # Older fixture graders encoded incomplete verification as resolved=False.
-    if evaluation.get("status") in {"resolved", "unresolved"} and "test_results" in evaluation:
+    value = result.get("resolved")
+    status = evaluation.get("status")
+    if status in {"resolved", "unresolved", "invalid_patch"} and value is not (status == "resolved"):
+        return None
+    # A stored fixture verdict must agree with its summary before it is counted.
+    if status in {"resolved", "unresolved"} and "test_results" in evaluation:
         verdict = evaluation["test_results"]
-        if verdict is None or verdict["tests_run"] <= verdict["skipped"]:
+        if not isinstance(verdict, dict):
+            return None
+        counts = [verdict.get(key) for key in ("tests_run", "skipped")]
+        counts.extend(verdict[key] for key in ("failures", "errors") if key in verdict)
+        if (any(type(count) is not int or count < 0 for count in counts)
+                or verdict["tests_run"] <= verdict["skipped"]
+                or type(verdict.get("successful")) is not bool
+                or verdict["successful"] is not value):
+            return None
+        # Subtest failures may exceed tests_run; zero counts do not rule out an
+        # unexpectedSuccess, which also makes unittest.wasSuccessful() false.
+        if value and any(verdict.get(key, 0) > 0 for key in ("failures", "errors")):
             return None
     ungraded = {"official_empty_patch", "pending_official_evaluation", "not_evaluated", "pending", "ungraded"}
     if (is_infrastructure_error(result) or result.get("status") == "interrupted"
@@ -67,7 +82,6 @@ def verified_outcome(result: dict[str, Any]) -> bool | None:
             or evaluation.get("tests_executed") is False
             or ("resolved" in evaluation and evaluation["resolved"] is not result.get("resolved"))):
         return None
-    value = result.get("resolved")
     return value if type(value) is bool else None
 
 
