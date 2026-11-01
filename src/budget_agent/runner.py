@@ -305,7 +305,7 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
                     env.close()
                 except (EnvironmentError, OSError, subprocess.SubprocessError) as exc:
                     evaluation["cleanup_error"] = f"{type(exc).__name__}: {exc}"
-        (run_dir / "patch.diff").write_text(patch, encoding="utf-8")
+        (run_dir / "patch.diff").write_bytes(patch.encode("utf-8"))
     result = {
         "run_id": run_id, "task_id": task.id, "split": task.split, "task_kind": task.kind,
         "provider": config.provider, "model": model.name, "actual_models": sorted(actual_models),

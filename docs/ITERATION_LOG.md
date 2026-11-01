@@ -2,6 +2,31 @@
 
 本文件是后续每 4 小时评估的入口。先读项目 AGENTS.md 和最新一轮记录，再选择一个有证据的瓶颈；不是每轮必须增加功能。所有模型效果结论必须对应真实运行和独立评分。招聘页面重新访问不等于新开 HC。
 
+<a id="fixture-patch-20261101"></a>
+
+## 2026-11-01 · 让保存的文本补丁还原已评分的工作区
+
+v3 的真实模型在自建协议题 `slugify-digits` 上通过了独立测试，但旧版导出的补丁无法在原始代码上应用。模型写出的最后一行没有 LF，旧版补丁也缺少 Git 要求的行终止和 `\ No newline at end of file` 标记，实际 `git apply --check` 返回 `corrupt patch at line 10`。另一组 Windows 试跑在写入 `patch.diff` 时再次转换了换行，导致补丁与原文件的字节不匹配。原有 verifier 在干净树中复制允许修改的文件并运行测试，因此工作区通过和交付的补丁可重放需要分别验证。
+
+修复保留自建文本任务原有的 unified diff 格式，按 LF 划分文件行，保留内容中的 CR 和 Unicode 字符，对缺少末尾 LF 的删除行、新增行或上下文行写入标准标记。普通 runner 与 rollout 都将补丁按 UTF-8 字节写盘。遇到无法解码的变更文件，文本导出会报告路径。验证范围是有文本内容变化的 UTF-8 文件，未覆盖二进制补丁、空文件创建删除或权限模式变化。SWE-bench 容器从真实仓库导出补丁仍走原有的 Git 流程。
+
+| 冻结清单中 36 份成功自建任务记录 | Git 可应用，且应用后全树字节与保存工作区相同 |
+|---|---:|
+| 原始保存的补丁 | 1/36 |
+| 从同一工作区用本轮版本重新导出 | 36/36 |
+
+入选条件是本地任务类型且历史 `resolved=true`。59 份冻结结果中排除 16 个其他类型结果与 7 份未通过的自建任务。入选的每份都核对了原始 baseline、记录的初始 revision、保存工作区的 Git 基线和原补丁哈希。34 份 Windows 路径的脚本记录原本应用失败，另一处是上述真实模型的缺行终止符。用 `git -c core.autocrlf=false apply --whitespace=nowarn` 对独立副本实际应用并比较文件集合与每个文件的字节。原始记录均被保留。这次历史回放没有重新求解题目或重跑历史 verifier。[计数、真实协议题的一对补丁与哈希](../runs/iteration-20261101-fixture-patch/replay-evidence.json)
+
+回归可在新克隆上使用 CPU 执行。9 个场景经过 `run_task`、独立 verifier、补丁落盘、Git 检查、实际应用与字节比对，覆盖增删文件内容、缺末尾 LF 的上下文、LF/CRLF 和行内 Unicode 分隔符。在同一台 Windows 主机上，用 `git archive 57df264` 导出的旧代码运行这 9 项全部失败。
+
+```powershell
+.venv/Scripts/python.exe -m pytest -q tests/test_patch_roundtrip.py
+```
+
+本机全量 CPU 测试 807 项通过、13 项跳过。已准备的云端 `verify-protocol` 脚本新增一道检查：在原始协议题目录的临时副本应用保存的补丁，并将所得文件和字节与试跑工作区比对；通过后才签发 `replay_passed` 回执供 SWE 阶段读取。脚本在 CPU 上用历史坏补丁、正确重导补丁、可应用但内容有误的补丁做了三个对照，只有正确重导通过。脚本 SHA-256 为 `4509d71aa17347efa0ad1add04bbe29495b05c9ac92dc5401f4804c565436075`。云端部署、账户、旧订单和当前库存仍待核验。本轮开支为零，没有模型推理或训练。
+
+行业资料实际复核于 2026-11-01 14:42:26 至 14:42:28 UTC。百度 J106681 页面日期为 2026-10-19，仍列有轨迹归因与回归评测，页面无法确认实时剩余 HC。SWE-bench 指南展示了在 `model_patch` 字符串中提交 Git 补丁、应用到真实仓库后运行测试的流程，未见可见发布日期。本轮选择回放检查的直接依据是上述历史补丁失败。[百度岗位](https://talent.baidu.com/jobs/detail/INTERN/162291c8-43e8-4cc0-9c96-3fb0a7ebb720) · [SWE-bench 预测格式](https://www.swebench.com/SWE-bench/guides/evaluation/#prediction-format)
+
 <a id="ledger-comparison-20261101"></a>
 
 ## 2026-11-01 · 固定预算成功率与配对比较按请求账本判定

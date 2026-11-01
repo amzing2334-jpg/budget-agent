@@ -1,0 +1,67 @@
+{
+  "kind": "offline_fixture_patch_replay",
+  "selection_manifest": "runs/iteration-20261027-06/historical-audit.json",
+  "manifest_sha256": "6792a7c2b743a4b6887cc774111c0e76400f185e823a0b5fa0490d4154abe2a3",
+  "git_version": "git version 2.51.0.windows.1",
+  "scope": "One frozen 59-result corpus; every resolved=true local fixture with matching saved baseline/workspace. No model, cloud, verifier, or training execution. New patches are offline re-exports, not new task-solving successes.",
+  "summary": {
+    "frozen_runs": 59,
+    "eligible_success_local_fixtures": 36,
+    "exclusions": {
+      "not_local_fixture": 16,
+      "local_result_not_success": 7
+    },
+    "evidence_kinds": {
+      "model_run": 1,
+      "scripted_smoke": 35
+    },
+    "recorded_path_styles": {
+      "posix": 2,
+      "windows": 34
+    },
+    "all_original_results_patches_and_workspace_bytes_unchanged": true,
+    "original": {
+      "denominator": 36,
+      "git_apply_check_pass": 1,
+      "git_apply_pass": 1,
+      "workspace_byte_match": 1,
+      "errors": {
+        "error: corrupt patch at line 10": 1,
+        "error: patch failed: slugify.py:1\nerror: slugify.py: patch does not apply": 22,
+        "error: patch failed: chunks.py:1\nerror: chunks.py: patch does not apply": 6,
+        "error: patch failed: intervals.py:1\nerror: intervals.py: patch does not apply": 6
+      }
+    },
+    "regenerated": {
+      "denominator": 36,
+      "git_apply_check_pass": 36,
+      "git_apply_pass": 36,
+      "workspace_byte_match": 36,
+      "errors": {}
+    }
+  },
+  "model_example": {
+    "historical_run": "runs/cloud-v3-protocol-01/slugify-digits__recent__20261021T163926Z-5693de93/result.json",
+    "historical_result_sha256": "634495037e82459a781a8e0576078dc15423f20a41ef628718a9fc4936c946be",
+    "baseline_path": "tasks/fixtures/slugify/repo",
+    "baseline_revision": "9288e2cd29f2abef",
+    "source": "Saved workspace from the historical slugify-digits protocol attempt. Original artifact preserved. Re-export uses current fixture renderer only.",
+    "original_patch_sha256": "f21cf16e06657d95f25bf6ae9ec586a510632d358968a7da9b50bf638bb03608",
+    "original_patch_utf8": "--- a/slugify.py\n+++ b/slugify.py\n@@ -1,6 +1,4 @@\n-\"\"\"Small URL slug helper.\"\"\"\n import re\n \n-\n def slugify(text):\n-    return re.sub(r\"[^a-z]+\", \"-\", text.lower()).strip(\"-\")\n+    return re.sub(r\"[^a-z0-9]+\", \"-\", text.lower()).strip(\"-\")",
+    "reexported_patch_sha256": "f702a78aa132d1044ddc0c411d493a8c7b48bddf908d7253b5e13eb19c5229dc",
+    "reexported_patch_utf8": "--- a/slugify.py\n+++ b/slugify.py\n@@ -1,6 +1,4 @@\n-\"\"\"Small URL slug helper.\"\"\"\n import re\n \n-\n def slugify(text):\n-    return re.sub(r\"[^a-z]+\", \"-\", text.lower()).strip(\"-\")\n+    return re.sub(r\"[^a-z0-9]+\", \"-\", text.lower()).strip(\"-\")\n\\ No newline at end of file\n",
+    "expected_files_sha256": {
+      "slugify.py": "cc7a99957a7680cb187ad57052703ba97703a1aebd0a61f13b17552f94cb3393",
+      "tests/test_public.py": "f98167564549316ddf32468c05d365d46ef55fa8cd6907f817b8404be591b0f3"
+    }
+  },
+  "baseline_commit": "57df264265d032e64a4b6d0cad0f6d11405c854e",
+  "renderer_file_sha256": "79068397cb85f0d1e1614df0845f5444de9b26b0ed3be7fadc6d546937387b26",
+  "historical_replay_receipt_sha256": "eabb8ec5353d2cdf870f049a651838384c48afcd3741152c3bc84f20541569b7",
+  "cpu_tests": {
+    "tests": 820,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 13
+  }
+}

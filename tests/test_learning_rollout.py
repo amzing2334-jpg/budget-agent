@@ -70,6 +70,7 @@ def test_multiturn_episode_preserves_each_prompt_and_reward(tmp_path, monkeypatc
     ]])
     episode = sample_episode(task, policy, TrainingConfig(context_tokens=4096, total_tokens=16000), tmp_path)
     assert episode.resolved is True and episode.reward == 1.0
+    assert (tmp_path / "patch.diff").read_bytes() == episode.patch.encode("utf-8")
     assert episode.policy_version == 7 and len(episode.steps) == 4
     assert len(env.actions) == 3 and env.closed and env.graded
     assert episode.input_tokens == sum(len(step.prompt_ids) for step in episode.steps)

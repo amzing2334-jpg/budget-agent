@@ -8,6 +8,7 @@ from __future__ import annotations
 import difflib
 import hashlib
 import inspect
+import io
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -328,11 +329,19 @@ class LocalEnvironment:
             before, after = self.baseline.get(name), current.get(name)
             if before == after:
                 continue
-            chunks.extend(difflib.unified_diff(
-                (before or b"").decode("utf-8", errors="replace").splitlines(keepends=True),
-                (after or b"").decode("utf-8", errors="replace").splitlines(keepends=True),
+            # A patch line ends at LF. CR and Unicode separators are file data.
+            try:
+                original = io.StringIO((before or b"").decode("utf-8"), newline="\n").readlines()
+                modified = io.StringIO((after or b"").decode("utf-8"), newline="\n").readlines()
+            except UnicodeDecodeError as exc:
+                raise EnvironmentError(f"Cannot export non-UTF-8 fixture file as a text patch: {name}") from exc
+            diff = difflib.unified_diff(original, modified,
                 fromfile=f"a/{name}" if before is not None else "/dev/null",
-                tofile=f"b/{name}" if after is not None else "/dev/null"))
+                tofile=f"b/{name}" if after is not None else "/dev/null")
+            for line in diff:
+                chunks.append(line)
+                if not line.endswith("\n"):
+                    chunks.append("\n\\ No newline at end of file\n")
         return "".join(chunks)
 
     def grade(self) -> dict[str, Any]:

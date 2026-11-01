@@ -82,7 +82,7 @@ def sample_episode(task: Task, policy, config: TrainingConfig, run_dir: Path) ->
             messages.append(observation(result))
 
         patch = env.patch()
-        (run_dir / "patch.diff").write_text(patch, encoding="utf-8")
+        (run_dir / "patch.diff").write_bytes(patch.encode("utf-8"))
         (run_dir / "trajectory.jsonl").write_text(
             "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in trace), encoding="utf-8")
         grade = env.grade()

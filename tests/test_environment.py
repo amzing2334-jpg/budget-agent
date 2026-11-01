@@ -109,6 +109,13 @@ def test_swebench_requires_docker(tmp_path):
         create_environment(Task(id="swe", issue="fix", split="test", kind="swebench"), RunConfig(), tmp_path)
 
 
+def test_fixture_patch_refuses_lossy_replacement_of_non_utf8_bytes(tmp_path):
+    env = create_environment(load_task(), RunConfig(), tmp_path / "run")
+    (env.workspace / "slugify.py").write_bytes(b"# \xff")
+    with pytest.raises(EnvironmentError, match="non-UTF-8.*slugify.py"):
+        env.patch()
+
+
 def test_zero_exit_during_import_cannot_fake_test_success(tmp_path):
     env = create_environment(load_task(), RunConfig(), tmp_path / "run")
     env.execute({"tool": "write_file", "path": "slugify.py", "content": "import os\nos._exit(0)\n"})
