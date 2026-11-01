@@ -10,7 +10,10 @@ import math
 from pathlib import Path
 from typing import Any
 
-from .verification import fixture_outcome
+from .evaluation import (
+    comparison_budget_valid, evaluate_run, is_infrastructure_error, ledger_token_count,
+    request_ledger, verified_outcome,
+)
 
 
 def load_results(root: Path) -> list[dict[str, Any]]:
@@ -41,44 +44,6 @@ def condition_key(result: dict[str, Any]) -> str:
     return json.dumps(fields, ensure_ascii=False, sort_keys=True)
 
 
-def _invalid_budget(result: dict[str, Any]) -> bool:
-    budget = result.get("budget", {})
-    return bool(result.get("usage_unknown") or budget.get("overrun") or
-                budget.get("unreconciled_request") or
-                result.get("status") in {"budget_overrun", "usage_unknown"})
-
-
-def is_infrastructure_error(result: dict[str, Any]) -> bool:
-    evaluation = result.get("evaluation", {})
-    return (result.get("status") in {"environment_error", "model_error"}
-            or evaluation.get("infra_failure") is True
-            or evaluation.get("status") in {"infrastructure_error", "grading_error"})
-
-
-def verified_outcome(result: dict[str, Any]) -> bool | None:
-    """One verifier interpretation for aggregate reports and paired comparisons."""
-    evaluation = result.get("evaluation", {})
-    value = result.get("resolved")
-    status = evaluation.get("status")
-    if status in {"resolved", "unresolved", "invalid_patch"} and value is not (status == "resolved"):
-        return None
-    # A stored fixture verdict must agree with its summary before it is counted.
-    if status in {"resolved", "unresolved"} and "test_results" in evaluation:
-        try:
-            outcome = fixture_outcome(evaluation["test_results"])
-        except ValueError:
-            return None
-        if outcome is None or outcome is not value:
-            return None
-    ungraded = {"official_empty_patch", "pending_official_evaluation", "not_evaluated", "pending", "ungraded"}
-    if (is_infrastructure_error(result) or result.get("status") == "interrupted"
-            or result.get("status") in ungraded or evaluation.get("status") in ungraded
-            or evaluation.get("tests_executed") is False
-            or ("resolved" in evaluation and evaluation["resolved"] is not result.get("resolved"))):
-        return None
-    return value if type(value) is bool else None
-
-
 def _wilson(successes: int, n: int) -> tuple[float, float] | None:
     if n == 0:
         return None
@@ -88,6 +53,20 @@ def _wilson(successes: int, n: int) -> tuple[float, float] | None:
     center = (p + z * z / (2 * n)) / d
     half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
     return max(0, center - half), min(1, center + half)
+
+
+def _group_token_counts(records: list[dict]) -> tuple:
+    counts = []
+    for record in records:
+        ledger = request_ledger(record)
+        if ledger is None:
+            inputs = record.get("input_tokens", 0)
+            outputs = record.get("output_tokens", 0)
+            counts.append((inputs, outputs, inputs + outputs))
+        else:
+            counts.append(tuple(ledger_token_count(ledger, field)
+                                for field in ("input_tokens", "output_tokens", "total_tokens")))
+    return tuple(None if None in column else sum(column) for column in zip(*counts))
 
 
 def aggregate(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -102,7 +81,9 @@ def aggregate(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
             policies[result.get("strategy", "unknown")].append(result)
         samples = [Counter((r["task_id"], r.get("task_fingerprint"), r.get("config", {}).get("seed", 0)) for r in records) for records in policies.values()]
         matched = all(sample == samples[0] for sample in samples)
-        group_invalid_budget = any(_invalid_budget(r) for r in group)
+        invalid_budgets = {strategy: sum(not comparison_budget_valid(r) for r in records)
+                           for strategy, records in policies.items()}
+        group_invalid_budget = any(invalid_budgets.values())
         group_ungraded = any(verified_outcome(r) is None for r in group)
         for strategy, records in sorted(policies.items()):
             n = len(records)
@@ -110,11 +91,10 @@ def aggregate(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
             successes = sum(verified_outcome(r) is True for r in records)
             infrastructure_errors = sum(is_infrastructure_error(r) for r in records)
             empty_patches = sum(r.get("evaluation", {}).get("status") == "official_empty_patch" for r in records)
-            invalid_budget_attempts = sum(_invalid_budget(r) for r in records)
+            invalid_budget_attempts = invalid_budgets[strategy]
             costs = [r.get("cost_usd") for r in records]
             cost = sum(costs) if all(isinstance(c, (int, float)) for c in costs) else None
-            input_tokens = sum(r.get("input_tokens", 0) for r in records)
-            output_tokens = sum(r.get("output_tokens", 0) for r in records)
+            input_tokens, output_tokens, total_tokens = _group_token_counts(records)
             kind = records[0].get("evidence_kind", "unknown")
             # Repeats on the same issue are dependent: do not manufacture confidence.
             unique_tasks = len({r["task_id"] for r in records})
@@ -132,8 +112,8 @@ def aggregate(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "invalid_budget_attempts": invalid_budget_attempts,
                 "comparison_valid": matched and not group_invalid_budget and not group_ungraded,
                 "input_tokens": input_tokens, "output_tokens": output_tokens,
-                "total_tokens": input_tokens + output_tokens,
-                "mean_tokens": (input_tokens + output_tokens) / n,
+                "total_tokens": total_tokens,
+                "mean_tokens": total_tokens / n if total_tokens is not None else None,
                 "total_cost_usd": cost,
                 "cost_per_success_usd": cost / successes if cost is not None and successes and graded == n and not invalid_budget_attempts else None,
                 "mean_elapsed_seconds": sum(r.get("elapsed_seconds", 0) for r in records) / n,
@@ -198,7 +178,8 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
         for row in group_rows:
             rate = "invalid budget" if row["invalid_budget_attempts"] else "ungraded" if row["success_rate"] is None else f'{100 * row["success_rate"]:.1f}%'
             counts = f'{row["successes"]} / {row["graded"]} / {row["attempted"]}'
-            cells = [row["strategy"], counts, row["infrastructure_errors"], row["official_empty_patches"], rate, f'{row["total_tokens"]:,}', _display(row["total_cost_usd"], 4), _display(row["cost_per_success_usd"], 4), _display(row["mean_elapsed_seconds"])]
+            tokens = "—" if row["total_tokens"] is None else f'{row["total_tokens"]:,}'
+            cells = [row["strategy"], counts, row["infrastructure_errors"], row["official_empty_patches"], rate, tokens, _display(row["total_cost_usd"], 4), _display(row["cost_per_success_usd"], 4), _display(row["mean_elapsed_seconds"])]
             md.append("| " + " | ".join(str(c).replace("|", "\\|") for c in cells) + " |")
             body.append("<tr>" + "".join(f"<td>{html.escape(str(c))}</td>" for c in cells) + "</tr>")
         body.append("</tbody></table></div>")
@@ -219,7 +200,7 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
                 outcome += f' ({evaluation["infra_failure_reason"]})'
         elif evaluation_status == "official_empty_patch":
             outcome = "ungraded: official empty patch; tests not executed"
-        if _invalid_budget(result):
+        if not comparison_budget_valid(result):
             outcome += " (invalid budget accounting)"
         values = [result["task_id"], result.get("strategy", ""), result.get("status", ""), evaluation_status, outcome]
         md.append("| " + " | ".join(str(v).replace("|", "\\|").replace("\n", " ") for v in values) + " |")
@@ -269,7 +250,6 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
             body.append("<tr>" + "".join(f"<td>{value}</td>" for value in cells) + "</tr>")
         body.append('</tbody></table></div></section>')
     if any("safety" in result or "reflection" in result for result in results):
-        from .evaluation import evaluate_run
         notice = ("Per-run recorded contracts only: not production certification. Safety covers direct tool authorization, "
                   "not arbitrary behavior inside tests. Unknown evidence cannot pass; reflection text is a hypothesis. "
                   "Scripted runs remain software checks, not model capability evidence.")

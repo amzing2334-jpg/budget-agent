@@ -7,7 +7,11 @@ import json
 from pathlib import Path
 from statistics import mean
 
-from .report import is_infrastructure_error, load_results, verified_outcome
+from .evaluation import (
+    comparison_budget_valid, is_infrastructure_error, ledger_token_count, request_ledger,
+    verified_outcome,
+)
+from .report import load_results
 
 
 FACTORS = ("strategy", "decision_policy", "loop_policy", "reflection_policy")
@@ -48,12 +52,6 @@ def _outcome(result: dict) -> str:
     if resolved is False:
         return "failure"
     return "ungraded"
-
-
-def _budget_valid(result: dict) -> bool:
-    budget = result.get("budget", {})
-    return not (result.get("usage_unknown") or budget.get("overrun") or budget.get("unreconciled_request")
-                or result["status"] in {"budget_overrun", "usage_unknown"})
 
 
 def _behavior(result: dict) -> dict:
@@ -110,7 +108,7 @@ def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor
         outcomes = [_outcome(left), _outcome(right)]
         records, ineligible_reasons = [], []
         for side, result, outcome in zip(("baseline", "candidate"), (left, right), outcomes):
-            budget_valid = _budget_valid(result)
+            budget_valid = comparison_budget_valid(result)
             if outcome not in {"success", "failure"}:
                 ineligible_reasons.append(f"{side}: {outcome}")
             if not budget_valid:
@@ -118,10 +116,12 @@ def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor
             for field in ("actual_models", "usage_sources"):
                 if not result.get(field):
                     ineligible_reasons.append(f"{side}: missing {field}")
-            records.append({"outcome": outcome, "resolved": result.get("resolved"),
+            ledger = request_ledger(result)
+            total_tokens = result.get("total_tokens") if ledger is None else ledger_token_count(ledger, "total_tokens")
+            records.append({"outcome": outcome, "resolved": result.get("resolved"), "total_tokens": total_tokens,
                             "budget_valid": budget_valid, "status": result["status"],
                             "evaluation_status": result.get("evaluation", {}).get("status"),
-                            **{field: result.get(field) for field in ("actual_models", "usage_sources", "total_tokens", "elapsed_seconds", "cost_usd")},
+                            **{field: result.get(field) for field in ("actual_models", "usage_sources", "elapsed_seconds", "cost_usd")},
                             **_behavior(result)})
         deltas = {}
         for field in ("total_tokens", "elapsed_seconds", "cost_usd", "repeat_reads_same_revision", "invalid_actions", "failed_tool_actions"):

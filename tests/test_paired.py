@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from budget_agent.paired import analyze_paired
+from budget_agent.report import aggregate
 
 
 def result(tmp_path, strategy, task="task1", **changes):
@@ -64,6 +65,37 @@ def test_budget_overrun_success_does_not_become_fixed_budget_win(tmp_path):
     assert report["eligible_graded_pairs"] == 0
     assert report["candidate_wins"] == 0
     assert report["pairs"][0]["candidate"]["resolved"] is True
+
+
+@pytest.mark.parametrize("case", [
+    "valid", "recorded_overrun", "output_cap", "total_reservation",
+    "missing_input", "negative_cancel", "null_requests", "missing_requests", "status_unknown",
+])
+def test_saved_request_ledger_controls_summary_and_pair(tmp_path, case):
+    cases = Path(__file__).resolve().parents[1] / "runs" / "iteration-20261027-06" / "cases"
+    source = "valid" if case in {"missing_requests", "status_unknown"} else case
+    saved = json.loads((cases / source / "result.json").read_text(encoding="utf-8"))
+    baseline = result(tmp_path, "recent", resolved=False)
+    candidate = result(tmp_path, "structured", **{
+        key: saved[key] for key in ("budget", "input_tokens", "output_tokens", "total_tokens", "calls")
+    })
+    if case == "missing_requests":
+        del candidate["budget"]["requests"]
+    elif case == "status_unknown":
+        candidate["status"] = "usage_unknown"
+    rows = aggregate([baseline, candidate])
+    candidate_row = next(row for row in rows if row["strategy"] == "structured")
+    paired = analyze_paired([baseline, candidate], "recent", "structured")
+    pair, = paired["pairs"]
+
+    assert candidate_row["graded"] == candidate_row["successes"] == 1
+    assert pair["candidate"]["outcome"] == "success"
+    assert pair["baseline"]["budget_valid"] is True  # Legacy summary without request rows.
+    eligible = case == "valid"
+    assert (candidate_row["comparison_valid"], pair["eligible_graded_pair"]) == (eligible, eligible)
+    assert all(row["comparison_valid"] is eligible for row in rows)
+    assert candidate_row["success_rate"] == (1.0 if eligible else None)
+    assert paired["candidate_wins"] == paired["mean_candidate_minus_baseline"]["total_tokens"]["n"] == int(eligible)
 
 
 def test_grader_infrastructure_failure_is_not_a_model_loss(tmp_path):

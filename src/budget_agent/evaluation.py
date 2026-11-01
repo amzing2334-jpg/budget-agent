@@ -3,12 +3,43 @@ from __future__ import annotations
 
 from typing import Any
 
-from .report import verified_outcome
+from .verification import fixture_outcome
 
 
 def _dimension(status: str, reason: str, evidence: dict) -> dict:
     return {"status": status, "score": None if status == "unknown" else int(status == "pass"),
             "reason": reason, "evidence": evidence}
+
+
+def is_infrastructure_error(result: dict[str, Any]) -> bool:
+    evaluation = result.get("evaluation", {})
+    return (result.get("status") in {"environment_error", "model_error"}
+            or evaluation.get("infra_failure") is True
+            or evaluation.get("status") in {"infrastructure_error", "grading_error"})
+
+
+def verified_outcome(result: dict[str, Any]) -> bool | None:
+    """One verifier interpretation for aggregate reports and paired comparisons."""
+    evaluation = result.get("evaluation", {})
+    value = result.get("resolved")
+    status = evaluation.get("status")
+    if status in {"resolved", "unresolved", "invalid_patch"} and value is not (status == "resolved"):
+        return None
+    # A stored fixture verdict must agree with its summary before it is counted.
+    if status in {"resolved", "unresolved"} and "test_results" in evaluation:
+        try:
+            outcome = fixture_outcome(evaluation["test_results"])
+        except ValueError:
+            return None
+        if outcome is None or outcome is not value:
+            return None
+    ungraded = {"official_empty_patch", "pending_official_evaluation", "not_evaluated", "pending", "ungraded"}
+    if (is_infrastructure_error(result) or result.get("status") == "interrupted"
+            or result.get("status") in ungraded or evaluation.get("status") in ungraded
+            or evaluation.get("tests_executed") is False
+            or ("resolved" in evaluation and evaluation["resolved"] is not result.get("resolved"))):
+        return None
+    return value if type(value) is bool else None
 
 
 def _quality(result: dict) -> dict:
@@ -32,7 +63,7 @@ def _budget(result: dict) -> dict:
                 "usage_sources": budget.get("usage_sources")}
     if budget.get("overrun") is True or result.get("status") == "budget_overrun":
         return _dimension("fail", "Recorded inference budget overrun", evidence)
-    if result.get("usage_unknown") or budget.get("unreconciled_request"):
+    if result.get("usage_unknown") or result.get("status") == "usage_unknown" or budget.get("unreconciled_request"):
         return _dimension("unknown", "Request usage has not been reconciled", evidence)
     required = {"input_tokens", "output_tokens", "total_tokens", "calls", "requests",
                 "overrun", "unreconciled_request"}
@@ -77,6 +108,26 @@ def _budget(result: dict) -> dict:
     if budget["total_tokens"] > limit:
         return _dimension("fail", "Recorded token total exceeds the configured limit", evidence)
     return _dimension("pass", "Recorded usage reconciles within the token limit; not a billing audit", evidence)
+
+
+def request_ledger(result: dict) -> dict | None:
+    """Recognize a saved request ledger even when one marker is missing."""
+    budget = result.get("budget", {})
+    return budget if "requests" in budget or "calls" in budget else None
+
+
+def ledger_token_count(ledger: dict, field: str) -> int | None:
+    count = ledger.get(field)
+    return count if type(count) is int and count >= 0 else None
+
+
+def comparison_budget_valid(result: dict) -> bool:
+    """Use the audit verdict for request ledgers and retain legacy flag semantics."""
+    if request_ledger(result) is not None:
+        return _budget(result)["status"] == "pass"
+    budget = result.get("budget", {})
+    return not (result.get("usage_unknown") or budget.get("overrun") or budget.get("unreconciled_request")
+                or result.get("status") in {"budget_overrun", "usage_unknown"})
 
 
 def _safety(result: dict) -> dict:
