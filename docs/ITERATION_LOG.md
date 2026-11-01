@@ -2,6 +2,26 @@
 
 本文件是后续每 4 小时评估的入口。先读项目 AGENTS.md 和最新一轮记录，再选择一个有证据的瓶颈；不是每轮必须增加功能。所有模型效果结论必须对应真实运行和独立评分。招聘页面重新访问不等于新开 HC。
 
+<a id="mini-evidence-20261102"></a>
+
+## 2026-11-02 · 把真实上游的 CPU 接口测试与真实模型尝试分开计数
+
+上轮有 6 项可选测试因旧临时环境不完整而跳过。本轮在独立 Windows venv 检出固定版本 mini-SWE-agent，用预置响应驱动真实 `DefaultAgent`。复现过程中发现，适配器曾把每条结果都写成 `model_run`。因此，报告读入 10 月 22 日归档的 6 份 CPU 样本时，把没有模型推理的测试计成了 6 次模型尝试。归档使用 `cpu-result.json` 文件名，常规目录扫描不会自动读入它们。
+
+现在，声明 `model_metadata.test_double=true` 的后端在内部 runner 和 mini-SWE 适配器均记为 `scripted_smoke`。单次评估、汇总和配对也用这一标记解释旧文件。软件测试仍可比较协议行为，有通过的测试可以如实计数，模型成功率的 Wilson 区间只对符合条件的模型运行计算。缺少替身标记的老数据延用原分类。
+
+| 同一输入分别用 `af2b6bb` 与本轮代码读取 | 旧版 | 本轮 |
+|---|---|---|
+| 6 份 CPU 样本，均未评分 | 6 次模型尝试 | 6 次脚本测试，0 次模型尝试 |
+| 冻结 59 条运行的完整 44 行汇总 | 17 次模型尝试、42 次脚本测试 | 44 行的规范化 JSON 哈希逐字节一致 |
+| 其中 1 次真实 mini-SWE 基线 | 6 次调用、26,800 token、空补丁 | 保留模型尝试，`resolved=null` |
+
+两版分别在独立 Python 进程运行。审计前后 65 个输入文件的 SHA-256 逐个相同。另有一条构造的已评分正例覆盖原先会产生模型置信区间的路径，新版保留测试通过，区间留空。[逐项哈希与汇总回执](../runs/iteration-20261102-mini-evidence/aggregate-audit.json) · [6 个上游场景的原始归档](../runs/v5-followup-20261022-01/upstream-integration/REPLAY.md)
+
+固定上游专用环境下，适配器 21 项全部通过，其中 6 项运行了真实 `DefaultAgent`。一次格式错误恢复后的提交带有 CRLF 和两个末行无换行标记。上游轨迹、落盘补丁、导出预测及清单哈希一致，将导出预测实际用 Git 应用后，得到精确的 `b"context\r\nnew"`。完整轻量 CPU 测试 818 项通过、13 项跳过。独立 OpenJudge 契约测试 142 项通过。现有 Ubuntu / Python 3.13 CI 作业新增固定上游检出和上述 6 项检查。[复现命令与测试边界](MINI_SWE_BASELINE.md)
+
+2026-11-01 22:33 至 22:41 UTC 复核官方资料。百度 J106681 公告日期为 2026-10-19，职责仍包括从 trace 归因、自动化回归、token 成本和延迟。公告列有 2 人，未能核实剩余 HC。mini-SWE-agent v2.4.6 于 2026-07-23 03:12:33 UTC 发布，本轮使用其固定提交 `a83fcae`。这轮补齐了评测证据。下一步对实际修复能力的验证仍需非空模型补丁，以及独立评分器的测试结果。本轮云主机和模型 API 开销均为零。[百度岗位](https://talent.baidu.com/jobs/detail/INTERN/162291c8-43e8-4cc0-9c96-3fb0a7ebb720) · [mini-SWE-agent 发布页](https://github.com/SWE-agent/mini-swe-agent/releases/tag/v2.4.6) · [上游循环源码](https://github.com/SWE-agent/mini-swe-agent/blob/a83fcae82d2a08f0ee0c688f9d137b3566c097f8/src/minisweagent/agents/default.py)
+
 <a id="swe-interchange-20261102"></a>
 
 ## 2026-11-02 · 从下载的运行目录导出原补丁，按字节匹配独立评分

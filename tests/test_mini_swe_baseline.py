@@ -5,10 +5,12 @@ also exercises the real upstream loop, parser and persistence with a fake model
 and environment. Neither mode performs inference or launches Docker.
 """
 from dataclasses import replace
+import hashlib
 import importlib.util
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 from types import SimpleNamespace
 
@@ -202,8 +204,14 @@ def test_truncated_submission_is_rejected(config, upstream):
 @pytest.mark.parametrize("submission,status", [
     ("--- a/a.py\n+++ b/a.py\n@@ -1 +1 @@\n-old\r\n+new\r\n", "Submitted"),
     ("", "LimitsExceeded"),
-])
-def test_real_result_export_contract_preserves_upstream_submission(config, upstream, tmp_path, submission, status):
+], ids=["submitted-crlf", "step-limit"])
+@pytest.mark.parametrize("backend_metadata,expected_kind", [
+    ({"test_double": True}, "scripted_smoke"),
+    ({"model_revision": "a" * 40}, "model_run"),
+], ids=["marked-backend", "unmarked-backend"])
+def test_result_export_preserves_submission_and_evidence_kind(
+    config, upstream, tmp_path, submission, status, backend_metadata, expected_kind,
+):
     calls = []
     class UpstreamAgentDouble:
         """A boundary spy, not an implementation or simulation of the upstream loop."""
@@ -218,8 +226,11 @@ def test_real_result_export_contract_preserves_upstream_submission(config, upstr
     environment = EnvironmentDouble(config)
     task = Task(id="pallets__flask-1234", issue="repair this", kind="swebench", split="dev",
                 image="test/image", metadata={"base_commit": "a" * 40})
-    result = baseline.run_attempt(task, config, tmp_path, BackendDouble(), upstream,
+    backend = BackendDouble()
+    backend.metadata = backend_metadata
+    result = baseline.run_attempt(task, config, tmp_path, backend, upstream,
                                   environment_factory=lambda *args: environment)
+    assert json.loads(Path(result["result_path"]).read_bytes())["evidence_kind"] == expected_kind
     predictions = tmp_path / "predictions.jsonl"
     export_predictions(tmp_path, predictions)
     prediction = json.loads(predictions.read_text().strip())
@@ -306,7 +317,10 @@ def real_loop_attempt(tmp_path, config, upstream, responses, outputs, *, total_t
 
 
 def test_real_upstream_format_recovery_submission_and_export(config, real_upstream, tmp_path):
-    patch = "diff --git a/example.py b/example.py\n--- a/example.py\n+++ b/example.py\n@@ -1 +1 @@\n-old\n+new\n"
+    patch = ("diff --git a/example.py b/example.py\n--- a/example.py\n+++ b/example.py\n"
+             "@@ -1,2 +1,2 @@\n context\r\n"
+             "-old\n\\ No newline at end of file\n"
+             "+new\n\\ No newline at end of file\n")
     responses = ["missing action", "```mswea_bash_command\ninspect\n```",
                  "```mswea_bash_command\nsubmit\n```"]
     result, trajectory, backend, environment = real_loop_attempt(
@@ -318,13 +332,26 @@ def test_real_upstream_format_recovery_submission_and_export(config, real_upstre
     assert len(backend.calls) == 3
     assert len(environment.actions) == 2
     assert trajectory["info"]["submission"] == patch
+    assert Path(result["patch_path"]).read_bytes() == patch.encode("utf-8")
     assert any(m.get("extra", {}).get("interrupt_type") == "FormatError" for m in trajectory["messages"])
     assert any(m.get("extra", {}).get("raw_output") == "synthetic repository output" for m in trajectory["messages"])
     assert all(set(message) == {"role", "content"} for call in backend.calls for message in call[0])
     prediction_path = tmp_path / "predictions.jsonl"
     export_predictions(tmp_path, prediction_path)
-    assert json.loads(prediction_path.read_text())["model_patch"] == patch
-    assert prediction_path.with_suffix(".jsonl.manifest.json").is_file()
+    exported = json.loads(prediction_path.read_bytes())["model_patch"].encode("utf-8")
+    assert exported == patch.encode("utf-8")
+    manifest = json.loads(prediction_path.with_suffix(".jsonl.manifest.json").read_bytes())
+    assert manifest[result["task_id"]]["patch_sha256"] == hashlib.sha256(exported).hexdigest()
+
+    pristine = tmp_path / "pristine"
+    pristine.mkdir()
+    source = pristine / "example.py"
+    source.write_bytes(b"context\r\nold")
+    subprocess.run(["git", "init", "-q"], cwd=pristine, check=True)
+    subprocess.run(["git", "-c", "core.autocrlf=false", "apply", "--whitespace=nowarn", "-"],
+                   cwd=pristine, input=exported, check=True)
+    assert source.read_bytes() == b"context\r\nnew"
+    assert json.loads(Path(result["result_path"]).read_bytes())["evidence_kind"] == "scripted_smoke"
 
 
 def test_real_upstream_repeated_format_error_limit(config, real_upstream, tmp_path):

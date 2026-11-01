@@ -164,4 +164,8 @@ python -m budget_agent.cli swe-evaluate \
 
 温度为零时反复跑 seed 并不是独立统计样本。先记录全体预定任务的结果、未评分、基础设施失败和空提交，再分析成功率、token 与耗时。现有 `swebench-pilot.jsonl` 只有 5 个 Astropy 任务，来自官方 Lite test 后划为**本项目 dev**；它是开发诊断集，不是官方 dev，也不能代表跨仓库泛化。正式结论需要在运行前固定新的多仓库留出清单，复用现有脱敏导入；已经调过的 pilot 任务不应再次宣称为未见测试。
 
-目前已完成接口契约测试与固定上游真实循环的 CPU 集成。真实模型和 Docker 任务的云端基线仍待执行，尚无外部基线修复成绩。
+### 持续集成与现有真实基线（2026-11-02）
+
+GitHub Actions 在已有的 Ubuntu / Python 3.13 作业检出上述上游提交，使用独立 venv 运行六个真实 `DefaultAgent` 场景。依赖版本来自 10 月 22 日归档的环境，模型响应和命令输出均为预置数据。本地复现时，在项目根目录用干净 venv 安装 `python -m pip install -r requirements-mini-swe-contract.txt`，将 `MINI_SWE_UPSTREAM_REPO` 设为上述干净 checkout 的路径，然后运行 `python -m pytest -q tests/test_mini_swe_baseline.py -k real_upstream`。提交用例实际将导出的预测交给 Git，核对应用后的 CRLF 和末行无 LF。[CI 配置](../.github/workflows/tests.yml)
+
+使用标有 `model_metadata.test_double=true` 的后端时，结果写为 `scripted_smoke`。离线报告和评分适配器按同一规则解释历史文件，保留原始记录。真实云端参考已在 Astropy 开发题上运行过一次。Qwen3-4B-Instruct-2507 发起 6 次调用、用了 26,800 token，因剩余预算不足结束。官方记录为空补丁，未执行评分测试，`resolved=null`。[原始结果](../runs/cloud-v5-a4000-20261022-01/mini-baseline/astropy__astropy-12907__mini-swe-textbased/result.json) · [本次样本审计](ITERATION_LOG.md#mini-evidence-20261102)

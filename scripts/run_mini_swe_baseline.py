@@ -24,6 +24,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from budget_agent.budget import Budget, BudgetExceeded
 from budget_agent.cli import load_config
 from budget_agent.environment import EnvironmentError, create_environment
+from budget_agent.evaluation import evidence_kind
 from budget_agent.models import ModelError
 from budget_agent.runner import source_fingerprint
 from budget_agent.swebench import export_predictions
@@ -247,7 +248,7 @@ def run_attempt(task, config, output: Path, backend, upstream, *, environment_fa
         "upstream_config_sha256": upstream.config_sha256,
         "strategy": STRATEGY, "config": recorded_config, "status": info["exit_status"],
         "upstream_exit": info, "error": error, "resolved": None, "evaluation": evaluation,
-        "evidence_kind": "model_run", "input_tokens": budget["input_tokens"],
+        "input_tokens": budget["input_tokens"],
         "output_tokens": budget["output_tokens"], "total_tokens": budget["total_tokens"],
         "calls": budget["calls"], "cost_usd": None if unknown else model.budget.cost_usd,
         "known_cost_usd": model.budget.cost_usd, "usage_unknown": unknown,
@@ -262,6 +263,7 @@ def run_attempt(task, config, output: Path, backend, upstream, *, environment_fa
         "created_at": datetime.now(timezone.utc).isoformat(),
         "result_path": str((run_dir / "result.json").resolve()),
     }
+    result["evidence_kind"] = evidence_kind(result, default="model_run")
     _json(run_dir / "result.json", result)
     return result
 

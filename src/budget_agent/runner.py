@@ -14,6 +14,7 @@ from .budget import Budget, BudgetExceeded, TokenCounter
 from .context import ContextManager, ContextOverflow
 from .diagnostics import analyze_trajectory
 from .environment import EnvironmentError, create_environment
+from .evaluation import evidence_kind
 from .loop_control import ReadLoopMonitor
 from .models import ModelError, OpenAICompatibleModel, ScriptedModel, parse_action
 from .reflection import EvidenceNote, ReflectionNote, evidence_note, reflection_messages, reflection_trigger
@@ -311,7 +312,6 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         "provider": config.provider, "model": model.name, "actual_models": sorted(actual_models),
         "strategy": config.strategy, "config": asdict(config), "status": status, "error": error,
         "resolved": evaluation["resolved"], "evaluation": evaluation,
-        "evidence_kind": "scripted_smoke" if config.provider == "scripted" else "model_run",
         "input_tokens": budget.input_tokens, "output_tokens": budget.output_tokens,
         "total_tokens": budget.input_tokens + budget.output_tokens, "calls": budget.calls,
         "cost_usd": None if unknown_usage else budget.cost_usd,
@@ -342,5 +342,7 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
     }
     if config.provider == "transformers":
         result["model_metadata"] = model.metadata
+    provider_kind = "scripted_smoke" if config.provider == "scripted" else "model_run"
+    result["evidence_kind"] = evidence_kind(result, default=provider_kind)
     (run_dir / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     return result

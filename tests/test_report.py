@@ -20,6 +20,31 @@ def test_unknown_cost_and_scripted_not_statistical():
     assert result["wilson95"] is None
 
 
+def test_legacy_cpu_result_keeps_its_grade_but_cannot_claim_model_evidence(tmp_path):
+    from budget_agent.evaluation import evaluate_run
+    from budget_agent.paired import analyze_paired
+    from budget_agent.report import load_results
+
+    legacy = row(provider="transformers", evidence_kind="model_run",
+                 model_metadata={"test_double": True, "inference": False},
+                 task_fingerprint="same-task")
+    path = tmp_path / "result.json"
+    original = json.dumps(legacy).encode()
+    path.write_bytes(original)
+    saved, = load_results(path)
+    corrected = {**saved, "evidence_kind": "scripted_smoke", "strategy": "recent",
+                 "config": {**saved["config"], "strategy": "recent"}}
+
+    report = aggregate([saved])[0]
+    assert report["condition"]["evidence_kind"] == report["evidence_kind"] == "scripted_smoke"
+    assert report["successes"] == report["graded"] == 1
+    assert report["wilson95"] is None
+    assert evaluate_run(saved)["evidence_kind"] == "scripted_smoke"
+    pair = analyze_paired([saved, corrected], "full", "recent")
+    assert pair["condition"]["evidence_kind"] == pair["pairs"][0]["evidence_kind"] == "scripted_smoke"
+    assert path.read_bytes() == original
+
+
 def test_pending_does_not_become_failure_or_inflate_rate():
     results = aggregate([row(), row(task_id="b", resolved=None, status="pending_official_evaluation")])[0]
     assert results["attempted"] == 2

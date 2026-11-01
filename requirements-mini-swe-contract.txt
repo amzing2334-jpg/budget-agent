@@ -1,0 +1,11 @@
+# Versions from the original verified mini-SWE-agent CPU integration.
+-c runs/v5-followup-20261022-01/upstream-integration/requirements-observed.txt
+Jinja2
+litellm
+platformdirs
+pydantic
+pytest
+python-dotenv
+PyYAML
+rich
+tenacity

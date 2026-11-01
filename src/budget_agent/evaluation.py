@@ -6,6 +6,14 @@ from typing import Any
 from .verification import fixture_outcome
 
 
+def evidence_kind(result: dict[str, Any], default: str = "unknown") -> str:
+    """Older mini-SWE CPU runs declared the configured provider despite using a test double."""
+    metadata = result.get("model_metadata")
+    if isinstance(metadata, dict) and metadata.get("test_double") is True:
+        return "scripted_smoke"
+    return result.get("evidence_kind", default)
+
+
 def _dimension(status: str, reason: str, evidence: dict) -> dict:
     return {"status": status, "score": None if status == "unknown" else int(status == "pass"),
             "reason": reason, "evidence": evidence}
@@ -151,7 +159,7 @@ def evaluate_run(result: dict[str, Any]) -> dict[str, Any]:
     states = {dimension["status"] for dimension in dimensions.values()}
     acceptance = "fail" if "fail" in states else "unknown" if "unknown" in states else "pass"
     return {"schema_version": 1, "scope": "single_run_contract", "task_id": result.get("task_id"),
-            "run_id": result.get("run_id"), "evidence_kind": result.get("evidence_kind", "unknown"),
+            "run_id": result.get("run_id"), "evidence_kind": evidence_kind(result),
             "dimensions": dimensions, "acceptance_status": acceptance,
             "blocking_dimensions": [name for name, value in dimensions.items() if value["status"] != "pass"],
             "limitations": ["Acceptance covers this run's recorded contracts, not production readiness.",

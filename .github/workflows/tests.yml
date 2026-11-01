@@ -15,6 +15,25 @@ jobs:
       - run: python -m pip install -e ".[dev,tokens]"
       - run: python -m pytest -q
       - run: python -m budget_agent demo --output runs/ci-smoke
+      - name: Check out mini-SWE-agent v2.4.6
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        uses: actions/checkout@v4
+        with:
+          repository: SWE-agent/mini-swe-agent
+          ref: a83fcae82d2a08f0ee0c688f9d137b3566c097f8
+          path: .upstream/mini-swe-agent
+          persist-credentials: false
+      - name: Run the real mini-SWE-agent CPU contract tests
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        env:
+          MINI_SWE_UPSTREAM_REPO: .upstream/mini-swe-agent
+          HF_HUB_OFFLINE: '1'
+          TRANSFORMERS_OFFLINE: '1'
+        run: |
+          python -m venv "$RUNNER_TEMP/mini-swe-contract"
+          source "$RUNNER_TEMP/mini-swe-contract/bin/activate"
+          python -m pip install -r requirements-mini-swe-contract.txt
+          python -m pytest -q tests/test_mini_swe_baseline.py -k real_upstream
   openjudge-contract:
     runs-on: ubuntu-latest
     steps:

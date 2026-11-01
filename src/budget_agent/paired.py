@@ -8,7 +8,7 @@ from pathlib import Path
 from statistics import mean
 
 from .evaluation import (
-    comparison_budget_valid, is_infrastructure_error, ledger_token_count, request_ledger,
+    comparison_budget_valid, evidence_kind, is_infrastructure_error, ledger_token_count, request_ledger,
     verified_outcome,
 )
 from .report import load_results
@@ -35,7 +35,8 @@ def _factor_value(result: dict, factor: str) -> str:
 
 
 def _condition(result: dict, factor: str) -> dict:
-    fields = {key: result.get(key) for key in ("provider", "model", "split", "task_kind", "evidence_kind", "harness")}
+    fields = {key: result.get(key) for key in ("provider", "model", "split", "task_kind", "harness")}
+    fields["evidence_kind"] = evidence_kind(result)
     config = {**result["config"], "strategy": _factor_value(result, "strategy")}
     fields["config"] = {key: value for key, value in config.items() if key not in {factor, "seed"}}
     fields["source_fingerprint"] = result.get("source_fingerprint")
@@ -128,7 +129,7 @@ def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor
             values = [record[field] for record in records]
             deltas[field] = values[1] - values[0] if all(isinstance(value, (int, float)) for value in values) else None
         pairs.append({"task_id": key[0], "task_fingerprint": key[1], "seed": key[2],
-                      "evidence_kind": left.get("evidence_kind"), "eligible_graded_pair": not ineligible_reasons,
+                      "evidence_kind": condition["evidence_kind"], "eligible_graded_pair": not ineligible_reasons,
                       "ineligible_reasons": ineligible_reasons,
                       "baseline": records[0], "candidate": records[1], "candidate_minus_baseline": deltas})
     eligible_pairs = [pair for pair in pairs if pair["eligible_graded_pair"]]

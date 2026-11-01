@@ -116,7 +116,7 @@ python -m budget_agent diagnose --input runs/your-run --output runs/new-diagnost
 
 `loop_policy=off` 是默认对照；`--loop-policy recover` 仅处理同一连续工作区版本内、实际模型请求中完整可见的源码重读。反馈一次后继续连续重读时以 `stalled` 停止；原始观察不改写，独立评分继续执行。隐藏后的源码恢复、部分新增行、截断行、shell 命令和 recall 不按该判据阻止。它不能检测所有停滞，更不强制模型编辑。单独比较这个因素可使用 `python -m budget_agent.paired --runs RUNS --factor loop_policy --baseline off --candidate recover --output paired.json`，其余配置必须相同。
 
-外部参考使用[真正的 mini-SWE-agent 上游循环](docs/MINI_SWE_BASELINE.md)，默认仅打印计划，云端 `--execute` 才运行。它与内部策略分别分组，不能充作纯上下文消融。
+外部参考运行固定版本的 mini-SWE-agent，默认打印计划，云端 `--execute` 执行模型。CI 用预置响应驱动真实上游循环，验证预算终止、失败留痕和补丁交付。报告将这类样本归为软件测试，真实云端基线单独统计。[运行和复现方法](docs/MINI_SWE_BASELINE.md) · [历史样本核验](docs/ITERATION_LOG.md#mini-evidence-20261102)
 
 本地计数用于调用前检查；服务端返回的 `usage` 用于实际对账。默认 `byte` 是 UTF-8 字节加消息开销的保守估算，**不是模型 tokenizer，也不是收费 token**。实际用量超过预留时，先记录真实用量，再停止后续执行；不能保证远端一次请求绝不会超额。请求超时、响应损坏或缺少用量时停止，记为 `usage_unknown`，不自动重试可能已经计费的请求。
 

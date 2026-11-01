@@ -1,0 +1,119 @@
+{
+  "base": "af2b6bb5914dddde09ed089e160396b10a0bfb3b",
+  "candidate": "workspace Python source snapshot",
+  "candidate_sources_sha256": {
+    "evaluation.py": "0d0c68ad0e461b0062ce2a3a0a7c59e48fc6febd07b75819d6708fc903180dea",
+    "report.py": "c6772ef7b2316da3e73b77d99229f40c39aa9e42ea9bdd479591a97bbbb6f28d",
+    "paired.py": "f9a08734826e7c2f852d2017dd93f3a88d7dc64f1e0e252c003f6866a21c0c6b"
+  },
+  "manifest": "runs/iteration-20261027-06/historical-audit.json",
+  "manifest_sha256": "6792a7c2b743a4b6887cc774111c0e76400f185e823a0b5fa0490d4154abe2a3",
+  "input_files_checked": 65,
+  "path_digest_method": "sha256(sorted UTF-8 path + TAB + lowercase SHA256 + LF)",
+  "before_tree_sha256": "153440a3bdddbc302ec61c04c1856348486c0c5644a785044a377a99421316ef",
+  "after_tree_sha256": "153440a3bdddbc302ec61c04c1856348486c0c5644a785044a377a99421316ef",
+  "all_individual_sha256_unchanged": true,
+  "six_case_tree_sha256": "628d7d900e1f7a919c86d36de59c5eb3beea6e10117b0ec1dc8fee1a34938cfd",
+  "case_sha256": {
+    "runs/v5-followup-20261022-01/upstream-integration/cases/budget-exhausted/cpu-result.json": "df996e8dec592c2565ab9bbfe9519dbae69bf0adc679b0123ae5a8505f727877",
+    "runs/v5-followup-20261022-01/upstream-integration/cases/format-recovery-submit/cpu-result.json": "51334c878af0cdab7bfdb51f93e368d435989de877426a898ea74d48e417990d",
+    "runs/v5-followup-20261022-01/upstream-integration/cases/keyboard-interrupt/cpu-result.json": "4915436e1d67381a1008d9ddeeeb4e55bb594fabd7ac030a649edc479c570c31",
+    "runs/v5-followup-20261022-01/upstream-integration/cases/model-error/cpu-result.json": "f6e5408645b14c774a870ba1788a8e9c243bd60d54a3768f0afe277381e292a6",
+    "runs/v5-followup-20261022-01/upstream-integration/cases/repeated-format-error/cpu-result.json": "6899c5ff0d2039900bccf458f9f50165ea7538089ca0a05534094f0170fdfd23",
+    "runs/v5-followup-20261022-01/upstream-integration/cases/step-limit/cpu-result.json": "a1d121e0d8e31304f0924e614d8ad34c553dfdda49249d970ee13cd17206bef0"
+  },
+  "genuine_mini": {
+    "path": "runs/cloud-v5-a4000-20261022-01/mini-baseline/astropy__astropy-12907__mini-swe-textbased/result.json",
+    "sha256": "ea7ad0e8d8e149f085e48184376d123c3059c1f0c5e3c7a249ac6c7475ca25d6",
+    "task_id": "astropy__astropy-12907",
+    "model": "Qwen/Qwen3-4B-Instruct-2507@cdbee75f17c01a7cc42f958dc650907174af0554",
+    "evidence_kind": "model_run",
+    "status": "budget_exhausted",
+    "resolved": null,
+    "evaluation_status": "official_empty_patch",
+    "calls": 6,
+    "total_tokens": 26800
+  },
+  "aggregate": {
+    "old": {
+      "six": {
+        "row_count": 4,
+        "by_evidence": {
+          "model_run": {
+            "attempted": 6,
+            "graded": 0,
+            "successes": 0
+          }
+        },
+        "row_sha256": "3c1cb3b68eddb69cb18573f2a4297ec118c09576cb442d03809feac976017c2c"
+      },
+      "historical59": {
+        "row_count": 44,
+        "by_evidence": {
+          "model_run": {
+            "attempted": 17,
+            "graded": 3,
+            "successes": 1
+          },
+          "scripted_smoke": {
+            "attempted": 42,
+            "graded": 42,
+            "successes": 35
+          }
+        },
+        "row_sha256": "2d32e3faf0b4aa74dfd1e4e94768991979694aff7411d985e009bc13562c164b"
+      },
+      "genuine_mini": {
+        "row_count": 1,
+        "by_evidence": {
+          "model_run": {
+            "attempted": 1,
+            "graded": 0,
+            "successes": 0
+          }
+        },
+        "row_sha256": "c1dd37bd8459db963991606ebe81fe3d6f03c910e2d6b13b6996869d19566cde"
+      }
+    },
+    "new": {
+      "six": {
+        "row_count": 4,
+        "by_evidence": {
+          "scripted_smoke": {
+            "attempted": 6,
+            "graded": 0,
+            "successes": 0
+          }
+        },
+        "row_sha256": "340556687005df7091c002610506c26c6319c64febf2e5df06cce2a8fbf7eb8d"
+      },
+      "historical59": {
+        "row_count": 44,
+        "by_evidence": {
+          "model_run": {
+            "attempted": 17,
+            "graded": 3,
+            "successes": 1
+          },
+          "scripted_smoke": {
+            "attempted": 42,
+            "graded": 42,
+            "successes": 35
+          }
+        },
+        "row_sha256": "2d32e3faf0b4aa74dfd1e4e94768991979694aff7411d985e009bc13562c164b"
+      },
+      "genuine_mini": {
+        "row_count": 1,
+        "by_evidence": {
+          "model_run": {
+            "attempted": 1,
+            "graded": 0,
+            "successes": 0
+          }
+        },
+        "row_sha256": "c1dd37bd8459db963991606ebe81fe3d6f03c910e2d6b13b6996869d19566cde"
+      }
+    }
+  }
+}

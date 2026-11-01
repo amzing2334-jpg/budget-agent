@@ -211,7 +211,7 @@ def test_shared_transformers_model_resets_seed_and_keeps_attempts_independent(tm
 
     class Model:
         name = "model@" + "a" * 40
-        metadata = {"generation": {"top_p": 1.0}}
+        metadata = {"test_double": True, "generation": {"top_p": 1.0}}
 
         def __init__(self):
             self.counter = TokenCounter()
@@ -239,5 +239,6 @@ def test_shared_transformers_model_resets_seed_and_keeps_attempts_independent(tm
     assert model.prompts[0] == model.prompts[1]  # No first-attempt event leaks into the second.
     assert first["result_path"] != second["result_path"]
     assert first["model_metadata"] == model.metadata
+    assert first["evidence_kind"] == second["evidence_kind"] == "scripted_smoke"
     assert first["config"]["tokenizer"] == "test-shared-counter"
     assert first["budget"]["usage_is_estimated"] is False

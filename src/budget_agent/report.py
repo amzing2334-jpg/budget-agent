@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from .evaluation import (
-    comparison_budget_valid, evaluate_run, is_infrastructure_error, ledger_token_count,
+    comparison_budget_valid, evaluate_run, evidence_kind, is_infrastructure_error, ledger_token_count,
     request_ledger, verified_outcome,
 )
 
@@ -35,7 +35,8 @@ def load_results(root: Path) -> list[dict[str, Any]]:
 def condition_key(result: dict[str, Any]) -> str:
     """Only strategy and the local repetition label may vary in a comparison."""
     config = {k: v for k, v in result.get("config", {}).items() if k not in {"strategy", "seed"}}
-    fields = {k: result.get(k) for k in ("provider", "model", "split", "task_kind", "evidence_kind", "harness")}
+    fields = {k: result.get(k) for k in ("provider", "model", "split", "task_kind", "harness")}
+    fields["evidence_kind"] = evidence_kind(result)
     fields["config"] = config
     fields["usage_sources"] = sorted(result.get("usage_sources", []))
     fields["actual_models"] = sorted(set(result.get("actual_models", [])))
@@ -95,7 +96,7 @@ def aggregate(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
             costs = [r.get("cost_usd") for r in records]
             cost = sum(costs) if all(isinstance(c, (int, float)) for c in costs) else None
             input_tokens, output_tokens, total_tokens = _group_token_counts(records)
-            kind = records[0].get("evidence_kind", "unknown")
+            kind = evidence_kind(records[0])
             # Repeats on the same issue are dependent: do not manufacture confidence.
             unique_tasks = len({r["task_id"] for r in records})
             interval = _wilson(successes, n) if kind == "model_run" and graded == n and unique_tasks == n and not invalid_budget_attempts else None
