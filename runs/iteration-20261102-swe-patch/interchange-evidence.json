@@ -1,0 +1,167 @@
+{
+  "kind": "saved_swe_export_and_grade_attachment_replay",
+  "created_utc": "2026-11-01T18:43:41.404259+00:00",
+  "baseline_commit": "7991b24cd2492a2a5715f32eb7808369c62baaac",
+  "selection_manifest": "runs/iteration-20261027-06/historical-audit.json",
+  "selection_manifest_sha256": "6792a7c2b743a4b6887cc774111c0e76400f185e823a0b5fa0490d4154abe2a3",
+  "num_unique_tasks": 1,
+  "task": "astropy__astropy-12907",
+  "original_patch_format": {
+    "all_with_cr": 0,
+    "empty": 14,
+    "nonempty": 2
+  },
+  "prior_export_file_not_found": 16,
+  "replay": {
+    "exported_and_byte_verified": 16,
+    "temporary_copy_reports_attached": 15,
+    "originally_attached_status_reproduced": 13,
+    "recorded_pending_now_official_empty_on_copy": 2,
+    "excluded_without_official_evidence": 1,
+    "final_status_counts_on_attached_copies": {
+      "official_empty_patch": 13,
+      "official_swebench": 2
+    },
+    "original_inputs_verified_unchanged": 93
+  },
+  "history_source_sha256": "02ec91429e09872dfe938ab51c6ddb5f69ab2b1b1d2b4e7b6474b22f1549129f",
+  "full_local_replay_sha256": "cad2d5e2b79f19fe3565c1a809c312aa513c44299a5eb0a24b21887ccb4a3998",
+  "interchange_source_sha256": "2b67ed7af82fb43ac3fbd2cd417cf9404f9e819f843680103d0ad7ae03335965",
+  "rows": [
+    {
+      "result": "runs/cloud-v3-edit-probe-01/astropy__astropy-12907__recent__20261021T172254Z-4e9f583f/result.json",
+      "result_sha256": "4ec1c9dc345cf3d9b8bd5acac66e487d7e96723b06129ac8b8d9b179a92d375a",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "pending_official_evaluation",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v3-swe-dev-01/astropy__astropy-12907__recent__20261021T165947Z-04985666/result.json",
+      "result_sha256": "2d753c9b37d25868bf548e458eabc6f9716cd3385f9207826170aec8d13685a3",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "pending_official_evaluation",
+      "copy_status": null,
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v3-swe-dev-02/astropy__astropy-12907__recent__20261021T170733Z-bc6d65c8/result.json",
+      "result_sha256": "9f68c1432be35bf0da061275dec1ce51937de7d36c699a0991bb40fc5a074a8c",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "pending_official_evaluation",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v3-swe-dev-02/astropy__astropy-12907__structured__20261021T170843Z-d9722f66/result.json",
+      "result_sha256": "1160e8b2114e6762bfbabdae451180a5f3eb5b8e302eeaece87ac5a7def030e3",
+      "patch_sha256": "5a5c05a61d6dbd677aa1e5119a9b6a5ecd625ee2df38183a71e3956139c3b462",
+      "archived_status": "official_swebench",
+      "copy_status": "official_swebench",
+      "copy_resolved": false
+    },
+    {
+      "result": "runs/cloud-v3-swe-dev-02/astropy__astropy-12907__summary__20261021T170954Z-30ae6ec4/result.json",
+      "result_sha256": "6dd1c6b6df571a60ee4ae943e23418f08b495e7e9f547868d6b46f5bbb5c5fe1",
+      "patch_sha256": "92c72a01918c5f0f53c018b73f4abbc21a0c86bc2b1d722c0d5daa69088d71b1",
+      "archived_status": "official_swebench",
+      "copy_status": "official_swebench",
+      "copy_resolved": false
+    },
+    {
+      "result": "runs/cloud-v4-20261022-01-protocol/chat/astropy__astropy-12907__recent__20261022T022630Z-22853d0c/result.json",
+      "result_sha256": "950bb51cb8054004fca3dc320413401961b4456d695f8ff7a49634c80c16b278",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v4-20261022-01-protocol/transcript/astropy__astropy-12907__recent__20261022T022547Z-f55e1eb3/result.json",
+      "result_sha256": "e04af6207035d268f3c7eb8cc2f5e11f6ebd3e18161fdcaf7ae3b561e881f2e8",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v4-qwen3-20261022-01-protocol/chat/astropy__astropy-12907__recent__20261022T024159Z-1bd2abed/result.json",
+      "result_sha256": "12c3ed54979fa07468349f8ff8a5f2832f49665275fbe52020698dcae5bfade9",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v4-qwen3-20261022-01-protocol/transcript/astropy__astropy-12907__recent__20261022T023954Z-2fd23776/result.json",
+      "result_sha256": "fed291a7b205740e6ba0c79095fa2b067e1c4659445549af08d3ba7c12c6c1b6",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/budget-aware/astropy__astropy-12907__mask__20261022T074654Z-43348b7b/result.json",
+      "result_sha256": "e23bb2bbc34c1a2a7ed2182f89b39b9ee33f23ec6de13c4fcd04bb88b9c354ce",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/direct/astropy__astropy-12907__mask__20261022T074532Z-2df7bd07/result.json",
+      "result_sha256": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__mask__20261022T072704Z-bbb60603/result.json",
+      "result_sha256": "2752ce1cfcff19ba0320859b63290697aa88027356c4c823b6428ec5ada02180",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v5-a4000-20261022-01/adaptive-mask/astropy__astropy-12907__recent__20261022T072506Z-86c192b2/result.json",
+      "result_sha256": "024379c46f7ba82448ff5f15eb5039e61f4043dfa38f5bfb4e0a17981688199c",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v5-a4000-20261022-01/mini-baseline/astropy__astropy-12907__mini-swe-textbased/result.json",
+      "result_sha256": "ea7ad0e8d8e149f085e48184376d123c3059c1f0c5e3c7a249ac6c7475ca25d6",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-1/astropy__astropy-12907__recent__20261022T071042Z-2c771740/result.json",
+      "result_sha256": "ed30e67944b8f03d061dbbfc0a7ff9f6d10161646c87fd33c7624eeef7cf43f3",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    },
+    {
+      "result": "runs/cloud-v5-a4000-20261022-01/reserve-probe/reserve-128/astropy__astropy-12907__recent__20261022T071302Z-adc44a6d/result.json",
+      "result_sha256": "07b3c4cfcc34edaab1bbfd49f3ef077c7cb0bca8b88592ef7c9c16167ca7afc9",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_status": "official_empty_patch",
+      "copy_status": "official_empty_patch",
+      "copy_resolved": null
+    }
+  ],
+  "tests": {
+    "tests": 828,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 13
+  },
+  "boundary": "Single known development task. Existing independent reports imported on temporary copies. No new Docker evaluation, model inference, or training."
+}

@@ -9,7 +9,7 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 import hashlib
 import json
-from pathlib import Path, PurePosixPath
+from pathlib import Path, PurePosixPath, PureWindowsPath
 import re
 import sys
 import uuid
@@ -22,7 +22,7 @@ def _rows(path: Path) -> list[dict]:
     text = Path(path).read_text(encoding="utf-8-sig").strip()
     if not text:
         raise ValueError("Input dataset is empty")
-    rows = json.loads(text) if text.startswith("[") else [json.loads(line) for line in text.splitlines() if line.strip()]
+    rows = json.loads(text) if text.startswith("[") else [json.loads(line) for line in text.split("\n") if line.strip()]
     if not isinstance(rows, list) or not all(isinstance(row, dict) for row in rows):
         raise ValueError("Expected a JSON array or JSONL objects")
     return rows
@@ -68,15 +68,16 @@ def import_tasks(input_path: Path, output_path: Path, split: str = "dev", limit:
 
 
 def _read_patch(result: dict) -> str:
-    result_path = Path(result["_result_path"])
-    candidate = Path(result.get("patch_path") or "patch.diff")
-    path = candidate if candidate.is_absolute() else result_path.parent / candidate
-    # Relative paths in a result are relative to that run, never process CWD.
-    return path.read_text(encoding="utf-8")
-
-
-def _digest(patch: str) -> str:
-    return hashlib.sha256(patch.replace("\r\n", "\n").encode()).hexdigest()
+    directory = Path(result["_result_path"]).parent
+    candidate = result.get("patch_path") or "patch.diff"
+    recorded = PurePosixPath(candidate.replace("\\", "/"))
+    if recorded.is_absolute() or PureWindowsPath(candidate).is_absolute():
+        original = PurePosixPath((result.get("result_path") or "").replace("\\", "/"))
+        # The runner saves this pair together. A copied run owns its sibling patch.
+        if original.name == "result.json" and recorded == original.with_name("patch.diff"):
+            candidate = "patch.diff"
+    # model_patch is UTF-8 text. A text-mode read would translate hunk bytes.
+    return (directory / candidate).read_bytes().decode("utf-8")
 
 
 def export_predictions(run_root: Path, output_path: Path) -> int:
@@ -98,7 +99,7 @@ def export_predictions(run_root: Path, output_path: Path) -> int:
         patch = _read_patch(result)
         model = f'{result.get("model") or result.get("provider")}-{result.get("strategy")}'
         predictions.append({"instance_id": instance, "model_name_or_path": model, "model_patch": patch})
-        manifest[instance] = {"result_path": result["_result_path"], "patch_sha256": _digest(patch), "model_name_or_path": model}
+        manifest[instance] = {"result_path": result["_result_path"], "patch_sha256": hashlib.sha256(patch.encode("utf-8")).hexdigest(), "model_name_or_path": model}
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text("".join(json.dumps(p, ensure_ascii=False) + "\n" for p in predictions), encoding="utf-8")
@@ -160,8 +161,8 @@ def _empty_patch_grades(by_id: dict[str, dict], summary_path: Path, predictions_
         patch = prediction.get("model_patch")
         if not isinstance(record, dict) or not isinstance(patch, str):
             raise ValueError(f"Invalid exported prediction or manifest: {instance}")
-        digest = _digest(patch)
-        if record.get("patch_sha256") != digest or _digest(_read_patch(result)) != digest:
+        digest = hashlib.sha256(patch.encode("utf-8")).hexdigest()
+        if record.get("patch_sha256") != digest or _read_patch(result) != patch:
             raise ValueError(f"Prediction manifest patch does not match agent patch: {instance}")
         model = f'{result.get("model") or result.get("provider")}-{result.get("strategy")}'
         if prediction.get("model_name_or_path") != model or record.get("model_name_or_path") != model:
@@ -224,7 +225,8 @@ def attach_grades(runsdir: Path, reportsdir: Path, *, summary_path: Path | None 
             if not patch_path.is_file():
                 raise ValueError(f"Missing official patch.diff beside {path}; cannot verify evaluation provenance")
             result = by_id[instance]
-            if _digest(patch_path.read_text(encoding="utf-8")) != _digest(_read_patch(result)):
+            graded_patch = patch_path.read_bytes()
+            if graded_patch != _read_patch(result).encode("utf-8"):
                 raise ValueError(f"Official report patch does not match agent patch: {instance}")
             infra_failure = grade.get("infra_failure") is True
             evaluation = {
@@ -232,7 +234,7 @@ def attach_grades(runsdir: Path, reportsdir: Path, *, summary_path: Path | None 
                 "resolved": None if infra_failure else grade["resolved"],
                 "official_resolved": grade["resolved"],
                 "report_path": str(path.resolve()),
-                "patch_sha256": _digest(patch_path.read_text(encoding="utf-8")),
+                "patch_sha256": hashlib.sha256(graded_patch).hexdigest(),
             }
             # Keep grading metadata without copying hidden test names into runs.
             for key in ("infra_failure", "infra_failure_reason", "patch_is_None", "patch_exists", "patch_successfully_applied"):

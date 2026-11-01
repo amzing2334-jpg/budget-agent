@@ -230,7 +230,7 @@ def run_attempt(task, config, output: Path, backend, upstream, *, environment_fa
             except (EnvironmentError, OSError, subprocess.SubprocessError) as exc:
                 cleanup_error = str(exc)
     patch = info["submission"]
-    (run_dir / "patch.diff").write_text(patch, encoding="utf-8")
+    (run_dir / "patch.diff").write_bytes(patch.encode("utf-8"))
     budget = model.budget.to_dict()
     unknown = model.usage_unknown or budget["unreconciled_request"]
     recorded_config = {**asdict(config), "strategy": STRATEGY, "history_format": "upstream_textbased",

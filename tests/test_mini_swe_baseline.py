@@ -199,7 +199,10 @@ def test_truncated_submission_is_rejected(config, upstream):
         baseline.IsolatedBashEnvironment(environment, upstream).execute({"command": "submit"})
 
 
-@pytest.mark.parametrize("submission,status", [("diff --git a/a.py b/a.py\n", "Submitted"), ("", "LimitsExceeded")])
+@pytest.mark.parametrize("submission,status", [
+    ("--- a/a.py\n+++ b/a.py\n@@ -1 +1 @@\n-old\r\n+new\r\n", "Submitted"),
+    ("", "LimitsExceeded"),
+])
 def test_real_result_export_contract_preserves_upstream_submission(config, upstream, tmp_path, submission, status):
     calls = []
     class UpstreamAgentDouble:
@@ -221,6 +224,7 @@ def test_real_result_export_contract_preserves_upstream_submission(config, upstr
     export_predictions(tmp_path, predictions)
     prediction = json.loads(predictions.read_text().strip())
     assert prediction["model_patch"] == submission
+    assert Path(result["patch_path"]).read_bytes() == submission.encode("utf-8")
     assert predictions.with_suffix(".jsonl.manifest.json").is_file()
     assert environment.closed
     assert calls[0]["step_limit"] == config.max_steps

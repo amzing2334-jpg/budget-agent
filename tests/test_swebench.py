@@ -1,5 +1,8 @@
+import hashlib
 import json
-from pathlib import Path
+from pathlib import PurePosixPath, PureWindowsPath
+import shutil
+import subprocess
 
 import pytest
 
@@ -74,6 +77,40 @@ def test_export_is_official_format_and_skips_local(tmp_path):
     assert target.with_suffix(".jsonl.manifest.json").is_file()
 
 
+def test_moved_runner_result_uses_only_its_loaded_sibling(tmp_path):
+    original = tmp_path / "original" / "r1"
+    write_run(original.parent, result_path=str(original / "result.json"),
+              patch_path=str(original / "patch.diff"))
+    copy = shutil.copytree(original, tmp_path / "downloaded" / "r1")
+    (copy / "patch.diff").write_bytes(b"copied attempt\n")
+    predictions = tmp_path / "predictions.jsonl"
+    export_predictions(copy, predictions)
+    assert json.loads(predictions.read_bytes())["model_patch"] == "copied attempt\n"
+    (copy / "patch.diff").unlink()
+    with pytest.raises(FileNotFoundError):
+        export_predictions(copy, tmp_path / "missing.jsonl")
+
+
+@pytest.mark.parametrize("recorded", [PurePosixPath("/remote/runs/r1"), PureWindowsPath("Z:/remote/runs/r1")],
+                         ids=["posix", "windows"])
+def test_downloaded_runner_result_accepts_either_path_flavor(tmp_path, recorded):
+    run = write_run(tmp_path / "downloads", result_path=str(recorded / "result.json"),
+                    patch_path=str(recorded / "patch.diff"))
+    (run / "patch.diff").write_bytes(b"downloaded\n")
+    predictions = tmp_path / "predictions.jsonl"
+    export_predictions(run, predictions)
+    assert json.loads(predictions.read_bytes())["model_patch"] == "downloaded\n"
+
+
+def test_explicit_relative_patch_stays_relative_to_loaded_result(tmp_path):
+    run = write_run(tmp_path / "runs", patch_path="exports/custom.patch")
+    (run / "exports").mkdir()
+    (run / "exports" / "custom.patch").write_bytes(b"custom\n")
+    predictions = tmp_path / "predictions.jsonl"
+    export_predictions(run, predictions)
+    assert json.loads(predictions.read_bytes())["model_patch"] == "custom\n"
+
+
 def test_export_rejects_duplicate_attempts(tmp_path):
     write_run(tmp_path / "runs")
     write_run(tmp_path / "runs", "second")
@@ -136,8 +173,82 @@ def write_official_report(root, run, **grade):
     directory = root / "model" / instance
     directory.mkdir(parents=True)
     (directory / "report.json").write_text(json.dumps({instance: grade}), encoding="utf-8")
-    (directory / "patch.diff").write_text((run / "patch.diff").read_text(), encoding="utf-8")
+    (directory / "patch.diff").write_bytes((run / "patch.diff").read_bytes())
     return directory
+
+
+def test_matching_non_utf8_artifacts_cannot_receive_a_prediction_grade(tmp_path):
+    run = write_run(tmp_path / "runs")
+    (run / "patch.diff").write_bytes(b"\xff")
+    reports = tmp_path / "reports"
+    write_official_report(reports, run, resolved=True)
+    original = (run / "result.json").read_bytes()
+    with pytest.raises(UnicodeDecodeError):
+        attach_grades(run, reports)
+    assert (run / "result.json").read_bytes() == original
+
+
+@pytest.fixture
+def crlf_run(tmp_path):
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    git = ["git", "-C", str(repo), "-c", "core.autocrlf=false"]
+    subprocess.run([*git, "init", "-q"], check=True)
+    target = repo / "source.txt"
+    before = "old\r\ncontext\u2028data\r\n".encode()
+    after = before.replace(b"old", b"new")
+    target.write_bytes(before)
+    subprocess.run([*git, "add", "--", target.name], check=True)
+    target.write_bytes(after)
+    patch = subprocess.check_output([*git, "diff", "--no-ext-diff", "--", target.name])
+    target.write_bytes(before)
+    run = write_run(tmp_path / "runs")
+    (run / "patch.diff").write_bytes(patch)
+    return run, git, target, after
+
+
+def test_exported_prediction_replays_exact_git_patch(tmp_path, crlf_run):
+    run, git, target, after = crlf_run
+    predictions = tmp_path / "predictions.jsonl"
+    assert export_predictions(run, predictions) == 1
+    prediction = json.loads(predictions.read_bytes())
+    exported = prediction["model_patch"].encode()
+    patch = (run / "patch.diff").read_bytes()
+    assert exported == patch
+    manifest = json.loads(predictions.with_suffix(".jsonl.manifest.json").read_bytes())
+    assert manifest[prediction["instance_id"]]["patch_sha256"] == hashlib.sha256(patch).hexdigest()
+    subprocess.run([*git, "apply", "-"], input=exported, check=True, capture_output=True)
+    assert target.read_bytes() == after
+
+
+def test_exact_report_attaches_with_unicode_in_prediction_jsonl(tmp_path, crlf_run):
+    run, _, _, _ = crlf_run
+    predictions = tmp_path / "predictions.jsonl"
+    export_predictions(run, predictions)
+    report = write_official_report(tmp_path / "reports", run, resolved=True)
+    summary = tmp_path / "summary.json"
+    summary.write_text(json.dumps({"schema_version": 2, "submitted_ids": [report.name],
+                                   "empty_patch_ids": [], "empty_patch_instances": 0}), encoding="utf-8")
+    attached = attach_grades(run, report, summary_path=summary, predictions_path=predictions)
+    result = json.loads((run / "result.json").read_bytes())
+    assert attached["attached"] == 1 and result["resolved"] is True
+    assert result["evaluation"]["patch_sha256"] == hashlib.sha256((run / "patch.diff").read_bytes()).hexdigest()
+
+
+def test_report_with_one_changed_hunk_line_ending_is_rejected(tmp_path, crlf_run):
+    run, git, target, after = crlf_run
+    report = write_official_report(tmp_path / "reports", run, resolved=True)
+    patch_path = report / "patch.diff"
+    patch = patch_path.read_bytes()
+    assert patch.count(b"+new\r\n") == 1
+    patch_path.write_bytes(patch.replace(b"+new\r\n", b"+new\n"))
+    subprocess.run([*git, "apply", str(patch_path)], check=True, capture_output=True)
+    assert target.read_bytes() == after.replace(b"new\r\n", b"new\n")
+    result_path = run / "result.json"
+    before = result_path.read_bytes()
+    with pytest.raises(ValueError, match="does not match"):
+        attach_grades(run, report)
+    assert result_path.read_bytes() == before
 
 
 def empty_export(tmp_path):

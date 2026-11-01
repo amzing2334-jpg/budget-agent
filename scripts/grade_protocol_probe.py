@@ -42,7 +42,7 @@ def main(argv=None):
         export_predictions(run, predictions)
         with (grading / f"{run_id}.log").open("x", encoding="utf-8") as log:
             subprocess.run(command, cwd=grading, stdout=log, stderr=subprocess.STDOUT, check=True)
-        prediction = json.loads(predictions.read_text(encoding="utf-8").splitlines()[0])
+        prediction = json.loads(predictions.read_bytes())
         model_slug = prediction["model_name_or_path"].replace("/", "__")
         attached = attach_grades(run, grading / "logs/run_evaluation" / run_id,
                                  summary_path=grading / f"{model_slug}.{run_id}.json",
