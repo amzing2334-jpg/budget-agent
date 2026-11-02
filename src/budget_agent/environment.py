@@ -265,6 +265,22 @@ def _verified(result: dict[str, Any], marker: str) -> tuple[bool | None, dict[st
     return None, None
 
 
+def _stage_verifier(source: Path, grading: Path) -> str:
+    data = source.read_bytes()
+    (grading / "_private_verifier.py").write_bytes(data)
+    return hashlib.sha256(data).hexdigest()
+
+
+def _fixture_grade(result: dict[str, Any], marker: str, verifier_sha256: str, started: float) -> dict[str, Any]:
+    resolved, verdict = _verified(result, marker)
+    status = "grading_error" if resolved is None else "resolved" if resolved else "unresolved"
+    grade = {"resolved": resolved, "status": status, "output": result["output"],
+             "test_results": verdict, "duration_seconds": time.monotonic() - started}
+    if resolved is not None:
+        grade["grading_inputs"] = {"kind": "fixture", "verifier_sha256": verifier_sha256}
+    return grade
+
+
 class LocalEnvironment:
     def __init__(self, task: Task, config: RunConfig, run_dir: Path):
         self.task, self.config = task, config
@@ -372,12 +388,10 @@ class LocalEnvironment:
                         path.write_bytes(current[name])
                     else:
                         path.unlink(missing_ok=True)
-                shutil.copyfile(verifier, grading / "_private_verifier.py")
+                verifier_sha256 = _stage_verifier(verifier, grading)
                 command, marker = _verification_command(sys.executable)
                 result = _process(command, grading, self.config.timeout_seconds)
-            resolved, verdict = _verified(result, marker)
-            status = "grading_error" if resolved is None else "resolved" if resolved else "unresolved"
-            return {"resolved": resolved, "status": status, "output": result["output"], "test_results": verdict, "duration_seconds": time.monotonic() - started}
+            return _fixture_grade(result, marker, verifier_sha256, started)
         except (OSError, EnvironmentError) as exc:
             return {"resolved": None, "status": "infrastructure_error", "output": str(exc), "duration_seconds": time.monotonic() - started}
 
@@ -533,18 +547,16 @@ print(h.hexdigest())'''
                     path.write_bytes(current[name])
                 else:
                     path.unlink(missing_ok=True)
-            shutil.copyfile(self.task.verifier, grading / "_private_verifier.py")
+            verifier_sha256 = _stage_verifier(Path(self.task.verifier), grading)
             grader_name = f"budget-grade-{uuid.uuid4().hex[:12]}"
             verifier_command, marker = _verification_command("python")
-            command = ["docker", "run", "--rm", "--name", grader_name, "--network", "none", "--cpus", "2", "--memory", "2g", "--pids-limit", "128", "--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--mount", f"type=bind,source={grading},target=/workspace,readonly", "-w", "/workspace", "-e", "PYTHONDONTWRITEBYTECODE=1", self.config.docker_image, *verifier_command]
+            command = ["docker", "run", "--rm", "--name", grader_name, "--network", "none", "--cpus", "2", "--memory", "2g", "--pids-limit", "128", "--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--mount", f"type=bind,source={grading},target=/workspace,readonly", "-w", "/workspace", "-e", "PYTHONDONTWRITEBYTECODE=1", self.provenance["image_id"], *verifier_command]
             result = _process(command, self.run_dir, self.config.timeout_seconds)
             if result.get("timed_out"):
                 _process(["docker", "rm", "-f", grader_name], self.run_dir, 15)
         if result.get("returncode") in {125, 126, 127} and not result.get("timed_out"):
             return {"resolved": None, "status": "infrastructure_error", "output": result["output"], "test_results": None, "duration_seconds": time.monotonic() - started}
-        resolved, verdict = _verified(result, marker)
-        status = "grading_error" if resolved is None else "resolved" if resolved else "unresolved"
-        return {"resolved": resolved, "status": status, "output": result["output"], "test_results": verdict, "duration_seconds": time.monotonic() - started}
+        return _fixture_grade(result, marker, verifier_sha256, started)
 
     def close(self) -> None:
         _process(["docker", "rm", "-f", self.container], self.run_dir, 15)

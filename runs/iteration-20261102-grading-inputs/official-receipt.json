@@ -1,0 +1,45 @@
+{
+  "scope": "Offline import of archived SWE-bench reports. No official tests rerun.",
+  "task_id": "astropy__astropy-12907",
+  "frozen_manifest_sha256": "6792a7c2b743a4b6887cc774111c0e76400f185e823a0b5fa0490d4154abe2a3",
+  "frozen_results": 59,
+  "frozen_results_with_grading_inputs_before_replay": 0,
+  "official_reports_by_role": {
+    "gold": 3,
+    "no_repair_control": 3,
+    "model": 2
+  },
+  "target_counts": {
+    "FAIL_TO_PASS": 2,
+    "PASS_TO_PASS": 13
+  },
+  "shared_grading_inputs": {
+    "kind": "swebench",
+    "eval_script_sha256": "a38347c82c32321fdd01a21daf8dc12ae34566f59cb666ab818934dbc6513bb9",
+    "test_targets_sha256": "ba69cdd5060e2ab58d23c0693594431894b13413bf5e24541acd35ad943207cb"
+  },
+  "verified_model_attachments": [
+    {
+      "result": "runs/cloud-v3-swe-dev-02/astropy__astropy-12907__structured__20261021T170843Z-d9722f66/result.json",
+      "result_sha256": "1160e8b2114e6762bfbabdae451180a5f3eb5b8e302eeaece87ac5a7def030e3",
+      "strategy": "structured",
+      "patch_bytes": 10677,
+      "patch_sha256": "5a5c05a61d6dbd677aa1e5119a9b6a5ecd625ee2df38183a71e3956139c3b462",
+      "official_report_sha256": "ff1fc189fd56e455a9f215bae585422f2074d593eec2af71455edca2ed52a95b",
+      "resolved": false,
+      "patch_applied": true
+    },
+    {
+      "result": "runs/cloud-v3-swe-dev-02/astropy__astropy-12907__summary__20261021T170954Z-30ae6ec4/result.json",
+      "result_sha256": "6dd1c6b6df571a60ee4ae943e23418f08b495e7e9f547868d6b46f5bbb5c5fe1",
+      "strategy": "summary",
+      "patch_bytes": 10980,
+      "patch_sha256": "92c72a01918c5f0f53c018b73f4abbc21a0c86bc2b1d722c0d5daa69088d71b1",
+      "official_report_sha256": "ff1fc189fd56e455a9f215bae585422f2074d593eec2af71455edca2ed52a95b",
+      "resolved": false,
+      "patch_applied": true
+    }
+  ],
+  "unchanged_input_files": 85,
+  "sorted_path_tab_sha256_lf_digest": "01328e6625cf1ba7a067aa708b78a115fc1dbb233a316485d9489eb2d6525c1d"
+}

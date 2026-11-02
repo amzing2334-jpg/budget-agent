@@ -20,6 +20,8 @@ def saved_run(tmp_path, strategy):
 def test_report_and_pair_read_the_audited_token_counts(tmp_path, missing_mirrors):
     baseline = saved_run(tmp_path, "recent")
     candidate = saved_run(tmp_path, "structured")
+    for run in (baseline, candidate):
+        run["evaluation"]["grading_inputs"] = {"kind": "fixture", "verifier_sha256": "a" * 64}
     for field in ("input_tokens", "output_tokens", "total_tokens"):
         if missing_mirrors:
             del candidate[field]
@@ -73,6 +75,6 @@ def test_pre_ledger_results_keep_their_summary_and_paired_counts(tmp_path):
     row, = aggregate([candidate])
     assert row["total_tokens"] == candidate["input_tokens"] + candidate["output_tokens"]
     pair, = analyze_paired([baseline, candidate], "recent", "structured")["pairs"]
-    assert pair["eligible_graded_pair"]
+    assert pair["grading_input_match"] == "unavailable" and not pair["eligible_graded_pair"]
     assert pair["baseline"]["total_tokens"] == baseline["total_tokens"]
     assert pair["candidate_minus_baseline"]["total_tokens"] is None

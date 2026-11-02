@@ -1,9 +1,29 @@
 """Independent outcome, token accounting, and tool-policy acceptance contracts."""
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from .verification import fixture_outcome
+
+
+def grading_input_match(records: list[dict]) -> str:
+    """Compare the recorded grading materials for a single task."""
+    identities = set()
+    for record in records:
+        material = record.get("evaluation", {}).get("grading_inputs")
+        match record.get("task_kind"), material:
+            case "local", {"kind": "fixture", "verifier_sha256": digest}:
+                hashes = (digest,)
+            case "swebench", {"kind": "swebench", "eval_script_sha256": script, "test_targets_sha256": targets}:
+                hashes = (script, targets)
+            case _:
+                hashes = ()
+        valid = hashes and all(isinstance(h, str) and re.fullmatch(r"[0-9a-f]{64}", h) for h in hashes)
+        identities.add(hashes if valid else None)
+    if len(identities - {None}) > 1:
+        return "mismatched"
+    return "matched" if identities and None not in identities else "unavailable"
 
 
 def evidence_kind(result: dict[str, Any], default: str = "unknown") -> str:

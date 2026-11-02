@@ -15,6 +15,8 @@ def result(tmp_path, strategy, task="task1", **changes):
              "usage_sources": ["tokenizer"], "split": "dev", "task_kind": "swebench",
              "evidence_kind": "model_run", "config": {"strategy": strategy, "seed": 42, "total_tokens": 64000},
              "status": "finished", "resolved": True, "budget": {}, "usage_unknown": False,
+             "evaluation": {"grading_inputs": {"kind": "swebench", "eval_script_sha256": "a" * 64,
+                                               "test_targets_sha256": "b" * 64}},
              "total_tokens": 1000, "elapsed_seconds": 10, "cost_usd": None,
              "_result_path": str(folder / "result.json")}
     value.update(changes)
@@ -43,6 +45,37 @@ def test_paired_keeps_failures_and_ungraded_in_ledger_without_false_wins(tmp_pat
 def test_paired_refuses_noncontrolled_comparisons(tmp_path, change, message):
     with pytest.raises(ValueError, match=message):
         analyze_paired([result(tmp_path, "recent"), result(tmp_path, "structured", **change)], "recent", "structured")
+
+
+@pytest.mark.parametrize("replacement,expected", [
+    ({}, "unavailable"),
+    ({"kind": "fixture", "verifier_sha256": "a" * 64}, "unavailable"),
+    ({"kind": "swebench", "eval_script_sha256": "a" * 64, "test_targets_sha256": "g" * 64}, "unavailable"),
+    ({"kind": "swebench", "eval_script_sha256": "c" * 64, "test_targets_sha256": "b" * 64}, "mismatched"),
+    ({"kind": "swebench", "eval_script_sha256": "a" * 64, "test_targets_sha256": "c" * 64}, "mismatched"),
+])
+def test_different_or_unverified_grading_inputs_keep_grades_out_of_wins(tmp_path, replacement, expected):
+    baseline = result(tmp_path, "recent", resolved=False)
+    candidate = result(tmp_path, "full", evaluation={"grading_inputs": replacement})
+    runs = [baseline, candidate]
+    paired = analyze_paired(runs, "recent", "full")
+    pair, = paired["pairs"]
+    assert pair["grading_input_match"] == expected
+    assert pair["baseline"]["resolved"] is False and pair["candidate"]["resolved"] is True
+    assert paired["matched_pairs"] == 1 and paired["eligible_graded_pairs"] == paired["candidate_wins"] == 0
+    assert paired["mean_candidate_minus_baseline"]["total_tokens"]["n"] == 0
+    assert all(row["grading_input_match"] == expected and not row["comparison_valid"] for row in aggregate(runs))
+
+
+def test_grading_inputs_match_per_task_not_across_tasks(tmp_path):
+    runs = [result(tmp_path, strategy, task) for task in ("alpha", "beta") for strategy in ("recent", "full")]
+    for run in runs:
+        if run["task_id"] == "beta":
+            run["evaluation"]["grading_inputs"]["test_targets_sha256"] = "c" * 64
+    report = analyze_paired(runs, "recent", "full")
+    assert report["eligible_graded_pairs"] == 2
+    assert all(pair["grading_input_match"] == "matched" for pair in report["pairs"])
+    assert all(row["grading_input_match"] == "matched" and row["comparison_valid"] for row in aggregate(runs))
 
 
 def test_paired_rejects_duplicate_attempts_instead_of_selecting_best(tmp_path):

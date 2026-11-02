@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from .evaluation import (
-    comparison_budget_valid, evaluate_run, evidence_kind, is_infrastructure_error, ledger_token_count,
+    comparison_budget_valid, evaluate_run, evidence_kind, grading_input_match, is_infrastructure_error, ledger_token_count,
     request_ledger, verified_outcome,
 )
 
@@ -82,6 +82,14 @@ def aggregate(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
             policies[result.get("strategy", "unknown")].append(result)
         samples = [Counter((r["task_id"], r.get("task_fingerprint"), r.get("config", {}).get("seed", 0)) for r in records) for records in policies.values()]
         matched = all(sample == samples[0] for sample in samples)
+        grading_match = "not_compared"
+        if matched and len(policies) > 1:
+            by_case = defaultdict(list)
+            for result in group:
+                key = (result["task_id"], result.get("task_fingerprint"), result.get("config", {}).get("seed", 0))
+                by_case[key].append(result)
+            matches = {grading_input_match(records) for records in by_case.values()}
+            grading_match = next(status for status in ("mismatched", "unavailable", "matched") if status in matches)
         invalid_budgets = {strategy: sum(not comparison_budget_valid(r) for r in records)
                            for strategy, records in policies.items()}
         group_invalid_budget = any(invalid_budgets.values())
@@ -111,7 +119,8 @@ def aggregate(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "success_rate": successes / n if graded == n and not invalid_budget_attempts else None,
                 "wilson95": interval, "matched_tasks_and_repetition_labels": matched,
                 "invalid_budget_attempts": invalid_budget_attempts,
-                "comparison_valid": matched and not group_invalid_budget and not group_ungraded,
+                "grading_input_match": grading_match,
+                "comparison_valid": matched and grading_match in {"matched", "not_compared"} and not group_invalid_budget and not group_ungraded,
                 "input_tokens": input_tokens, "output_tokens": output_tokens,
                 "total_tokens": total_tokens,
                 "mean_tokens": total_tokens / n if total_tokens is not None else None,
@@ -140,7 +149,7 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     paths = {"csv": output_dir / "summary.csv", "markdown": output_dir / "report.md", "html": output_dir / "report.html"}
-    columns = ["group_id", "strategy", "provider", "model", "split", "evidence_kind", "attempted", "graded", "pending_or_ungraded", "infrastructure_errors", "official_empty_patches", "successes", "success_rate", "matched_tasks_and_repetition_labels", "invalid_budget_attempts", "comparison_valid", "input_tokens", "output_tokens", "total_tokens", "mean_tokens", "total_cost_usd", "cost_per_success_usd", "mean_elapsed_seconds"]
+    columns = ["group_id", "strategy", "provider", "model", "split", "evidence_kind", "attempted", "graded", "pending_or_ungraded", "infrastructure_errors", "official_empty_patches", "successes", "success_rate", "matched_tasks_and_repetition_labels", "grading_input_match", "invalid_budget_attempts", "comparison_valid", "input_tokens", "output_tokens", "total_tokens", "mean_tokens", "total_cost_usd", "cost_per_success_usd", "mean_elapsed_seconds"]
     with paths["csv"].open("w", encoding="utf-8-sig", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=columns)
         writer.writeheader()
@@ -166,6 +175,10 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
         budget_label = f'Context: {config.get("context_tokens", "?")} · total: {config.get("total_tokens", "?")} · tokenizer: {config.get("tokenizer", "?")}'
         md.extend([f"## {label}", "", budget_label, ""])
         body.append(f'<section><div class="eyebrow">EXPERIMENT {html.escape(group_id)}</div><h2>{html.escape(label)}</h2><p class="muted">{html.escape(budget_label)}</p>')
+        if group_rows[0]["grading_input_match"] in {"unavailable", "mismatched"}:
+            warning = f'Grading inputs {group_rows[0]["grading_input_match"]}. The rates describe each strategy separately.'
+            md.extend([warning, ""])
+            body.append(f'<p class="warning">{warning}</p>')
         if not group_rows[0]["matched_tasks_and_repetition_labels"]:
             warning = "Unmatched task/fingerprint/repetition-label sets: these rows are descriptive, not a controlled comparison."
             md.extend([f"<!-- {warning} -->"])

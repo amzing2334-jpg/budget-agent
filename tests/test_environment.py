@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -189,12 +190,14 @@ def test_docker_grading_distinguishes_unscored_from_failure(tmp_path, monkeypatc
 
     env = DockerEnvironment.__new__(DockerEnvironment)
     env.task, env.config = load_task(), RunConfig(environment="docker")
+    env.provenance = {"image_id": "sha256:" + "a" * 64}
     env.run_dir = tmp_path / "run"
     env.local = create_environment(env.task, RunConfig(), env.run_dir)
 
     def process(command, *args):
         # Exercise the real grading command and verdict parser without starting Docker.
         import re
+        assert command[-4] == env.provenance["image_id"]
         marker = re.search(r"BUDGET_AGENT_GRADE_[a-f0-9]+", command[-1])[0]
         output = "ModuleNotFoundError" if verdict is None else marker + json.dumps(verdict)
         return {"ok": verdict is not None, "output": output,
@@ -206,6 +209,11 @@ def test_docker_grading_distinguishes_unscored_from_failure(tmp_path, monkeypatc
     assert result["status"] == ("grading_error" if expected is None else
                                 "resolved" if expected else "unresolved")
     assert result["test_results"] == verdict
+    if expected is None:
+        assert "grading_inputs" not in result
+    else:
+        digest = hashlib.sha256(Path(env.task.verifier).read_bytes()).hexdigest()
+        assert result["grading_inputs"] == {"kind": "fixture", "verifier_sha256": digest}
 
 
 def test_docker_patch_refuses_truncation_and_uses_original_commit():
@@ -247,12 +255,14 @@ def test_docker_start_failure_is_not_a_model_failure(tmp_path, monkeypatch):
     env = DockerEnvironment.__new__(DockerEnvironment)
     env.task = load_task()
     env.config = RunConfig(environment="docker")
+    env.provenance = {"image_id": "sha256:" + "a" * 64}
     env.run_dir = tmp_path / "run"
     env.local = create_environment(env.task, RunConfig(), env.run_dir)
     monkeypatch.setattr(module, "_process", lambda *args, **kwargs: {"ok": False, "output": "daemon unavailable", "returncode": 125, "timed_out": False})
     result = env.grade()
     assert result["resolved"] is None
     assert result["status"] == "infrastructure_error"
+    assert "grading_inputs" not in result
 
 
 @pytest.fixture

@@ -130,6 +130,8 @@ python -m budget_agent diagnose --input runs/your-run --output runs/new-diagnost
 
 配对分析命令为 `python -m budget_agent.paired --runs RUNS --baseline recent --candidate structured --output paired.json`。它拒绝不完整任务配对、不同模型/预算/代码指纹和重复尝试；未评分、基础设施错误和预算违规保留在记录中，不能作为有效胜负。未知模型费用仍为空，租卡与准备环境成本需另计。
 
+每对运行的 `grading_input_match` 表明能否核对两侧的评分材料。自建任务比较实际放入评分目录的验证器字节，SWE-bench 比较官方 `eval.sh` 字节和两类预期测试的标识集合。输入不同或缺失时，两个原始评分仍然可见，这对运行不参与胜负和均值统计。旧 SWE 结果可在运行目录副本中用完整官方材料重新执行 `swe-attach`。[同一补丁被误计为策略胜出的复现与修复](docs/ITERATION_LOG.md#grading-inputs-20261102)
+
 配置实际 tokenizer 后可安装并使用：
 
 ```bash

@@ -1,0 +1,95 @@
+{
+  "before_commit": "0406dbb2e14ad48a290385e2279a09a62a547e96",
+  "scope": "Synthetic CPU fixture; same scripted patch in all runs.",
+  "versions": {
+    "before": {
+      "grades": {
+        "fail": {
+          "resolved": false,
+          "fixture_verifier_sha256": "48e1c762e09c9833f080c303e24a4850c3ff31a6110fe5c8581a188245484ba7",
+          "tests_run": 1,
+          "patch_sha256": "fa4f623c329a6f0ec67151e70f084468d080d952956fc69fd49c1696af9a1f86"
+        },
+        "pass": {
+          "resolved": true,
+          "fixture_verifier_sha256": "7cd62e6eaadefcacc80a8e0f34ef1cb4fbfdee1c5d2d5b8ea2a4497d59ec7c62",
+          "tests_run": 1,
+          "patch_sha256": "fa4f623c329a6f0ec67151e70f084468d080d952956fc69fd49c1696af9a1f86"
+        },
+        "copy": {
+          "resolved": true,
+          "fixture_verifier_sha256": "7cd62e6eaadefcacc80a8e0f34ef1cb4fbfdee1c5d2d5b8ea2a4497d59ec7c62",
+          "tests_run": 1,
+          "patch_sha256": "fa4f623c329a6f0ec67151e70f084468d080d952956fc69fd49c1696af9a1f86"
+        }
+      },
+      "changed_contents_same_path": {
+        "raw_outcomes": [
+          false,
+          true
+        ],
+        "eligible": true,
+        "candidate_wins": 1,
+        "grading_input_match": null
+      },
+      "same_contents_moved": {
+        "raw_outcomes": [
+          true,
+          true
+        ],
+        "eligible": true,
+        "candidate_wins": 0,
+        "grading_input_match": null
+      }
+    },
+    "candidate": {
+      "grades": {
+        "fail": {
+          "resolved": false,
+          "fixture_verifier_sha256": "48e1c762e09c9833f080c303e24a4850c3ff31a6110fe5c8581a188245484ba7",
+          "tests_run": 1,
+          "patch_sha256": "fa4f623c329a6f0ec67151e70f084468d080d952956fc69fd49c1696af9a1f86"
+        },
+        "pass": {
+          "resolved": true,
+          "fixture_verifier_sha256": "7cd62e6eaadefcacc80a8e0f34ef1cb4fbfdee1c5d2d5b8ea2a4497d59ec7c62",
+          "tests_run": 1,
+          "patch_sha256": "fa4f623c329a6f0ec67151e70f084468d080d952956fc69fd49c1696af9a1f86"
+        },
+        "copy": {
+          "resolved": true,
+          "fixture_verifier_sha256": "7cd62e6eaadefcacc80a8e0f34ef1cb4fbfdee1c5d2d5b8ea2a4497d59ec7c62",
+          "tests_run": 1,
+          "patch_sha256": "fa4f623c329a6f0ec67151e70f084468d080d952956fc69fd49c1696af9a1f86"
+        }
+      },
+      "changed_contents_same_path": {
+        "raw_outcomes": [
+          false,
+          true
+        ],
+        "eligible": false,
+        "candidate_wins": 0,
+        "grading_input_match": "mismatched"
+      },
+      "same_contents_moved": {
+        "raw_outcomes": [
+          true,
+          true
+        ],
+        "eligible": true,
+        "candidate_wins": 0,
+        "grading_input_match": "matched"
+      },
+      "read_legacy_results": {
+        "raw_outcomes": [
+          false,
+          true
+        ],
+        "eligible": false,
+        "candidate_wins": 0,
+        "grading_input_match": "unavailable"
+      }
+    }
+  }
+}

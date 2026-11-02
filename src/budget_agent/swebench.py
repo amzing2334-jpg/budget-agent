@@ -186,6 +186,38 @@ def _empty_patch_grades(by_id: dict[str, dict], summary_path: Path, predictions_
     return candidates
 
 
+def _grading_inputs(report: Path, grade: dict) -> dict[str, str] | None:
+    """Identify the archived evaluation script and primary test targets, independent of their outcomes."""
+    status = grade.get("tests_status")
+    script = report.with_name("eval.sh")
+    if (grade.get("patch_is_None") is not False or grade.get("patch_exists") is not True
+            or grade.get("patch_successfully_applied") is not True or grade.get("infra_failure") is not False
+            or not isinstance(status, dict) or not script.is_file()):
+        return None
+
+    targets = {}
+    for category in ("FAIL_TO_PASS", "PASS_TO_PASS"):
+        outcomes = status.get(category)
+        if not isinstance(outcomes, dict) or set(outcomes) != {"success", "failure"}:
+            return None
+        success, failure = outcomes["success"], outcomes["failure"]
+        if not isinstance(success, list) or not isinstance(failure, list):
+            return None
+        names = success + failure
+        if not all(isinstance(name, str) and name.strip() for name in names):
+            return None
+        targets[category] = sorted(names)
+    names = targets["FAIL_TO_PASS"] + targets["PASS_TO_PASS"]
+    if not names or len(names) != len(set(names)):
+        return None
+    script_bytes = script.read_bytes()
+    if not script_bytes.strip():
+        return None
+    canonical = json.dumps(targets, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return {"kind": "swebench", "eval_script_sha256": hashlib.sha256(script_bytes).hexdigest(),
+            "test_targets_sha256": hashlib.sha256(canonical).hexdigest()}
+
+
 def attach_grades(runsdir: Path, reportsdir: Path, *, summary_path: Path | None = None,
                   predictions_path: Path | None = None) -> dict[str, int]:
     """Attach verified official reports; reject missing/mismatched patch provenance.
@@ -240,6 +272,10 @@ def attach_grades(runsdir: Path, reportsdir: Path, *, summary_path: Path | None 
             for key in ("infra_failure", "infra_failure_reason", "patch_is_None", "patch_exists", "patch_successfully_applied"):
                 if key in grade:
                     evaluation[key] = grade[key]
+            if graded_patch:
+                inputs = _grading_inputs(path, grade)
+                if inputs is not None:
+                    evaluation["grading_inputs"] = inputs
             candidates.append((result, evaluation))
     if summary_path is not None:
         empty_grades = _empty_patch_grades(by_id, Path(summary_path), Path(predictions_path))

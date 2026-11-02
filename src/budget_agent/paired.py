@@ -9,7 +9,7 @@ from statistics import mean
 
 from .diagnostics import first_workspace_change, read_jsonl
 from .evaluation import (
-    comparison_budget_valid, evidence_kind, is_infrastructure_error, ledger_token_count, request_ledger,
+    comparison_budget_valid, evidence_kind, grading_input_match, is_infrastructure_error, ledger_token_count, request_ledger,
     verified_outcome,
 )
 from .report import load_results
@@ -115,6 +115,9 @@ def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor
                     raise ValueError(f"Mismatched {field} for {key[0]}")
         outcomes = [_outcome(left), _outcome(right)]
         records, ineligible_reasons = [], []
+        grading_match = grading_input_match([left, right])
+        if grading_match != "matched" and all(outcome in {"success", "failure"} for outcome in outcomes):
+            ineligible_reasons.append(f"grading inputs {grading_match}")
         for side, result, outcome in zip(("baseline", "candidate"), (left, right), outcomes):
             budget_valid = comparison_budget_valid(result)
             if outcome not in {"success", "failure"}:
@@ -136,6 +139,7 @@ def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor
             values = [record[field] for record in records]
             deltas[field] = values[1] - values[0] if all(isinstance(value, (int, float)) for value in values) else None
         pairs.append({"task_id": key[0], "task_fingerprint": key[1], "seed": key[2],
+                      "grading_input_match": grading_match,
                       "evidence_kind": condition["evidence_kind"], "eligible_graded_pair": not ineligible_reasons,
                       "ineligible_reasons": ineligible_reasons,
                       "baseline": records[0], "candidate": records[1], "candidate_minus_baseline": deltas})
@@ -153,7 +157,7 @@ def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor
             "mean_candidate_minus_baseline": means, "pairs": pairs,
             "notes": ["Descriptive paired results only; no significance or generalization claim.",
                       "Only the declared factor may differ; task, source, model, other configuration, and repetition labels must match.",
-                      "Means and wins exclude ungraded, infrastructure-error, invalid-budget, and missing-metadata pairs; all attempts remain in the ledger.",
+                      "Eligible pairs require matching recorded grading inputs for the task. Wins and means use eligible pairs only.",
                       "Repeated reads and failed tool actions are behavior proxies, not proof of wasted work or incorrect reasoning.",
                       "GPU rental and setup cost are not measured by model cost_usd; unknown cost remains null.",
                       "Scripted smoke results are infrastructure evidence, not model capability evidence."]
