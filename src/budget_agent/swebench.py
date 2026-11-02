@@ -220,6 +220,15 @@ def _grading_inputs(report: Path, grade: dict) -> dict[str, str] | None:
 
 def check_controls(spec: dict, gold_report: Path, negative_report: Path) -> dict:
     """Check archived positive and negative controls against predeclared patch and target hashes."""
+    return _check_control_reports(spec, {"gold": Path(gold_report), "negative": Path(negative_report)})
+
+
+def check_gold_control(spec: dict, gold_report: Path) -> dict:
+    """Check whether the gold result qualifies the next control for dispatch."""
+    return _check_control_reports(spec, {"gold": Path(gold_report)})
+
+
+def _check_control_reports(spec: dict, reports: dict[str, Path]) -> dict:
     if not isinstance(spec, dict) or not isinstance(spec.get("instance_id"), str):
         raise ValueError("Control spec must include an instance_id")
     instance = spec["instance_id"]
@@ -230,7 +239,7 @@ def check_controls(spec: dict, gold_report: Path, negative_report: Path) -> dict
     controls = {}
     expected_inputs = {"kind": "swebench", "eval_script_sha256": spec.get("eval_script_sha256"),
                        "test_targets_sha256": spec.get("test_targets_sha256")}
-    for role, report in (("gold", Path(gold_report)), ("negative", Path(negative_report))):
+    for role, report in reports.items():
         if report.name != "report.json" or not report.is_file():
             raise ValueError(f"Missing {role} report.json")
         report_bytes = report.read_bytes()

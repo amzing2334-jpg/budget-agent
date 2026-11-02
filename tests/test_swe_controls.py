@@ -111,3 +111,24 @@ def test_control_cli_writes_only_verified_evidence(controls, tmp_path):
     args[-1] = str(tmp_path / "invalid.json")
     assert main(args) != 0
     assert not (tmp_path / "invalid.json").exists()
+
+
+def test_gold_cli_uses_pair_criteria_before_negative_exists(controls, tmp_path, capsys):
+    spec, gold, negative = controls
+    paired = check_controls(spec, gold, negative)
+    negative.unlink()
+    spec_path = tmp_path / "spec.json"
+    spec_path.write_text(json.dumps(spec), encoding="utf-8")
+    args = ["swe-check-gold", "--spec", str(spec_path), "--gold-report", str(gold)]
+    assert main(args) == 0
+    assert json.loads(capsys.readouterr().out) == {k: v for k, v in paired.items() if k != "negative"}
+
+    # A resolved flag alone can hide a failed repair target.
+    row = grade(True)
+    row["tests_status"]["FAIL_TO_PASS"] = {"failure": [FIX], "success": []}
+    gold.write_text(json.dumps({TASK: row}), encoding="utf-8")
+    assert main(args) != 0
+    assert "FAIL_TO_PASS" in capsys.readouterr().err
+    gold.unlink()
+    assert main(args) != 0
+    assert "Missing gold report.json" in capsys.readouterr().err

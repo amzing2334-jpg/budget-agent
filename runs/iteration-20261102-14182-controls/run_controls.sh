@@ -78,9 +78,11 @@ harness=("$grader" -m swebench.harness.run_evaluation --dataset_name "$inputs/pi
          --split test --instance_ids "$task" --max_workers 1 --timeout "$test_timeout")
 admit_control gold 2
 "${harness[@]}" --predictions_path gold --run_id "$label-gold"
+gold_report="logs/run_evaluation/$label-gold/gold/$task/report.json"
+"$grader" -m budget_agent swe-check-gold --spec "$spec" --gold-report "$gold_report"
 admit_control negative 1
 "${harness[@]}" --predictions_path "$inputs/negative.jsonl" --run_id "$label-negative"
 "$grader" -m budget_agent swe-check-controls --spec "$spec" \
-    --gold-report "logs/run_evaluation/$label-gold/gold/$task/report.json" \
+    --gold-report "$gold_report" \
     --negative-report "logs/run_evaluation/$label-negative/no_repair_control/$task/report.json" \
     --output controls-verified.json

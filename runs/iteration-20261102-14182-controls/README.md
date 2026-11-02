@@ -31,11 +31,16 @@ bash runs/iteration-20261102-14182-controls/run_controls.sh \
 
 此检查只做启动决策。600 秒是容器内测试超时，容器准备、评分、归档也会耗时；120 秒是本项目预留，尚无数据证明它覆盖所有负载。独立的中断、归还定时器和证据取回流程仍须生效，入口不会替调用者安装定时器、延长租约或验证传入的截止时间。
 
-两个报告返回后，脚本调用 `swe-check-controls`。正控须报告已应用、已解决、两类目标均无失败。负控须报告已应用、未解决、至少一个修复目标失败，且没有原有回归目标失败。两份补丁、最终执行脚本和目标集合均须命中预先冻结的摘要。只有当前命令成功退出并生成新的 `controls-verified.json`，才完成本次主机验收。回执记录了两份原始报告的哈希。各目标的通过/失败指官方解析口径，具体测试进程是否执行仍可查原始日志。
+正控进程返回后，脚本先用 `swe-check-gold` 读取当前运行的 `report.json` 和相邻的 `patch.diff`、`eval.sh`。报告须对应冻结题目，补丁、评分脚本和目标集合须匹配冻结摘要，正控须已应用、已解决且两类目标均无失败。通过后才检查负控时间并启动负控。正控缺报告或核验失败时，保留当前目录，按标准错误和实例日志定位原因，在新运行目录重做正控。
+
+两个报告返回后，`swe-check-controls` 重新读取双方原件。负控须报告已应用、未解决、至少一个修复目标失败，且没有原有回归目标失败。只有本次整组命令成功退出并生成新的 `controls-verified.json`，才完成主机验收。回执记录两份原始报告的哈希。各目标的通过或失败按官方解析口径解释，具体测试进程是否执行可查实例测试日志。
 
 也可以只读复核已有报告。以下操作不调用 Docker 或模型：
 
 ```bash
+python -m budget_agent swe-check-gold --spec "$case_dir/14182-spec.json" \
+  --gold-report /private/gold/astropy__astropy-14182/report.json
+
 python -m budget_agent swe-check-controls --spec "$case_dir/14182-spec.json" \
   --gold-report /private/gold/astropy__astropy-14182/report.json \
   --negative-report /private/negative/astropy__astropy-14182/report.json \

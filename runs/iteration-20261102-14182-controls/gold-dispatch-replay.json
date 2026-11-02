@@ -1,0 +1,144 @@
+{
+  "evidence_kind": "local_cpu_replay",
+  "task": "astropy__astropy-14182",
+  "replay_conditions": {
+    "grading_inputs": "archived patch.diff and eval.sh; report.json absent",
+    "clock": "fixed for both versions",
+    "grader_process": "preflight and harness stubbed; both versions used the candidate source for the real verification CLI",
+    "injected_gold_exit_code": 0,
+    "historical_gold_exit_code": null,
+    "downstream": "local marker only"
+  },
+  "archive_sha256": "61c7b1b51e49c6f08530c3531e202cc8f732d18983de7efa195a445f937e44e1",
+  "archived_14182": {
+    "cli": {
+      "exit": 2,
+      "expected_reason_matched": true
+    },
+    "gold_patch_and_eval_sha_match": true,
+    "instance_files": 3,
+    "negative_subtrees": 0,
+    "report_count": 0,
+    "verified_receipts": 0
+  },
+  "archived_pairs": {
+    "cloud-v3": {
+      "full_receipt_exact_match_plus_spec_hash": true,
+      "gold_projection_exact_match": true,
+      "gold_test_counts": {
+        "FAIL_TO_PASS": {
+          "failure": 0,
+          "success": 2
+        },
+        "PASS_TO_PASS": {
+          "failure": 0,
+          "success": 13
+        }
+      },
+      "negative_test_counts": {
+        "FAIL_TO_PASS": {
+          "failure": 2,
+          "success": 0
+        },
+        "PASS_TO_PASS": {
+          "failure": 0,
+          "success": 13
+        }
+      }
+    },
+    "cloud-v4-20261022-01": {
+      "full_receipt_exact_match_plus_spec_hash": true,
+      "gold_projection_exact_match": true,
+      "gold_test_counts": {
+        "FAIL_TO_PASS": {
+          "failure": 0,
+          "success": 2
+        },
+        "PASS_TO_PASS": {
+          "failure": 0,
+          "success": 13
+        }
+      },
+      "negative_test_counts": {
+        "FAIL_TO_PASS": {
+          "failure": 2,
+          "success": 0
+        },
+        "PASS_TO_PASS": {
+          "failure": 0,
+          "success": 13
+        }
+      }
+    },
+    "cloud-v5-a4000-20261022-01": {
+      "full_receipt_exact_match_plus_spec_hash": true,
+      "gold_projection_exact_match": true,
+      "gold_test_counts": {
+        "FAIL_TO_PASS": {
+          "failure": 0,
+          "success": 2
+        },
+        "PASS_TO_PASS": {
+          "failure": 0,
+          "success": 13
+        }
+      },
+      "negative_test_counts": {
+        "FAIL_TO_PASS": {
+          "failure": 2,
+          "success": 0
+        },
+        "PASS_TO_PASS": {
+          "failure": 0,
+          "success": 13
+        }
+      }
+    }
+  },
+  "baseline_git_commit": "27d3c268432dd026bbd082f9a9db338dfb130bf8",
+  "dispatch_replay": {
+    "baseline": {
+      "calls": [
+        "gold",
+        "negative",
+        "swe-check-controls"
+      ],
+      "downstream_marker": false,
+      "gold_dispatch": 1,
+      "negative_admissions": 1,
+      "negative_dispatch": 1,
+      "paired_receipt": false,
+      "seconds_left": 3600,
+      "shell_exit": 2,
+      "shell_sha256": "e1b0d24f35fb5e3da9521df1ec07b47c46857e3457bd1ac541fa78183804cea2"
+    },
+    "candidate": {
+      "calls": [
+        "gold",
+        "swe-check-gold"
+      ],
+      "downstream_marker": false,
+      "gold_dispatch": 1,
+      "negative_admissions": 0,
+      "negative_dispatch": 0,
+      "paired_receipt": false,
+      "seconds_left": 3600,
+      "shell_exit": 2,
+      "shell_sha256": "07d5a5bc5967a9197228700a0e1c09d619c5f60fd2d89a67a8e02dc66f2524ba"
+    }
+  },
+  "false_positive_resolved": {
+    "exit": 2,
+    "expected_reason_matched": true
+  },
+  "original_sha256_unchanged": true,
+  "originals_checked": 22,
+  "withheld_report": {
+    "exit": 2,
+    "expected_reason_matched": true
+  },
+  "wrong_task": {
+    "exit": 2,
+    "expected_reason_matched": true
+  }
+}

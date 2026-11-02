@@ -107,6 +107,9 @@ def build_parser():
     controls.add_argument("--gold-report", type=Path, required=True, help="Gold control's report.json")
     controls.add_argument("--negative-report", type=Path, required=True, help="No-repair control's report.json")
     controls.add_argument("--output", type=Path, required=True, help="New verification receipt")
+    gold = sub.add_parser("swe-check-gold", help="Check a frozen task's gold report before running its negative control")
+    gold.add_argument("--spec", type=Path, required=True)
+    gold.add_argument("--gold-report", type=Path, required=True)
     attach = sub.add_parser("swe-attach", help="Attach official grades after checking prediction provenance")
     attach.add_argument("--runs", required=True, type=Path)
     attach.add_argument("--reports", required=True, type=Path)
@@ -180,11 +183,16 @@ def main(argv=None) -> int:
             print(f"Diagnosed {len(results)} saved runs: {args.output}")
             return 0
         if args.command.startswith("swe-"):
-            from .swebench import attach_grades, check_controls, evaluation_command, export_predictions, import_tasks
+            from .swebench import (
+                attach_grades, check_controls, check_gold_control, evaluation_command, export_predictions, import_tasks,
+            )
             if args.command == "swe-import":
                 print(f"Imported {import_tasks(args.input, args.output, split=args.split, limit=args.limit)} tasks")
             elif args.command == "swe-export":
                 print(f"Exported {export_predictions(args.input, args.output)} predictions")
+            elif args.command == "swe-check-gold":
+                checked = check_gold_control(json.loads(args.spec.read_bytes()), args.gold_report)
+                print(json.dumps(checked, indent=2))
             elif args.command == "swe-check-controls":
                 spec = args.spec.read_bytes()
                 receipt = check_controls(json.loads(spec), args.gold_report, args.negative_report)
