@@ -1,0 +1,144 @@
+{
+  "scope": "Read-only replay of prior official control reports; no tests or model rerun.",
+  "dataset": "SWE-bench/SWE-bench_Lite",
+  "revision": "b0dde1093fe417d83b7184254edf8199c1f0dff5",
+  "parquet": "data/test-00000-of-00001.parquet",
+  "parquet_sha256": "438e281d80587aa7be470896ce410557002fde02d2ceee3e099331d308f62dd3",
+  "parquet_bytes": 2702170,
+  "expected_inputs": "Gold patch and sorted test target identifiers were hashed from the pinned parquet. The expected Linux eval.sh was independently constructed with the script-building functions from the verified SWE-bench 5.0.2 wheel and an empty asset restore list. All three original negative prediction files gave the same patch digest.",
+  "control_spec": {
+    "instance_id": "astropy__astropy-12907",
+    "gold_patch_sha256": "0f3e44432ed8540e9526edff4f83793948a2f139fc3971b67c30043c1eb7964a",
+    "negative_patch_sha256": "773de9b321ee706a0a4dfb29cf8b01a502425de0c7452725edce41f00ccb14c2",
+    "test_targets_sha256": "ba69cdd5060e2ab58d23c0693594431894b13413bf5e24541acd35ad943207cb",
+    "eval_script_sha256": "a38347c82c32321fdd01a21daf8dc12ae34566f59cb666ab818934dbc6513bb9"
+  },
+  "checked_control_pairs": 3,
+  "pairs": {
+    "cloud-v3": {
+      "gold_report_sha256": "c0d4229660a6e54df069a5393d311ea4aac0522b2ecfec053cad28e915b0bc6d",
+      "negative_report_sha256": "f19729c25925fb28e263144205ad6b49a074b48a876fb4b54c4c5089abbd901e",
+      "result": {
+        "instance_id": "astropy__astropy-12907",
+        "grading_inputs": {
+          "kind": "swebench",
+          "eval_script_sha256": "a38347c82c32321fdd01a21daf8dc12ae34566f59cb666ab818934dbc6513bb9",
+          "test_targets_sha256": "ba69cdd5060e2ab58d23c0693594431894b13413bf5e24541acd35ad943207cb"
+        },
+        "gold": {
+          "report_sha256": "c0d4229660a6e54df069a5393d311ea4aac0522b2ecfec053cad28e915b0bc6d",
+          "patch_sha256": "0f3e44432ed8540e9526edff4f83793948a2f139fc3971b67c30043c1eb7964a",
+          "test_counts": {
+            "FAIL_TO_PASS": {
+              "success": 2,
+              "failure": 0
+            },
+            "PASS_TO_PASS": {
+              "success": 13,
+              "failure": 0
+            }
+          }
+        },
+        "negative": {
+          "report_sha256": "f19729c25925fb28e263144205ad6b49a074b48a876fb4b54c4c5089abbd901e",
+          "patch_sha256": "773de9b321ee706a0a4dfb29cf8b01a502425de0c7452725edce41f00ccb14c2",
+          "test_counts": {
+            "FAIL_TO_PASS": {
+              "success": 0,
+              "failure": 2
+            },
+            "PASS_TO_PASS": {
+              "success": 13,
+              "failure": 0
+            }
+          }
+        }
+      }
+    },
+    "cloud-v4-20261022-01": {
+      "gold_report_sha256": "c0d4229660a6e54df069a5393d311ea4aac0522b2ecfec053cad28e915b0bc6d",
+      "negative_report_sha256": "f19729c25925fb28e263144205ad6b49a074b48a876fb4b54c4c5089abbd901e",
+      "result": {
+        "instance_id": "astropy__astropy-12907",
+        "grading_inputs": {
+          "kind": "swebench",
+          "eval_script_sha256": "a38347c82c32321fdd01a21daf8dc12ae34566f59cb666ab818934dbc6513bb9",
+          "test_targets_sha256": "ba69cdd5060e2ab58d23c0693594431894b13413bf5e24541acd35ad943207cb"
+        },
+        "gold": {
+          "report_sha256": "c0d4229660a6e54df069a5393d311ea4aac0522b2ecfec053cad28e915b0bc6d",
+          "patch_sha256": "0f3e44432ed8540e9526edff4f83793948a2f139fc3971b67c30043c1eb7964a",
+          "test_counts": {
+            "FAIL_TO_PASS": {
+              "success": 2,
+              "failure": 0
+            },
+            "PASS_TO_PASS": {
+              "success": 13,
+              "failure": 0
+            }
+          }
+        },
+        "negative": {
+          "report_sha256": "f19729c25925fb28e263144205ad6b49a074b48a876fb4b54c4c5089abbd901e",
+          "patch_sha256": "773de9b321ee706a0a4dfb29cf8b01a502425de0c7452725edce41f00ccb14c2",
+          "test_counts": {
+            "FAIL_TO_PASS": {
+              "success": 0,
+              "failure": 2
+            },
+            "PASS_TO_PASS": {
+              "success": 13,
+              "failure": 0
+            }
+          }
+        }
+      }
+    },
+    "cloud-v5-a4000-20261022-01": {
+      "gold_report_sha256": "c0d4229660a6e54df069a5393d311ea4aac0522b2ecfec053cad28e915b0bc6d",
+      "negative_report_sha256": "f19729c25925fb28e263144205ad6b49a074b48a876fb4b54c4c5089abbd901e",
+      "result": {
+        "instance_id": "astropy__astropy-12907",
+        "grading_inputs": {
+          "kind": "swebench",
+          "eval_script_sha256": "a38347c82c32321fdd01a21daf8dc12ae34566f59cb666ab818934dbc6513bb9",
+          "test_targets_sha256": "ba69cdd5060e2ab58d23c0693594431894b13413bf5e24541acd35ad943207cb"
+        },
+        "gold": {
+          "report_sha256": "c0d4229660a6e54df069a5393d311ea4aac0522b2ecfec053cad28e915b0bc6d",
+          "patch_sha256": "0f3e44432ed8540e9526edff4f83793948a2f139fc3971b67c30043c1eb7964a",
+          "test_counts": {
+            "FAIL_TO_PASS": {
+              "success": 2,
+              "failure": 0
+            },
+            "PASS_TO_PASS": {
+              "success": 13,
+              "failure": 0
+            }
+          }
+        },
+        "negative": {
+          "report_sha256": "f19729c25925fb28e263144205ad6b49a074b48a876fb4b54c4c5089abbd901e",
+          "patch_sha256": "773de9b321ee706a0a4dfb29cf8b01a502425de0c7452725edce41f00ccb14c2",
+          "test_counts": {
+            "FAIL_TO_PASS": {
+              "success": 0,
+              "failure": 2
+            },
+            "PASS_TO_PASS": {
+              "success": 13,
+              "failure": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "unchanged_archive_inputs": 21,
+  "sorted_relative_path_tab_sha256_lf_digest": "4bd77434b08140f195813c46952a39214f815dbbd6e01f0fe9285e46c06a4e4d",
+  "official_wheel_sha256": "b7f0416a1e686eca22c2f749b5f816685a202835032f6683080e2b53545bbb62",
+  "dataset_raw_eval_script_sha256": "229f462fcbdcae232228507f9491b8538c5aeaeede709c5fc822b586245d9460",
+  "generated_script_bytes": 2204
+}

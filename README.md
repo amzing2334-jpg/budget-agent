@@ -132,6 +132,8 @@ python -m budget_agent diagnose --input runs/your-run --output runs/new-diagnost
 
 每对运行的 `grading_input_match` 表明能否核对两侧的评分材料。自建任务比较实际放入评分目录的验证器字节，SWE-bench 比较官方 `eval.sh` 字节和两类预期测试的标识集合。输入不同或缺失时，两个原始评分仍然可见，这对运行不参与胜负和均值统计。旧 SWE 结果可在运行目录副本中用完整官方材料重新执行 `swe-attach`。[同一补丁被误计为策略胜出的复现与修复](docs/ITERATION_LOG.md#grading-inputs-20261102)
 
+运行付费对照前可用 `swe-check-controls` 检查官方评分环境。它核对正负对照是否使用预先冻结的补丁、脚本和目标测试，并区分负控是因修复目标仍失败，还是仅因无关回归失败。[14182 固定输入、重建命令和云端验收步骤](runs/iteration-20261102-14182-controls/README.md)
+
 配置实际 tokenizer 后可安装并使用：
 
 ```bash

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import platform
@@ -101,6 +102,11 @@ def build_parser():
     grade.add_argument("--instance-ids", nargs="+")
     grade.add_argument("--timeout", type=int)
     grade.add_argument("--execute", action="store_true")
+    controls = sub.add_parser("swe-check-controls", help="Verify archived official gold and no-repair controls for one frozen task")
+    controls.add_argument("--spec", type=Path, required=True, help="Frozen task and expected patch/target hashes")
+    controls.add_argument("--gold-report", type=Path, required=True, help="Gold control's report.json")
+    controls.add_argument("--negative-report", type=Path, required=True, help="No-repair control's report.json")
+    controls.add_argument("--output", type=Path, required=True, help="New verification receipt")
     attach = sub.add_parser("swe-attach", help="Attach official grades after checking prediction provenance")
     attach.add_argument("--runs", required=True, type=Path)
     attach.add_argument("--reports", required=True, type=Path)
@@ -174,11 +180,20 @@ def main(argv=None) -> int:
             print(f"Diagnosed {len(results)} saved runs: {args.output}")
             return 0
         if args.command.startswith("swe-"):
-            from .swebench import attach_grades, evaluation_command, export_predictions, import_tasks
+            from .swebench import attach_grades, check_controls, evaluation_command, export_predictions, import_tasks
             if args.command == "swe-import":
                 print(f"Imported {import_tasks(args.input, args.output, split=args.split, limit=args.limit)} tasks")
             elif args.command == "swe-export":
                 print(f"Exported {export_predictions(args.input, args.output)} predictions")
+            elif args.command == "swe-check-controls":
+                spec = args.spec.read_bytes()
+                receipt = check_controls(json.loads(spec), args.gold_report, args.negative_report)
+                receipt["control_spec_sha256"] = hashlib.sha256(spec).hexdigest()
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                with args.output.open("x", encoding="utf-8") as stream:
+                    json.dump(receipt, stream, indent=2)
+                    stream.write("\n")
+                print(f"Verified grading controls for {receipt['instance_id']}: {args.output}")
             elif args.command == "swe-evaluate":
                 command = evaluation_command(args.predictions, dataset_name=args.dataset, run_id=args.run_id, max_workers=args.max_workers, instance_ids=args.instance_ids, timeout=args.timeout)
                 print(json.dumps(command, ensure_ascii=False))

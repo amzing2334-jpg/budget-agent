@@ -218,6 +218,51 @@ def _grading_inputs(report: Path, grade: dict) -> dict[str, str] | None:
             "test_targets_sha256": hashlib.sha256(canonical).hexdigest()}
 
 
+def check_controls(spec: dict, gold_report: Path, negative_report: Path) -> dict:
+    """Check archived positive and negative controls against predeclared patch and target hashes."""
+    if not isinstance(spec, dict) or not isinstance(spec.get("instance_id"), str):
+        raise ValueError("Control spec must include an instance_id")
+    instance = spec["instance_id"]
+    image_name(instance)
+    if spec.get("gold_patch_sha256") == spec.get("negative_patch_sha256"):
+        raise ValueError("Gold and negative controls must specify different patch hashes")
+
+    controls = {}
+    expected_inputs = {"kind": "swebench", "eval_script_sha256": spec.get("eval_script_sha256"),
+                       "test_targets_sha256": spec.get("test_targets_sha256")}
+    for role, report in (("gold", Path(gold_report)), ("negative", Path(negative_report))):
+        if report.name != "report.json" or not report.is_file():
+            raise ValueError(f"Missing {role} report.json")
+        report_bytes = report.read_bytes()
+        payload = json.loads(report_bytes)
+        grade = payload.get(instance) if isinstance(payload, dict) else None
+        if not isinstance(grade, dict):
+            raise ValueError(f"{role} report has no grade for {instance}")
+        patch = report.with_name("patch.diff")
+        if not patch.is_file():
+            raise ValueError(f"Missing {role} patch.diff")
+        data = patch.read_bytes()
+        digest = hashlib.sha256(data).hexdigest()
+        if not data.strip() or digest != spec.get(f"{role}_patch_sha256"):
+            raise ValueError(f"{role} patch is empty or differs from the control spec")
+        inputs = _grading_inputs(report, grade)
+        if inputs is None:
+            raise ValueError(f"Incomplete {role} grading inputs or unapplied patch")
+        if inputs != expected_inputs:
+            raise ValueError(f"{role} evaluation script or test targets differ from the control spec")
+        if grade.get("resolved") is not (role == "gold"):
+            raise ValueError(f"Unexpected {role} resolved verdict")
+        counts = {group: {state: len(names) for state, names in grade["tests_status"][group].items()}
+                  for group in ("FAIL_TO_PASS", "PASS_TO_PASS")}
+        if counts["PASS_TO_PASS"]["failure"]:
+            raise ValueError(f"{role} control has a PASS_TO_PASS regression")
+        if bool(counts["FAIL_TO_PASS"]["failure"]) != (role == "negative"):
+            raise ValueError(f"{role} control has unexpected FAIL_TO_PASS outcomes")
+        controls[role] = {"report_sha256": hashlib.sha256(report_bytes).hexdigest(),
+                          "patch_sha256": digest, "test_counts": counts}
+    return {"instance_id": instance, "grading_inputs": expected_inputs, **controls}
+
+
 def attach_grades(runsdir: Path, reportsdir: Path, *, summary_path: Path | None = None,
                   predictions_path: Path | None = None) -> dict[str, int]:
     """Attach verified official reports; reject missing/mismatched patch provenance.

@@ -1,0 +1,72 @@
+{
+  "instance_id": "astropy__astropy-14182",
+  "gold_patch_sha256": "1c80b57d515ed4da42842dff56cfec5b5c72fee6a469c9bb33f2f6b59dba0f3c",
+  "negative_patch_sha256": "773de9b321ee706a0a4dfb29cf8b01a502425de0c7452725edce41f00ccb14c2",
+  "test_targets_sha256": "dd68e4cbc6c193bd5a393af4c3efc088f68ce126b20dcdedbc9f1e21f9638af2",
+  "dataset": {
+    "name": "SWE-bench/SWE-bench_Lite",
+    "revision": "b0dde1093fe417d83b7184254edf8199c1f0dff5",
+    "split": "test",
+    "zero_based_row": 1,
+    "parquet_url": "https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite/resolve/b0dde1093fe417d83b7184254edf8199c1f0dff5/data/test-00000-of-00001.parquet",
+    "parquet_sha256": "438e281d80587aa7be470896ce410557002fde02d2ceee3e099331d308f62dd3",
+    "parquet_bytes": 2702170,
+    "frozen_local_dataset_json_sha256": "76a0fb73c9e4d95d4a03a141b397c02c8e69858a8b96b74f6e3095a9d1a5c79b",
+    "frozen_negative_jsonl_sha256": "c1b4ac1cb21c97b2b2dbe665c7642d5beeaacfa8168fb4b1791f7c6bfa3d1aa9",
+    "local_dataset_file": "dataset.json",
+    "local_negative_file": "negative.jsonl",
+    "pinned_grader_dataset_file": "pinned-dataset.json",
+    "pinned_grader_dataset_sha256": "c4952cde27e8b758f07dc63ee61106f8e4db4c304621b65ddf3b4d099cc3e044",
+    "source_eval_script_sha256": "db7c84a6b12b0e3eea6659b406d3f79ae85cd9066a75dc3c756f522786d174e2",
+    "source_eval_script_bytes": 2001
+  },
+  "solver": {
+    "manifest": "tasks/swebench-pilot.jsonl",
+    "manifest_sha256": "0e7104adbdf85bfe4f3c81c5e56a7ff8ff2884480804e5e73245b70573dc0e0c",
+    "issue_sha256": "2f743a72613ab0e8e063ff7b7f0a233015ad12ba14992625d9f84b315fa885fd",
+    "project_split": "dev",
+    "repo": "astropy/astropy",
+    "version": "5.1",
+    "base_commit": "a5917978be39d13cd90b517e1de4e7a539ffaa48",
+    "environment_setup_commit": "5f74eacbcc7fff707a44d8eb58adaa514cb7dcb5",
+    "pinned_solver_manifest": "runs/iteration-20261102-14182-controls/agent-task.jsonl",
+    "pinned_solver_manifest_sha256": "0abe7398fb1e7c224cee2302bebf6d075e6ca57384bdd917276f0a2e44673561",
+    "pinned_image": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14182@sha256:4a1da544b0a2d7bb43266093db899f77c60700f76b84497e6c66138cb30d8663"
+  },
+  "control_materials": {
+    "gold_patch_bytes": 2186,
+    "negative_patch_bytes": 213,
+    "test_patch_sha256": "f2a453dd318ca28281ea0d8240c3b641478ba9846b09a7eb9f2ce84db665a972",
+    "expected_test_counts": {
+      "FAIL_TO_PASS": 1,
+      "PASS_TO_PASS": 9
+    },
+    "generated_eval_script_bytes": 2082
+  },
+  "git_check": {
+    "tree": "a57acf6d460c5dcec2ddc1f4ff59dd7008e4b4c4",
+    "source_commit_url": "https://github.com/astropy/astropy/commit/a5917978be39d13cd90b517e1de4e7a539ffaa48",
+    "touched_paths": 3,
+    "verified_base_blobs": 2,
+    "git_apply_check": {
+      "gold": true,
+      "negative": true,
+      "test": true
+    },
+    "scope": "Checked each patch independently against touched paths from the pinned Git tree. No task code or grading script was executed."
+  },
+  "image": {
+    "tag": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14182:latest",
+    "tag_source": "https://hub.docker.com/v2/repositories/swebench/sweb.eval.x86_64.astropy_1776_astropy-14182/tags/latest",
+    "tag_last_pushed_utc": "2026-08-16T18:48:42.931762Z",
+    "index_digest": "sha256:d25559050ee0b046e072ed31d2a1c8943a928d9d842462a50234118156888a0c",
+    "platform": "linux/amd64",
+    "manifest_digest": "sha256:4a1da544b0a2d7bb43266093db899f77c60700f76b84497e6c66138cb30d8663",
+    "config_digest": "sha256:c398eaa06bdad861a303eff949b7291b5fb19e94f6dddeebc1147f06f2e8edf5",
+    "layer_count": 10,
+    "compressed_layer_bytes": 1137501157
+  },
+  "scope": "Read-only publisher metadata and Git patch applicability. Docker image layers were not downloaded and official controls were not executed.",
+  "eval_script_sha256": "34d229a7f22ff6a6b4a348e67a8e1c3b03291c3f0b33eecc9a0258a27e925d57",
+  "metadata_checked_utc": "2026-11-02T14:52:34Z"
+}
