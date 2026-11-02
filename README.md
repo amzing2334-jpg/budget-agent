@@ -108,6 +108,8 @@ v5 另设 `min_action_output_tokens=128`：剩余额度无法容纳输入和最�
 
 使用 `--decision-policy workspace-feedback` 可以单独测量编辑反馈。内部 Agent 比较每一步前后的工作区指纹。成功的文件写入或静默 shell 命令若没有改变指纹，下一次行动请求会收到简短提示。它沿用原策略选出的上下文，只有还能完整预留本次最大输出时才加入提示。预算不足时，`context_stats.workspace_feedback_omissions` 记录事件和原因。[四次实际编辑的回放与验收结果](docs/ITERATION_LOG.md#workspace-feedback-20261102)
 
+要检查首次工作区变化花了多少预算，可运行 `python -m budget_agent diagnose --input <运行目录> --output <新文件.json>`，查看 `first_workspace_change`。用量包含产生该动作的请求及此前的摘要和反思。它描述步骤结束时的工作区快照；最终修复请另查补丁和独立测试。[真实 Astropy 样本与可复现对照](docs/ITERATION_LOG.md#first-workspace-change-20261102)
+
 查看轨迹中的重复失败、重复成功观察、协议错误和输出额度压力：
 
 ```bash

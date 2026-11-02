@@ -1,0 +1,146 @@
+{
+  "manifest_sha256": "6792a7c2b743a4b6887cc774111c0e76400f185e823a0b5fa0490d4154abe2a3",
+  "tracked_examples": [
+    {
+      "path": "runs/cloud-v5-a4000-20261022-01/adaptive-guidance/direct/astropy__astropy-12907__mask__20261022T074532Z-2df7bd07/result.json",
+      "input_sha256": {
+        "result.json": "10b2a13686861e88206d7cba2cd64e8e997ffee74fd54525490fd39d231802d6",
+        "calls.jsonl": "e683e6c55f9822d45b7b69411cf4b9c5ebd0094d69e7867c90d21afee5c0848b",
+        "trajectory.jsonl": "8cbde5a0f9e88583b1cb7432d887d4026e295af4f525dedcef741be472e5ec29"
+      },
+      "evidence_kind": "model_run",
+      "resolved": null,
+      "first_successful_tool_action": {
+        "event_id": "e0001",
+        "step": 1,
+        "tool": "search"
+      },
+      "first_workspace_change": {
+        "status": "not_observed",
+        "usage": null
+      },
+      "prefix_tokens_by_purpose": {}
+    },
+    {
+      "path": "runs/enterprise-contract-v1/demo-final/guarded-repair/slugify-digits__recent__20261027T050050Z-9f1e0d71/result.json",
+      "input_sha256": {
+        "result.json": "fdec7486157ce0505d7203c9a0405891b630d440d1a86ea60e19bc1b64714a84",
+        "calls.jsonl": "6f68a18e52c5b16149533776c3b85e71bbb6564cacdb7d2bb65bc56aff35eab4",
+        "trajectory.jsonl": "0b6885da6d836d83806515bf2067d5c668442a258664666d526c8f3c3c8ea90e"
+      },
+      "evidence_kind": "scripted_smoke",
+      "resolved": true,
+      "first_successful_tool_action": {
+        "event_id": "e0001",
+        "step": 1,
+        "tool": "read_file"
+      },
+      "first_workspace_change": {
+        "status": "observed",
+        "event_id": "e0004",
+        "step": 4,
+        "tool": "write_file",
+        "revision": "fb7f47668ef30dc8",
+        "usage": {
+          "method": "response_order",
+          "requests": 5,
+          "input_tokens": 15576,
+          "output_tokens": 533,
+          "total_tokens": 16109
+        }
+      },
+      "prefix_tokens_by_purpose": {
+        "agent": 13929,
+        "reflection": 2180
+      }
+    },
+    {
+      "path": "runs/enterprise-contract-v1/demo-final/public-pass-without-repair/slugify-digits__recent__20261027T050050Z-d9ec6744/result.json",
+      "input_sha256": {
+        "result.json": "bd3678a6597f4a20f40470db8355808381a9b7abbd18335381c1dcbefc64ce68",
+        "calls.jsonl": "7b029a67013d43b111fe63c770835dd09c3feb3abc492ef1c143f566950fe6ce",
+        "trajectory.jsonl": "7ecd482190ba60e0e0d382032251e5a0efefbc0b780f408568685e3c06f8acd7"
+      },
+      "evidence_kind": "scripted_smoke",
+      "resolved": false,
+      "first_successful_tool_action": {
+        "event_id": "e0001",
+        "step": 1,
+        "tool": "public_test"
+      },
+      "first_workspace_change": {
+        "status": "not_observed",
+        "usage": null
+      },
+      "prefix_tokens_by_purpose": {}
+    }
+  ],
+  "local_summary_example": {
+    "path": "runs/cloud-v3-swe-dev-02/astropy__astropy-12907__summary__20261021T170954Z-30ae6ec4/result.json",
+    "input_sha256": {
+      "result.json": "6dd1c6b6df571a60ee4ae943e23418f08b495e7e9f547868d6b46f5bbb5c5fe1",
+      "calls.jsonl": "bec92fd90ca44a0bb908dfc6bf0a162872f39c8724aa45fe6413a59c40fbf708",
+      "trajectory.jsonl": "7ddbeaa0aeca7692e8f01c57f8e756e11a3da0c58c49271f87841addfc97970a"
+    },
+    "evidence_kind": "model_run",
+    "resolved": false,
+    "first_successful_tool_action": {
+      "event_id": "e0001",
+      "step": 1,
+      "tool": "read_file"
+    },
+    "first_workspace_change": {
+      "status": "observed",
+      "event_id": "e0007",
+      "step": 7,
+      "tool": "write_file",
+      "revision": "92c72a01918c5f0f",
+      "usage": {
+        "method": "response_order",
+        "requests": 10,
+        "input_tokens": 21378,
+        "output_tokens": 2413,
+        "total_tokens": 23791
+      }
+    },
+    "prefix_tokens_by_purpose": {
+      "agent": 14169,
+      "summary": 9622
+    }
+  },
+  "local_frozen_set": {
+    "runs": 59,
+    "unchanged_files": 177,
+    "observed_usage_methods": {
+      "response_order": 38
+    },
+    "sorted_path_tab_hash_lf_sha256": "d41f34fbeb6b72aa84347e5db1b9614ea97daba5105929d1849fb6f67978c9fd",
+    "counts": [
+      {
+        "evidence_kind": "model_run",
+        "status": "not_observed",
+        "runs": 13
+      },
+      {
+        "evidence_kind": "model_run",
+        "status": "observed",
+        "runs": 3
+      },
+      {
+        "evidence_kind": "model_run",
+        "status": "unavailable",
+        "runs": 1
+      },
+      {
+        "evidence_kind": "scripted_smoke",
+        "status": "not_observed",
+        "runs": 7
+      },
+      {
+        "evidence_kind": "scripted_smoke",
+        "status": "observed",
+        "runs": 35
+      }
+    ]
+  }
+}

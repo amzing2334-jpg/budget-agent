@@ -210,16 +210,23 @@ def generate_report(input_dir: Path, output_dir: Path) -> dict[str, Path]:
     diagnostic_notice = ("Tool success does not establish a correct repair or a passed test. "
                          "Repeated observations have identical action, output and recorded revision; repetition does not necessarily indicate an error. "
                          "unavailable means the result has no stored count. This report does not reanalyze old trajectories.")
-    diagnostic_headers = ["Run", "Task", "Strategy", "Successful read", "Successful edit + write", "Successful run", "Successful diff", "Invalid actions", "Failed action repeats", "Identical observation repeats"]
+    diagnostic_headers = ["Run", "Task", "Strategy", "Successful read", "Successful edit + write", "Successful run", "Successful diff", "Invalid actions", "Failed action repeats", "Identical observation repeats", "First changed workspace snapshot (cumulative usage)"]
     md.extend(["", "## Run behavior diagnostics", "", diagnostic_notice, "",
                "| " + " | ".join(diagnostic_headers) + " |", "|" + "---|" * len(diagnostic_headers)])
     body.append('<section><h2>Run behavior diagnostics</h2><p class="muted">' + html.escape(diagnostic_notice) + '</p><div class="table-wrap"><table><thead><tr>' + ''.join('<th>' + label + '</th>' for label in diagnostic_headers) + '</tr></thead><tbody>')
     for result in results:
-        counts = (result.get("diagnostics") or {}).get("counts", {})
+        diagnostics = result.get("diagnostics") or {}
+        counts = diagnostics.get("counts", {})
+        change = diagnostics.get("first_workspace_change") or {}
+        milestone = change.get("status", "unavailable")
+        if milestone == "observed":
+            usage = change["usage"]
+            usage_text = f"{usage['requests']} requests, {usage['total_tokens']} tokens" if usage else "usage unavailable"
+            milestone = f"{change['event_id']} ({change['tool']}), {usage_text}"
         edit, write = counts.get("successful_edit_file"), counts.get("successful_write_file")
         edits = edit + write if edit is not None and write is not None else None
         metrics = [counts.get("successful_read_file"), edits, counts.get("successful_run"), counts.get("successful_diff"),
-                   counts.get("invalid_actions"), counts.get("repeated_failed_actions"), counts.get("repeated_observations")]
+                   counts.get("invalid_actions"), counts.get("repeated_failed_actions"), counts.get("repeated_observations"), milestone]
         values = [result.get("run_id", Path(result["_result_path"]).parent.name), result["task_id"], result.get("strategy", ""),
                   *("unavailable" if value is None else value for value in metrics)]
         md.append("| " + " | ".join(str(value).replace("|", "\\|").replace("\n", " ") for value in values) + " |")

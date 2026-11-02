@@ -10,7 +10,9 @@ import re
 from typing import Any
 
 from .context import MASKED_OBSERVATION
+from .evaluation import ledger_token_count
 from .loop_control import ReadLoopMonitor
+from .models import parse_action
 from .observations import parse_read_observation
 from .schema import Event
 
@@ -162,7 +164,78 @@ def _read_file_coverage(events: Sequence[Event]) -> dict[str, Any]:
     }
 
 
-def analyze_trajectory(events: Sequence[Event], calls: Sequence[dict[str, Any]]) -> dict[str, Any]:
+def _matches_response(event: Event, content: str) -> bool:
+    if event.model_content is not None:
+        return content == event.model_content
+    # Older trajectories retained the parsed action but omitted its raw text.
+    try:
+        action = parse_action(content)
+    except ValueError:
+        return event.action == {"tool": "invalid_action"}
+    if action["tool"] == "remember" and "source_revision" in event.action:
+        action["source_revision"] = event.action["source_revision"]
+    return action == event.action
+
+
+def _usage_through_event(events: Sequence[Event], calls: Sequence[dict],
+                         requests: list[dict] | None) -> tuple[dict | None, str | None]:
+    """Match the actor turns and charge every model call through the last event."""
+    inputs = outputs = event_index = 0
+    for index, call in enumerate(calls, 1):
+        response = call.get("response")
+        purpose = call.get("purpose")
+        if not isinstance(response, dict) or call.get("status") == "usage_unknown":
+            return None, f"Missing model usage at request {index}"
+        prompt = ledger_token_count(response, "input_tokens")
+        completion = ledger_token_count(response, "output_tokens")
+        if prompt is None or completion is None:
+            return None, f"Invalid token counts at request {index}"
+        if requests is not None:
+            row = requests[index - 1] if isinstance(requests, list) and index <= len(requests) else None
+            if (not isinstance(row, dict) or row.get("purpose") != purpose
+                    or ledger_token_count(row, "input_tokens") != prompt
+                    or ledger_token_count(row, "output_tokens") != completion):
+                return None, f"Request {index} does not match the budget ledger"
+        inputs += prompt
+        outputs += completion
+        if purpose in {"summary", "reflection"}:
+            continue
+        if purpose != "agent":
+            return None, f"Unknown request purpose at request {index}"
+        event = events[event_index]
+        if event.request_index is not None and (type(event.request_index) is not int or event.request_index != index):
+            return None, f"Request index mismatch for {event.id}"
+        content = response.get("content")
+        if not isinstance(content, str) or not _matches_response(event, content):
+            return None, f"Agent response mismatch for {event.id} at request {index}"
+        event_index += 1
+        if event_index == len(events):
+            return {"method": "request_index" if event.request_index is not None else "response_order",
+                    "requests": index, "input_tokens": inputs, "output_tokens": outputs,
+                    "total_tokens": inputs + outputs}, None
+    return None, "Missing agent request through the changed snapshot"
+
+
+def first_workspace_change(events: Sequence[Event], calls: Sequence[dict[str, Any]],
+                           initial_revision: str | None, requests: list[dict] | None = None) -> dict[str, Any]:
+    """First recorded post-step snapshot differing from the initial workspace."""
+    if not initial_revision or not events:
+        return {"status": "unavailable", "usage": None, "reason": "Missing initial revision or trajectory"}
+    for step, event in enumerate(events, 1):
+        if event.step != step or not event.revision:
+            return {"status": "unavailable", "usage": None, "reason": f"Missing snapshot in step {step}"}
+        if event.revision != initial_revision:
+            usage, reason = _usage_through_event(events[:step], calls, requests)
+            result = {"status": "observed", "event_id": event.id, "step": step, "tool": event.action["tool"],
+                      "revision": event.revision, "usage": usage}
+            if reason:
+                result["reason"] = reason
+            return result
+    return {"status": "not_observed", "usage": None}
+
+
+def analyze_trajectory(events: Sequence[Event], calls: Sequence[dict[str, Any]], *,
+                       initial_revision: str | None = None, requests: list[dict] | None = None) -> dict[str, Any]:
     """Summarize Event records and existing calls.jsonl rows without inference.
 
     Calls are paired with events in successful agent-response order. Summary and
@@ -228,6 +301,7 @@ def analyze_trajectory(events: Sequence[Event], calls: Sequence[dict[str, Any]])
                for tool in ("read_file", "edit_file", "write_file", "run", "diff")},
         },
         "first_successful_tool_action": first_successful,
+        "first_workspace_change": first_workspace_change(events, calls, initial_revision, requests),
         "invalid_actions": invalid,
         "repeated_failed_actions": failed_repeats,
         "repeated_observations": observation_repeats,
@@ -251,6 +325,8 @@ def analyze_trajectory(events: Sequence[Event], calls: Sequence[dict[str, Any]])
         "visible_read_repetitions": visible_read_repetitions,
         "notes": [
             "Tool success and the first successful action do not establish a correct repair or a passed test.",
+            "First workspace change compares recorded post-step snapshots with the initial fingerprint. "
+            "Usage includes all requests through the action that precedes that snapshot.",
             "Repeated observations mean identical action, output, and recorded revision; they do not prove that repeating the check was unnecessary.",
             "Visible read repetitions compare complete returned line text with explicit evidence in the actual preceding request. Offline detection does not demonstrate recovery or token savings under a new policy.",
             "Reaching an output allowance is evidence of budget pressure, not proof that truncation caused the invalid action; both flags can coexist.",
@@ -259,10 +335,19 @@ def analyze_trajectory(events: Sequence[Event], calls: Sequence[dict[str, Any]])
     }
 
 
-def diagnose_run(run_dir: Path) -> dict[str, Any]:
-    """Read a run without writing artifacts; zero-call environment failures are valid."""
-    def rows(name: str) -> list[dict[str, Any]]:
-        path = run_dir / name
-        return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()] if path.exists() else []
+def read_jsonl(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8") as stream:
+        return [json.loads(line) for line in stream if line.strip()]
 
-    return analyze_trajectory([Event(**row) for row in rows("trajectory.jsonl")], rows("calls.jsonl"))
+
+def diagnose_run(run_dir: Path, *, result: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Read a run without writing artifacts; zero-call environment failures are valid."""
+    if result is None:
+        path = run_dir / "result.json"
+        result = json.loads(path.read_bytes()) if path.exists() else {}
+    return analyze_trajectory([Event(**row) for row in read_jsonl(run_dir / "trajectory.jsonl")],
+                              read_jsonl(run_dir / "calls.jsonl"),
+                              initial_revision=result.get("initial_revision"),
+                              requests=result.get("budget", {}).get("requests"))

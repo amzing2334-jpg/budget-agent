@@ -164,7 +164,7 @@ def main(argv=None) -> int:
             report = {"kind": "offline_behavior_diagnostics", "runs": [
                 {"task_id": result["task_id"], "run_id": result["run_id"],
                  "source_result": result["_result_path"],
-                 "diagnostics": diagnose_run(Path(result["_result_path"]).parent)}
+                 "diagnostics": diagnose_run(Path(result["_result_path"]).parent, result=result)}
                 for result in results
             ]}
             args.output.parent.mkdir(parents=True, exist_ok=True)

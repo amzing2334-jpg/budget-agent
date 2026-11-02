@@ -260,7 +260,8 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
                     safety_records.append(security_record)
                     _append(run_dir / "security.jsonl", security_record)
             event = Event(f"e{step:04d}", step, action, outcome["output"], env.revision(), outcome["ok"],
-                          time.monotonic() - action_start, model_content=content, revision_before=revision)
+                          time.monotonic() - action_start, model_content=content, revision_before=revision,
+                          request_index=len(call_records))
             events.append(event)
             _append(run_dir / "trajectory.jsonl", event.to_dict())
             if config.loop_policy == "recover":
@@ -345,7 +346,7 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         "usage_sources": sorted(usage_sources), "budget": budget.to_dict(),
         "elapsed_seconds": time.monotonic() - start, "model_seconds": model_seconds,
         "steps": len(events), "context_stats": context.stats,
-        "diagnostics": analyze_trajectory(events, call_records),
+        "diagnostics": analyze_trajectory(events, call_records, initial_revision=initial_revision, requests=budget.records),
         "loop_control": {"policy": config.loop_policy, "events": controls,
                          "warnings_sent": sum(row["kind"] == "warning_sent" for row in controls),
                          "stopped": status == "stalled"},

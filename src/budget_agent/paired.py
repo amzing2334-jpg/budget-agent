@@ -7,11 +7,13 @@ import json
 from pathlib import Path
 from statistics import mean
 
+from .diagnostics import first_workspace_change, read_jsonl
 from .evaluation import (
     comparison_budget_valid, evidence_kind, is_infrastructure_error, ledger_token_count, request_ledger,
     verified_outcome,
 )
 from .report import load_results
+from .schema import Event
 
 
 FACTORS = ("strategy", "decision_policy", "loop_policy", "reflection_policy")
@@ -57,9 +59,14 @@ def _outcome(result: dict) -> str:
 
 def _behavior(result: dict) -> dict:
     path = Path(result["_result_path"]).parent / "trajectory.jsonl"
+    change = (result.get("diagnostics") or {}).get("first_workspace_change") or first_workspace_change([], [], None)
     if not path.is_file():
-        return {"repeat_reads_same_revision": None, "invalid_actions": None, "failed_tool_actions": None}
-    events = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        return {"first_workspace_change": change, "repeat_reads_same_revision": None,
+                "invalid_actions": None, "failed_tool_actions": None}
+    events = read_jsonl(path)
+    if result.get("initial_revision"):
+        change = first_workspace_change([Event(**row) for row in events], read_jsonl(path.with_name("calls.jsonl")),
+                                        result["initial_revision"], result.get("budget", {}).get("requests"))
     reads: set[tuple] = set()
     repeated = 0
     for event in events:
@@ -68,7 +75,7 @@ def _behavior(result: dict) -> dict:
             key = (event["revision"], action["path"], action.get("start_line", 1), action.get("end_line"))
             repeated += key in reads
             reads.add(key)
-    return {"repeat_reads_same_revision": repeated,
+    return {"first_workspace_change": change, "repeat_reads_same_revision": repeated,
             "invalid_actions": sum(event["action"]["tool"] == "invalid_action" for event in events),
             "failed_tool_actions": sum(event["ok"] is False for event in events)}
 
