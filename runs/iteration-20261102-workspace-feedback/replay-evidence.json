@@ -1,0 +1,98 @@
+{
+  "scope": "Fixed actions 3-6 of one external trace mapped into the internal runner. Synthetic marker verifier; no model or official Astropy tests.",
+  "archive": "runs/cloud-v5-a4000-20261022-01/mini-baseline/astropy__astropy-12907__mini-swe-textbased",
+  "trajectory_sha256": "dc0222818175be4716b6b5de63dfedd1e84668d07fdb7ed457de21ac527f7328",
+  "source_sha256": "cac38fe9744203c720d50d6c88dcdcb0d93a7b2326fe89911e83640ad5676b0f",
+  "sed": "sed (GNU sed) 4.9",
+  "counter": "UTF-8 bytes with message framing",
+  "context_limit": 8192,
+  "total_limit": 32000,
+  "arms": {
+    "direct": {
+      "steps": [
+        {
+          "event": "e0001",
+          "before": "f9566f238968c204",
+          "after": "f9566f238968c204",
+          "ok": true,
+          "stdout_and_stderr": "",
+          "next_system_suffix": ""
+        },
+        {
+          "event": "e0002",
+          "before": "f9566f238968c204",
+          "after": "f9566f238968c204",
+          "ok": true,
+          "stdout_and_stderr": "",
+          "next_system_suffix": ""
+        },
+        {
+          "event": "e0003",
+          "before": "f9566f238968c204",
+          "after": "f9566f238968c204",
+          "ok": true,
+          "stdout_and_stderr": "",
+          "next_system_suffix": ""
+        },
+        {
+          "event": "e0004",
+          "before": "f9566f238968c204",
+          "after": "f9566f238968c204",
+          "ok": true,
+          "stdout_and_stderr": "",
+          "next_system_suffix": ""
+        }
+      ],
+      "calls": 5,
+      "input_units": 13416,
+      "output_units": 546,
+      "total_units": 13962,
+      "fixture_resolved": false,
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inputs_without_feedback_sha256": "dd9b650bdf63b8832755370790605b30a3167eda0cee57db2020758a7217b9b3"
+    },
+    "workspace-feedback": {
+      "steps": [
+        {
+          "event": "e0001",
+          "before": "f9566f238968c204",
+          "after": "f9566f238968c204",
+          "ok": true,
+          "stdout_and_stderr": "",
+          "next_system_suffix": "Workspace feedback for e0001 (run): workspace fingerprint unchanged. If editing, recheck the target."
+        },
+        {
+          "event": "e0002",
+          "before": "f9566f238968c204",
+          "after": "f9566f238968c204",
+          "ok": true,
+          "stdout_and_stderr": "",
+          "next_system_suffix": "Workspace feedback for e0002 (run): workspace fingerprint unchanged. If editing, recheck the target."
+        },
+        {
+          "event": "e0003",
+          "before": "f9566f238968c204",
+          "after": "f9566f238968c204",
+          "ok": true,
+          "stdout_and_stderr": "",
+          "next_system_suffix": "Workspace feedback for e0003 (run): workspace fingerprint unchanged. If editing, recheck the target."
+        },
+        {
+          "event": "e0004",
+          "before": "f9566f238968c204",
+          "after": "f9566f238968c204",
+          "ok": true,
+          "stdout_and_stderr": "",
+          "next_system_suffix": "Workspace feedback for e0004 (run): workspace fingerprint unchanged. If editing, recheck the target."
+        }
+      ],
+      "calls": 5,
+      "input_units": 13820,
+      "output_units": 546,
+      "total_units": 14366,
+      "fixture_resolved": false,
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "inputs_without_feedback_sha256": "dd9b650bdf63b8832755370790605b30a3167eda0cee57db2020758a7217b9b3"
+    }
+  }
+}

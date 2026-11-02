@@ -106,6 +106,8 @@ v5 另设 `min_action_output_tokens=128`：剩余额度无法容纳输入和最�
 
 `decision_policy=direct` 保留原始工具提示；可选 `budget-aware` 在每次输入中加入当前剩余总 token、步数、工作区是否变化、连续浏览次数，以及复现—编辑—验证的简短提示。这些文字照常计入同一预算，不增加免费模型调用，不限制工具选择，也不会将工作区变化当作正确修复。该因素与上下文策略分开比较；新策略只有经过真实补丁与独立评分，才能声称提升能力。
 
+使用 `--decision-policy workspace-feedback` 可以单独测量编辑反馈。内部 Agent 比较每一步前后的工作区指纹。成功的文件写入或静默 shell 命令若没有改变指纹，下一次行动请求会收到简短提示。它沿用原策略选出的上下文，只有还能完整预留本次最大输出时才加入提示。预算不足时，`context_stats.workspace_feedback_omissions` 记录事件和原因。[四次实际编辑的回放与验收结果](docs/ITERATION_LOG.md#workspace-feedback-20261102)
+
 查看轨迹中的重复失败、重复成功观察、协议错误和输出额度压力：
 
 ```bash

@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -42,6 +43,32 @@ def test_baseline_fails_and_repair_passes_without_touching_fixture(tmp_path):
     assert "+" in env.patch() and "[^a-z0-9]+" in env.patch()
     assert (Path(task.repo) / "slugify.py").read_text(encoding="utf-8") == original
     assert not (env.workspace / "_private_verifier.py").exists()
+
+
+@pytest.mark.parametrize("original", [b"target\nnext\n", b"target\r\nnext\r\n", b"target\r\nnext\n"],
+                         ids=["lf", "crlf", "mixed"])
+def test_edit_replacing_text_with_itself_leaves_file_untouched(tmp_path, original):
+    env = create_environment(load_task(), RunConfig(), tmp_path / "run")
+    path = env.workspace / "slugify.py"
+    path.write_bytes(original)
+    os.utime(path, (946684800, 946684800))
+    modified = path.stat().st_mtime_ns
+    result = env.execute({"tool": "edit_file", "path": "slugify.py", "old": "target", "new": "target"})
+    assert result["ok"]
+    assert path.read_bytes() == original
+    assert path.stat().st_mtime_ns == modified
+    assert "unchanged" in result["output"].lower()
+
+
+@pytest.mark.parametrize("old,error", [("", "non-empty"), ("missing", "found 0"), ("target", "found 2")])
+def test_identical_replacement_still_requires_a_unique_anchor(tmp_path, old, error):
+    env = create_environment(load_task(), RunConfig(), tmp_path / "run")
+    path = env.workspace / "slugify.py"
+    original = b"target\r\ntarget\n"
+    path.write_bytes(original)
+    result = env.execute({"tool": "edit_file", "path": "slugify.py", "old": old, "new": old})
+    assert not result["ok"] and error in result["output"]
+    assert path.read_bytes() == original
 
 
 @pytest.mark.parametrize("path", ["../secret.txt", "../../secret.txt", ".git/config", ".GIT/config", ".git./config", "C:/secret.txt", "/etc/passwd", "tests/../../secret"])

@@ -45,9 +45,17 @@ def _append(path: Path, value: dict) -> None:
         stream.write(json.dumps(value, ensure_ascii=False) + "\n")
 
 
+def workspace_feedback(event: Event) -> str:
+    tool = event.action["tool"]
+    file_tool_or_quiet_command = tool in {"write_file", "edit_file"} or (tool == "run" and not event.output.strip())
+    if event.ok and file_tool_or_quiet_command and event.revision_before and event.revision_before == event.revision:
+        return f"Workspace feedback for {event.id} ({tool}): workspace fingerprint unchanged. If editing, recheck the target."
+    return ""
+
+
 def decision_prompt(config: RunConfig, remaining: int, step: int, events: list[Event],
                     revision: str, initial_revision: str) -> str:
-    if config.decision_policy == "direct":
+    if config.decision_policy != "budget-aware":
         return SYSTEM
     browsing = 0
     for event in reversed(events):
@@ -143,7 +151,24 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         if purpose == "agent" and config.decision_policy == "budget-aware":
             # A summary may have consumed budget during context construction.
             messages = [{"role": "system", "content": system_prompt()}, *messages[1:]]
-        allowance = budget.reserve(messages, max_output, min_output_tokens=config.min_action_output_tokens if purpose == "agent" else 1)
+        floor = config.min_action_output_tokens if purpose == "agent" else 1
+        hint = (workspace_feedback(events[-1])
+                if purpose == "agent" and config.decision_policy == "workspace-feedback" and events else "")
+        base_messages = messages
+        if hint:
+            messages = [{"role": "system", "content": messages[0]["content"] + "\n" + hint}, *messages[1:]]
+        try:
+            # Optional feedback may use spare input space, never the action's output allowance.
+            allowance = budget.reserve(messages, max_output, min_output_tokens=max_output if hint else floor)
+        except BudgetExceeded as exc:
+            if not hint or budget.overrun:
+                raise
+            context.stats.setdefault("workspace_feedback_omissions", []).append(
+                {"event_id": events[-1].id, "reason": str(exc)})
+            messages = base_messages
+            allowance = budget.reserve(messages, max_output, min_output_tokens=floor)
+        if hint:
+            context.stats["last_input_tokens"] = counter.messages(messages)
         call_start = time.monotonic()
         try:
             response = model.complete(messages, allowance, purpose=purpose)
@@ -234,7 +259,8 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
                                        "decision": policy_decision}
                     safety_records.append(security_record)
                     _append(run_dir / "security.jsonl", security_record)
-            event = Event(f"e{step:04d}", step, action, outcome["output"], env.revision(), outcome["ok"], time.monotonic() - action_start, model_content=content)
+            event = Event(f"e{step:04d}", step, action, outcome["output"], env.revision(), outcome["ok"],
+                          time.monotonic() - action_start, model_content=content, revision_before=revision)
             events.append(event)
             _append(run_dir / "trajectory.jsonl", event.to_dict())
             if config.loop_policy == "recover":

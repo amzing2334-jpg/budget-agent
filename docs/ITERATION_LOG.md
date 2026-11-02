@@ -2,6 +2,32 @@
 
 本文件是后续每 4 小时评估的入口。先读项目 AGENTS.md 和最新一轮记录，再选择一个有证据的瓶颈；不是每轮必须增加功能。所有模型效果结论必须对应真实运行和独立评分。招聘页面重新访问不等于新开 HC。
 
+<a id="workspace-feedback-20261102"></a>
+
+## 2026-11-02 · 让内部 Agent 看见一次成功命令是否改变了工作区
+
+一份真实 Astropy 轨迹中，mini-SWE 连续四次执行了把文本替换为自身的 `sed` 命令。四次的退出码都是 0，输出都为空，最后交付空补丁。四次请求共用 22,438 / 26,800 token，其中包含发送给模型的完整历史。冻结清单里也有 54 次内部 shell 调用成功且相邻工作区指纹相同，逐条核对是 4 次真实模型和 50 次脚本的测试或复现。可见 shell 成功和指纹不变可以同时发生在有效的检查与无效的编辑中。[原始失败分析](../runs/v5-followup-20261022-01/CLOUD_FAILURE_ANALYSIS.md) · [冻结清单](../runs/iteration-20261027-06/historical-audit.json)
+
+内部 runner 把已有的步骤开始指纹写入 `revision_before`，并保留动作结束的 `revision`、工具状态和原始输出。新增可选 `--decision-policy workspace-feedback`。仅当上一步成功、两次指纹相同，且动作为文件写入、文件编辑或无非空白输出的 shell 命令时，下一次行动请求才会得到一条带事件 ID 的提示。它报告这一步可见的工作区状态，静默只读命令也可能触发。旧轨迹缺少前指纹时不据此生成提示。另修复了唯一匹配的 `edit_file(old==new)` 原先仍会重写文件的问题。Windows 的 LF 和混合行尾样例会因此变成 CRLF，现在原字节和修改时间都保留。空锚点、不匹配和多匹配继续返回原有错误。
+
+用归档 `cat` 观察中的 9,878 字节源文件，在两个临时目录重放了经核对的四条替换表达式。通过正常内部 runner 执行 GNU sed，再追加一次 `finish` 以观察最后一条反馈。两组都使用预置响应，累计上限均为 32,000 个字节计数单位。
+
+| 固定动作回放 | `direct` | `workspace-feedback` |
+|---|---:|---:|
+| 实际成功且未改变指纹的替换 | 4 | 4 |
+| 下一次请求收到带对应事件 ID 的提示 | 0 | 4 |
+| 全部 5 次请求的输入单位 | 13,416 | 13,820 |
+| 输出单位 | 546 | 546 |
+| 交付的补丁 | 空 | 空 |
+
+提示实际消耗 404 个额外输入单位，每次 101。两组其余消息的哈希一致。`byte` 计数器按 UTF-8 字节和消息开销计量。原来的 22,438 是真实模型的请求 token，两种计量不可相减。项目根目录运行 `python runs/iteration-20261102-workspace-feedback/replay.py`，需要 Git 和 GNU sed。[回放代码](../runs/iteration-20261102-workspace-feedback/replay.py) · [逐步回执](../runs/iteration-20261102-workspace-feedback/replay-evidence.json)
+
+开发时发现无条件追加提示会挤掉紧预算下本可发送的最后一次请求。最终实现先按基线构建上下文，只有计入提示后仍能在上下文、总 token 和费用约束内完整预留本次最大输出，才选用带提示的输入。否则把事件和原因记入 `context_stats.workspace_feedback_omissions`，原消息照常走预算检查。两个边界测试分别限制总 token 和模拟金额，两组都发出 2 次请求，消息、账本和逐次输出额度相同。
+
+另一项验收用同一个预先写好响应规则的 actor 跑 `slugify-digits`。它收到提示后才选择已知修复。两组都发出 3 次请求，候选组交付了通过独立测试的补丁。这项测试证明反馈可以改变下一步动作，真实模型是否能自行选对修改仍待测量。全量 CPU 套件 835 项通过、13 项跳过，另行执行固定上游 mini-SWE 适配器 21 项和 OpenJudge 检查 142 项，均通过。本轮云主机和模型 API 开销为零。[测试与紧预算反例](../tests/test_workspace_feedback.py)
+
+2026-11-02 02:39 至 02:41 UTC 核对百度与 SWE-agent 资料，随后按完整 Git SHA 复核编辑器实现。百度 J106681 的 2026-10-19 公告仍要求从轨迹定位失败、建立自动回归并度量工具效率与 token 成本，页面人数无法确认剩余 HC。SWE-agent 论文 v3 修订于 2024-11-11，第 2 节讨论动作效果反馈。其可选编辑器在固定提交 `df63c382`（2026-06-06）中明确处理新旧字符串相同的情况。下一次真实模型对照应在相同任务、模型、上下文策略和预算下比较首次有效 diff 前的调用与 token、最终补丁及独立评分。[百度实习岗位](https://talent.baidu.com/jobs/detail/INTERN/162291c8-43e8-4cc0-9c96-3fb0a7ebb720) · [SWE-agent 论文](https://arxiv.org/html/2405.15793v3#S2) · [固定版本的编辑器](https://github.com/SWE-agent/SWE-agent/blob/df63c382ab8615f1363f739ab2801918d8d3b02a/tools/edit_anthropic/bin/str_replace_editor#L536-L538)
+
 <a id="mini-evidence-20261102"></a>
 
 ## 2026-11-02 · 把真实上游的 CPU 接口测试与真实模型尝试分开计数

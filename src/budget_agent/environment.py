@@ -226,7 +226,10 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
             offset = position + len(needle)
         hint = ("Matching block starts" if matches else "First nonempty old line occurs") + ": " + "; ".join(positions) if positions else "No anchor found; read the current file before editing."
         raise ValueError(f"edit_file old must match exactly once; found {matches}. No file changed. {hint}. Use read_file on {relative} around these lines, then include enough exact surrounding text in old to match once.")
-    path.write_text(content.replace(old, action["new"], 1), encoding="utf-8")
+    new = action["new"]
+    if new == old:
+        return f"Unchanged {relative}: old and new are identical."
+    path.write_text(content.replace(old, new, 1), encoding="utf-8")
     return f"Edited {relative}"
 
 

@@ -17,6 +17,7 @@ class Event:
     ok: bool = True
     duration_seconds: float = 0.0
     model_content: str | None = None
+    revision_before: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -86,8 +87,8 @@ class RunConfig:
             raise ValueError("strategy must be full, recent, mask, mask-read, summary, or structured")
         if self.history_format not in {"transcript", "chat"}:
             raise ValueError("history_format must be transcript or chat")
-        if self.decision_policy not in {"direct", "budget-aware"}:
-            raise ValueError("decision_policy must be direct or budget-aware")
+        if self.decision_policy not in {"direct", "budget-aware", "workspace-feedback"}:
+            raise ValueError("decision_policy must be direct, budget-aware, or workspace-feedback")
         if self.loop_policy not in {"off", "recover"}:
             raise ValueError("loop_policy must be off or recover")
         if self.reflection_policy not in {"off", "failure", "evidence"}:
