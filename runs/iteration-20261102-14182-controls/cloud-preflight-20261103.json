@@ -1,0 +1,49 @@
+{
+  "instance_id": "astropy__astropy-14182",
+  "solver_commit": "07c545fe273f945c842377964121a62447dfbfdf",
+  "control_spec_sha256": "ab2582daad4c0f79c4b7fc7a3c638e6c1c4e07e66781f617d94b62d207b122c7",
+  "rental": {
+    "provider": "Featurize",
+    "quote_cny_per_hour": 1.87,
+    "order_submitted_at_utc": "2026-11-02T16:03:55Z",
+    "verified_timer_trigger_utc": "2026-11-02T16:58:55Z",
+    "release_command_started_at_utc": "2026-11-02T16:58:34Z",
+    "release_cli_exit_code": 0,
+    "actual_cny": 1.64,
+    "amount_source": "user checked the platform consumption record",
+    "paid_storage_expansion": false
+  },
+  "image": {
+    "platform": "linux/amd64",
+    "engine": "29.1.4",
+    "oci_platform_manifest": "sha256:4a1da544b0a2d7bb43266093db899f77c60700f76b84497e6c66138cb30d8663",
+    "compressed_layer_count": 10,
+    "compressed_layer_bytes": 1137501157,
+    "published_descriptors_verified": 12,
+    "descriptor_bytes_including_config_and_manifest": 1137507566,
+    "engine_resolved_canonical_reference": true,
+    "persistent_layout": "/home/featurize/work/budget-agent-assets/docker/14182-4a1da544",
+    "cache_receipt_sha256": "c8500f1223e6f76bd106023904895e5b559cca7980731c727f2ce155dd1d7889"
+  },
+  "controls": {
+    "swebench": "5.0.2",
+    "cloud_preflight_sha256": "5e456b6e1c727dc0bf269933ce9ada64d56d5d0ecfe82fa873ddfec5b5d7c9c4",
+    "gold": {
+      "started": true,
+      "last_recorded_stage": "harness wrote its evaluation script and announced copying it to the container",
+      "patch_applied": true,
+      "patch_sha256": "1c80b57d515ed4da42842dff56cfec5b5c72fee6a469c9bb33f2f6b59dba0f3c",
+      "eval_script_sha256": "34d229a7f22ff6a6b4a348e67a8e1c3b03291c3f0b33eecc9a0258a27e925d57",
+      "instance_log_sha256": "d671ad5d1f5ce8f117e567fe3f88f91e82d391f692246bc1e820375442f54605",
+      "report_present": false,
+      "resolved": null
+    },
+    "negative": {"started": false, "resolved": null},
+    "controls_verified_receipt_present": false,
+    "private_archive_sha256": "61c7b1b51e49c6f08530c3531e202cc8f732d18983de7efa195a445f937e44e1"
+  },
+  "model_requests": 0,
+  "api_cny": 0,
+  "total_cny": 1.64,
+  "completed_strategy_pairs": 0
+}

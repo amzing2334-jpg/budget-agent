@@ -35,6 +35,29 @@ python -m budget_agent swe-check-controls --spec "$case_dir/14182-spec.json" \
   --output /private/new-control-receipt.json
 ```
 
+<a id="cloud-cache-14182"></a>
+
+### 在后续主机复用本次云端镜像
+
+2026-11-03 的主机已把完整 OCI 布局保存到该账户已有的持久盘。Docker 29.1.4 的 containerd 存储使用以下步骤将本地镜像与求解清单中的规范引用关联起来。换主机后先核实挂载目录、Docker daemon 的 containerd socket 和命名空间。以下命令适用于本次核实的环境。导入完成仍须运行上面的两项官方对照。[首次云端记录](cloud-preflight-20261103.json)
+
+```bash
+set -euo pipefail
+layout=/home/featurize/work/budget-agent-assets/docker/14182-4a1da544
+repo=swebench/sweb.eval.x86_64.astropy_1776_astropy-14182
+digest=sha256:4a1da544b0a2d7bb43266093db899f77c60700f76b84497e6c66138cb30d8663
+ctr=(sudo ctr -a /run/docker/containerd/containerd.sock -n moby)
+tar -C "$layout" -cf - oci-layout index.json blobs | "${ctr[@]}" images import --local --platform linux/amd64 -
+if ! sudo docker image inspect "$repo@$digest" >/dev/null 2>&1; then
+    ref="docker.io/$repo:14182-verified"
+    "${ctr[@]}" images ls | awk -v n="$ref" -v d="$digest" '$1 == n && $3 == d {ok=1} END {exit !ok}'
+    "${ctr[@]}" images tag --local "$ref" "docker.io/$repo@$digest"
+fi
+sudo docker image inspect "$repo@$digest" --format '{{.Os}}/{{.Architecture}} {{json .RepoDigests}}'
+```
+
+首次正控在归还前应用了标准补丁，尚无最终判分。下轮使用新的目录，不复用本次未完成的官方运行。
+
 ### 下一组真实策略对照
 
 本题属于项目开发集。评分环境验收通过且本轮预算已获授权后，求解侧可共用 `configs/reference-qwen38-max.toml`、本目录的单题清单及 `--total-tokens 64000`，分别指定 `--decision-policy direct` 和 `--decision-policy workspace-feedback`，每侧一次、各用新运行目录。使用上述固定评分数据为两份补丁各设新的官方 `run_id`，将实际评分材料与本次对照回执核对后再解释成败。记录两侧是否交付补丁、首次工作区变化消耗的请求及 token，以及最终独立评分。

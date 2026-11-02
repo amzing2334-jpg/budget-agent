@@ -2,7 +2,9 @@
 # On a prepared Linux grading host: run the two official controls only.
 set -euo pipefail
 umask 077
-grader=$(realpath "${1:?absolute path to the Python executable in the grading venv}")
+grader=${1:?path to the Python executable in the grading venv}
+# Keep bin/python's venv symlink when resolving the caller's relative path.
+[[ $grader == /* ]] || grader="$PWD/$grader"
 inputs=$(realpath "${2:?private grading-input directory}")
 work=$(realpath -m "${3:?new private result directory}")
 here=$(cd "$(dirname "$0")" && pwd -P)
