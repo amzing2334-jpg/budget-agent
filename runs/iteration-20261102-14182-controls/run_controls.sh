@@ -7,6 +7,10 @@ grader=${1:?path to the Python executable in the grading venv}
 [[ $grader == /* ]] || grader="$PWD/$grader"
 inputs=$(realpath "${2:?private grading-input directory}")
 work=$(realpath -m "${3:?new private result directory}")
+deadline=${4:?verified absolute stop time in UTC Unix seconds}
+[[ $deadline =~ ^[1-9][0-9]{0,9}$ ]] || { echo "Expected a positive UTC Unix timestamp in seconds" >&2; exit 2; }
+test_timeout=600
+archive_reserve=120
 here=$(cd "$(dirname "$0")" && pwd -P)
 root=$(realpath "$here/../..")
 task=astropy__astropy-14182
@@ -53,10 +57,28 @@ Path("preflight.json").write_text(json.dumps({
 }, indent=2) + "\n", encoding="utf-8")
 PY
 
+# Check at dispatch, after preflight and again after the gold control. The
+# independent host stop still owns interruption and release of a running job.
+admit_control() {
+    local stage=$1 pending=$2 now left required decision=admit
+    now=$(date +%s)
+    left=$((deadline - now))
+    required=$((pending * test_timeout + archive_reserve))
+    if ((left <= required)); then decision=defer; fi
+    printf '{"stage":"%s","decision":"%s","checked_epoch":%d,"deadline_epoch":%d,"remaining_seconds":%d,"required_seconds":%d,"pending_controls":%d,"test_timeout_seconds":%d,"archive_reserve_seconds":%d}\n' \
+        "$stage" "$decision" "$now" "$deadline" "$left" "$required" "$pending" "$test_timeout" "$archive_reserve" >> control-admission.jsonl
+    if [[ $decision == defer ]]; then
+        echo "Deferred $stage: ${left}s left; need more than ${required}s before stop (including ${archive_reserve}s for archiving)." >&2
+        return 75
+    fi
+}
+
 label="controls-14182-$("$grader" -c 'import uuid; print(uuid.uuid4().hex)')"
 harness=("$grader" -m swebench.harness.run_evaluation --dataset_name "$inputs/pinned-dataset.json"
-         --split test --instance_ids "$task" --max_workers 1 --timeout 600)
+         --split test --instance_ids "$task" --max_workers 1 --timeout "$test_timeout")
+admit_control gold 2
 "${harness[@]}" --predictions_path gold --run_id "$label-gold"
+admit_control negative 1
 "${harness[@]}" --predictions_path "$inputs/negative.jsonl" --run_id "$label-negative"
 "$grader" -m budget_agent swe-check-controls --spec "$spec" \
     --gold-report "logs/run_evaluation/$label-gold/gold/$task/report.json" \

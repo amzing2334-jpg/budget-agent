@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 
@@ -26,7 +27,8 @@ class ControlInterpreterTest(unittest.TestCase):
                 "import sys, pathlib; pathlib.Path('observed-prefix').write_text(sys.prefix)\n",
                 encoding="utf-8")
             (caller / "inputs").mkdir()
-            result = subprocess.run(["bash", str(SCRIPT), str(python.relative_to(caller)), "inputs", "work"],
+            result = subprocess.run(["bash", str(SCRIPT), str(python.relative_to(caller)), "inputs", "work",
+                                     str(int(time.time()) + 3600)],
                                     cwd=caller, capture_output=True, text=True,
                                     env={**os.environ, "PYTHONNOUSERSITE": "1"})
             self.assertNotEqual(result.returncode, 0)
