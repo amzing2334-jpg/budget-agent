@@ -51,22 +51,16 @@ python -m budget_agent swe-check-controls --spec "$case_dir/14182-spec.json" \
 
 ### 在后续主机复用本次云端镜像
 
-2026-11-03 的主机已把完整 OCI 布局保存到该账户已有的持久盘。Docker 29.1.4 的 containerd 存储使用以下步骤将本地镜像与求解清单中的规范引用关联起来。换主机后先核实挂载目录、Docker daemon 的 containerd socket 和命名空间。以下命令适用于本次核实的环境。导入完成仍须运行上面的两项官方对照。[首次云端记录](cloud-preflight-20261103.json)
+2026-11-03 的主机已把完整 OCI 布局保存到该账户已有的持久盘。换主机后先核实挂载目录、Docker daemon 的 containerd socket 和命名空间。以下入口针对当时的 Docker 29.1.4、Linux/amd64、`moby` 命名空间及该缓存的单平台索引。保持缓存只读，直至导入结束。导入完成仍须运行上面的两项官方对照。[首次云端记录](cloud-preflight-20261103.json)
 
 ```bash
-set -euo pipefail
 layout=/home/featurize/work/budget-agent-assets/docker/14182-4a1da544
-repo=swebench/sweb.eval.x86_64.astropy_1776_astropy-14182
-digest=sha256:4a1da544b0a2d7bb43266093db899f77c60700f76b84497e6c66138cb30d8663
-ctr=(sudo ctr -a /run/docker/containerd/containerd.sock -n moby)
-tar -C "$layout" -cf - oci-layout index.json blobs | "${ctr[@]}" images import --local --platform linux/amd64 -
-if ! sudo docker image inspect "$repo@$digest" >/dev/null 2>&1; then
-    ref="docker.io/$repo:14182-verified"
-    "${ctr[@]}" images ls | awk -v n="$ref" -v d="$digest" '$1 == n && $3 == d {ok=1} END {exit !ok}'
-    "${ctr[@]}" images tag --local "$ref" "docker.io/$repo@$digest"
-fi
-sudo docker image inspect "$repo@$digest" --format '{{.Os}}/{{.Architecture}} {{json .RepoDigests}}'
+bash runs/iteration-20261102-14182-controls/restore_image.sh "$layout" /absolute/grading-venv/bin/python
 ```
+
+恢复脚本依据仓库中冻结的[平台 manifest](platform-manifest.json) 检查挂载盘。先列出缺失或长度错误的文件，大小齐全时才逐文件计算 SHA-256。完整缓存会多顺序读取约 1.14 GB 用于核验，之后 tar 只发送 2 个布局文件和 12 个所需对象。脚本还逐字节比对[本地布局索引](cache-index.json)，以固定 containerd 将安装的名称。重新格式化过的索引会被拒绝。这里的本地单平台索引与注册表的多平台索引用途不同。
+
+诊断时可单独运行 `python -m budget_agent swe-cache-files --layout "$layout" --spec "$case_dir/14182-spec.json" --manifest "$case_dir/platform-manifest.json"`。该命令只读磁盘，在整组校验通过后输出可归档的相对路径。文件缺失或损坏时按报错的摘要修复，再用同一命令复核。
 
 首次正控在归还前应用了标准补丁，尚无最终判分。下轮使用新的目录，不复用本次未完成的官方运行。
 

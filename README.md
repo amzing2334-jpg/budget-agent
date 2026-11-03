@@ -6,7 +6,7 @@ GitHub：[amzing2334-jpg/budget-agent](https://github.com/amzing2334-jpg/budget-
 
 **2026-11-03 · SWE-bench 评分作业调度。** 14182 的中断归档缺少正控报告。给旧版和新版同一份归档、充足时间，并模拟评分进程正常退出。旧版派发了 1 次无法组成有效对照的负控，新版在正控报告核验时停止。三组已完成的 12907 历史回执逐字段一致。[归档回放](docs/ITERATION_LOG.md#gold-report-before-negative) · [作业启动前的剩余时间检查](docs/ITERATION_LOG.md#control-window-14182)
 
-**2026-11-03 · 14182 云端正控。** 官方 Docker 镜像的全部 10 层已校验并保存在持久盘。SWE-bench 在云端应用了标准补丁，归还前尚未生成最终报告，负控和模型试跑均未启动。本轮实付 1.64 元。[云端回执与复用方法](docs/ITERATION_LOG.md#cloud-14182-20261103)
+**2026-11-03 · 14182 云端正控。** 官方 Docker 镜像的全部 10 层已校验并保存在持久盘。SWE-bench 在云端应用了标准补丁，归还前尚未生成最终报告，负控和模型试跑均未启动。本轮实付 1.64 元。[云端回执](docs/ITERATION_LOG.md#cloud-14182-20261103) · [持久盘缓存校验与导入回放](docs/ITERATION_LOG.md#oci-restore-14182)
 
 **2026-11-02 · 从下载的实验重建 SWE-bench 提交。** 16 次历史 Astropy 尝试都可直接从本地副本导出，预测中的补丁逐字节等于该次运行保存的文件。评分回填会拒绝仅差一个 CR 的另一份补丁。[历史回放和复现方法](docs/ITERATION_LOG.md#swe-interchange-20261102)
 

@@ -110,6 +110,10 @@ def build_parser():
     gold = sub.add_parser("swe-check-gold", help="Check a frozen task's gold report before running its negative control")
     gold.add_argument("--spec", type=Path, required=True)
     gold.add_argument("--gold-report", type=Path, required=True)
+    cache = sub.add_parser("swe-cache-files", help="List verified OCI archive members for a pinned single-platform cache")
+    cache.add_argument("--layout", type=Path, required=True)
+    cache.add_argument("--spec", type=Path, required=True)
+    cache.add_argument("--manifest", type=Path, required=True, help="Frozen platform manifest from the publisher")
     attach = sub.add_parser("swe-attach", help="Attach official grades after checking prediction provenance")
     attach.add_argument("--runs", required=True, type=Path)
     attach.add_argument("--reports", required=True, type=Path)
@@ -193,6 +197,11 @@ def main(argv=None) -> int:
             elif args.command == "swe-check-gold":
                 checked = check_gold_control(json.loads(args.spec.read_bytes()), args.gold_report)
                 print(json.dumps(checked, indent=2))
+            elif args.command == "swe-cache-files":
+                from .oci_cache import cache_files
+                members = cache_files(args.layout, json.loads(args.spec.read_bytes()), args.manifest.read_bytes())
+                # tar -T consumes POSIX member names, including when invoked from Git Bash.
+                sys.stdout.buffer.write(("\n".join(members) + "\n").encode("ascii"))
             elif args.command == "swe-check-controls":
                 spec = args.spec.read_bytes()
                 receipt = check_controls(json.loads(spec), args.gold_report, args.negative_report)

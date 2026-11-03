@@ -2,6 +2,24 @@
 
 本文件是后续每 4 小时评估的入口。先读项目 AGENTS.md 和最新一轮记录，再选择一个有证据的瓶颈；不是每轮必须增加功能。所有模型效果结论必须对应真实运行和独立评分。招聘页面重新访问不等于新开 HC。
 
+<a id="oci-restore-14182"></a>
+
+## 2026-11-03 · 在导入前找出 14182 镜像缓存缺少的对象
+
+上次 14182 云端试跑的大部分时间用于准备 Docker 和镜像。在第一次持久化回执中，配置和 9 个完整层共 738,809,658 字节。相对冻结的平台 manifest，还缺 `e224261309e8…` 层（398,695,709 字节）和平台清单（2,199 字节），布局索引尚未发布。该层已接收的 262,635,520 字节前缀只记录了前缀摘要。之后的云端回执记录 12/12 个对象均已验证，共 1,137,507,566 字节。初始与完成回执的 SHA-256 分别为 `d42b153d48dbf19cf6f8db51d1961f5608ac19f3a74e6cf8f87f43dbb6aaf560` 和 `c8500f1223e6f76bd106023904895e5b559cca7980731c727f2ce155dd1d7889`。[原云端记录](../runs/iteration-20261102-14182-controls/cloud-preflight-20261103.json)
+
+旧恢复命令把整个 `blobs` 目录送入 `ctr images import`。Bash 同时启动 tar 和接收端，`pipefail` 在结束时才返回管道状态。本轮验收要求缺文件或同长度损坏时启动导入 0 次，健康缓存只派发 1 次且只发送冻结镜像引用的文件。新入口先按固定规格验证发布方 manifest，检查磁盘上的文件和长度，再对原始压缩层、配置和 manifest 计算 SHA-256。清单完整后才调用 tar 和 containerd。这个专用入口同时固定了平台与导入名称。[恢复命令和缓存格式](../runs/iteration-20261102-14182-controls/README.md#cloud-cache-14182)
+
+离线校验命令覆盖缺失、截断、等长损坏、索引选错平台或对象、损坏的冻结清单以及额外无关文件。Linux 脚本测试使用真实进程、tar 和 cmp，以接收端替身记录调用。缺文件时，两版都退出失败，导入派发从 1 次降为 0 次。有效的小缓存派发 1 次，tar 成员与许可清单一致。可用 `python -m pytest -q tests/test_oci_cache.py tests/test_restore_image.py` 在 Linux 复现。[缓存校验测试](../tests/test_oci_cache.py) · [导入路径测试](../tests/test_restore_image.py)
+
+在 WSL 的临时目录按初始回执重建 10 个稀疏占位文件，文件名与大小取自真实记录，逻辑长度共 738,809,658 字节，数据块实际分配为 0。模拟布局缺少 marker 和索引（回执直接记录了索引缺失），保留未完成层的前缀在 `blobs` 之外。对同一目录，旧入口的 GNU tar 1.30 退出 2，但读取到 EOF 的计数接收端已被派发 1 次、实际收到 **738,826,240 字节**。新 CLI 返回 2，列出 marker、索引、平台 manifest 和缺失层的具体路径，打开 blob 0 次，进入接收端 0 次、0 字节。字节数含 tar 填充，是离线管道实测值；实际 containerd 遇错时可以提前停止读取。
+
+另用带 1 个压缩层的完整小型 OCI 夹具贯通真实 CLI、恢复脚本和 GNU tar 1.35，替身仅承担 Docker/containerd 接收端。健康布局中放入一个 24,576 字节的未引用 blob。旧入口传输 40,960 字节，新入口传输 10,240 字节，所需 5 个文件与原件逐字节相等。把同一压缩层翻转一个比特、保持文件大小，旧入口仍向替身交付相同长度的归档，新入口在启动接收端前指出了出错的摘要。Git Bash 回放另发现 Windows Python 文本流会输出 CRLF，现已为 tar 文件清单固定 LF 并检查原始字节。本地 14 个缓存 CLI 用例、11 个原评分校验用例通过，另有 2 个 Linux 脚本集成测试通过。
+
+健康缓存额外顺序读取约 1.14 GB 做哈希。调用方须在校验和随后的导入期间保持布局只读。归档中本地单平台索引固定为最初准备的字节，改变空白也需恢复原件。此次只在本地运行 CPU 软件检查。完整层的最近一次实物验证仍来自原云端回执，当前云盘状态、真实导入耗时和 14182 双侧评分待云端验收。
+
+北京时间 11 月 3 日 10:42–10:45 复核官方资料。与当天 06:47 的记录相比，百度 ACG 代码智能体架构实习（7 月 21 日）的可复现编码沙箱要求、百度地图 Agent Harness 实习（10 月 10 日）的回归测试和故障恢复要求均未见变化。网页上的人数未给出实时剩余 HC。OCI Image Spec v1.1.1 发布于 2025-03-03，descriptor 的字节数和摘要针对其引用的原始内容。这里检查压缩 blob；项目还要求所需对象都在挂载盘上，以支持离线恢复。[百度 ACG](https://talent.baidu.com/jobs/detail/INTERN/397771ff-709c-42f5-9fd7-2e4112e0768d) · [百度地图](https://talent.baidu.com/jobs/detail/INTERN/64cd87b2-4690-4192-948e-2aadb01cd87d) · [OCI 描述符](https://github.com/opencontainers/image-spec/blob/v1.1.1/descriptor.md) · [布局规范](https://github.com/opencontainers/image-spec/blob/v1.1.1/image-layout.md) · [版本发布日期](https://github.com/opencontainers/image-spec/releases/tag/v1.1.1)
+
 <a id="gold-report-before-negative"></a>
 
 ## 2026-11-03 · 在派发负控前核验正控报告
