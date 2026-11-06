@@ -37,7 +37,8 @@ import torch
 from peft import LoraConfig, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from budget_agent.learning.grpo_core import aggregate, build_groups, extract_turns, subsample_turns, token_policy_loss
+from budget_agent.learning.grpo_core import (aggregate, build_groups, extract_turns, minibatch_indices, step_tasks,
+                                             subsample_turns, token_policy_loss)
 from budget_agent.models import token_digest
 from budget_agent.tasks import load_tasks
 
@@ -64,6 +65,44 @@ def completion_logprobs(model, prompt_ids: list[int], completion_ids: list[int])
     with torch.no_grad():
         entropy = -(logp.exp() * logp).sum(-1).mean()
     return logp.gather(-1, targets[:, None]).squeeze(-1), entropy
+
+
+def update(model, optimizer, batch: list, args) -> dict:
+    """Train on one step's turns; returns the step record's training fields.
+
+    One update: the ratio is 1 and the old log-probabilities are the current
+    ones, detached. More updates freeze them before the first.
+    """
+    model.train()
+    minibatches = minibatch_indices(len(batch), args.minibatches, random)
+    olds = None
+    if len(minibatches) > 1:
+        with torch.no_grad():
+            olds = [completion_logprobs(model, prompt, turn.completion_ids)[0] for prompt, turn, _ in batch]
+    stats, entropies, norms = [], [], []
+    for indices in minibatches:
+        total_tokens = sum(len(batch[i][1].completion_ids) for i in indices)
+        for i in indices:
+            prompt, turn, advantage = batch[i]
+            logp, entropy = completion_logprobs(model, prompt, turn.completion_ids)
+            old = olds[i] if olds is not None else logp.detach()
+            behavior = (torch.tensor(turn.behavior_logprobs, device="cuda")
+                        if turn.behavior_logprobs is not None else None)
+            losses, info = token_policy_loss(logp, old, advantage, clip_low=args.clip_low, clip_high=args.clip_high,
+                                             behavior_logprobs=behavior, tis_cap=args.tis_cap)
+            # Token aggregation without holding every graph: scale each turn by the minibatch token count.
+            loss = (losses.sum() / total_tokens if args.loss_agg == "token"
+                    else aggregate([losses], mode="sequence") / len(indices))
+            loss.backward()
+            stats.append(info)
+            entropies.append(entropy.item())
+        norms.append(float(torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)))
+        optimizer.step()
+        optimizer.zero_grad(set_to_none=True)
+    return {"turns": len(batch), "updates": len(minibatches),
+            "completion_tokens": sum(len(turn.completion_ids) for _, turn, _ in batch),
+            "grad_norm": sum(norms) / len(norms), "entropy": sum(entropies) / len(entropies),
+            **{k: sum(s.get(k, 0.0) for s in stats) / len(stats) for k in stats[0]}}
 
 
 def main() -> int:
@@ -107,15 +146,15 @@ def main() -> int:
     log = (args.output / "metrics.jsonl").open("a")
     model.save_pretrained(args.output / "adapters" / "v0")  # zero-initialised B: identical to the base model
     load_adapter(args.server, "policy-v0", args.output / "adapters" / "v0", None)
-    order = list(range(len(tasks)))
-    random.shuffle(order)
+    schedule = list(range(len(tasks)))
+    random.shuffle(schedule)
     run_started = time.monotonic()
     for step in range(args.steps):
         if args.max_minutes is not None and time.monotonic() - run_started > args.max_minutes * 60:
             print(json.dumps({"stopped_before_step": step, "reason": "max_minutes"}), flush=True)
             break
         started = time.monotonic()
-        chosen = [tasks[order[(step * args.tasks_per_step + i) % len(order)]] for i in range(args.tasks_per_step)]
+        chosen = [tasks[i] for i in step_tasks(schedule, step, args.tasks_per_step)]
         manifest = args.rollouts / f"step-{step:04d}.jsonl"
         manifest.write_text("".join(json.dumps({**task.__dict__}) + "\n" for task in chosen))
         pool_dir = args.rollouts / f"step-{step:04d}"
@@ -147,39 +186,7 @@ def main() -> int:
             raise RuntimeError(f"step {step}: no kept turn re-renders to the prompt the server sampled from; "
                                "trainer and server must load the same tokenizer and chat template")
         if batch:
-            model.train()
-            turn_order = list(range(len(batch)))  # not `order`: that is the task schedule across steps
-            random.shuffle(turn_order)
-            minibatches = [turn_order[i::args.minibatches] for i in range(min(args.minibatches, len(turn_order)))]
-            olds = None  # one update: the ratio is 1 and the old log-probabilities are the current ones, detached
-            if len(minibatches) > 1:
-                with torch.no_grad():
-                    olds = [completion_logprobs(model, prompt, turn.completion_ids)[0] for prompt, turn, _ in batch]
-            stats, entropies, norms = [], [], []
-            for indices in minibatches:
-                total_tokens = sum(len(batch[i][1].completion_ids) for i in indices)
-                for i in indices:
-                    prompt, turn, advantage = batch[i]
-                    logp, entropy = completion_logprobs(model, prompt, turn.completion_ids)
-                    old = olds[i] if olds is not None else logp.detach()
-                    behavior = (torch.tensor(turn.behavior_logprobs, device="cuda")
-                                if turn.behavior_logprobs is not None else None)
-                    losses, info = token_policy_loss(logp, old, advantage, clip_low=args.clip_low,
-                                                     clip_high=args.clip_high, behavior_logprobs=behavior,
-                                                     tis_cap=args.tis_cap)
-                    # Token aggregation without holding every graph: scale each turn by the minibatch token count.
-                    loss = (losses.sum() / total_tokens if args.loss_agg == "token"
-                            else aggregate([losses], mode="sequence") / len(indices))
-                    loss.backward()
-                    stats.append(info)
-                    entropies.append(entropy.item())
-                norms.append(float(torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)))
-                optimizer.step()
-                optimizer.zero_grad(set_to_none=True)
-            record.update(turns=len(batch), updates=len(minibatches),
-                          completion_tokens=sum(len(turn.completion_ids) for _, turn, _ in batch),
-                          grad_norm=sum(norms) / len(norms), entropy=sum(entropies) / len(entropies),
-                          **{k: sum(s.get(k, 0.0) for s in stats) / len(stats) for k in stats[0]})
+            record.update(update(model, optimizer, batch, args))
         record["train_seconds"] = round(time.monotonic() - train_started, 1)
         sync_started = time.monotonic()
         path = args.output / "adapters" / f"v{step + 1}"
