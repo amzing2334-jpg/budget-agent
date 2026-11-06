@@ -87,6 +87,7 @@ def main() -> int:
     parser.add_argument("--no-std-scale", action="store_true", help="Dr. GRPO centering only")
     parser.add_argument("--loss-agg", choices=["token", "sequence"], default="token")
     parser.add_argument("--minibatches", type=int, default=1, help="optimizer steps per rollout batch")
+    parser.add_argument("--max-minutes", type=float, help="start no new step after this much wall time")
     parser.add_argument("--turns-per-attempt", type=int, help="train at most this many uniformly sampled turns "
                         "of each attempt (default: all)")
     parser.add_argument("--max-len", type=int, default=24576)
@@ -108,7 +109,11 @@ def main() -> int:
     load_adapter(args.server, "policy-v0", args.output / "adapters" / "v0", None)
     order = list(range(len(tasks)))
     random.shuffle(order)
+    run_started = time.monotonic()
     for step in range(args.steps):
+        if args.max_minutes is not None and time.monotonic() - run_started > args.max_minutes * 60:
+            print(json.dumps({"stopped_before_step": step, "reason": "max_minutes"}), flush=True)
+            break
         started = time.monotonic()
         chosen = [tasks[order[(step * args.tasks_per_step + i) % len(order)]] for i in range(args.tasks_per_step)]
         manifest = args.rollouts / f"step-{step:04d}.jsonl"
