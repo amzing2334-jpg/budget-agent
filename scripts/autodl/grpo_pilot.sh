@@ -16,6 +16,10 @@ STEPS=${STEPS:-3}
 mkdir -p "$ROLL" "$OUT"
 chown nobody:nogroup "$ROLL"
 
+if pgrep -f "^bash $CODE/scripts/autodl/(round1_rft|grpo_pilot|bench)\.sh" | grep -qvx "$$"; then
+  echo "another experiment script of this project is running; not starting." >&2   # it would lose its vLLM
+  exit 1
+fi
 "$CODE/scripts/autodl/stop_vllm.sh"
 if nvidia-smi --query-compute-apps=pid --format=csv,noheader | grep -q .; then
   echo "GPU already runs another process; not starting." >&2
