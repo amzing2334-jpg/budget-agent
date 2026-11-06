@@ -1,0 +1,58 @@
+[
+ {
+  "workers": 8,
+  "attempts": 64,
+  "wall_seconds": 209.5,
+  "attempts_per_hour": 1099.8,
+  "generation_tokens_per_s": 267.7,
+  "prompt_tokens_per_s": 31398.4,
+  "prefix_cache_hit_rate": 0.89,
+  "gpu_util_mean": 97.4,
+  "latency_p50_s": 22.87,
+  "latency_p95_s": 54.93,
+  "share_outside_model": 0.104,
+  "resolved": 2
+ },
+ {
+  "workers": 16,
+  "attempts": 64,
+  "wall_seconds": 196.9,
+  "attempts_per_hour": 1170.3,
+  "generation_tokens_per_s": 310.1,
+  "prompt_tokens_per_s": 36996.9,
+  "prefix_cache_hit_rate": 0.889,
+  "gpu_util_mean": 95.0,
+  "latency_p50_s": 37.1,
+  "latency_p95_s": 75.41,
+  "share_outside_model": 0.072,
+  "resolved": 5
+ },
+ {
+  "workers": 32,
+  "attempts": 64,
+  "wall_seconds": 339.8,
+  "attempts_per_hour": 678.0,
+  "generation_tokens_per_s": 167.0,
+  "prompt_tokens_per_s": 23587.6,
+  "prefix_cache_hit_rate": 0.766,
+  "gpu_util_mean": 95.8,
+  "latency_p50_s": 116.02,
+  "latency_p95_s": 193.61,
+  "share_outside_model": 0.043,
+  "resolved": 2
+ },
+ {
+  "workers": 64,
+  "attempts": 64,
+  "wall_seconds": 192.5,
+  "attempts_per_hour": 1197.0,
+  "generation_tokens_per_s": 308.2,
+  "prompt_tokens_per_s": 33209.4,
+  "prefix_cache_hit_rate": 0.883,
+  "gpu_util_mean": 96.2,
+  "latency_p50_s": 105.03,
+  "latency_p95_s": 139.54,
+  "share_outside_model": 0.105,
+  "resolved": 3
+ }
+]
