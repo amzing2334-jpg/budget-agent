@@ -5,6 +5,10 @@
 # SSH settings are never touched. Safe to re-run.
 #
 #   scripts/autodl/deploy.sh <ssh-port> <ssh-host> <swesmith-data.tar.gz>
+#
+# PIP_INDEX_URL is passed to the remote setup. Measure mirrors first: on the
+# Foshan A100 (2026-11-06) the image default (Aliyun) gave 0.35 MB/s, Huawei
+# Cloud 10.7 MB/s, files.pythonhosted.org 7.4 MB/s, academic acceleration 0.28 MB/s.
 set -euo pipefail
 PORT=$1; HOST=$2; DATA=$3
 KEY=${KEY:-$HOME/.ssh/autodl_budget_agent_ed25519}
@@ -21,8 +25,9 @@ if "${SSH[@]}" 'nvidia-smi --query-compute-apps=pid --format=csv,noheader' | gre
   echo "GPU already has running processes; deploying files only, no GPU work started." | tee "$LOGS/gpu-busy.txt"
 fi
 
-echo "== ship code ($(git -C "$HERE" rev-parse --short main)) and data"
-git -C "$HERE" archive --format=tar.gz -o "$LOGS/budget-agent.tar.gz" main
+REF=${REF:-main}
+echo "== ship code ($REF @ $(git -C "$HERE" rev-parse --short "$REF")) and data"
+git -C "$HERE" archive --format=tar.gz -o "$LOGS/budget-agent.tar.gz" "$REF"
 "${SSH[@]}" 'mkdir -p /opt/coding-agent/incoming /root/autodl-tmp/coding-agent-rl/logs'
 "${SCP[@]}" "$LOGS/budget-agent.tar.gz" "$DATA" "$HOST:/opt/coding-agent/incoming/"
 "${SSH[@]}" "set -e; cd /opt/coding-agent
@@ -32,7 +37,7 @@ git -C "$HERE" archive --format=tar.gz -o "$LOGS/budget-agent.tar.gz" main
   chmod -R a+rX /opt/coding-agent"
 
 echo "== isolated environments (background on the instance)"
-"${SSH[@]}" "nohup bash /opt/coding-agent/budget-agent/scripts/autodl/setup_isolated.sh \
-  > /root/autodl-tmp/coding-agent-rl/logs/setup-$STAMP.log 2>&1 &"
+"${SSH[@]}" "PIP_INDEX_URL='${PIP_INDEX_URL:-}' setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/setup_isolated.sh \
+  > /root/autodl-tmp/coding-agent-rl/logs/setup-$STAMP.log 2>&1 < /dev/null &"
 echo "setup started; follow /root/autodl-tmp/coding-agent-rl/logs/setup-$STAMP.log"
 echo "recon saved to $LOGS/recon.txt"
