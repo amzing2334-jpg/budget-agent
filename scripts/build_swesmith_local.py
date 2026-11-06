@@ -204,6 +204,8 @@ def admit(instance: dict, clean: Path, venv: Path, plugin_dir: Path, output: Pat
                 "test_command": ["python", "-m", "pytest", "-q", "-p", "no:cacheprovider", "--tb=short", *files],
                 "metadata": {"suite": "swesmith-local-v1", "instance_id": instance_id, "source_repo": instance["repo"],
                              "editable": editable, "grading_scope": "editable_only",
+                             # SWE-smith bugs live in public repos: block fetching the pristine upstream file.
+                             "network_policy": "deny",
                              "exec_env": {"PATH": str(venv / "bin"), "PYTHONPATH": "{workspace}/src:{workspace}"},
                              "fail_to_pass": len(f2p_eff), "pass_to_pass": len(p2p_eff),
                              "pass_to_pass_dropped": len(p2p) - len(p2p_eff)}}

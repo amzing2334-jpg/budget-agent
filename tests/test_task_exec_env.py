@@ -64,3 +64,23 @@ def test_unknown_grading_scope_is_an_infrastructure_error(tmp_path):
     env = LocalEnvironment(task, RunConfig(), tmp_path / "run")
     grade = env.grade()
     assert grade["status"] == "infrastructure_error" and grade["resolved"] is None
+
+
+def test_network_deny_policy_points_clients_at_a_dead_proxy(tmp_path):
+    import json
+    task = make_task(tmp_path, network_policy="deny")
+    env = LocalEnvironment(task, RunConfig(), tmp_path / "run")
+    probe = (f'"{sys.executable}" -c "import json, os; print(json.dumps({{k: os.environ.get(k) for k in '
+             f'(\'https_proxy\', \'HTTP_PROXY\', \'NO_PROXY\', \'PIP_NO_INDEX\')}}))"')
+    shown = json.loads(env.execute({"tool": "run", "command": probe})["output"].strip().splitlines()[-1])
+    assert shown == {"https_proxy": "http://127.0.0.1:9", "HTTP_PROXY": "http://127.0.0.1:9",
+                     "NO_PROXY": "", "PIP_NO_INDEX": "1"}
+    fetch = (f'"{sys.executable}" -c "import urllib.request; '
+             f'urllib.request.urlopen(\'http://example.com\', timeout=5)"')
+    assert not env.execute({"tool": "run", "command": fetch})["ok"]
+
+
+def test_unknown_network_policy_is_rejected(tmp_path):
+    env = LocalEnvironment(make_task(tmp_path, network_policy="open-ish"), RunConfig(), tmp_path / "run")
+    result = env.execute({"tool": "run", "command": "echo hi"})
+    assert not result["ok"] and "network_policy" in result["output"]
