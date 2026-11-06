@@ -51,7 +51,7 @@ def add_run_arguments(parser):
     parser.add_argument("--task", action="append", dest="task_ids")
     parser.add_argument("--split", choices=["dev", "test", "all"], default="dev")
     parser.add_argument("--output", type=Path, default=Path("runs/pilot"))
-    for name in ("strategy", "history_format", "decision_policy", "loop_policy", "reflection_policy", "execution_policy", "provider", "model", "base_url", "api_key_env", "tokenizer", "environment", "docker_image", "api_max_tokens_field", "model_revision", "device", "model_dtype"):
+    for name in ("strategy", "history_format", "decision_policy", "loop_policy", "repeat_policy", "reflection_policy", "execution_policy", "provider", "model", "base_url", "api_key_env", "tokenizer", "environment", "docker_image", "api_max_tokens_field", "model_revision", "device", "model_dtype"):
         parser.add_argument("--" + name.replace("_", "-"))
     for name in ("context_tokens", "total_tokens", "max_output_tokens", "min_action_output_tokens", "read_memory_tokens", "max_reflections", "reflection_max_output_tokens", "max_steps", "timeout_seconds", "seed"):
         parser.add_argument("--" + name.replace("_", "-"), type=int)
