@@ -138,3 +138,27 @@ def test_invalid_minimum_reservation_is_rejected(minimum):
     with pytest.raises(ValueError, match="min_output_tokens"):
         Budget(TokenCounter(), config()).reserve([], 100, min_output_tokens=minimum)
 
+
+
+def test_tokenizer_counts_are_memoized_without_changing_results(monkeypatch):
+    class Encoding:
+        calls = 0
+
+        def encode(self, text, disallowed_special=()):
+            Encoding.calls += 1
+            return text.split()
+
+    counter = TokenCounter()
+    counter._encoding = Encoding()
+    monkeypatch.setattr(TokenCounter, "_CACHE_ENTRIES", 2)
+    assert counter.count("a b c") == 3 and counter.count("a b c") == 3
+    assert Encoding.calls == 1
+    assert counter.count("lone \udcff surrogate") == 3  # digest keys accept any str
+    assert counter.count("third entry") == 2  # clears the full cache instead of growing
+    assert len(counter._counts) == 1
+    assert counter.count("a b c") == 3 and Encoding.calls == 4
+
+
+def test_byte_counter_has_no_cache_overhead():
+    counter = TokenCounter()
+    assert counter.count("abc") == 3 and counter._counts == {}

@@ -1,6 +1,5 @@
 """Exercise the real local and inline-container file tool code on CPU only."""
 import json
-from pathlib import Path
 import subprocess
 import sys
 
@@ -120,6 +119,14 @@ def test_search_pages_preserve_match_locations_and_long_line_snippets(edit_envir
     assert "needle last" in rows[-1]
     assert len(rows[-1]) < 600
     assert all(row.startswith("matches.py:") for row in rows)
+
+
+def test_search_skips_binary_files_in_both_environments(edit_environment):
+    env, root = edit_environment
+    (root / "data.fits").write_bytes(b"SIMPLE  needle\x00\x01\x02 needle")
+    (root / "notes.txt").write_text("needle in text\n", encoding="utf-8")
+    _, rows = _page(env.execute({"tool": "search", "path": ".", "query": "needle"}))
+    assert rows == ["notes.txt:1: needle in text"]
 
 
 def test_read_file_reports_total_and_next_range(edit_environment):
