@@ -259,10 +259,10 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
                       end_line=shown_end, next_start_line=next_line,
                       truncated_line_content=clipped) + "\n" + "\n".join(rows)
 
-    if tool not in {"write_file", "edit_file"}:
+    if tool not in {"write_file", "edit_file", "replace_lines"}:
         raise ValueError(f"unknown environment tool: {tool}")
     parts = path.relative_to(root).parts
-    if tool == "edit_file" and not path.is_file():
+    if tool in {"edit_file", "replace_lines"} and not path.is_file():
         # Not a policy question: say the file is missing (models hallucinate paths).
         raise ValueError(f"path does not exist: {relative}. Use list_files or search to find the file that defines this code.")
     permitted = relative in editable if editable is not None else not any(part in {"tests", "test", ".git"} for part in parts) and not path.name.startswith(("test_", "_private_"))
@@ -271,6 +271,22 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
             raise PermissionError(f"this task only edits existing source files, so {relative} cannot be created. "
                                   "Run scratch code with the run tool instead (for example python -c ...).")
         raise PermissionError("this task only permits source edits; tests and verifier are protected")
+    if tool == "replace_lines":
+        # Line numbers come from read_file output, so nothing has to be copied
+        # exactly; small models rarely reproduce multi-line anchors verbatim.
+        start, end = action["start_line"], action["end_line"]
+        original = path.read_bytes().decode("utf-8")
+        lines = original.splitlines(keepends=True)
+        if not 1 <= start <= end <= len(lines):
+            raise ValueError(f"replace_lines needs 1 <= start_line <= end_line <= {len(lines)}; {relative} has "
+                             f"{len(lines)} lines. Read the current lines first: numbers shift after every edit.")
+        eol = "\r\n" if lines[start - 1].endswith("\r\n") else "\n"
+        body = action["new"].splitlines()
+        replacement = "".join(line + eol for line in body)
+        path.write_bytes(("".join(lines[:start - 1]) + replacement + "".join(lines[end:])).encode("utf-8"))
+        shift = len(body) - (end - start + 1)
+        return (f"Replaced lines {start}-{end} of {relative} with {len(body)} line(s); later lines moved by "
+                f"{shift:+d}. Re-read before another line-based edit.")
     if tool == "write_file":
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(action["content"], encoding="utf-8")
@@ -455,7 +471,7 @@ class LocalEnvironment:
         started = time.monotonic()
         try:
             tool = action.get("tool")
-            if tool in {"read_file", "list_files", "search", "write_file", "edit_file"}:
+            if tool in {"read_file", "list_files", "search", "write_file", "edit_file", "replace_lines"}:
                 text = _repository_tool(self.workspace, action, self.task.metadata.get("editable"))
             elif tool == "run":
                 return _process(str(action["command"]), self.workspace, self.config.timeout_seconds, shell=True,
@@ -492,7 +508,13 @@ class LocalEnvironment:
                 original = io.StringIO((before or b"").decode("utf-8"), newline="\n").readlines()
                 modified = io.StringIO((after or b"").decode("utf-8"), newline="\n").readlines()
             except UnicodeDecodeError as exc:
-                raise EnvironmentError(f"Cannot export non-UTF-8 fixture file as a text patch: {name}") from exc
+                if self._editable(name):  # graded source must never be exported lossily
+                    raise EnvironmentError(f"Cannot export non-UTF-8 fixture file as a text patch: {name}") from exc
+                # Not graded (e.g. a coverage database a test run wrote): record it as git does
+                # instead of failing the export and with it the whole attempt's grade.
+                chunks.append(f"Binary files {'a/' + name if before is not None else '/dev/null'} and "
+                              f"{'b/' + name if after is not None else '/dev/null'} differ\n")
+                continue
             diff = difflib.unified_diff(original, modified,
                 fromfile=f"a/{name}" if before is not None else "/dev/null",
                 tofile=f"b/{name}" if after is not None else "/dev/null")
