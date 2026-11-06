@@ -101,7 +101,8 @@ def main() -> int:
                "steps": result["steps"], "input_tokens": result["input_tokens"],
                "output_tokens": result["output_tokens"], "elapsed_seconds": round(result["elapsed_seconds"], 2),
                "model_seconds": round(result["model_seconds"], 2), "result_path": result["result_path"],
-               "ignored_changes": result["evaluation"].get("ignored_changes", [])}
+               "ignored_changes": result["evaluation"].get("ignored_changes", []),
+               "patch_signals": sorted({s["signal"] for s in result.get("patch_signals", [])})}
         with lock:
             rows.append(row)
             with ledger.open("a", encoding="utf-8") as stream:

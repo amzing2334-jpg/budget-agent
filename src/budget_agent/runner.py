@@ -15,6 +15,7 @@ from .context import ContextManager, ContextOverflow
 from .diagnostics import analyze_trajectory
 from .environment import EnvironmentError, create_environment
 from .evaluation import evidence_kind
+from .integrity import patch_signals
 from .loop_control import ReadLoopMonitor
 from .models import ModelError, OpenAICompatibleModel, ScriptedModel, parse_action
 from .reflection import EvidenceNote, ReflectionNote, evidence_note, reflection_messages, reflection_trigger
@@ -141,6 +142,7 @@ class _Attempt:
         self.safety_records: list[dict] = []
         self.external_actions = 0
         self.evaluation = {"resolved": None, "status": "not_evaluated"}
+        self.patch_signals: list[dict] = []
         self.model_seconds = 0.0
         self.fingerprints = {"calls": 0, "seconds": 0.0}
 
@@ -384,6 +386,7 @@ class _Attempt:
         if self.env is not None:
             try:
                 patch = self.env.patch()
+                self.patch_signals = patch_signals(patch)
                 self.evaluation = self.env.grade()
             except (EnvironmentError, OSError, subprocess.SubprocessError) as exc:
                 self.evaluation = {"resolved": None, "status": "grading_error", "output": f"{type(exc).__name__}: {exc}"}
@@ -425,6 +428,8 @@ class _Attempt:
                                    and all(row["decision"] is not None for row in safety),
                        "violations": []},
             "patch_path": str(self.run_dir / "patch.diff"), "initial_revision": self.initial_revision,
+            # Monitoring only: tamper patterns in the patch never change the grade.
+            "patch_signals": self.patch_signals,
             "environment_provenance": self.environment_provenance,
             "source_fingerprint": self.code_revision,
             "public_test_command": task.test_command,
