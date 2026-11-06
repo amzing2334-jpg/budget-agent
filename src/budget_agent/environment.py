@@ -31,14 +31,21 @@ class EnvironmentError(RuntimeError):
     pass
 
 
-def _safe_env() -> dict[str, str]:
+OUTPUT_CAPTURE_BYTES = 100_000
+
+
+def _safe_env(extra: dict[str, str] | None = None) -> dict[str, str]:
+    """Minimal subprocess environment. A task's `exec_env` PATH is prepended, other keys set."""
     keep = ("PATH", "SystemRoot", "SYSTEMROOT", "WINDIR", "TEMP", "TMP", "COMSPEC", "PATHEXT")
     env = {key: os.environ[key] for key in keep if key in os.environ}
     env.update(PYTHONUTF8="1", PYTHONIOENCODING="utf-8", PYTHONNOUSERSITE="1", PYTHONDONTWRITEBYTECODE="1")
+    for key, value in (extra or {}).items():
+        env[key] = value + os.pathsep + env["PATH"] if key == "PATH" and env.get("PATH") else value
     return env
 
 
-def _process(command: str | list[str], cwd: Path, timeout: int, *, shell: bool = False) -> dict[str, Any]:
+def _process(command: str | list[str], cwd: Path, timeout: int, *, shell: bool = False,
+             env: dict[str, str] | None = None) -> dict[str, Any]:
     started = time.monotonic()
     kwargs: dict[str, Any] = {}
     if os.name == "nt":
@@ -47,7 +54,7 @@ def _process(command: str | list[str], cwd: Path, timeout: int, *, shell: bool =
         kwargs["start_new_session"] = True
     with tempfile.TemporaryFile() as output:
         process = subprocess.Popen(command, cwd=cwd, shell=shell, stdout=output,
-                                   stderr=subprocess.STDOUT, env=_safe_env(), **kwargs)
+                                   stderr=subprocess.STDOUT, env=env or _safe_env(), **kwargs)
         timed_out = False
         try:
             process.wait(timeout=timeout)
@@ -63,16 +70,24 @@ def _process(command: str | list[str], cwd: Path, timeout: int, *, shell: bool =
                 except ProcessLookupError:
                     pass
             process.wait(timeout=10)
+        size = output.seek(0, os.SEEK_END)
         output.seek(0)
-        raw = output.read(100_001)
-    text = raw[:100_000].decode("utf-8", errors="replace")
-    if len(raw) > 100_000:
-        text += "\n[output truncated at 100000 bytes]"
+        if size <= OUTPUT_CAPTURE_BYTES:
+            text = output.read().decode("utf-8", errors="replace")
+        else:
+            # Keep both ends. Test runners print the failure summary and the
+            # traceback last, so a head-only capture hides the useful part.
+            half = OUTPUT_CAPTURE_BYTES // 2
+            head = output.read(half).decode("utf-8", errors="replace")
+            output.seek(size - half)
+            tail = output.read(half).decode("utf-8", errors="replace")
+            text = (f"{head}\n[output truncated: {size - 2 * half} of {size} bytes omitted "
+                    f"from the middle]\n{tail}")
     if timed_out:
         text += f"\n[command timed out after {timeout}s; process tree terminated]"
     return {"output": text, "ok": process.returncode == 0 and not timed_out,
             "returncode": process.returncode, "timed_out": timed_out,
-            "output_truncated": len(raw) > 100_000,
+            "output_truncated": size > OUTPUT_CAPTURE_BYTES,
             "duration_seconds": time.monotonic() - started}
 
 
@@ -87,6 +102,49 @@ def _files(root: Path) -> dict[str, bytes]:
         if path.is_file():
             result[rel.as_posix()] = path.read_bytes()
     return result
+
+
+def _editable(relative: str, editable: list[str] | None) -> bool:
+    """Grading-time edit policy. _repository_tool repeats it because it ships into containers."""
+    if editable is not None:
+        return relative in editable
+    path = PurePosixPath(relative)
+    return not any(part in {"tests", "test", ".git"} for part in path.parts) and not path.name.startswith(("test_", "_private_"))
+
+
+def _changed_files(baseline: dict[str, bytes], current: dict[str, bytes]) -> set[str]:
+    return {name for name in baseline.keys() | current.keys() if baseline.get(name) != current.get(name)}
+
+
+def _graded_delta(task: Task, changed: set[str], editable) -> tuple[set[str], list[str]]:
+    """Split a workspace delta into graded files and protected files.
+
+    By default a protected change invalidates the patch. With metadata
+    `grading_scope: editable_only` (real repositories, where test runs leave
+    artifacts and agents write reproduction scripts) protected changes are
+    left out of the grading tree, as SWE-bench resets test files.
+    """
+    scope = task.metadata.get("grading_scope")
+    if scope not in {None, "editable_only"}:
+        raise EnvironmentError(f"unknown grading_scope: {scope!r}")
+    protected = sorted(name for name in changed if not editable(name))
+    return changed - set(protected), protected
+
+
+def _write_grading_tree(grading: Path, baseline: dict[str, bytes], current: dict[str, bytes],
+                        changed: set[str]) -> None:
+    """Apply only the accepted source delta to a pristine copy of the fixture."""
+    for name, data in baseline.items():
+        path = grading / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data)
+    for name in changed:
+        path = grading / name
+        if name in current:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(current[name])
+        else:
+            path.unlink(missing_ok=True)
 
 
 def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | None) -> str:
@@ -146,6 +204,9 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
                     yield relative
                     continue
                 query = action["query"]
+                with path.open("rb") as stream:
+                    if b"\0" in stream.read(8192):
+                        continue  # binary data (e.g. test fixtures) only yields noise
                 with path.open(encoding="utf-8", errors="replace") as stream:
                     for number, line in enumerate(stream, 1):
                         position = line.find(query)
@@ -235,12 +296,51 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
 
 _FILE_TOOL_SOURCE = "from __future__ import annotations\n" + inspect.getsource(_repository_tool)
 
+# Runs inside the task container: `python -c _GIT_SNAPSHOT tree|diff <base>`.
+# Staging into a throwaway index leaves the agent's index alone. The old
+# `git add -N` in patch() changed the revision of an unchanged tree whenever
+# the agent had created a file. `write-tree` names the working-tree content
+# (tracked plus untracked, minus ignored), so a `git add` or `git commit` by
+# the agent does not change it either. Keep this compatible with old testbeds.
+_GIT_SNAPSHOT = r'''import os, shutil, subprocess, sys, tempfile
+mode, base = sys.argv[1], sys.argv[2]
+env = dict(os.environ)
+def git(*args):
+    # Git warnings go to stderr, which the host merges into stdout. Keep them out of the patch.
+    proc = subprocess.run(('git',) + args, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if proc.returncode:
+        sys.stderr.buffer.write(proc.stderr)
+        sys.exit(proc.returncode)
+    return proc.stdout
+source = os.path.join(os.path.abspath(git('rev-parse', '--git-dir').decode().strip()), 'index')
+scratch = tempfile.mkdtemp()
+try:
+    env['GIT_INDEX_FILE'] = os.path.join(scratch, 'index')
+    if os.path.exists(source):
+        # copy2 keeps the index mtime. A fresh mtime would hide "racily clean"
+        # entries, so a same-size rewrite within one second could be missed.
+        shutil.copy2(source, env['GIT_INDEX_FILE'])
+    git('add', '-A', '--', '.')
+    out = git('write-tree') if mode == 'tree' else git('diff', '--cached', '--binary', base, '--')
+finally:
+    shutil.rmtree(scratch, ignore_errors=True)
+sys.stdout.buffer.write(out)
+'''
+
 
 def _verification_command(python: str) -> tuple[list[str], str]:
-    """Require a completed test run, not just a subprocess that exits with zero."""
+    """Require a completed test run, not just a subprocess that exits with zero.
+
+    Isolated mode (-I) keeps the candidate tree off sys.path while the grader
+    imports its own modules, so a repository file such as unittest.py or
+    json.py cannot replace them. The tree is added afterwards for the
+    verifier's imports. Code under test still runs in this process and can
+    tamper with it, so the verdict is evidence about honest repairs only.
+    """
     marker = "BUDGET_AGENT_GRADE_" + uuid.uuid4().hex
     code = (
-        "import json,runpy,sys,types,unittest\n" + inspect.getsource(VerificationResult) + "\n"
+        "import json,os,runpy,sys,types,unittest\n" + inspect.getsource(VerificationResult) + "\n"
+        "sys.path.insert(0,os.getcwd())\n"
         "ns=runpy.run_path('_private_verifier.py',run_name='private_verifier'); "
         "suite=unittest.defaultTestLoader.loadTestsFromModule(types.SimpleNamespace(**ns)); "
         "result=unittest.TextTestRunner(stream=sys.stdout,verbosity=2,resultclass=VerificationResult).run(suite); "
@@ -248,21 +348,19 @@ def _verification_command(python: str) -> tuple[list[str], str]:
         "'errors':len(result.errors),'skipped':len(result.skipped),'successful':result.wasSuccessful(),"
         "'tests_executed':result.tests_executed()}))"
     )
-    return [python, "-c", code], marker
+    return [python, "-I", "-B", "-c", code], marker
 
 
 def _verified(result: dict[str, Any], marker: str) -> tuple[bool | None, dict[str, Any] | None]:
     """An incomplete verifier has no outcome, even when its process exits zero."""
-    if not result["ok"]:
+    if not result["ok"] or result["output"].count(marker) != 1:
         return None, None
-    for line in result["output"].splitlines():
-        if marker in line:
-            try:
-                verdict = json.loads(line.partition(marker)[2])
-                return fixture_outcome(verdict), verdict
-            except ValueError:
-                return None, None
-    return None, None
+    line = next(line for line in result["output"].splitlines() if marker in line)
+    try:
+        verdict = json.loads(line.partition(marker)[2])
+        return fixture_outcome(verdict), verdict
+    except ValueError:
+        return None, None
 
 
 def _stage_verifier(source: Path, grading: Path) -> str:
@@ -272,6 +370,13 @@ def _stage_verifier(source: Path, grading: Path) -> str:
 
 
 def _fixture_grade(result: dict[str, Any], marker: str, verifier_sha256: str, started: float) -> dict[str, Any]:
+    if result["output"].count(marker) > 1:
+        # The grader prints one verdict line, and the marker is created at
+        # grading time. A second copy came from the candidate's code.
+        return {"resolved": False, "status": "invalid_patch",
+                "output": "Verdict marker printed more than once: the candidate wrote to the grading channel.\n"
+                          + result["output"], "test_results": None,
+                "duration_seconds": time.monotonic() - started}
     resolved, verdict = _verified(result, marker)
     status = "grading_error" if resolved is None else "resolved" if resolved else "unresolved"
     grade = {"resolved": resolved, "status": status, "output": result["output"],
@@ -305,11 +410,12 @@ class LocalEnvironment:
                 raise EnvironmentError(f"could not initialize task repository: {result['output']}")
 
     def _editable(self, relative: str) -> bool:
-        editable = self.task.metadata.get("editable")
-        if editable is not None:
-            return relative in editable
-        parts = PurePosixPath(relative).parts
-        return not any(p in {"tests", "test", ".git"} for p in parts) and not PurePosixPath(relative).name.startswith(("test_", "_private_"))
+        return _editable(relative, self.task.metadata.get("editable"))
+
+    def _command_env(self) -> dict[str, str]:
+        """Agent commands see the task's interpreter; `{workspace}` names this attempt's copy."""
+        extra = self.task.metadata.get("exec_env") or {}
+        return _safe_env({key: str(value).replace("{workspace}", str(self.workspace)) for key, value in extra.items()})
 
     def execute(self, action: dict[str, Any]) -> dict[str, Any]:
         return execute_authorized(action, self.config, self.task, self._execute)
@@ -321,9 +427,11 @@ class LocalEnvironment:
             if tool in {"read_file", "list_files", "search", "write_file", "edit_file"}:
                 text = _repository_tool(self.workspace, action, self.task.metadata.get("editable"))
             elif tool == "run":
-                return _process(str(action["command"]), self.workspace, self.config.timeout_seconds, shell=True)
+                return _process(str(action["command"]), self.workspace, self.config.timeout_seconds, shell=True,
+                                env=self._command_env())
             elif tool == "public_test":
-                return _process(self.task.test_command, self.workspace, self.config.timeout_seconds)
+                return _process(self.task.test_command, self.workspace, self.config.timeout_seconds,
+                                env=self._command_env())
             elif tool == "diff":
                 text = self.patch()
             else:
@@ -367,31 +475,22 @@ class LocalEnvironment:
         started = time.monotonic()
         try:
             current = _files(self.workspace)
-            changed = {name for name in self.baseline.keys() | current.keys() if self.baseline.get(name) != current.get(name)}
-            forbidden = [name for name in changed if not self._editable(name)]
-            if forbidden:
-                return {"resolved": False, "status": "invalid_patch", "output": f"Protected files changed: {', '.join(sorted(forbidden))}", "duration_seconds": time.monotonic() - started}
+            graded, protected = _graded_delta(self.task, _changed_files(self.baseline, current), self._editable)
+            if protected and self.task.metadata.get("grading_scope") != "editable_only":
+                return {"resolved": False, "status": "invalid_patch", "output": f"Protected files changed: {', '.join(protected)}", "duration_seconds": time.monotonic() - started}
             verifier = Path(self.task.verifier).resolve()
             if not verifier.is_file():
                 raise EnvironmentError("task has no independent verifier")
             with tempfile.TemporaryDirectory(prefix="grade-", dir=self.run_dir) as directory:
                 grading = Path(directory)
-                for name, data in self.baseline.items():
-                    path = grading / name
-                    path.parent.mkdir(parents=True, exist_ok=True)
-                    path.write_bytes(data)
-                # Apply only the accepted source delta to the pristine grading tree.
-                for name in changed:
-                    path = grading / name
-                    if name in current:
-                        path.parent.mkdir(parents=True, exist_ok=True)
-                        path.write_bytes(current[name])
-                    else:
-                        path.unlink(missing_ok=True)
+                _write_grading_tree(grading, self.baseline, current, graded)
                 verifier_sha256 = _stage_verifier(verifier, grading)
                 command, marker = _verification_command(sys.executable)
                 result = _process(command, grading, self.config.timeout_seconds)
-            return _fixture_grade(result, marker, verifier_sha256, started)
+            grade = _fixture_grade(result, marker, verifier_sha256, started)
+            if protected:
+                grade["ignored_changes"] = protected
+            return grade
         except (OSError, EnvironmentError) as exc:
             return {"resolved": None, "status": "infrastructure_error", "output": str(exc), "duration_seconds": time.monotonic() - started}
 
@@ -487,36 +586,20 @@ except (KeyError, ValueError, OSError) as exc:
     def revision(self) -> str:
         if self.local is not None:
             return self.local.revision()
-        # Hash inside the container so the bounded tool-output capture cannot
-        # make two large working trees look identical. The immutable starting
-        # commit also survives an agent running `git commit` during its work.
-        code = r'''import hashlib,pathlib,subprocess,sys
-h=hashlib.sha256()
-diff=subprocess.run(['git','diff',sys.argv[1],'--binary'],check=True,stdout=subprocess.PIPE).stdout
-h.update(diff)
-files=subprocess.run(['git','ls-files','--others','--exclude-standard','-z'],check=True,stdout=subprocess.PIPE).stdout
-for raw in sorted(files.split(b'\0')):
- if not raw: continue
- h.update(b'\0'+raw+b'\0'); p=pathlib.Path(raw.decode('utf-8',errors='surrogateescape'))
- if p.is_symlink(): h.update(str(p.readlink()).encode('utf-8',errors='surrogateescape')); continue
- with p.open('rb') as f:
-  for chunk in iter(lambda:f.read(1048576),b''): h.update(chunk)
-print(h.hexdigest())'''
-        result = self._exec(["python", "-c", code, self.base_commit])
+        # Name the tree inside the container so the bounded tool-output capture
+        # cannot make two large working trees look identical.
+        result = self._exec(["python", "-c", _GIT_SNAPSHOT, "tree", self.base_commit])
         if not result["ok"]:
             raise EnvironmentError("cannot compute repository revision")
         digest = result["output"].strip()
-        if not re.fullmatch(r"[0-9a-f]{64}", digest):
+        if not re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", digest):
             raise EnvironmentError("repository revision returned an invalid digest")
         return digest[:16]
 
     def patch(self) -> str:
         if self.local is not None:
             return self.local.patch()
-        add = self._exec(["git", "add", "-N", "--", "."])
-        if not add["ok"]:
-            raise EnvironmentError("cannot include new files in repository patch")
-        result = self._exec(["git", "diff", self.base_commit, "--binary"])
+        result = self._exec(["python", "-c", _GIT_SNAPSHOT, "diff", self.base_commit])
         if not result["ok"]:
             raise EnvironmentError("cannot export repository patch")
         if result.get("output_truncated"):
@@ -530,23 +613,12 @@ print(h.hexdigest())'''
         # Never execute model-modified code on the host in Docker mode.
         started = time.monotonic()
         current = _files(self.local.workspace)
-        changed = {name for name in self.local.baseline.keys() | current.keys() if self.local.baseline.get(name) != current.get(name)}
-        forbidden = [name for name in changed if not self.local._editable(name)]
-        if forbidden:
-            return {"resolved": False, "status": "invalid_patch", "output": f"Protected files changed: {forbidden}", "duration_seconds": time.monotonic() - started}
+        graded, protected = _graded_delta(self.task, _changed_files(self.local.baseline, current), self.local._editable)
+        if protected and self.task.metadata.get("grading_scope") != "editable_only":
+            return {"resolved": False, "status": "invalid_patch", "output": f"Protected files changed: {', '.join(protected)}", "duration_seconds": time.monotonic() - started}
         with tempfile.TemporaryDirectory(prefix="grade-", dir=self.run_dir) as directory:
             grading = Path(directory)
-            for name, data in self.local.baseline.items():
-                path = grading / name
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(data)
-            for name in changed:
-                path = grading / name
-                if name in current:
-                    path.parent.mkdir(parents=True, exist_ok=True)
-                    path.write_bytes(current[name])
-                else:
-                    path.unlink(missing_ok=True)
+            _write_grading_tree(grading, self.local.baseline, current, graded)
             verifier_sha256 = _stage_verifier(Path(self.task.verifier), grading)
             grader_name = f"budget-grade-{uuid.uuid4().hex[:12]}"
             verifier_command, marker = _verification_command("python")
@@ -556,7 +628,10 @@ print(h.hexdigest())'''
                 _process(["docker", "rm", "-f", grader_name], self.run_dir, 15)
         if result.get("returncode") in {125, 126, 127} and not result.get("timed_out"):
             return {"resolved": None, "status": "infrastructure_error", "output": result["output"], "test_results": None, "duration_seconds": time.monotonic() - started}
-        return _fixture_grade(result, marker, verifier_sha256, started)
+        grade = _fixture_grade(result, marker, verifier_sha256, started)
+        if protected:
+            grade["ignored_changes"] = protected
+        return grade
 
     def close(self) -> None:
         _process(["docker", "rm", "-f", self.container], self.run_dir, 15)

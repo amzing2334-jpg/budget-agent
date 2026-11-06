@@ -5,6 +5,7 @@ chat template is not necessarily public. Actual usage is reconciled immediately.
 """
 from __future__ import annotations
 
+import hashlib
 import math
 from dataclasses import dataclass
 from typing import Any
@@ -25,9 +26,15 @@ class TokenCounter:
     still estimates chat framing and may differ from another model's tokenizer.
     """
 
+    # Context policies binary-search excerpt lengths and re-count the same
+    # messages at every probe. Memoize tokenizer counts by content digest:
+    # a few dozen bytes per entry, however long the text is.
+    _CACHE_ENTRIES = 65_536
+
     def __init__(self, name: str = "byte"):
         self.name = name
         self._encoding = None
+        self._counts: dict[bytes, int] = {}
         if name != "byte":
             try:
                 import tiktoken
@@ -41,7 +48,13 @@ class TokenCounter:
     def count(self, text: str) -> int:
         if self._encoding is None:
             return len(text.encode("utf-8"))
-        return len(self._encoding.encode(text, disallowed_special=()))
+        key = hashlib.blake2b(text.encode("utf-8", "surrogatepass"), digest_size=16).digest()
+        count = self._counts.get(key)
+        if count is None:
+            if len(self._counts) >= self._CACHE_ENTRIES:
+                self._counts.clear()
+            count = self._counts[key] = len(self._encoding.encode(text, disallowed_special=()))
+        return count
 
     def messages(self, messages: list[dict[str, str]]) -> int:
         # Plain role/content messages only; tool schemas and images are not used.

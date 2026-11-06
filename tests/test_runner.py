@@ -242,3 +242,34 @@ def test_shared_transformers_model_resets_seed_and_keeps_attempts_independent(tm
     assert first["evidence_kind"] == second["evidence_kind"] == "scripted_smoke"
     assert first["config"]["tokenizer"] == "test-shared-counter"
     assert first["budget"]["usage_is_estimated"] is False
+
+
+def test_workspace_is_fingerprinted_only_after_actions_that_can_write(tmp_path, monkeypatch):
+    task = load_tasks(ROOT / "tasks/local.jsonl", task_ids=["slugify-digits"])[0]
+    truth: list[str] = []
+
+    class CountingEnvironment(LocalEnvironment):
+        revision_calls = 0
+
+        def revision(self):
+            CountingEnvironment.revision_calls += 1
+            return super().revision()
+
+        def execute(self, action):
+            outcome = super().execute(action)
+            truth.append(LocalEnvironment.revision(self))  # uncounted ground truth
+            return outcome
+
+    monkeypatch.setattr("budget_agent.runner.create_environment",
+                        lambda task, config, run_dir: CountingEnvironment(task, config, run_dir))
+    result = run_task(task, RunConfig(max_output_tokens=1536), tmp_path)
+    events = [json.loads(line) for line in Path(result["result_path"]).with_name("trajectory.jsonl").read_text().splitlines()]
+    writers = [event for event in events if event["action"]["tool"] in {"write_file", "edit_file", "run", "public_test"}]
+    assert CountingEnvironment.revision_calls == 1 + len(writers)  # was 1 + 2 * len(events)
+    assert result["workspace_fingerprints"]["calls"] == CountingEnvironment.revision_calls
+    expected, executed = result["initial_revision"], iter(truth)
+    for event in events:
+        if event["action"]["tool"] not in {"remember", "recall", "finish", "invalid_action"}:
+            expected = next(executed)
+        assert event["revision_before"] != "" and event["revision"] == expected
+    assert result["resolved"] is True
