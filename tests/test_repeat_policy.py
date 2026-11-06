@@ -73,3 +73,16 @@ def test_ambiguous_anchor_asks_for_a_distinguishing_line(tmp_path):
     (env.workspace / "slugify.py").write_text("def a():\n    return 1\n\ndef b():\n    return 1\n", encoding="utf-8")
     result = env.execute({"tool": "edit_file", "path": "slugify.py", "old": "    return 1", "new": "    return 2"})
     assert "found 2" in result["output"] and "neighbouring line that differs" in result["output"]
+
+
+def test_file_errors_say_what_is_actually_wrong(tmp_path):
+    task = load_tasks(ROOT / "tasks/local.jsonl", task_ids=["slugify-digits"])[0]  # editable: ["slugify.py"]
+    env = LocalEnvironment(task, RunConfig(), tmp_path / "run")
+    missing = env.execute({"tool": "edit_file", "path": "schema.py", "old": "a", "new": "b"})
+    assert "path does not exist: schema.py" in missing["output"] and "search" in missing["output"]
+    assert missing["policy_decision"]["rule"] == "tool_allowed"  # a wrong path is not a policy denial
+    created = env.execute({"tool": "write_file", "path": "reproduce.py", "content": "print(1)\n"})
+    assert "cannot be created" in created["output"] and "run tool" in created["output"]
+    assert created["policy_decision"]["rule"] == "repository_boundary"
+    protected = env.execute({"tool": "write_file", "path": "tests/test_public.py", "content": "x"})
+    assert "tests and verifier are protected" in protected["output"]
