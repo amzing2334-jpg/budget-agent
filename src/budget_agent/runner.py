@@ -29,6 +29,7 @@ list_files: optional path (default "."), offset (0), limit (100, max 200).
 search: query; optional path ("."), offset (0), limit (50, max 100).
 read_file: path; optional start_line (1), end_line (default 100 lines, max 200).
 edit_file: path, old, new. old must be nonempty and match exactly once.
+replace_lines: path, start_line, end_line, new. Replace those lines (read_file numbers) with new.
 write_file: path, content. This overwrites the entire file; never supply a fragment.
 run: command, chosen from the repository's test documentation/configuration.
 public_test: no arguments. Execute the fixed public test command from the trusted task manifest.
@@ -54,7 +55,7 @@ def _append(path: Path, value: dict) -> None:
 
 def workspace_feedback(event: Event) -> str:
     tool = event.action["tool"]
-    file_tool_or_quiet_command = tool in {"write_file", "edit_file"} or (tool == "run" and not event.output.strip())
+    file_tool_or_quiet_command = tool in {"write_file", "edit_file", "replace_lines"} or (tool == "run" and not event.output.strip())
     if event.ok and file_tool_or_quiet_command and event.revision_before and event.revision_before == event.revision:
         return f"Workspace feedback for {event.id} ({tool}): workspace fingerprint unchanged. If editing, recheck the target."
     return ""

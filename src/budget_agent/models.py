@@ -149,7 +149,7 @@ def parse_action(text: str) -> dict[str, Any]:
         raise ValueError("Return exactly one JSON object with a 'tool' field; no prose") from exc
     if not isinstance(action, dict) or not isinstance(action.get("tool"), str):
         raise ValueError("Action must be a JSON object with a string 'tool' field")
-    allowed = {"list_files", "read_file", "search", "write_file", "edit_file", "run", "public_test", "diff", "remember", "recall", "finish"}
+    allowed = {"list_files", "read_file", "search", "write_file", "edit_file", "replace_lines", "run", "public_test", "diff", "remember", "recall", "finish"}
     if action["tool"] not in allowed:
         raise ValueError("Unknown tool; allowed: " + ", ".join(sorted(allowed)))
     if action["tool"] == "public_test" and set(action) != {"tool"}:
@@ -157,7 +157,7 @@ def parse_action(text: str) -> dict[str, Any]:
     string_fields = {
         "read_file": ("path",), "search": ("query",),
         "write_file": ("path", "content"), "run": ("command",),
-        "edit_file": ("path", "old", "new"),
+        "edit_file": ("path", "old", "new"), "replace_lines": ("path", "new"),
         "remember": ("note", "source"), "recall": ("event_id",),
     }
     for field in string_fields.get(action["tool"], ()):
@@ -165,6 +165,10 @@ def parse_action(text: str) -> dict[str, Any]:
             raise ValueError(f"{action['tool']} requires a string '{field}'")
     if action["tool"] in {"list_files", "search"} and "path" in action and not isinstance(action["path"], str):
         raise ValueError(f"{action['tool']} field 'path' must be a string")
+    if action["tool"] == "replace_lines":
+        for field in ("start_line", "end_line"):
+            if type(action.get(field)) is not int:
+                raise ValueError(f"replace_lines requires an integer '{field}'")
     integer_fields = {
         "read_file": ("start_line", "end_line"), "recall": ("offset", "limit"),
         "list_files": ("offset", "limit"), "search": ("offset", "limit"),
