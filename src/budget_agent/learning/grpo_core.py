@@ -39,6 +39,18 @@ def extract_turns(run_dir: Path, *, require_token_ids: bool = True) -> list[Turn
     return turns
 
 
+def step_tasks(schedule: list[int], step: int, per_step: int) -> list[int]:
+    """Task indices for one step: consecutive slices of a fixed shuffled schedule, wrapping around."""
+    return [schedule[(step * per_step + i) % len(schedule)] for i in range(per_step)]
+
+
+def minibatch_indices(size: int, minibatches: int, rng) -> list[list[int]]:
+    """Shuffle `size` items into at most `minibatches` interleaved, non-empty index groups."""
+    order = list(range(size))
+    rng.shuffle(order)
+    return [order[i::minibatches] for i in range(min(minibatches, size))]
+
+
 def subsample_turns(turns: list[Turn], limit: int | None, rng) -> list[Turn]:
     """At most `limit` turns of one attempt, uniformly without replacement, in their original order.
 
