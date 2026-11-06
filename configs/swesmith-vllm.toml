@@ -1,0 +1,24 @@
+# Rollouts against a local vLLM OpenAI-compatible server on SWE-smith-local tasks.
+# Agent commands run on the host, so launch the pool as an unprivileged user
+# (scripts/autodl/run_pool.sh drops to `nobody`). Counts use the conservative
+# byte estimate: Qwen BPE tokens never exceed UTF-8 bytes, so the server's
+# exact usage always reconciles; 80000 bytes keeps prompts well under the
+# server's 32768-token window.
+[run]
+provider = "openai-compatible"
+model = "teacher"
+base_url = "http://127.0.0.1:18017/v1"
+environment = "local"
+allow_local_execution = true
+# recent = full history while it fits, then a sliding window (no extra model calls).
+strategy = "recent"
+history_format = "chat"
+decision_policy = "direct"
+context_tokens = 80000
+total_tokens = 2000000
+max_output_tokens = 2048
+min_action_output_tokens = 128
+max_steps = 30
+timeout_seconds = 300
+temperature = 0.7
+tokenizer = "byte"
