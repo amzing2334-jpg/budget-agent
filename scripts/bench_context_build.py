@@ -46,9 +46,9 @@ def trajectory(seed: int = 0, steps: int = 30) -> list[Event]:
 
 class UncachedCounter(TokenCounter):
     def count(self, text: str) -> int:
-        if self._encoding is None:
+        if self._tokens is None:
             return super().count(text)
-        return len(self._encoding.encode(text, disallowed_special=()))
+        return self._tokens(text)
 
 
 def build_all(counter: TokenCounter, strategy: str, events: list[Event], limit: int) -> list:
