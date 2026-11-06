@@ -11,7 +11,7 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10"]
-tokens = ["tiktoken>=0.8,<1"]
+tokens = ["tiktoken>=0.8,<1", "tokenizers>=0.20,<1"]
 inference = ["torch>=2.8,<3", "transformers>=5.4,<5.5"]
 swebench = ["swebench==5.0.2"]
 swesmith = ["pandas>=2", "pyarrow>=15"]

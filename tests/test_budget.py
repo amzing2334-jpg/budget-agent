@@ -144,12 +144,12 @@ def test_tokenizer_counts_are_memoized_without_changing_results(monkeypatch):
     class Encoding:
         calls = 0
 
-        def encode(self, text, disallowed_special=()):
+        def count(self, text):
             Encoding.calls += 1
-            return text.split()
+            return len(text.split())
 
     counter = TokenCounter()
-    counter._encoding = Encoding()
+    counter._tokens = Encoding().count
     monkeypatch.setattr(TokenCounter, "_CACHE_ENTRIES", 2)
     assert counter.count("a b c") == 3 and counter.count("a b c") == 3
     assert Encoding.calls == 1
@@ -162,3 +162,23 @@ def test_tokenizer_counts_are_memoized_without_changing_results(monkeypatch):
 def test_byte_counter_has_no_cache_overhead():
     counter = TokenCounter()
     assert counter.count("abc") == 3 and counter._counts == {}
+
+
+def test_hf_tokenizer_file_counts_real_tokens(tmp_path):
+    tokenizers = pytest.importorskip("tokenizers")
+    model = tokenizers.models.WordLevel({"def": 0, "f": 1, "(": 2, ")": 3, ":": 4, "[UNK]": 5}, unk_token="[UNK]")
+    tokenizer = tokenizers.Tokenizer(model)
+    tokenizer.pre_tokenizer = tokenizers.pre_tokenizers.Whitespace()
+    path = tmp_path / "tokenizer.json"
+    tokenizer.save(str(path))
+    counter = TokenCounter(f"hf-file:{path}")
+    assert counter.count("def f ( ) :") == 5 and counter.count("def f ( ) :") == 5
+    assert counter.count("def f():") == 3  # "():" is one punctuation run, mapped to [UNK]
+    assert len(counter._counts) == 2
+    assert counter.description == f"hf-file:{path} tokens + framing estimate"
+
+
+def test_unreadable_tokenizer_file_is_a_config_error(tmp_path):
+    pytest.importorskip("tokenizers")
+    with pytest.raises(ValueError, match="Cannot load tokenizer file"):
+        TokenCounter(f"hf-file:{tmp_path / 'missing.json'}")
