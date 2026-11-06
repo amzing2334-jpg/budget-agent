@@ -31,6 +31,12 @@ class ModelResponse:
     output_tokens: int
     usage_source: str = "provider"
     model: str = ""
+    # Sampled completion as token IDs with behaviour-policy log probabilities,
+    # recorded when the run asks for them (RL needs the exact sampled tokens;
+    # re-tokenizing the text can drift). None when not requested.
+    completion_token_ids: list[int] | None = None
+    completion_logprobs: list[float] | None = None
+    finish_reason: str | None = None
 
 
 @dataclass
@@ -79,6 +85,7 @@ class RunConfig:
     docker_image: str = "python:3.11-slim"
     api_max_tokens_field: str = "max_tokens"
     api_enable_thinking: bool | None = None
+    api_logprobs: bool = False
     model_revision: str = ""
     device: str = "cuda"
     model_dtype: str = "bfloat16"
@@ -124,6 +131,8 @@ class RunConfig:
             raise ValueError("unsupported API output limit field")
         if self.api_enable_thinking is not None and type(self.api_enable_thinking) is not bool:
             raise ValueError("api_enable_thinking must be a boolean when specified")
+        if type(self.api_logprobs) is not bool:
+            raise ValueError("api_logprobs must be a boolean")
         for name in ("input_price_per_million", "output_price_per_million", "max_cost_usd"):
             value = getattr(self, name)
             if value is not None and (not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0):

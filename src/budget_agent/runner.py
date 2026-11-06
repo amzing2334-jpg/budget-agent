@@ -198,7 +198,10 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         usage_sources.add(response.usage_source)
         actual_models.add(response.model)
         record = {
-            "purpose": purpose, "messages": messages, "response": asdict(response),
+            # Optional token-level fields appear only when recorded, so older
+            # calls.jsonl readers and comparisons see the same records as before.
+            "purpose": purpose, "messages": messages,
+            "response": {key: value for key, value in asdict(response).items() if value is not None},
             "requested_max_output_tokens": allowance, "elapsed_seconds": time.monotonic() - call_start,
         }
         call_records.append(record)
