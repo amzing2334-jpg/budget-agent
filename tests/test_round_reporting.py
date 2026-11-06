@@ -24,6 +24,7 @@ def ledger(path, rows):
 
 def attempt(task, resolved, signals=(), **extra):
     return {"task_id": task, "split": "eval", "sample": 0, "status": "finished", "resolved": resolved,
+            "evaluation_status": "resolved" if resolved else "unresolved",
             "patch_signals": list(signals), "ignored_changes": [], **extra}
 
 
@@ -59,7 +60,7 @@ def test_round_summary_reports_pools_audit_training_and_cost(tmp_path, monkeypat
     ledger(pool / "attempts.jsonl", [
         attempt("a", True, ["process_exit", "test_file_modified"], result_path=str(run / "result.json"),
                 ignored_changes=["tests/test_mod.py"]),
-        attempt("a", False), attempt("b", True), attempt("b", False, ["process_exit"])])
+        attempt("a", False, verifier_timed_out=True), attempt("b", True), attempt("b", False, ["process_exit"])])
     (pool / "summary.json").write_text(json.dumps({
         "splits": {"eval": {"tasks": 2, "attempts": 4, "pass@1": 0.5, "pass@2": 0.75, "solved_tasks": 2,
                             "statuses": {"finished": 4}}},
@@ -85,6 +86,7 @@ def test_round_summary_reports_pools_audit_training_and_cost(tmp_path, monkeypat
     assert list(report["pools"]) == ["student-sft-eval"]
     assert stats["edit_success"] == {"edit_file": "1/2", "replace_lines": "1/1"}
     assert stats["patch_signals"] == {"process_exit": 2, "test_file_modified": 1}
+    assert stats["evaluation_statuses"] == {"resolved": 2, "unresolved": 2} and stats["verifier_timeouts"] == 1
     assert [(s["signal"], s["graded"]) for s in stats["tamper_audit"][0]["signals"]] == [
         ("process_exit", True), ("test_file_modified", False)]
     assert len(stats["tamper_audit"]) == 1
