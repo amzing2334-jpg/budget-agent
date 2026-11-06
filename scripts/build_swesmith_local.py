@@ -206,7 +206,9 @@ def admit(instance: dict, clean: Path, venv: Path, plugin_dir: Path, output: Pat
                              "editable": editable, "grading_scope": "editable_only",
                              # SWE-smith bugs live in public repos: block fetching the pristine upstream file.
                              "network_policy": "deny",
-                             "exec_env": {"PATH": str(venv / "bin"), "PYTHONPATH": "{workspace}/src:{workspace}"},
+                             "exec_env": {"PATH": str(venv / "bin"), "PYTHONPATH": "{workspace}/src:{workspace}",
+                                          # pytest-cov (repo addopts) writes outside the graded tree
+                                          "COVERAGE_FILE": "{workspace}.coverage"},
                              "fail_to_pass": len(f2p_eff), "pass_to_pass": len(p2p_eff),
                              "pass_to_pass_dropped": len(p2p) - len(p2p_eff)}}
         return {**record, "admitted": True, "task": task, "f2p_eff": len(f2p_eff), "f2p_total": len(f2p),

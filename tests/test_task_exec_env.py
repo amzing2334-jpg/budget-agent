@@ -84,3 +84,15 @@ def test_unknown_network_policy_is_rejected(tmp_path):
     env = LocalEnvironment(make_task(tmp_path, network_policy="open-ish"), RunConfig(), tmp_path / "run")
     result = env.execute({"tool": "run", "command": "echo hi"})
     assert not result["ok"] and "network_policy" in result["output"]
+
+
+def test_binary_test_artifacts_do_not_cost_the_attempt_its_grade(tmp_path):
+    # A test run under pytest-cov leaves a binary .coverage file; before, the
+    # patch export raised and a correct repair became grading_error.
+    task = make_task(tmp_path, editable=["mod.py"], grading_scope="editable_only")
+    env = LocalEnvironment(task, RunConfig(), tmp_path / "run")
+    (env.workspace / "mod.py").write_text("VALUE = 1\n", encoding="utf-8")
+    (env.workspace / ".coverage").write_bytes(b"SQLite format 3\x00\xff\xfe")
+    patch = env.patch()
+    assert "Binary files /dev/null and b/.coverage differ" in patch and "+VALUE = 1" in patch
+    assert env.grade()["status"] == "resolved"

@@ -7,7 +7,7 @@ from typing import Any
 from .schema import RunConfig, Task
 
 
-TOOLS = {"read_file", "list_files", "search", "write_file", "edit_file", "run", "public_test", "diff"}
+TOOLS = {"read_file", "list_files", "search", "write_file", "edit_file", "replace_lines", "run", "public_test", "diff"}
 
 
 def tool_decision(action: dict[str, Any], config: RunConfig, task: Task) -> dict[str, Any]:

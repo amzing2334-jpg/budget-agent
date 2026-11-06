@@ -29,6 +29,7 @@ list_files: optional path (default "."), offset (0), limit (100, max 200).
 search: query; optional path ("."), offset (0), limit (50, max 100).
 read_file: path; optional start_line (1), end_line (default 100 lines, max 200).
 edit_file: path, old, new. old must be nonempty and match exactly once.
+replace_lines: path, start_line, end_line, new. Replace those lines (read_file numbers) with new.
 write_file: path, content. This overwrites the entire file; never supply a fragment.
 run: command, chosen from the repository's test documentation/configuration.
 public_test: no arguments. Execute the fixed public test command from the trusted task manifest.
@@ -54,7 +55,7 @@ def _append(path: Path, value: dict) -> None:
 
 def workspace_feedback(event: Event) -> str:
     tool = event.action["tool"]
-    file_tool_or_quiet_command = tool in {"write_file", "edit_file"} or (tool == "run" and not event.output.strip())
+    file_tool_or_quiet_command = tool in {"write_file", "edit_file", "replace_lines"} or (tool == "run" and not event.output.strip())
     if event.ok and file_tool_or_quiet_command and event.revision_before and event.revision_before == event.revision:
         return f"Workspace feedback for {event.id} ({tool}): workspace fingerprint unchanged. If editing, recheck the target."
     return ""
@@ -145,6 +146,7 @@ class _Attempt:
         self.patch_signals: list[dict] = []
         self.model_seconds = 0.0
         self.fingerprints = {"calls": 0, "seconds": 0.0}
+        self.failed_actions: dict[tuple[str, str], list[int]] = {}
 
     # -- recording -----------------------------------------------------------------
     def snapshot(self) -> str:
@@ -288,6 +290,32 @@ class _Attempt:
         _append(self.run_dir / "security.jsonl", security_record)
         return action, outcome, decision
 
+    REPEAT_STOP = 3
+
+    def repeat_feedback(self, action: dict, content: str, outcome: dict) -> bool:
+        """Say so when a failed action repeats one that already failed at this revision.
+
+        Small models loop on the same failing edit; the observation now names
+        the earlier steps. With repeat_policy=stop the third identical failure
+        ends the attempt (independent grading still runs).
+        """
+        if self.config.repeat_policy == "off" or outcome["ok"]:
+            return False
+        key = (self.revision, content if action["tool"] == "invalid_action" else json.dumps(action, sort_keys=True))
+        steps = self.failed_actions.setdefault(key, [])
+        steps.append(self.step)
+        if len(steps) == 1:
+            return False
+        outcome["output"] += (f"\n[repeat {len(steps)}: this exact action already failed at step(s) "
+                              f"{', '.join(map(str, steps[:-1]))} on the same workspace revision and will fail again. "
+                              "Read the current code, search for the right location, or change approach.]")
+        self.record_control("repeated_failed_action", step=self.step, tool=action["tool"], occurrences=len(steps))
+        if self.config.repeat_policy == "stop" and len(steps) >= self.REPEAT_STOP:
+            self.status = "stuck"
+            self.error = f"Same failed action {len(steps)} times at one revision; independent evaluation retained"
+            return True
+        return False
+
     def loop_control_stops(self, event: Event, actor_messages: list[dict]) -> bool:
         if self.config.loop_policy != "recover":
             return False
@@ -347,6 +375,7 @@ class _Attempt:
             actor_messages = self.call_records[-1]["messages"]
             action_start = time.monotonic()
             action, outcome, decision = self.act(content)
+            stuck = self.repeat_feedback(action, content, outcome)
             before = self.revision
             if action["tool"] not in READ_ONLY_TOOLS:
                 self.revision = self.snapshot()
@@ -355,7 +384,7 @@ class _Attempt:
                           request_index=len(self.call_records))
             self.events.append(event)
             _append(self.run_dir / "trajectory.jsonl", event.to_dict())
-            if self.loop_control_stops(event, actor_messages) or self.status == "finished":
+            if stuck or self.loop_control_stops(event, actor_messages) or self.status == "finished":
                 break
             self.reflect(event, actor_messages, blocked=decision is not None and not decision["allowed"])
 
