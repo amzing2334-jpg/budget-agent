@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import json
+import math
 import os
 from pathlib import Path, PurePosixPath
 import shutil
@@ -153,6 +154,16 @@ def copy_tree(source: Path, destination: Path) -> None:
             path.unlink()
 
 
+def verifier_timeout_seconds(seconds: dict[str, float]) -> int:
+    """Grading time limit from the admission runs: 10x the slowest, at least 30 s.
+
+    A uniform limit (300 s in round 1) let one hung candidate hold a whole
+    synchronous rollout batch for minutes; admitted suites take 0.5 s at
+    the median.
+    """
+    return max(30, math.ceil(10 * max(seconds.values())))
+
+
 def admit(instance: dict, clean: Path, venv: Path, plugin_dir: Path, output: Path, timeout: int) -> dict:
     instance_id = instance["instance_id"]
     f2p, p2p = instance["FAIL_TO_PASS"], instance["PASS_TO_PASS"]
@@ -210,7 +221,8 @@ def admit(instance: dict, clean: Path, venv: Path, plugin_dir: Path, output: Pat
                                           # pytest-cov (repo addopts) writes outside the graded tree
                                           "COVERAGE_FILE": "{workspace}.coverage"},
                              "fail_to_pass": len(f2p_eff), "pass_to_pass": len(p2p_eff),
-                             "pass_to_pass_dropped": len(p2p) - len(p2p_eff)}}
+                             "pass_to_pass_dropped": len(p2p) - len(p2p_eff),
+                             "verifier_timeout_seconds": verifier_timeout_seconds(record["seconds"])}}
         return {**record, "admitted": True, "task": task, "f2p_eff": len(f2p_eff), "f2p_total": len(f2p),
                 "p2p_eff": len(p2p_eff), "p2p_total": len(p2p)}
 
