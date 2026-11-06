@@ -154,6 +154,23 @@ def test_a_verifier_hung_by_the_candidate_is_a_failed_repair(tmp_path):
     assert verified_outcome({"resolved": False, "evaluation": result}) is False
 
 
+def test_the_task_verifier_limit_overrides_the_command_limit(tmp_path):
+    task = load_task()
+    task.metadata = {**task.metadata, "verifier_timeout_seconds": 2}
+    env = create_environment(task, RunConfig(timeout_seconds=60), tmp_path / "run")
+    env.execute({"tool": "write_file", "path": "slugify.py", "content": "while True:\n    pass\n"})
+    result = env.grade()
+    assert result["timed_out"] and result["duration_seconds"] < 30
+
+
+@pytest.mark.parametrize("value", [0, -5, 2.5, "30"])
+def test_an_invalid_task_verifier_limit_is_an_infrastructure_error(tmp_path, value):
+    task = load_task()
+    task.metadata = {**task.metadata, "verifier_timeout_seconds": value}
+    result = create_environment(task, RunConfig(), tmp_path / "run").grade()
+    assert result["status"] == "infrastructure_error" and result["resolved"] is None
+
+
 def test_zero_exit_during_import_cannot_fake_test_success(tmp_path):
     env = create_environment(load_task(), RunConfig(), tmp_path / "run")
     env.execute({"tool": "write_file", "path": "slugify.py", "content": "import os\nos._exit(0)\n"})
