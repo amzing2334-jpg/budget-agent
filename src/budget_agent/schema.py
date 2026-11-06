@@ -59,6 +59,7 @@ class RunConfig:
     history_format: str = "chat"
     decision_policy: str = "direct"
     loop_policy: str = "off"
+    repeat_policy: str = "off"
     reflection_policy: str = "off"
     max_reflections: int = 1
     reflection_max_output_tokens: int = 256
@@ -99,6 +100,8 @@ class RunConfig:
             raise ValueError("decision_policy must be direct, budget-aware, or workspace-feedback")
         if self.loop_policy not in {"off", "recover"}:
             raise ValueError("loop_policy must be off or recover")
+        if self.repeat_policy not in {"off", "warn", "stop"}:
+            raise ValueError("repeat_policy must be off, warn, or stop")
         if self.reflection_policy not in {"off", "failure", "evidence"}:
             raise ValueError("reflection_policy must be off, failure, or evidence")
         if type(self.max_reflections) is not int or self.max_reflections < 1:

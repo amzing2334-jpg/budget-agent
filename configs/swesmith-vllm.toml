@@ -14,6 +14,8 @@ allow_local_execution = true
 strategy = "recent"
 history_format = "chat"
 decision_policy = "direct"
+# Name repeated failed actions; stop at the third identical failure (graded anyway).
+repeat_policy = "stop"
 context_tokens = 80000
 total_tokens = 2000000
 max_output_tokens = 2048

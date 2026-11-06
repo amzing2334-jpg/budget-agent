@@ -286,6 +286,19 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
             positions.append(f"line {line}, column {column}")
             offset = position + len(needle)
         hint = ("Matching block starts" if matches else "First nonempty old line occurs") + ": " + "; ".join(positions) if positions else "No anchor found; read the current file before editing."
+        if matches > 1:
+            hint += ". Add a neighbouring line that differs between the matches (for example the enclosing def line) to old"
+        elif not positions:
+            # Small models often paraphrase the anchor; show the nearest real lines.
+            import difflib
+            lines = content.splitlines()
+            target = needle.strip()
+            scored = sorted(((difflib.SequenceMatcher(None, target, line.strip()).ratio(), number, line)
+                             for number, line in enumerate(lines, 1) if line.strip()), reverse=True)[:3]
+            close = [f"line {number}: {line.strip()[:160]}" for ratio, number, line in scored if ratio >= 0.5]
+            if close:
+                hint = "No exact anchor. Closest lines in this file: " + " | ".join(close)
+            hint += ". If the code lives in another file, use search to find it"
         raise ValueError(f"edit_file old must match exactly once; found {matches}. No file changed. {hint}. Use read_file on {relative} around these lines, then include enough exact surrounding text in old to match once.")
     new = action["new"]
     if new == old:
