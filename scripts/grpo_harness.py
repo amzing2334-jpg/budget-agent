@@ -37,7 +37,7 @@ import torch
 from peft import LoraConfig, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from budget_agent.learning.grpo_core import aggregate, build_groups, extract_turns, token_policy_loss
+from budget_agent.learning.grpo_core import aggregate, build_groups, extract_turns, subsample_turns, token_policy_loss
 from budget_agent.models import token_digest
 from budget_agent.tasks import load_tasks
 
@@ -87,6 +87,8 @@ def main() -> int:
     parser.add_argument("--no-std-scale", action="store_true", help="Dr. GRPO centering only")
     parser.add_argument("--loss-agg", choices=["token", "sequence"], default="token")
     parser.add_argument("--minibatches", type=int, default=1, help="optimizer steps per rollout batch")
+    parser.add_argument("--turns-per-attempt", type=int, help="train at most this many uniformly sampled turns "
+                        "of each attempt (default: all)")
     parser.add_argument("--max-len", type=int, default=24576)
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
@@ -124,16 +126,18 @@ def main() -> int:
                   "pass_rate": sum(bool(a["resolved"]) for a in graded) / max(1, len(graded)), **groups,
                   "rollout_seconds": round(rollout_seconds, 1)}
         train_started = time.monotonic()
-        batch, mismatched = [], 0
+        batch, mismatched, available = [], 0, 0
         for attempt in kept:
-            for turn in extract_turns(Path(attempt["result_path"]).parent):
+            turns = extract_turns(Path(attempt["result_path"]).parent)
+            available += len(turns)
+            for turn in subsample_turns(turns, args.turns_per_attempt, random):
                 prompt = tokenizer.apply_chat_template(turn.messages, tokenize=True, add_generation_prompt=True,
                                                        return_dict=False)
                 if token_digest(prompt) != turn.prompt_digest:
                     mismatched += 1
                 elif turn.completion_ids and len(prompt) + len(turn.completion_ids) <= args.max_len:
                     batch.append((prompt, turn, attempt["advantage"]))
-        record["prompt_mismatch"] = mismatched
+        record.update(prompt_mismatch=mismatched, turns_available=available)
         if mismatched and not batch:
             raise RuntimeError(f"step {step}: no kept turn re-renders to the prompt the server sampled from; "
                                "trainer and server must load the same tokenizer and chat template")
