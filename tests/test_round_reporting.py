@@ -80,7 +80,7 @@ def test_round_summary_reports_pools_audit_training_and_cost(tmp_path, monkeypat
                                       "--outputs", str(out)])
     assert summarize_round.main() == 0
 
-    report = json.loads((out / "results.json").read_text())
+    report = json.loads((out / "results.json").read_text(encoding="utf-8"))
     stats = report["pools"]["student-sft-eval"]
     assert list(report["pools"]) == ["student-sft-eval"]
     assert stats["edit_success"] == {"edit_file": "1/2", "replace_lines": "1/1"}
@@ -92,7 +92,7 @@ def test_round_summary_reports_pools_audit_training_and_cost(tmp_path, monkeypat
     assert report["loss_curve"] == [[1, 1.2346], [2, 0.5]]
     assert sorted(report["compare"]) == ["eval", "eval_drop_flagged"]
     assert (report["gpu_hours"], report["cost_cny"]) == (1.5, 4.92)
-    markdown = (out / "results.md").read_text()
+    markdown = (out / "results.md").read_text(encoding="utf-8")
     assert "Paired eval: base 0.250 → candidate 0.500, delta +0.250, 95% CI [+0.000, +0.500]" in markdown
     assert "Tamper audit student-sft-eval: 1 resolved attempts with signals, 1 in graded files" in markdown
     assert "process_exit in mod.py (graded)" in markdown and "tests/test_mod.py (ignored)" in markdown
