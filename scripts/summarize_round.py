@@ -16,6 +16,10 @@ import json
 from pathlib import Path
 
 
+def jsonl(path: Path) -> list[dict]:
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
 def tamper_audit(attempts: list[dict]) -> list[dict]:
     """Resolved attempts with patch signals, each signal marked graded or ignored by the grader."""
     audit = []
@@ -23,20 +27,19 @@ def tamper_audit(attempts: list[dict]) -> list[dict]:
         if not (row["resolved"] and row["patch_signals"]):
             continue
         ignored = set(row["ignored_changes"])
-        records = json.loads(Path(row["result_path"]).read_text())["patch_signals"]
+        records = json.loads(Path(row["result_path"]).read_text(encoding="utf-8"))["patch_signals"]
         audit.append({"task_id": row["task_id"], "sample": row["sample"],
                       "signals": [{**record, "graded": record["file"] not in ignored} for record in records]})
     return audit
 
 
 def pool_stats(pool: Path) -> dict:
-    summary = json.loads((pool / "summary.json").read_text())
-    attempts = [json.loads(line) for line in (pool / "attempts.jsonl").read_text().splitlines() if line.strip()]
+    summary = json.loads((pool / "summary.json").read_text(encoding="utf-8"))
+    attempts = jsonl(pool / "attempts.jsonl")
     edits: Counter = Counter()
     edits_ok: Counter = Counter()
     for path in pool.glob("runs/*/*/trajectory.jsonl"):
-        for line in path.read_text().splitlines():
-            event = json.loads(line)
+        for event in jsonl(path):
             tool = event["action"]["tool"]
             if tool in {"edit_file", "replace_lines", "write_file"}:
                 edits[tool] += 1
@@ -56,19 +59,20 @@ def main() -> int:
     args = parser.parse_args()
     pools = {pool.name: pool_stats(pool) for pool in sorted(args.rollouts.iterdir()) if (pool / "summary.json").exists()}
     out = args.outputs
-    sft_rows = [json.loads(line) for line in (out / "sft.jsonl").read_text().splitlines() if line.strip()] if (out / "sft.jsonl").exists() else []
-    training = json.loads((out / "sft" / "result.json").read_text()) if (out / "sft" / "result.json").exists() else None
-    curve = ([json.loads(line) for line in (out / "sft" / "train_log.jsonl").read_text().splitlines() if line.strip()]
-             if (out / "sft" / "train_log.jsonl").exists() else [])
-    compare = {path.stem.removeprefix("compare_"): json.loads(path.read_text()) for path in sorted(out.glob("compare_*.json"))}
-    steps = [json.loads(line) for line in (out / "steps.jsonl").read_text().splitlines() if line.strip()] if (out / "steps.jsonl").exists() else []
+    sft_rows = jsonl(out / "sft.jsonl") if (out / "sft.jsonl").exists() else []
+    result = out / "sft" / "result.json"
+    training = json.loads(result.read_text(encoding="utf-8")) if result.exists() else None
+    curve = jsonl(out / "sft" / "train_log.jsonl") if (out / "sft" / "train_log.jsonl").exists() else []
+    compare = {path.stem.removeprefix("compare_"): json.loads(path.read_text(encoding="utf-8"))
+               for path in sorted(out.glob("compare_*.json"))}
+    steps = jsonl(out / "steps.jsonl") if (out / "steps.jsonl").exists() else []
     hours = sum(step["seconds"] for step in steps) / 3600
     report = {"pools": pools, "sft": {"examples": len(sft_rows), "tasks": len({r["task_id"] for r in sft_rows}),
                                       "by_mode": dict(Counter(r["mode"] for r in sft_rows))},
               "training": training, "loss_curve": [(c["step"], round(c["loss"], 4)) for c in curve],
               "compare": compare, "stages": steps, "gpu_hours": round(hours, 2),
               "cost_cny": round(hours * args.price_per_hour, 2)}
-    (out / "results.json").write_text(json.dumps(report, indent=1, ensure_ascii=False))
+    (out / "results.json").write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
     lines = ["| pool | split | tasks | attempts | pass@1 | pass@k | solved tasks | statuses | edit success | attempts/h |",
              "|---|---|---|---|---|---|---|---|---|---|"]
     for name, stats in pools.items():
@@ -92,7 +96,7 @@ def main() -> int:
                              f"({'graded' if s['graded'] else 'ignored'}) {s['line']!r}")
     lines += ["", f"GPU stage time: {report['gpu_hours']} h, cost ≈ ¥{report['cost_cny']}",
               "Stages: " + ", ".join(f"{s['step']} {s['seconds'] // 60} min" for s in steps)]
-    (out / "results.md").write_text("\n".join(lines) + "\n")
+    (out / "results.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     return 0
 
