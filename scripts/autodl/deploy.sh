@@ -21,8 +21,9 @@ if "${SSH[@]}" 'nvidia-smi --query-compute-apps=pid --format=csv,noheader' | gre
   echo "GPU already has running processes; deploying files only, no GPU work started." | tee "$LOGS/gpu-busy.txt"
 fi
 
-echo "== ship code ($(git -C "$HERE" rev-parse --short main)) and data"
-git -C "$HERE" archive --format=tar.gz -o "$LOGS/budget-agent.tar.gz" main
+REF=${REF:-main}
+echo "== ship code ($REF @ $(git -C "$HERE" rev-parse --short "$REF")) and data"
+git -C "$HERE" archive --format=tar.gz -o "$LOGS/budget-agent.tar.gz" "$REF"
 "${SSH[@]}" 'mkdir -p /opt/coding-agent/incoming /root/autodl-tmp/coding-agent-rl/logs'
 "${SCP[@]}" "$LOGS/budget-agent.tar.gz" "$DATA" "$HOST:/opt/coding-agent/incoming/"
 "${SSH[@]}" "set -e; cd /opt/coding-agent
