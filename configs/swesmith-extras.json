@@ -1,0 +1,17 @@
+{
+ "theskumar__python-dotenv.2b8635b7": [
+  "click",
+  "sh",
+  "ipython"
+ ],
+ "jd__tenacity.0d40e76f": [
+  "tornado",
+  "typeguard"
+ ],
+ "msiemens__tinydb.10644a0e": [
+  "pyyaml"
+ ],
+ "Suor__funcy.207a7810": [
+  "whatever==0.7"
+ ]
+}

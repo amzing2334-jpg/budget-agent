@@ -77,6 +77,10 @@ if __name__ == "__main__":
 
 
 def run(command, cwd, env=None, timeout=900, check=True):
+    if env is None:
+        # SWE-smith mirrors are shallow snapshots without tags; setuptools_scm
+        # packages (e.g. tenacity) cannot infer a version from them.
+        env = {**os.environ, "SETUPTOOLS_SCM_PRETEND_VERSION": os.environ.get("SETUPTOOLS_SCM_PRETEND_VERSION", "0.0.0")}
     result = subprocess.run(command, cwd=cwd, env=env, capture_output=True, text=True, timeout=timeout)
     if check and result.returncode != 0:
         raise RuntimeError(f"{' '.join(map(str, command))} failed ({result.returncode}): {result.stdout[-2000:]}{result.stderr[-2000:]}")
