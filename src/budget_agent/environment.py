@@ -262,8 +262,14 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
     if tool not in {"write_file", "edit_file"}:
         raise ValueError(f"unknown environment tool: {tool}")
     parts = path.relative_to(root).parts
+    if tool == "edit_file" and not path.is_file():
+        # Not a policy question: say the file is missing (models hallucinate paths).
+        raise ValueError(f"path does not exist: {relative}. Use list_files or search to find the file that defines this code.")
     permitted = relative in editable if editable is not None else not any(part in {"tests", "test", ".git"} for part in parts) and not path.name.startswith(("test_", "_private_"))
     if not permitted:
+        if not path.exists():
+            raise PermissionError(f"this task only edits existing source files, so {relative} cannot be created. "
+                                  "Run scratch code with the run tool instead (for example python -c ...).")
         raise PermissionError("this task only permits source edits; tests and verifier are protected")
     if tool == "write_file":
         path.parent.mkdir(parents=True, exist_ok=True)
