@@ -4,7 +4,7 @@ import math
 import pytest
 
 from budget_agent.learning.grpo_core import (Turn, aggregate, build_groups, extract_turns, group_advantages,
-                                             subsample_turns, token_policy_loss)
+                                             minibatch_indices, step_tasks, subsample_turns, token_policy_loss)
 
 
 def write_calls(run_dir, calls):
@@ -85,3 +85,19 @@ def test_subsample_turns_keeps_order_is_seeded_and_leaves_short_attempts_alone()
     assert picked == subsample_turns(turns, 4, random.Random(7))
     assert subsample_turns(turns, None, random.Random(7)) is turns
     assert subsample_turns(turns[:3], 4, random.Random(7)) == turns[:3]
+
+
+def test_step_tasks_slice_the_schedule_and_wrap():
+    schedule = [4, 0, 3, 1, 2]
+    assert step_tasks(schedule, 0, 2) == [4, 0] and step_tasks(schedule, 2, 2) == [2, 4]
+    assert sorted(i for step in range(5) for i in step_tasks(schedule, step, 2)) == sorted(schedule * 2)
+
+
+def test_minibatch_indices_partition_the_batch():
+    import random
+
+    groups = minibatch_indices(10, 4, random.Random(3))
+    assert len(groups) == 4 and all(groups) and sorted(sum(groups, [])) == list(range(10))
+    assert groups == minibatch_indices(10, 4, random.Random(3))
+    small = minibatch_indices(3, 4, random.Random(3))  # fewer items than minibatches: one item each
+    assert len(small) == 3 and all(len(group) == 1 for group in small) and sorted(sum(small, [])) == [0, 1, 2]
