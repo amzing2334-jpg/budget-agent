@@ -148,9 +148,9 @@ def main() -> int:
                                "trainer and server must load the same tokenizer and chat template")
         if batch:
             model.train()
-            order = list(range(len(batch)))
-            random.shuffle(order)
-            minibatches = [order[i::args.minibatches] for i in range(min(args.minibatches, len(order)))]
+            turn_order = list(range(len(batch)))  # not `order`: that is the task schedule across steps
+            random.shuffle(turn_order)
+            minibatches = [turn_order[i::args.minibatches] for i in range(min(args.minibatches, len(turn_order)))]
             olds = None  # one update: the ratio is 1 and the old log-probabilities are the current ones, detached
             if len(minibatches) > 1:
                 with torch.no_grad():
