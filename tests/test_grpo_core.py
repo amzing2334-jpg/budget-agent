@@ -3,7 +3,8 @@ import math
 
 import pytest
 
-from budget_agent.learning.grpo_core import aggregate, build_groups, extract_turns, group_advantages, token_policy_loss
+from budget_agent.learning.grpo_core import (Turn, aggregate, build_groups, extract_turns, group_advantages,
+                                             subsample_turns, token_policy_loss)
 
 
 def write_calls(run_dir, calls):
@@ -73,3 +74,14 @@ def test_token_aggregation_weights_every_token_equally():
     assert aggregate([short, long], mode="sequence").item() == pytest.approx(0.5)
     with pytest.raises(ValueError):
         aggregate([short], mode="batch")
+
+
+def test_subsample_turns_keeps_order_is_seeded_and_leaves_short_attempts_alone():
+    import random
+
+    turns = [Turn([{"role": "user", "content": str(i)}], [i], None, None) for i in range(10)]
+    picked = subsample_turns(turns, 4, random.Random(7))
+    assert len(picked) == 4 and picked == sorted(picked, key=lambda turn: turn.completion_ids[0])
+    assert picked == subsample_turns(turns, 4, random.Random(7))
+    assert subsample_turns(turns, None, random.Random(7)) is turns
+    assert subsample_turns(turns[:3], 4, random.Random(7)) == turns[:3]
