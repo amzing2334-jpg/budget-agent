@@ -7,4 +7,4 @@ mkdir -p "$AGENT/work/home"; chown nobody:nogroup "$AGENT/work" "$AGENT/work/hom
 exec setpriv --reuid=65534 --regid=65534 --clear-groups \
   env -i HOME="$AGENT/work/home" PATH=/usr/local/bin:/usr/bin:/bin LANG=C.UTF-8 \
   PYTHONPATH="$AGENT/budget-agent/src" PYTHONDONTWRITEBYTECODE=1 \
-  "$AGENT/interp/py311/bin/python" "$AGENT/budget-agent/scripts/rollout_pool.py" "$@"
+  "$AGENT/interp/py/bin/python" "$AGENT/budget-agent/scripts/rollout_pool.py" "$@"
