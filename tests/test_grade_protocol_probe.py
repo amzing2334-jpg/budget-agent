@@ -6,7 +6,7 @@ import sys
 
 import pytest
 
-from test_protocol_probe import artifacts, probe, write_json, write_rows
+from test_protocol_probe import artifacts, probe, write_json, write_rows  # noqa: F401 (pytest fixture)
 
 
 @pytest.fixture
@@ -20,7 +20,7 @@ def grader(monkeypatch):
 
 
 @pytest.fixture
-def completed_probe(artifacts):
+def completed_probe(artifacts):  # noqa: F811 (uses the imported fixture)
     task_id = "pallets__flask-1234"
     plan = json.loads((artifacts / "plan.json").read_text())
     plan["task_id"] = task_id
