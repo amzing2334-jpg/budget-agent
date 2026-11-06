@@ -15,7 +15,9 @@ fi
 if curl -sf http://127.0.0.1:18017/v1/models > /dev/null; then
   echo "port 18017 is served by a process this script did not start; refusing"; exit 1
 fi
-VLLM_ALLOW_RUNTIME_LORA_UPDATING=True nohup "$ML/env/bin/vllm" serve "$model" --served-model-name "$name" --host 127.0.0.1 --port 18017 \
+# The image has no nvcc/ninja, so FlashInfer cannot JIT its sampling kernels;
+# use vLLM's PyTorch top-k/top-p sampler instead (attention is unaffected).
+VLLM_USE_FLASHINFER_SAMPLER=0 VLLM_ALLOW_RUNTIME_LORA_UPDATING=True nohup "$ML/env/bin/vllm" serve "$model" --served-model-name "$name" --host 127.0.0.1 --port 18017 \
   --max-model-len 32768 --gpu-memory-utilization "${GPU_UTIL:-0.88}" --enable-prefix-caching --max-num-seqs 64 \
   "$@" > "$ML/logs/vllm-$name.log" 2>&1 &
 echo $! > "$PIDFILE"
