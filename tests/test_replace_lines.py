@@ -47,3 +47,11 @@ def test_parser_requires_integer_line_numbers():
     assert parse_action('{"tool":"replace_lines","path":"a.py","start_line":1,"end_line":2,"new":"x"}')["tool"] == "replace_lines"
     with pytest.raises(ValueError, match="integer 'end_line'"):
         parse_action('{"tool":"replace_lines","path":"a.py","start_line":1,"new":"x"}')
+
+
+def test_failed_edit_suggests_a_concrete_line_range_call(edit_environment):  # noqa: F811
+    env, _ = edit_environment
+    missing = env.execute({"tool": "edit_file", "path": "source.py", "old": "VALUE = 7", "new": "VALUE = 8"})
+    assert '"tool":"replace_lines","path":"source.py","start_line":2,"end_line":2' in missing["output"]
+    ambiguous = env.execute({"tool": "edit_file", "path": "source.py", "old": "xx", "new": "zz"})
+    assert '"start_line":3' in ambiguous["output"]

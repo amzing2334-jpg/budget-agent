@@ -298,6 +298,7 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
     matches = content.count(old)
     if matches != 1:
         needle = old if matches else next((line for line in old.splitlines() if line.strip()), old)
+        scored: list = []
         positions, offset = [], 0
         for _ in range(5):
             position = content.find(needle, offset)
@@ -321,6 +322,17 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
             if close:
                 hint = "No exact anchor. Closest lines in this file: " + " | ".join(close)
             hint += ". If the code lives in another file, use search to find it"
+        # A concrete line-range call works where copying an exact anchor keeps failing.
+        anchor_line = None
+        if positions:
+            anchor_line = content.count("\n", 0, content.find(needle)) + 1
+        elif scored and scored[0][0] >= 0.5:
+            anchor_line = scored[0][1]
+        if anchor_line is not None:
+            span = max(1, len(old.splitlines()))
+            hint += (f". Alternatively replace by line numbers: "
+                     f'{{"tool":"replace_lines","path":"{relative}","start_line":{anchor_line},'
+                     f'"end_line":{anchor_line + span - 1},"new":"..."}} (check the numbers with read_file first)')
         raise ValueError(f"edit_file old must match exactly once; found {matches}. No file changed. {hint}. Use read_file on {relative} around these lines, then include enough exact surrounding text in old to match once.")
     new = action["new"]
     if new == old:
