@@ -414,8 +414,20 @@ class LocalEnvironment:
 
     def _command_env(self) -> dict[str, str]:
         """Agent commands see the task's interpreter; `{workspace}` names this attempt's copy."""
-        extra = self.task.metadata.get("exec_env") or {}
-        return _safe_env({key: str(value).replace("{workspace}", str(self.workspace)) for key, value in extra.items()})
+        extra = {key: str(value).replace("{workspace}", str(self.workspace))
+                 for key, value in (self.task.metadata.get("exec_env") or {}).items()}
+        policy = self.task.metadata.get("network_policy")
+        if policy == "deny":
+            # Best effort, not a sandbox: well-behaved clients (pip, curl, wget,
+            # git, requests) honour these, raw sockets do not. Blocks fetching
+            # the upstream fix, a reward hack seen in large-scale code RL.
+            dead = "http://127.0.0.1:9"
+            extra.update({name: dead for name in ("http_proxy", "https_proxy", "all_proxy",
+                                                   "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY")})
+            extra.update(no_proxy="", NO_PROXY="", PIP_NO_INDEX="1", GIT_TERMINAL_PROMPT="0")
+        elif policy is not None:
+            raise EnvironmentError(f"unknown network_policy: {policy!r}")
+        return _safe_env(extra)
 
     def execute(self, action: dict[str, Any]) -> dict[str, Any]:
         return execute_authorized(action, self.config, self.task, self._execute)
