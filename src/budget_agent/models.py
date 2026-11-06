@@ -1,9 +1,11 @@
 """Model boundary. Scripted responses are plumbing fixtures, never model results."""
 from __future__ import annotations
 
+import hashlib
 import json
 import http.client
 import os
+import struct
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -14,6 +16,11 @@ from .schema import ModelResponse, RunConfig
 
 class ModelError(RuntimeError):
     pass
+
+
+def token_digest(ids: list[int]) -> str:
+    """Platform-independent digest of a token ID sequence."""
+    return hashlib.blake2b(struct.pack(f"<{len(ids)}I", *ids), digest_size=16).hexdigest()
 
 
 class _NoRedirectHandler(urllib.request.HTTPRedirectHandler):
@@ -55,10 +62,12 @@ class OpenAICompatibleModel:
         if self.config.api_enable_thinking is not None:
             body["enable_thinking"] = self.config.api_enable_thinking
         if self.config.api_logprobs:
-            # vLLM extension: tokens come back as "token_id:<n>", so the exact
-            # sampled IDs survive instead of being re-tokenized from text.
+            # vLLM extensions: tokens come back as "token_id:<n>", so the exact
+            # sampled IDs survive instead of being re-tokenized from text, and
+            # return_token_ids adds the prompt IDs the server rendered.
             body["logprobs"] = True
             body["return_tokens_as_token_ids"] = True
+            body["return_token_ids"] = True
         headers = {"Content-Type": "application/json"}
         if self.key:
             headers["Authorization"] = "Bearer " + self.key
@@ -90,7 +99,7 @@ class OpenAICompatibleModel:
         except (KeyError, IndexError, TypeError, ValueError):
             raise ModelError("Endpoint must return text content, a string model name when present, and non-negative integer prompt_tokens/completion_tokens; usage unknown") from None
         finish = data["choices"][0].get("finish_reason")
-        token_ids = logprobs = None
+        token_ids = logprobs = digest = None
         if self.config.api_logprobs:
             try:
                 entries = data["choices"][0]["logprobs"]["content"]
@@ -100,12 +109,18 @@ class OpenAICompatibleModel:
                 logprobs = [float(e["logprob"]) for e in entries]
                 if len(token_ids) != output_tokens:
                     raise ValueError("token record does not cover the billed completion")
-            except (KeyError, IndexError, TypeError, ValueError) as exc:
+                if data["choices"][0]["token_ids"] != token_ids:
+                    raise ValueError("returned token IDs disagree with the log-probability record")
+                prompt_ids = data["prompt_token_ids"]
+                if not isinstance(prompt_ids, list) or len(prompt_ids) != input_tokens:
+                    raise ValueError("prompt token IDs do not cover the billed prompt")
+                digest = token_digest(prompt_ids)
+            except (KeyError, IndexError, TypeError, ValueError, struct.error) as exc:
                 raise ModelError(f"Endpoint did not return a token ID and log probability for every completion token ({exc}); "
-                                 "vLLM needs logprobs=true and return_tokens_as_token_ids=true") from None
+                                 "vLLM needs logprobs=true, return_tokens_as_token_ids=true and return_token_ids=true") from None
         return ModelResponse(content, input_tokens, output_tokens, "provider", actual_model,
                              completion_token_ids=token_ids, completion_logprobs=logprobs,
-                             finish_reason=finish if isinstance(finish, str) else None)
+                             finish_reason=finish if isinstance(finish, str) else None, prompt_token_digest=digest)
 
 
 class ScriptedModel:

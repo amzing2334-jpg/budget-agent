@@ -21,6 +21,7 @@ class Turn:
     messages: list[dict]          # exact request sent to the server
     completion_ids: list[int]     # sampled tokens (incl. end-of-turn when generated)
     behavior_logprobs: list[float] | None
+    prompt_digest: str | None     # models.token_digest of the prompt IDs the server rendered
 
 
 def extract_turns(run_dir: Path, *, require_token_ids: bool = True) -> list[Turn]:
@@ -31,10 +32,10 @@ def extract_turns(run_dir: Path, *, require_token_ids: bool = True) -> list[Turn
         if call.get("purpose") != "agent" or "response" not in call:
             continue
         response = call["response"]
-        ids = response.get("completion_token_ids")
-        if ids is None and require_token_ids:
+        ids, digest = response.get("completion_token_ids"), response.get("prompt_token_digest")
+        if (ids is None or digest is None) and require_token_ids:
             raise ValueError(f"{run_dir}: attempt has no token-level record; rerun with api_logprobs=true")
-        turns.append(Turn(call["messages"], ids or [], response.get("completion_logprobs")))
+        turns.append(Turn(call["messages"], ids or [], response.get("completion_logprobs"), digest))
     return turns
 
 

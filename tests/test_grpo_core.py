@@ -13,11 +13,20 @@ def write_calls(run_dir, calls):
 
 def test_extract_turns_keeps_agent_requests_with_their_token_records(tmp_path):
     agent = {"purpose": "agent", "messages": [{"role": "user", "content": "x"}],
-             "response": {"content": "a", "completion_token_ids": [1, 2], "completion_logprobs": [-0.1, -0.2]}}
+             "response": {"content": "a", "completion_token_ids": [1, 2], "completion_logprobs": [-0.1, -0.2],
+                          "prompt_token_digest": "d" * 32}}
     write_calls(tmp_path / "run", [agent, {"purpose": "summary", "messages": [], "response": {"content": "s"}},
                                    {"purpose": "agent", "status": "usage_unknown"}])
     turns = extract_turns(tmp_path / "run")
     assert len(turns) == 1 and turns[0].completion_ids == [1, 2] and turns[0].behavior_logprobs == [-0.1, -0.2]
+    assert turns[0].prompt_digest == "d" * 32
+
+
+def test_extract_turns_needs_the_prompt_digest_for_rl(tmp_path):
+    response = {"content": "a", "completion_token_ids": [1], "completion_logprobs": [-0.1]}
+    write_calls(tmp_path / "run", [{"purpose": "agent", "messages": [], "response": response}])
+    with pytest.raises(ValueError, match="api_logprobs"):
+        extract_turns(tmp_path / "run")
 
 
 def test_extract_turns_refuses_text_only_attempts_for_rl(tmp_path):

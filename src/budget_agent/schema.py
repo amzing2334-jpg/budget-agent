@@ -37,6 +37,10 @@ class ModelResponse:
     completion_token_ids: list[int] | None = None
     completion_logprobs: list[float] | None = None
     finish_reason: str | None = None
+    # Digest of the prompt token IDs the server actually sampled from, so a
+    # trainer can prove its own rendering of the request is token-identical
+    # without storing every prompt (models.token_digest).
+    prompt_token_digest: str | None = None
 
 
 @dataclass
