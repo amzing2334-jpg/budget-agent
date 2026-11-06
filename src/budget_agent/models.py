@@ -54,6 +54,11 @@ class OpenAICompatibleModel:
         }
         if self.config.api_enable_thinking is not None:
             body["enable_thinking"] = self.config.api_enable_thinking
+        if self.config.api_logprobs:
+            # vLLM extension: tokens come back as "token_id:<n>", so the exact
+            # sampled IDs survive instead of being re-tokenized from text.
+            body["logprobs"] = True
+            body["return_tokens_as_token_ids"] = True
         headers = {"Content-Type": "application/json"}
         if self.key:
             headers["Authorization"] = "Bearer " + self.key
@@ -84,7 +89,23 @@ class OpenAICompatibleModel:
                 raise ValueError("invalid token usage")
         except (KeyError, IndexError, TypeError, ValueError):
             raise ModelError("Endpoint must return text content, a string model name when present, and non-negative integer prompt_tokens/completion_tokens; usage unknown") from None
-        return ModelResponse(content, input_tokens, output_tokens, "provider", actual_model)
+        finish = data["choices"][0].get("finish_reason")
+        token_ids = logprobs = None
+        if self.config.api_logprobs:
+            try:
+                entries = data["choices"][0]["logprobs"]["content"]
+                if not all(isinstance(e["token"], str) and e["token"].startswith("token_id:") for e in entries):
+                    raise ValueError("tokens are not token IDs")
+                token_ids = [int(e["token"].removeprefix("token_id:")) for e in entries]
+                logprobs = [float(e["logprob"]) for e in entries]
+                if len(token_ids) != output_tokens:
+                    raise ValueError("token record does not cover the billed completion")
+            except (KeyError, IndexError, TypeError, ValueError) as exc:
+                raise ModelError(f"Endpoint did not return a token ID and log probability for every completion token ({exc}); "
+                                 "vLLM needs logprobs=true and return_tokens_as_token_ids=true") from None
+        return ModelResponse(content, input_tokens, output_tokens, "provider", actual_model,
+                             completion_token_ids=token_ids, completion_logprobs=logprobs,
+                             finish_reason=finish if isinstance(finish, str) else None)
 
 
 class ScriptedModel:
