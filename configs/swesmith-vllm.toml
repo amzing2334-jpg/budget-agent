@@ -1,9 +1,11 @@
 # Rollouts against a local vLLM OpenAI-compatible server on SWE-smith-local tasks.
 # Agent commands run on the host, so launch the pool as an unprivileged user
-# (scripts/autodl/run_pool.sh drops to `nobody`). Counts use the conservative
-# byte estimate: Qwen BPE tokens never exceed UTF-8 bytes, so the server's
-# exact usage always reconciles; 80000 bytes keeps prompts well under the
-# server's 32768-token window.
+# (scripts/autodl/run_pool.sh drops to `nobody`). Counts use the byte
+# estimate: Qwen BPE tokens never exceed UTF-8 bytes, so the server's exact
+# usage always reconciles. The byte budget does not bound real tokens, though:
+# in round 1, 80000 bytes reached 32188 tokens on dense code (about 2.5 bytes
+# per token) and 2 of 768 teacher requests overflowed the 32768-token window.
+# Rounds 1 and 2 ran with this file; swesmith-vllm-tokens.toml counts real tokens.
 [run]
 provider = "openai-compatible"
 model = "teacher"
