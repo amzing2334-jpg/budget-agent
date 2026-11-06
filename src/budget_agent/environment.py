@@ -398,6 +398,14 @@ def _verified(result: dict[str, Any], marker: str) -> tuple[bool | None, dict[st
         return None, None
 
 
+def _verifier_timeout(task: Task, config: RunConfig) -> int:
+    """The task's own limit, set at admission from measured test time, else the run's command limit."""
+    value = task.metadata.get("verifier_timeout_seconds", config.timeout_seconds)
+    if type(value) is not int or value <= 0:
+        raise EnvironmentError("verifier_timeout_seconds must be a positive integer")
+    return value
+
+
 def _stage_verifier(source: Path, grading: Path) -> str:
     data = source.read_bytes()
     (grading / "_private_verifier.py").write_bytes(data)
@@ -547,7 +555,7 @@ class LocalEnvironment:
                 _write_grading_tree(grading, self.baseline, current, graded)
                 verifier_sha256 = _stage_verifier(verifier, grading)
                 command, marker = _verification_command(sys.executable)
-                result = _process(command, grading, self.config.timeout_seconds)
+                result = _process(command, grading, _verifier_timeout(self.task, self.config))
             grade = _fixture_grade(result, marker, verifier_sha256, started)
             if protected:
                 grade["ignored_changes"] = protected
@@ -684,7 +692,7 @@ except (KeyError, ValueError, OSError) as exc:
             grader_name = f"budget-grade-{uuid.uuid4().hex[:12]}"
             verifier_command, marker = _verification_command("python")
             command = ["docker", "run", "--rm", "--name", grader_name, "--network", "none", "--cpus", "2", "--memory", "2g", "--pids-limit", "128", "--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--mount", f"type=bind,source={grading},target=/workspace,readonly", "-w", "/workspace", "-e", "PYTHONDONTWRITEBYTECODE=1", self.provenance["image_id"], *verifier_command]
-            result = _process(command, self.run_dir, self.config.timeout_seconds)
+            result = _process(command, self.run_dir, _verifier_timeout(self.task, self.config))
             if result.get("timed_out"):
                 _process(["docker", "rm", "-f", grader_name], self.run_dir, 15)
         if result.get("returncode") in {125, 126, 127} and not result.get("timed_out"):
