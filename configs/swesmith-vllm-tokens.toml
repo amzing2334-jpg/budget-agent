@@ -1,0 +1,26 @@
+# As swesmith-vllm.toml, but the context budget is counted in the served
+# model's own tokens: hf-file: loads its tokenizer.json (Qwen2.5-Coder 1.5B
+# and 7B share one), so a prompt cannot outgrow the server's window the way a
+# byte budget did in round 1. 28672 + 2048 output tokens leave 2048 for the
+# chat framing the counter only estimates. Needs the tokenizers package in
+# the rollout interpreter and the tokenizer file readable by `nobody`.
+[run]
+provider = "openai-compatible"
+model = "teacher"
+base_url = "http://127.0.0.1:18017/v1"
+environment = "local"
+allow_local_execution = true
+# recent = full history while it fits, then a sliding window (no extra model calls).
+strategy = "recent"
+history_format = "chat"
+decision_policy = "direct"
+# Name repeated failed actions; stop at the third identical failure (graded anyway).
+repeat_policy = "stop"
+context_tokens = 28672
+total_tokens = 2000000
+max_output_tokens = 2048
+min_action_output_tokens = 128
+max_steps = 30
+timeout_seconds = 300
+temperature = 0.7
+tokenizer = "hf-file:/opt/coding-agent/tokenizers/qwen2.5-coder/tokenizer.json"

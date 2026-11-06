@@ -8,7 +8,7 @@ from __future__ import annotations
 import hashlib
 import math
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Callable
 
 from .schema import ModelResponse, RunConfig
 
@@ -21,9 +21,13 @@ class TokenCounter:
     """A reproducible preflight counter, never advertised as provider billing.
 
     ``byte`` counts UTF-8 bytes plus conservative message framing. It usually
-    overestimates text token usage and is useful without a tokenizer dependency.
-    A tiktoken encoding can be selected explicitly (e.g. ``cl100k_base``); this
-    still estimates chat framing and may differ from another model's tokenizer.
+    overestimates text token usage and is useful without a tokenizer dependency,
+    but it does not bound real tokens: dense code runs near 2.5 bytes per token,
+    so a byte budget can still overflow the server's context window.
+    ``hf-file:<path>`` counts with the served model's own ``tokenizer.json``
+    (the ``tokenizers`` package), which makes a token budget hold. A tiktoken
+    encoding can be selected explicitly (e.g. ``cl100k_base``). Chat framing
+    is estimated in every case.
     """
 
     # Context policies binary-search excerpt lengths and re-count the same
@@ -33,27 +37,38 @@ class TokenCounter:
 
     def __init__(self, name: str = "byte"):
         self.name = name
-        self._encoding = None
+        self._tokens: Callable[[str], int] | None = None
         self._counts: dict[bytes, int] = {}
-        if name != "byte":
+        if name.startswith("hf-file:"):
+            try:
+                from tokenizers import Tokenizer
+            except ImportError as exc:
+                raise ValueError("Install budget-agent[tokens] to count with a tokenizer.json file") from exc
+            try:
+                tokenizer = Tokenizer.from_file(name.removeprefix("hf-file:"))
+            except Exception as exc:  # the Rust binding raises a bare Exception for unreadable files
+                raise ValueError(f"Cannot load tokenizer file: {name.removeprefix('hf-file:')}") from exc
+            self._tokens = lambda text: len(tokenizer.encode(text, add_special_tokens=False).ids)
+        elif name != "byte":
             try:
                 import tiktoken
             except ImportError as exc:
                 raise ValueError("Install budget-agent[tokens] to use a tiktoken encoding") from exc
             try:
-                self._encoding = tiktoken.get_encoding(name.removeprefix("tiktoken:"))
+                encoding = tiktoken.get_encoding(name.removeprefix("tiktoken:"))
             except ValueError as exc:
                 raise ValueError(f"Unknown explicit tiktoken encoding: {name}") from exc
+            self._tokens = lambda text: len(encoding.encode(text, disallowed_special=()))
 
     def count(self, text: str) -> int:
-        if self._encoding is None:
+        if self._tokens is None:
             return len(text.encode("utf-8"))
         key = hashlib.blake2b(text.encode("utf-8", "surrogatepass"), digest_size=16).digest()
         count = self._counts.get(key)
         if count is None:
             if len(self._counts) >= self._CACHE_ENTRIES:
                 self._counts.clear()
-            count = self._counts[key] = len(self._encoding.encode(text, disallowed_special=()))
+            count = self._counts[key] = self._tokens(text)
         return count
 
     def messages(self, messages: list[dict[str, str]]) -> int:
