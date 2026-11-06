@@ -5,7 +5,10 @@ chat conversation from sft_data_from_runs.py. Loss covers assistant replies
 (and their end-of-turn token); system prompts, task text and tool
 observations are masked. Spans are found by rendering prefixes with the
 model's own chat template, so the trained tokens are exactly what the
-template produces at inference time.
+template produces at inference time. Logits are computed only at positions
+that predict a trained token (about 1% of positions in round 1), so a
+16k-token sample never materializes a float32 row over the 152k vocabulary
+for every position.
 """
 from __future__ import annotations
 
@@ -37,6 +40,20 @@ def encode(tokenizer, messages: list[dict], mode: str, max_len: int) -> tuple[li
     if len(ids) > max_len or all(label == -100 for label in labels):
         return None
     return ids, labels
+
+
+def assistant_loss(model, ids: list[int], labels: list[int]) -> torch.Tensor:
+    """Mean next-token loss over trained tokens, equal to the model's own loss with these labels.
+
+    Only hidden states that predict a trained token go through the LM head
+    (`logits_to_keep` with indices). The full-vocabulary loss on a 16k-token
+    sample peaks at about 28 GiB of float32 logits and their gradients.
+    """
+    device = next(model.parameters()).device
+    targets = torch.tensor(labels[1:], device=device)
+    keep = (targets != -100).nonzero().squeeze(1)
+    logits = model(input_ids=torch.tensor([ids], device=device), logits_to_keep=keep).logits[0]
+    return torch.nn.functional.cross_entropy(logits.float(), targets[keep])
 
 
 def main() -> int:
@@ -89,8 +106,7 @@ def main() -> int:
     started, seen_tokens, running = time.monotonic(), 0, []
     for position, index in enumerate(order):
         ids, labels = examples[index]
-        batch = torch.tensor([ids], device="cuda")
-        loss = model(input_ids=batch, labels=torch.tensor([labels], device="cuda")).loss
+        loss = assistant_loss(model, ids, labels)
         (loss / args.accumulate).backward()
         running.append(loss.item())
         seen_tokens += len(ids)
