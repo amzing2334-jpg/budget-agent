@@ -40,6 +40,12 @@ Copy repository paths exactly from observations. Narrow path/query before reques
 Event IDs identify archived evidence. Notes and summaries can be incomplete; use recall/read_file to verify them. Evidence from an older repository revision may be stale, particularly test results. Finish only after inspecting your diff and validating the change. Every model call, including summaries, uses the same finite total budget."""
 
 
+# Tools that never write the workspace. After them the previous fingerprint
+# still holds, which saves a full-tree hash (a container exec under Docker).
+READ_ONLY_TOOLS = frozenset({"list_files", "search", "read_file", "diff", "remember", "recall",
+                             "finish", "invalid_action"})
+
+
 def _append(path: Path, value: dict) -> None:
     with path.open("a", encoding="utf-8") as stream:
         stream.write(json.dumps(value, ensure_ascii=False) + "\n")
@@ -126,6 +132,15 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
     external_actions = 0
     evaluation = {"resolved": None, "status": "not_evaluated"}
     model_seconds = 0.0
+    fingerprints = {"calls": 0, "seconds": 0.0}
+
+    def snapshot() -> str:
+        started = time.monotonic()
+        try:
+            return env.revision()
+        finally:
+            fingerprints["calls"] += 1
+            fingerprints["seconds"] += time.monotonic() - started
 
     def record_control(kind: str, **details) -> None:
         record = {"kind": kind, **details}
@@ -198,9 +213,10 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
     try:
         env = create_environment(task, config, run_dir)
         environment_provenance = env.provenance
-        initial_revision = env.revision()
+        initial_revision = revision = snapshot()
         for step in range(1, config.max_steps + 1):
-            revision = env.revision()
+            # `revision` is the previous step's post-action snapshot. Model
+            # calls between steps (summaries, reflections) never touch files.
             read_loop.begin_revision(revision)
             context_input_cap = config.context_tokens - config.max_output_tokens
             input_cap = min(context_input_cap, budget.remaining_tokens - config.min_action_output_tokens)
@@ -259,8 +275,11 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
                                        "decision": policy_decision}
                     safety_records.append(security_record)
                     _append(run_dir / "security.jsonl", security_record)
-            event = Event(f"e{step:04d}", step, action, outcome["output"], env.revision(), outcome["ok"],
-                          time.monotonic() - action_start, model_content=content, revision_before=revision,
+            before = revision
+            if action["tool"] not in READ_ONLY_TOOLS:
+                revision = snapshot()
+            event = Event(f"e{step:04d}", step, action, outcome["output"], revision, outcome["ok"],
+                          time.monotonic() - action_start, model_content=content, revision_before=before,
                           request_index=len(call_records))
             events.append(event)
             _append(run_dir / "trajectory.jsonl", event.to_dict())
@@ -345,6 +364,7 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         "known_cost_usd": budget.cost_usd, "usage_unknown": unknown_usage,
         "usage_sources": sorted(usage_sources), "budget": budget.to_dict(),
         "elapsed_seconds": time.monotonic() - start, "model_seconds": model_seconds,
+        "workspace_fingerprints": fingerprints,
         "steps": len(events), "context_stats": context.stats,
         "diagnostics": analyze_trajectory(events, call_records, initial_revision=initial_revision, requests=budget.records),
         "loop_control": {"policy": config.loop_policy, "events": controls,

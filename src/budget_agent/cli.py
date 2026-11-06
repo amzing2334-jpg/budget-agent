@@ -10,7 +10,7 @@ import shutil
 import subprocess
 import sys
 import tomllib
-from dataclasses import asdict, fields, replace
+from dataclasses import fields, replace
 from pathlib import Path
 
 from .schema import RunConfig

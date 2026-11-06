@@ -2,11 +2,10 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import sys
 
 import pytest
 
-from budget_agent.environment import DockerEnvironment, EnvironmentError, create_environment, _verified
+from budget_agent.environment import DockerEnvironment, EnvironmentError, create_environment, _GIT_SNAPSHOT, _verified
 from budget_agent.schema import RunConfig, Task
 
 
@@ -197,7 +196,7 @@ def test_docker_grading_distinguishes_unscored_from_failure(tmp_path, monkeypatc
     def process(command, *args):
         # Exercise the real grading command and verdict parser without starting Docker.
         import re
-        assert command[-4] == env.provenance["image_id"]
+        assert command[-6:-2] == [env.provenance["image_id"], "python", "-I", "-B"]
         marker = re.search(r"BUDGET_AGENT_GRADE_[a-f0-9]+", command[-1])[0]
         output = "ModuleNotFoundError" if verdict is None else marker + json.dumps(verdict)
         return {"ok": verdict is not None, "output": output,
@@ -224,15 +223,16 @@ def test_docker_patch_refuses_truncation_and_uses_original_commit():
 
     def fake_exec(command):
         commands.append(command)
-        return {"ok": True, "output": "partial diff", "output_truncated": command[1] == "diff"}
+        return {"ok": True, "output": "partial diff", "output_truncated": command[-2] == "diff"}
 
     env._exec = fake_exec
     with pytest.raises(EnvironmentError, match="truncated patch"):
         env.patch()
-    assert commands[-1] == ["git", "diff", "a" * 40, "--binary"]
+    # One read-only snapshot command; the agent's git index is never staged into.
+    assert commands == [["python", "-c", _GIT_SNAPSHOT, "diff", "a" * 40]]
 
 
-def test_docker_revision_hashes_inside_container_against_original_commit():
+def test_docker_revision_names_the_tree_inside_the_container():
     env = DockerEnvironment.__new__(DockerEnvironment)
     env.local = None
     env.base_commit = "b" * 40
@@ -240,13 +240,12 @@ def test_docker_revision_hashes_inside_container_against_original_commit():
 
     def fake_exec(command):
         calls.append(command)
-        return {"ok": True, "output": "c" * 64 + "\n"}
+        return {"ok": True, "output": "c" * 40 + "\n"}
 
     env._exec = fake_exec
     assert env.revision() == "c" * 16
-    assert calls[0][-1] == "b" * 40
-    assert "hashlib.sha256" in calls[0][2]
-    assert "read(1048576)" in calls[0][2]
+    assert calls == [["python", "-c", _GIT_SNAPSHOT, "tree", "b" * 40]]
+    assert "write-tree" in calls[0][2]
 
 
 def test_docker_start_failure_is_not_a_model_failure(tmp_path, monkeypatch):
@@ -318,7 +317,8 @@ def test_swebench_preserves_official_setup_checkout_and_patch_baseline(tmp_path,
                               "image_id": state["image_id"], "task_base_commit": "a" * 40,
                               "image_checkout": "b" * 40}
     env.patch()
-    assert calls[-1][5:] == ["git", "diff", "b" * 40, "--binary"]
+    assert calls[-1][5:] == ["python", "-c", _GIT_SNAPSHOT, "diff", "b" * 40]
+    assert not any(call[5:7] == ["git", "add"] for call in calls)
 
 
 @pytest.mark.parametrize("failure", ["revision", "invalid_head", "ancestry"])
