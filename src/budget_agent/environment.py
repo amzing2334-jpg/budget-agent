@@ -412,6 +412,14 @@ def _fixture_grade(result: dict[str, Any], marker: str, verifier_sha256: str, st
                 "output": "Verdict marker printed more than once: the candidate wrote to the grading channel.\n"
                           + result["output"], "test_results": None,
                 "duration_seconds": time.monotonic() - started}
+    if result["timed_out"]:
+        # Admitted tests finish in seconds on the clean tree, so a verifier at
+        # the limit was hung by the candidate's code: a failed repair. Leaving
+        # it ungraded would drop it from its RL group, making a hung test
+        # suite cheaper than a failing one.
+        return {"resolved": False, "status": "unresolved", "timed_out": True, "output": result["output"],
+                "duration_seconds": time.monotonic() - started,
+                "grading_inputs": {"kind": "fixture", "verifier_sha256": verifier_sha256}}
     resolved, verdict = _verified(result, marker)
     status = "grading_error" if resolved is None else "resolved" if resolved else "unresolved"
     grade = {"resolved": resolved, "status": status, "output": result["output"],
