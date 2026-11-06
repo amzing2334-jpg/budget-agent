@@ -102,6 +102,7 @@ def main() -> int:
                "output_tokens": result["output_tokens"], "elapsed_seconds": round(result["elapsed_seconds"], 2),
                "model_seconds": round(result["model_seconds"], 2), "result_path": result["result_path"],
                "ignored_changes": result["evaluation"].get("ignored_changes", []),
+               "verifier_timed_out": result["evaluation"].get("timed_out", False),
                "patch_signals": sorted({s["signal"] for s in result.get("patch_signals", [])})}
         with lock:
             rows.append(row)
