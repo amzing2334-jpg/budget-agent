@@ -24,8 +24,11 @@ flowchart LR
 | 环境规模与保真度 | 288/288 个 SWE-smith 实例不依赖 Docker 准入，覆盖 12 个仓库。37,237 个 PASS_TO_PASS 测试 0 个被丢弃。单次测试 P50 0.47 秒，准入吞吐约每分钟 195 题。此为本地预检，用 Python 3.13 | [预检记录](docs/EXPERIMENT_SWESMITH_RFT_ROUND1.md#追加本地准入预检2026-11-06运行前) |
 | 防作弊 | 评分只应用允许编辑的源文件，新增文件和 conftest 不进入评分树。SWE-smith 任务上 agent 命令断网，挡住"下载上游原文件"这种作弊。被测包的导入来源每次断言 | `tests/test_task_exec_env.py` |
 | 性能 | tiktoken 计数时，上下文构造快约 14×（recent）和 22×（structured），输出逐字节相同。容器内指纹计算在 6 条真实轨迹上从 132 次降到 12 次 | `scripts/bench_context_build.py` |
-| 工程 | 942 个测试通过。CI 覆盖 Linux 和 Windows，Python 3.11 和 3.13，另有 mini-SWE-agent 和 OpenJudge 的契约测试 | `.github/workflows/tests.yml` |
-| 训练闭环 | 第一轮 RFT 的协议和判据已冻结（教师 7B → 学生 1.5B，以留出仓库的 pass@1 为主指标，配对 bootstrap），结果等 GPU 运行后追加 | [实验协议](docs/EXPERIMENT_SWESMITH_RFT_ROUND1.md) |
+| 工程 | 978 个测试通过。CI 覆盖 Linux 和 Windows，Python 3.11 和 3.13，另有 mini-SWE-agent 和 OpenJudge 的契约测试 | `.github/workflows/tests.yml` |
+| 训练闭环（第一轮 RFT） | 教师 7B 的通过轨迹（33 题，619 条样本）用于对学生 1.5B 做 LoRA SFT。留出的 4 个仓库共 96 题，每题 4 次采样，pass@1 从 **0.26% 升到 6.25%**（教师为 7.29%），按题配对 bootstrap 的 95% 置信区间是 [+2.86, +9.64] 个百分点，冻结判据下结论为"提升"。机制：`edit_file` 成功率从 10.4% 升到 49.5%，与教师（51.4%）持平。通过的 24 个补丁逐条检查，没有发现作弊。全程 2.79 GPU 小时，约 9.2 元 | [实验记录](docs/EXPERIMENT_SWESMITH_RFT_ROUND1.md#追加第一轮结果2026-11-06-1359-utc-完成) |
+| 训练显存 | SFT 只在预测训练 token 的位置算 logits（`logits_to_keep` 传索引），loss 与梯度和原写法差在 1e-6 以内。16k token 的样本，峰值显存从估算的约 34 GiB 降到实测 11.8 GiB，约 5400 token/s | `scripts/train_sft_lora.py`、`tests/test_sft_loss.py` |
+| 采样与训练一致 | rollout 记录 vLLM 实际 prompt token 的摘要。GRPO 训练前，用训练端重新渲染的 prompt 核对摘要，不一致的 turn 不训练，并计数 | `tests/test_token_level_rollouts.py`、`scripts/grpo_harness.py` |
+| 评分语义 | verifier 被候选代码卡到超时，记为失败。如果记为未评分，它会被移出 GRPO 的组，"让测试卡死"反而比"测试失败"划算 | `tests/test_environment.py` |
 
 ## 快速开始
 
