@@ -143,6 +143,17 @@ def test_fixture_patch_refuses_lossy_replacement_of_non_utf8_bytes(tmp_path):
         env.patch()
 
 
+def test_a_verifier_hung_by_the_candidate_is_a_failed_repair(tmp_path):
+    from budget_agent.evaluation import verified_outcome
+
+    env = create_environment(load_task(), RunConfig(timeout_seconds=2), tmp_path / "run")
+    env.execute({"tool": "write_file", "path": "slugify.py", "content": "while True:\n    pass\n"})
+    result = env.grade()
+    assert (result["resolved"], result["status"], result["timed_out"]) == (False, "unresolved", True)
+    assert "test_results" not in result and result["grading_inputs"]["kind"] == "fixture"
+    assert verified_outcome({"resolved": False, "evaluation": result}) is False
+
+
 def test_zero_exit_during_import_cannot_fake_test_success(tmp_path):
     env = create_environment(load_task(), RunConfig(), tmp_path / "run")
     env.execute({"tool": "write_file", "path": "slugify.py", "content": "import os\nos._exit(0)\n"})

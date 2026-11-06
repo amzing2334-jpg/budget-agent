@@ -47,6 +47,8 @@ def pool_stats(pool: Path) -> dict:
     signals = Counter(signal for row in attempts for signal in row["patch_signals"])
     return {"splits": summary["splits"], "attempts_per_hour": summary["attempts_per_hour"],
             "wall_seconds": summary["wall_seconds"], "tokens": summary["tokens"],
+            "evaluation_statuses": dict(Counter(row["evaluation_status"] for row in attempts)),
+            "verifier_timeouts": sum(bool(row.get("verifier_timed_out")) for row in attempts),
             "edit_success": {tool: f"{edits_ok[tool]}/{edits[tool]}" for tool in edits},
             "patch_signals": dict(signals), "tamper_audit": tamper_audit(attempts)}
 
@@ -73,13 +75,14 @@ def main() -> int:
               "compare": compare, "stages": steps, "gpu_hours": round(hours, 2),
               "cost_cny": round(hours * args.price_per_hour, 2)}
     (out / "results.json").write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
-    lines = ["| pool | split | tasks | attempts | pass@1 | pass@k | solved tasks | statuses | edit success | attempts/h |",
-             "|---|---|---|---|---|---|---|---|---|---|"]
+    lines = ["| pool | split | tasks | attempts | pass@1 | pass@k | solved tasks | statuses | evaluation | edit success "
+             "| attempts/h |", "|---|---|---|---|---|---|---|---|---|---|---|"]
     for name, stats in pools.items():
         for split, entry in stats["splits"].items():
             ks = {k: v for k, v in entry.items() if k.startswith("pass@") and k != "pass@1"}
             lines.append(f"| {name} | {split} | {entry['tasks']} | {entry['attempts']} | {entry.get('pass@1')} | "
-                         f"{ks} | {entry['solved_tasks']} | {entry['statuses']} | {stats['edit_success']} | {stats['attempts_per_hour']} |")
+                         f"{ks} | {entry['solved_tasks']} | {entry['statuses']} | {stats['evaluation_statuses']} "
+                         f"(timeouts {stats['verifier_timeouts']}) | {stats['edit_success']} | {stats['attempts_per_hour']} |")
     lines += ["", f"SFT data: {report['sft']}", f"Training: {training}",
               f"Loss (first, last): {report['loss_curve'][:1]} … {report['loss_curve'][-1:]}", ""]
     for name, value in compare.items():
