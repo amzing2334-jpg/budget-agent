@@ -39,6 +39,19 @@ def extract_turns(run_dir: Path, *, require_token_ids: bool = True) -> list[Turn
     return turns
 
 
+def subsample_turns(turns: list[Turn], limit: int | None, rng) -> list[Turn]:
+    """At most `limit` turns of one attempt, uniformly without replacement, in their original order.
+
+    Every turn re-encodes its whole prompt, so training cost grows with the
+    number of turns while rollout cost does not. With token-level
+    aggregation the sampled turns give a consistent estimate of the full
+    gradient, at higher variance.
+    """
+    if limit is None or len(turns) <= limit:
+        return turns
+    return [turns[i] for i in sorted(rng.sample(range(len(turns)), limit))]
+
+
 def group_advantages(rewards: list[float], *, scale_by_std: bool = True, eps: float = 1e-6) -> list[float] | None:
     """Group-relative advantages; None when every reward is equal (no learning signal).
 
