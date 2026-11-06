@@ -11,6 +11,7 @@ mkdir -p "$ML"/{models,hf,logs,outputs} "$AGENT"/{work,interp} "$ENV_ROOT"/cache
 chmod 700 "$ENV_ROOT"
 exec > >(tee -a "$LOG") 2>&1
 echo "== setup $(date -u +%FT%TZ)"
+[ -n "${PIP_INDEX_URL:-}" ] || unset PIP_INDEX_URL   # empty means: keep the image's pip config
 export PIP_CACHE_DIR=$ENV_ROOT/cache/pip HF_HOME=$ML/hf MODELSCOPE_CACHE=$ENV_ROOT/cache/modelscope
 # Virtualenvs from the image's base interpreter: no conda channels needed (the
 # image's mirror config may be stale) and the base env is never modified.
