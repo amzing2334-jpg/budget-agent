@@ -108,64 +108,77 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         counter = counter if counter is not None else TokenCounter(config.tokenizer)
         if model is None:
             model = ScriptedModel(smoke_actions(task), counter) if config.provider == "scripted" else OpenAICompatibleModel(config)
-    run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex[:8]
-    run_dir = output_dir.resolve() / f"{task.id}__{config.strategy}__{run_id}"
-    run_dir.mkdir(parents=True, exist_ok=False)
-    budget, context = Budget(counter, config), ContextManager(config.strategy, counter, config.history_format,
-                                                            read_memory_tokens=config.read_memory_tokens)
-    events: list[Event] = []
-    call_records: list[dict] = []
-    usage_sources: set[str] = set()
-    actual_models: set[str] = set()
-    env = None
-    start = time.monotonic()
-    status, error, unknown_usage = "max_steps", None, False
-    initial_revision = ""
-    environment_provenance = None
-    code_revision = source_fingerprint()
-    read_loop = ReadLoopMonitor()
-    controls: list[dict] = []
-    notes: list[ReflectionNote | EvidenceNote] = []
-    reflections: list[dict] = []
-    feedback_count = 0
-    safety_records: list[dict] = []
-    external_actions = 0
-    evaluation = {"resolved": None, "status": "not_evaluated"}
-    model_seconds = 0.0
-    fingerprints = {"calls": 0, "seconds": 0.0}
+    return _Attempt(task, config, output_dir, model, counter).run()
 
-    def snapshot() -> str:
+
+class _Attempt:
+    """One task attempt: state shared by the model boundary, the step loop and the result record."""
+
+    def __init__(self, task: Task, config: RunConfig, output_dir: Path, model, counter):
+        self.task, self.config, self.model, self.counter = task, config, model, counter
+        self.run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex[:8]
+        self.run_dir = output_dir.resolve() / f"{task.id}__{config.strategy}__{self.run_id}"
+        self.run_dir.mkdir(parents=True, exist_ok=False)
+        self.budget = Budget(counter, config)
+        self.context = ContextManager(config.strategy, counter, config.history_format,
+                                      read_memory_tokens=config.read_memory_tokens)
+        self.events: list[Event] = []
+        self.call_records: list[dict] = []
+        self.usage_sources: set[str] = set()
+        self.actual_models: set[str] = set()
+        self.env = None
+        self.start = time.monotonic()
+        self.status, self.error, self.unknown_usage = "max_steps", None, False
+        self.initial_revision = self.revision = ""
+        self.step = 0
+        self.environment_provenance = None
+        self.code_revision = source_fingerprint()
+        self.read_loop = ReadLoopMonitor()
+        self.controls: list[dict] = []
+        self.notes: list[ReflectionNote | EvidenceNote] = []
+        self.reflections: list[dict] = []
+        self.feedback_count = 0
+        self.safety_records: list[dict] = []
+        self.external_actions = 0
+        self.evaluation = {"resolved": None, "status": "not_evaluated"}
+        self.model_seconds = 0.0
+        self.fingerprints = {"calls": 0, "seconds": 0.0}
+
+    # -- recording -----------------------------------------------------------------
+    def snapshot(self) -> str:
         started = time.monotonic()
         try:
-            return env.revision()
+            return self.env.revision()
         finally:
-            fingerprints["calls"] += 1
-            fingerprints["seconds"] += time.monotonic() - started
+            self.fingerprints["calls"] += 1
+            self.fingerprints["seconds"] += time.monotonic() - started
 
-    def record_control(kind: str, **details) -> None:
+    def record_control(self, kind: str, **details) -> None:
         record = {"kind": kind, **details}
-        controls.append(record)
-        _append(run_dir / "controls.jsonl", record)
+        self.controls.append(record)
+        _append(self.run_dir / "controls.jsonl", record)
 
-    def system_prompt() -> str:
-        prompt = decision_prompt(config, budget.remaining_tokens, step, events, revision, initial_revision)
+    def record_reflection(self, status: str, event: Event, **details) -> None:
+        record = {"status": status, "source_event_id": event.id, "source_revision": event.revision, **details}
+        self.reflections.append(record)
+        _append(self.run_dir / "reflections.jsonl", record)
+
+    # -- model boundary ------------------------------------------------------------
+    def system_prompt(self) -> str:
+        config = self.config
+        prompt = decision_prompt(config, self.budget.remaining_tokens, self.step, self.events, self.revision,
+                                 self.initial_revision)
         if config.execution_policy == "restricted":
             prompt += "\nExecution policy: restricted. Free-form run commands are denied. Use public_test for the manifest's fixed test command; source file tools and diff remain available."
-        if config.loop_policy == "recover" and read_loop.pending_feedback:
-            prompt += "\n" + read_loop.pending_feedback
+        if config.loop_policy == "recover" and self.read_loop.pending_feedback:
+            prompt += "\n" + self.read_loop.pending_feedback
         return prompt
 
-    def record_reflection(status: str, event: Event, **details) -> None:
-        record = {"status": status, "source_event_id": event.id,
-                  "source_revision": event.revision, **details}
-        reflections.append(record)
-        _append(run_dir / "reflections.jsonl", record)
-
-    def call(messages: list[dict[str, str]], max_output: int, purpose: str) -> str:
-        nonlocal unknown_usage, model_seconds
+    def call(self, messages: list[dict[str, str]], max_output: int, purpose: str) -> str:
+        config, budget, events = self.config, self.budget, self.events
         if purpose == "agent" and config.decision_policy == "budget-aware":
             # A summary may have consumed budget during context construction.
-            messages = [{"role": "system", "content": system_prompt()}, *messages[1:]]
+            messages = [{"role": "system", "content": self.system_prompt()}, *messages[1:]]
         floor = config.min_action_output_tokens if purpose == "agent" else 1
         hint = (workspace_feedback(events[-1])
                 if purpose == "agent" and config.decision_policy == "workspace-feedback" and events else "")
@@ -178,25 +191,25 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
         except BudgetExceeded as exc:
             if not hint or budget.overrun:
                 raise
-            context.stats.setdefault("workspace_feedback_omissions", []).append(
+            self.context.stats.setdefault("workspace_feedback_omissions", []).append(
                 {"event_id": events[-1].id, "reason": str(exc)})
             messages = base_messages
             allowance = budget.reserve(messages, max_output, min_output_tokens=floor)
         if hint:
-            context.stats["last_input_tokens"] = counter.messages(messages)
+            self.context.stats["last_input_tokens"] = self.counter.messages(messages)
         call_start = time.monotonic()
         try:
-            response = model.complete(messages, allowance, purpose=purpose)
+            response = self.model.complete(messages, allowance, purpose=purpose)
         except (ModelError, KeyboardInterrupt):
-            unknown_usage = True
+            self.unknown_usage = True
             record = {"purpose": purpose, "status": "usage_unknown", "max_output_tokens": allowance}
-            call_records.append(record)
-            _append(run_dir / "calls.jsonl", record)
+            self.call_records.append(record)
+            _append(self.run_dir / "calls.jsonl", record)
             raise
         finally:
-            model_seconds += time.monotonic() - call_start
-        usage_sources.add(response.usage_source)
-        actual_models.add(response.model)
+            self.model_seconds += time.monotonic() - call_start
+        self.usage_sources.add(response.usage_source)
+        self.actual_models.add(response.model)
         record = {
             # Optional token-level fields appear only when recorded, so older
             # calls.jsonl readers and comparisons see the same records as before.
@@ -204,195 +217,223 @@ def run_task(task: Task, config: RunConfig, output_dir: Path, *, model=None, cou
             "response": {key: value for key, value in asdict(response).items() if value is not None},
             "requested_max_output_tokens": allowance, "elapsed_seconds": time.monotonic() - call_start,
         }
-        call_records.append(record)
-        _append(run_dir / "calls.jsonl", record)
-        if purpose == "agent" and config.loop_policy == "recover" and read_loop.pending_feedback:
-            record_control("warning_sent", step=step, after_event_id=events[-1].id,
-                           request_index=len(call_records), feedback=read_loop.pending_feedback)
-            read_loop.feedback_sent()
+        self.call_records.append(record)
+        _append(self.run_dir / "calls.jsonl", record)
+        if purpose == "agent" and config.loop_policy == "recover" and self.read_loop.pending_feedback:
+            self.record_control("warning_sent", step=self.step, after_event_id=events[-1].id,
+                                request_index=len(self.call_records), feedback=self.read_loop.pending_feedback)
+            self.read_loop.feedback_sent()
         budget.record(response, purpose=purpose)
         return response.content
 
-    try:
-        env = create_environment(task, config, run_dir)
-        environment_provenance = env.provenance
-        initial_revision = revision = snapshot()
-        for step in range(1, config.max_steps + 1):
+    # -- one step ------------------------------------------------------------------
+    def build_messages(self) -> list[dict[str, str]]:
+        config, counter = self.config, self.counter
+        context_input_cap = config.context_tokens - config.max_output_tokens
+        input_cap = min(context_input_cap, self.budget.remaining_tokens - config.min_action_output_tokens)
+        if input_cap <= 0:
+            raise BudgetExceeded("No token budget remains for a new request")
+        try:
+            memory = [note.message(self.revision) for note in self.notes]
+            memory_tokens = counter.messages(memory) - counter.messages([])
+            messages = self.context.build(
+                self.system_prompt(), self.task.issue, self.events, self.revision, input_cap - memory_tokens,
+                summarize_callback=lambda m, n: self.call(m, n, "summary"))
+            messages = messages[:2] + memory + messages[2:]
+            self.context.stats["last_input_tokens"] = counter.messages(messages)
+        except ContextOverflow as exc:
+            if input_cap < context_input_cap:
+                raise BudgetExceeded(f"Remaining budget cannot fit the selected context and action output reserve: {exc}") from exc
+            raise
+        return messages
+
+    def internal_tool(self, action: dict) -> dict:
+        """finish, remember and recall act on the attempt's own record, never the workspace."""
+        tool, events, revision = action["tool"], self.events, self.revision
+        if tool == "finish":
+            self.status = "finished"
+            return {"output": "Submitted patch for independent evaluation.", "ok": True}
+        if tool == "remember":
+            source = next((e for e in events if e.id == action["source"]), None)
+            note = action["note"]
+            if source is None or not note.strip() or len(note) > 2000:
+                return {"output": "remember needs an existing source event and a nonempty note of at most 2000 characters", "ok": False}
+            action["source_revision"] = source.action.get("source_revision", source.revision)
+            return {"output": f"Working note recorded from {source.id}; this is an agent claim, not independent verification.", "ok": True}
+        source = next((e for e in events if e.id == action["event_id"]), None)
+        if source is None:
+            return {"output": "Unknown event ID", "ok": False}
+        offset = max(0, action.get("offset", 0))
+        limit = min(16000, max(1, action.get("limit", 8000)))
+        source_revision = source.action.get("source_revision", source.revision)
+        return {"output": json.dumps({"event_id": source.id, "source_revision": source_revision, "current_revision": revision,
+                                      "stale": source_revision != revision, "offset": offset,
+                                      "total_characters": len(source.output),
+                                      "output": source.output[offset:offset + limit]}, ensure_ascii=False), "ok": True}
+
+    def act(self, content: str) -> tuple[dict, dict, dict | None]:
+        try:
+            action = parse_action(content)
+        except ValueError as exc:
+            return {"tool": "invalid_action"}, {"output": str(exc), "ok": False}, None
+        if action["tool"] in {"finish", "remember", "recall"}:
+            return action, self.internal_tool(action), None
+        self.external_actions += 1
+        outcome = self.env.execute(action)
+        decision = outcome.get("policy_decision")
+        security_record = {"event_id": f"e{self.step:04d}", "tool": action["tool"], "decision": decision}
+        self.safety_records.append(security_record)
+        _append(self.run_dir / "security.jsonl", security_record)
+        return action, outcome, decision
+
+    def loop_control_stops(self, event: Event, actor_messages: list[dict]) -> bool:
+        if self.config.loop_policy != "recover":
+            return False
+        # Use the request actually sent (budget-aware prompts can refresh
+        # after a paid summary), never the full archived history.
+        repeat = self.read_loop.observe(event, actor_messages)
+        if repeat is not None:
+            self.record_control("repeated_visible_read", **asdict(repeat))
+        if not self.read_loop.should_stop:
+            return False
+        self.status = "stalled"
+        self.error = "Repeated already-visible source after read-loop feedback; independent evaluation retained"
+        self.record_control("stopped", event_id=event.id, reason=self.error)
+        return True
+
+    def reflect(self, event: Event, actor_messages: list[dict], blocked: bool) -> None:
+        config, counter = self.config, self.counter
+        if not (config.reflection_policy != "off" and self.step < config.max_steps
+                and self.feedback_count < config.max_reflections and reflection_trigger(event, blocked=blocked)):
+            return
+        if config.reflection_policy == "evidence":
+            note = evidence_note(event, counter, config.reflection_max_output_tokens)
+            self.notes.append(note)
+            self.feedback_count += 1
+            self.record_reflection("replayed", event, note=note.to_dict(), excerpt_tokens=counter.count(note.output),
+                                   text_token_limit=config.reflection_max_output_tokens)
+            return
+        review = reflection_messages(actor_messages, event)
+        if counter.messages(review) >= min(config.context_tokens, self.budget.remaining_tokens):
+            self.record_reflection("skipped", event, reason="reflection_prompt_does_not_fit")
+            return
+        self.feedback_count += 1
+        try:
+            text = self.call(review, config.reflection_max_output_tokens, "reflection")
+        except BudgetExceeded:
+            # A preflight rejection costs nothing. A reconciled overrun
+            # is a run failure and must never become an optional skip.
+            if self.budget.overrun:
+                raise
+            self.record_reflection("skipped", event, reason="reflection_cost_budget_does_not_fit")
+            return
+        note = ReflectionNote(event.id, event.revision, text)
+        self.record_reflection("generated" if text.strip() else "empty", event,
+                               request_index=len(self.call_records), note=note.to_dict())
+        if text.strip():
+            self.notes.append(note)
+
+    def steps(self) -> None:
+        self.env = create_environment(self.task, self.config, self.run_dir)
+        self.environment_provenance = self.env.provenance
+        self.initial_revision = self.revision = self.snapshot()
+        for self.step in range(1, self.config.max_steps + 1):
             # `revision` is the previous step's post-action snapshot. Model
             # calls between steps (summaries, reflections) never touch files.
-            read_loop.begin_revision(revision)
-            context_input_cap = config.context_tokens - config.max_output_tokens
-            input_cap = min(context_input_cap, budget.remaining_tokens - config.min_action_output_tokens)
-            if input_cap <= 0:
-                raise BudgetExceeded("No token budget remains for a new request")
-            try:
-                memory = [note.message(revision) for note in notes]
-                memory_tokens = counter.messages(memory) - counter.messages([])
-                messages = context.build(
-                    system_prompt(),
-                    task.issue, events, revision, input_cap - memory_tokens,
-                    summarize_callback=lambda m, n: call(m, n, "summary"),
-                )
-                messages = messages[:2] + memory + messages[2:]
-                context.stats["last_input_tokens"] = counter.messages(messages)
-            except ContextOverflow as exc:
-                if input_cap < context_input_cap:
-                    raise BudgetExceeded(f"Remaining budget cannot fit the selected context and action output reserve: {exc}") from exc
-                raise
-            content = call(messages, config.max_output_tokens, "agent")
-            actor_messages = call_records[-1]["messages"]
+            self.read_loop.begin_revision(self.revision)
+            content = self.call(self.build_messages(), self.config.max_output_tokens, "agent")
+            actor_messages = self.call_records[-1]["messages"]
             action_start = time.monotonic()
-            policy_decision = None
-            try:
-                action = parse_action(content)
-            except ValueError as exc:
-                action = {"tool": "invalid_action"}
-                outcome = {"output": str(exc), "ok": False}
-            else:
-                tool = action["tool"]
-                if tool == "finish":
-                    outcome = {"output": "Submitted patch for independent evaluation.", "ok": True}
-                    status = "finished"
-                elif tool == "remember":
-                    source = next((e for e in events if e.id == action["source"]), None)
-                    note = action["note"]
-                    if source is None or not note.strip() or len(note) > 2000:
-                        outcome = {"output": "remember needs an existing source event and a nonempty note of at most 2000 characters", "ok": False}
-                    else:
-                        action["source_revision"] = source.action.get("source_revision", source.revision)
-                        outcome = {"output": f"Working note recorded from {source.id}; this is an agent claim, not independent verification.", "ok": True}
-                elif tool == "recall":
-                    source = next((e for e in events if e.id == action["event_id"]), None)
-                    if source is None:
-                        outcome = {"output": "Unknown event ID", "ok": False}
-                    else:
-                        offset = max(0, action.get("offset", 0))
-                        limit = min(16000, max(1, action.get("limit", 8000)))
-                        source_revision = source.action.get("source_revision", source.revision)
-                        outcome = {"output": json.dumps({"event_id": source.id, "source_revision": source_revision, "current_revision": revision, "stale": source_revision != revision, "offset": offset, "total_characters": len(source.output), "output": source.output[offset:offset + limit]}, ensure_ascii=False), "ok": True}
-                else:
-                    external_actions += 1
-                    outcome = env.execute(action)
-                    policy_decision = outcome.get("policy_decision")
-                    security_record = {"event_id": f"e{step:04d}", "tool": tool,
-                                       "decision": policy_decision}
-                    safety_records.append(security_record)
-                    _append(run_dir / "security.jsonl", security_record)
-            before = revision
+            action, outcome, decision = self.act(content)
+            before = self.revision
             if action["tool"] not in READ_ONLY_TOOLS:
-                revision = snapshot()
-            event = Event(f"e{step:04d}", step, action, outcome["output"], revision, outcome["ok"],
+                self.revision = self.snapshot()
+            event = Event(f"e{self.step:04d}", self.step, action, outcome["output"], self.revision, outcome["ok"],
                           time.monotonic() - action_start, model_content=content, revision_before=before,
-                          request_index=len(call_records))
-            events.append(event)
-            _append(run_dir / "trajectory.jsonl", event.to_dict())
-            if config.loop_policy == "recover":
-                # Use the request actually sent (budget-aware prompts can refresh
-                # after a paid summary), never the full archived history.
-                repeat = read_loop.observe(event, actor_messages)
-                if repeat is not None:
-                    record_control("repeated_visible_read", **asdict(repeat))
-                if read_loop.should_stop:
-                    status = "stalled"
-                    error = "Repeated already-visible source after read-loop feedback; independent evaluation retained"
-                    record_control("stopped", event_id=event.id, reason=error)
-                    break
-            if status == "finished":
+                          request_index=len(self.call_records))
+            self.events.append(event)
+            _append(self.run_dir / "trajectory.jsonl", event.to_dict())
+            if self.loop_control_stops(event, actor_messages) or self.status == "finished":
                 break
-            blocked = policy_decision is not None and not policy_decision["allowed"]
-            if (config.reflection_policy != "off" and step < config.max_steps
-                    and feedback_count < config.max_reflections
-                    and reflection_trigger(event, blocked=blocked)):
-                if config.reflection_policy == "evidence":
-                    note = evidence_note(event, counter, config.reflection_max_output_tokens)
-                    notes.append(note)
-                    feedback_count += 1
-                    record_reflection("replayed", event, note=note.to_dict(),
-                                      excerpt_tokens=counter.count(note.output),
-                                      text_token_limit=config.reflection_max_output_tokens)
-                    continue
-                review = reflection_messages(actor_messages, event)
-                inputs = counter.messages(review)
-                if inputs >= min(config.context_tokens, budget.remaining_tokens):
-                    record_reflection("skipped", event, reason="reflection_prompt_does_not_fit")
-                    continue
-                feedback_count += 1
-                try:
-                    text = call(review, config.reflection_max_output_tokens, "reflection")
-                except BudgetExceeded:
-                    # A preflight rejection costs nothing. A reconciled overrun
-                    # is a run failure and must never become an optional skip.
-                    if budget.overrun:
-                        raise
-                    record_reflection("skipped", event, reason="reflection_cost_budget_does_not_fit")
-                    continue
-                note = ReflectionNote(event.id, event.revision, text)
-                record_reflection("generated" if text.strip() else "empty", event,
-                                  request_index=len(call_records), note=note.to_dict())
-                if text.strip():
-                    notes.append(note)
-    except BudgetExceeded as exc:
-        status, error = "budget_exhausted", str(exc)
-    except ContextOverflow as exc:
-        status, error = "context_exhausted", str(exc)
-    except ModelError as exc:
-        status, error = "model_error", str(exc)
-    except KeyboardInterrupt:
-        status, error = "interrupted", "Interrupted by user; partial attempt retained"
-        unknown_usage = unknown_usage or budget.to_dict()["unreconciled_request"]
-    except (EnvironmentError, OSError, subprocess.SubprocessError) as exc:
-        status, error = "environment_error", f"{type(exc).__name__}: {exc}"
-    finally:
+            self.reflect(event, actor_messages, blocked=decision is not None and not decision["allowed"])
+
+    # -- attempt -------------------------------------------------------------------
+    def run(self) -> dict:
+        try:
+            self.steps()
+        except BudgetExceeded as exc:
+            self.status, self.error = "budget_exhausted", str(exc)
+        except ContextOverflow as exc:
+            self.status, self.error = "context_exhausted", str(exc)
+        except ModelError as exc:
+            self.status, self.error = "model_error", str(exc)
+        except KeyboardInterrupt:
+            self.status, self.error = "interrupted", "Interrupted by user; partial attempt retained"
+            self.unknown_usage = self.unknown_usage or self.budget.to_dict()["unreconciled_request"]
+        except (EnvironmentError, OSError, subprocess.SubprocessError) as exc:
+            self.status, self.error = "environment_error", f"{type(exc).__name__}: {exc}"
+        finally:
+            self.finalize()
+        result = self.result()
+        (self.run_dir / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+        return result
+
+    def finalize(self) -> None:
+        """Export the patch and grade it independently, even after a failed attempt."""
         patch = ""
-        if env is not None:
+        if self.env is not None:
             try:
-                patch = env.patch()
-                evaluation = env.grade()
+                patch = self.env.patch()
+                self.evaluation = self.env.grade()
             except (EnvironmentError, OSError, subprocess.SubprocessError) as exc:
-                evaluation = {"resolved": None, "status": "grading_error", "output": f"{type(exc).__name__}: {exc}"}
+                self.evaluation = {"resolved": None, "status": "grading_error", "output": f"{type(exc).__name__}: {exc}"}
             finally:
                 try:
-                    env.close()
+                    self.env.close()
                 except (EnvironmentError, OSError, subprocess.SubprocessError) as exc:
-                    evaluation["cleanup_error"] = f"{type(exc).__name__}: {exc}"
-        (run_dir / "patch.diff").write_bytes(patch.encode("utf-8"))
-    result = {
-        "run_id": run_id, "task_id": task.id, "split": task.split, "task_kind": task.kind,
-        "provider": config.provider, "model": model.name, "actual_models": sorted(actual_models),
-        "strategy": config.strategy, "config": asdict(config), "status": status, "error": error,
-        "resolved": evaluation["resolved"], "evaluation": evaluation,
-        "input_tokens": budget.input_tokens, "output_tokens": budget.output_tokens,
-        "total_tokens": budget.input_tokens + budget.output_tokens, "calls": budget.calls,
-        "cost_usd": None if unknown_usage else budget.cost_usd,
-        "known_cost_usd": budget.cost_usd, "usage_unknown": unknown_usage,
-        "usage_sources": sorted(usage_sources), "budget": budget.to_dict(),
-        "elapsed_seconds": time.monotonic() - start, "model_seconds": model_seconds,
-        "workspace_fingerprints": fingerprints,
-        "steps": len(events), "context_stats": context.stats,
-        "diagnostics": analyze_trajectory(events, call_records, initial_revision=initial_revision, requests=budget.records),
-        "loop_control": {"policy": config.loop_policy, "events": controls,
-                         "warnings_sent": sum(row["kind"] == "warning_sent" for row in controls),
-                         "stopped": status == "stalled"},
-        "reflection": {"policy": config.reflection_policy, "events": reflections,
-                       "calls": sum(row["purpose"] == "reflection" for row in call_records),
-                       "notes": [note.to_dict() for note in notes]},
-        "safety": {"policy": config.execution_policy, "scope": "direct_tool_authorization",
-                   "evaluated_actions": len(safety_records),
-                   "blocked_actions": sum(row["decision"] is not None and not row["decision"]["allowed"] for row in safety_records),
-                   "complete": env is not None and len(safety_records) == external_actions
-                               and all(row["decision"] is not None for row in safety_records),
-                   "violations": []},
-        "patch_path": str(run_dir / "patch.diff"), "initial_revision": initial_revision,
-        "environment_provenance": environment_provenance,
-        "source_fingerprint": code_revision,
-        "public_test_command": task.test_command,
-        "task_fingerprint": hashlib.sha256(json.dumps({"id": task.id, "issue": task.issue, "revision": initial_revision, "image": task.image, "environment": environment_provenance, "metadata": task.metadata, "public_test_command": task.test_command}, sort_keys=True).encode()).hexdigest(),
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "result_path": str(run_dir / "result.json"),
-    }
-    if config.provider == "transformers":
-        result["model_metadata"] = model.metadata
-    provider_kind = "scripted_smoke" if config.provider == "scripted" else "model_run"
-    result["evidence_kind"] = evidence_kind(result, default=provider_kind)
-    (run_dir / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    return result
+                    self.evaluation["cleanup_error"] = f"{type(exc).__name__}: {exc}"
+        (self.run_dir / "patch.diff").write_bytes(patch.encode("utf-8"))
+
+    def result(self) -> dict:
+        config, budget, task, evaluation = self.config, self.budget, self.task, self.evaluation
+        controls, safety = self.controls, self.safety_records
+        result = {
+            "run_id": self.run_id, "task_id": task.id, "split": task.split, "task_kind": task.kind,
+            "provider": config.provider, "model": self.model.name, "actual_models": sorted(self.actual_models),
+            "strategy": config.strategy, "config": asdict(config), "status": self.status, "error": self.error,
+            "resolved": evaluation["resolved"], "evaluation": evaluation,
+            "input_tokens": budget.input_tokens, "output_tokens": budget.output_tokens,
+            "total_tokens": budget.input_tokens + budget.output_tokens, "calls": budget.calls,
+            "cost_usd": None if self.unknown_usage else budget.cost_usd,
+            "known_cost_usd": budget.cost_usd, "usage_unknown": self.unknown_usage,
+            "usage_sources": sorted(self.usage_sources), "budget": budget.to_dict(),
+            "elapsed_seconds": time.monotonic() - self.start, "model_seconds": self.model_seconds,
+            "workspace_fingerprints": self.fingerprints,
+            "steps": len(self.events), "context_stats": self.context.stats,
+            "diagnostics": analyze_trajectory(self.events, self.call_records, initial_revision=self.initial_revision,
+                                              requests=budget.records),
+            "loop_control": {"policy": config.loop_policy, "events": controls,
+                             "warnings_sent": sum(row["kind"] == "warning_sent" for row in controls),
+                             "stopped": self.status == "stalled"},
+            "reflection": {"policy": config.reflection_policy, "events": self.reflections,
+                           "calls": sum(row["purpose"] == "reflection" for row in self.call_records),
+                           "notes": [note.to_dict() for note in self.notes]},
+            "safety": {"policy": config.execution_policy, "scope": "direct_tool_authorization",
+                       "evaluated_actions": len(safety),
+                       "blocked_actions": sum(row["decision"] is not None and not row["decision"]["allowed"] for row in safety),
+                       "complete": self.env is not None and len(safety) == self.external_actions
+                                   and all(row["decision"] is not None for row in safety),
+                       "violations": []},
+            "patch_path": str(self.run_dir / "patch.diff"), "initial_revision": self.initial_revision,
+            "environment_provenance": self.environment_provenance,
+            "source_fingerprint": self.code_revision,
+            "public_test_command": task.test_command,
+            "task_fingerprint": hashlib.sha256(json.dumps({"id": task.id, "issue": task.issue, "revision": self.initial_revision, "image": task.image, "environment": self.environment_provenance, "metadata": task.metadata, "public_test_command": task.test_command}, sort_keys=True).encode()).hexdigest(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "result_path": str(self.run_dir / "result.json"),
+        }
+        if config.provider == "transformers":
+            result["model_metadata"] = self.model.metadata
+        provider_kind = "scripted_smoke" if config.provider == "scripted" else "model_run"
+        result["evidence_kind"] = evidence_kind(result, default=provider_kind)
+        return result
