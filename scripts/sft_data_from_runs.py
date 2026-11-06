@@ -38,11 +38,17 @@ def main() -> int:
     parser.add_argument("--per-task", type=int, default=2)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--keep-flagged", action="store_true",
+                        help="keep winners whose patch tripped a tamper signal (excluded by default)")
     args = parser.parse_args()
     rows = [json.loads(line) for path in args.attempts for line in path.read_text().splitlines() if line.strip()]
     winners: dict[str, list[dict]] = {}
+    flagged = 0
     for row in rows:
         if row["resolved"] is True and row["split"] == args.split:
+            if row.get("patch_signals") and not args.keep_flagged:
+                flagged += 1  # never teach a policy to tamper with grading
+                continue
             winners.setdefault(row["task_id"], []).append(row)
     rng = random.Random(args.seed)
     written = {"full": 0, "last": 0}
@@ -59,7 +65,7 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text("".join(json.dumps(example, ensure_ascii=False) + "\n" for example in examples), encoding="utf-8")
     print(json.dumps({"tasks_with_success": len(winners), "examples": len(examples), "by_mode": written,
-                      "attempts_seen": len(rows)}))
+                      "attempts_seen": len(rows), "flagged_winners_excluded": flagged}))
     return 0
 
 

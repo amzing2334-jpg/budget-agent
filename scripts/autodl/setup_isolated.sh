@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Isolated setup for the coding-agent RL project on a shared AutoDL instance.
+# Touches only $ML and $AGENT. Never modifies the base conda env, other
+# projects, system packages or SSH settings. Safe to re-run.
+set -euo pipefail
+ML=/root/autodl-tmp/coding-agent-rl        # root-only: ML env, models, training outputs
+AGENT=/opt/coding-agent                     # agent-facing: code, task repos, rollouts (run as nobody)
+LOG=$ML/logs/setup.log
+mkdir -p "$ML"/{models,hf,logs,outputs,cache} "$AGENT"/{work,interp}
+exec > >(tee -a "$LOG") 2>&1
+echo "== setup $(date -u +%FT%TZ)"
+export PIP_CACHE_DIR=$ML/cache/pip HF_HOME=$ML/hf MODELSCOPE_CACHE=$ML/cache/modelscope
+CONDA=$(command -v conda || echo /root/miniconda3/bin/conda)
+
+# Interpreters in project-local prefixes (base env untouched).
+[ -x "$ML/env/bin/python" ] || "$CONDA" create -y -q -p "$ML/env" python=3.11
+[ -x "$AGENT/interp/py311/bin/python" ] || "$CONDA" create -y -q -p "$AGENT/interp/py311" python=3.11
+[ -x "$AGENT/interp/py310/bin/python" ] || "$CONDA" create -y -q -p "$AGENT/interp/py310" python=3.10
+
+# ML stack: vLLM pins torch/transformers; training extras must accept those pins.
+"$ML/env/bin/pip" install -q vllm
+"$ML/env/bin/pip" install -q peft accelerate modelscope
+"$ML/env/bin/python" - <<'EOF'
+import torch, vllm, transformers, peft
+print("torch", torch.__version__, "cuda", torch.version.cuda, "gpu", torch.cuda.get_device_name(0))
+print("vllm", vllm.__version__, "transformers", transformers.__version__, "peft", peft.__version__)
+EOF
+
+# Code is unpacked by the caller into $AGENT/budget-agent and used via PYTHONPATH=src
+# (the harness needs only the standard library).
+chmod -R a+rX "$AGENT"
+chown -R nobody:nogroup "$AGENT/work"
+echo "== setup done"
+
+# SWE-smith tasks: per-repo venvs from the project-local Python 3.10 (the
+# SWE-smith profile version), task repos and verifiers readable by `nobody`.
+if [ -f /opt/coding-agent/swesmith-src/instances.jsonl ] && [ ! -f /opt/coding-agent/swesmith/summary.json ]; then
+  "$AGENT/interp/py311/bin/python" "$AGENT/budget-agent/scripts/build_swesmith_local.py" \
+    --instances /opt/coding-agent/swesmith-src/instances.jsonl --repos /opt/coding-agent/swesmith-src \
+    --venvs /opt/coding-agent/venvs --output /opt/coding-agent/swesmith \
+    --python "$AGENT/interp/py310/bin/python" --plugin "$AGENT/budget-agent/src/budget_agent/pytest_outcomes.py" \
+    --extras "$AGENT/budget-agent/configs/swesmith-extras.json" --workers 6
+  chmod -R a+rX /opt/coding-agent/swesmith /opt/coding-agent/venvs
+fi
+
+# Models from ModelScope into the root-only project directory.
+for model in Qwen/Qwen2.5-Coder-7B-Instruct Qwen/Qwen2.5-Coder-1.5B-Instruct; do
+  target="$ML/models/${model#*/}"
+  [ -f "$target/config.json" ] || "$ML/env/bin/modelscope" download --model "$model" --local_dir "$target"
+done
+echo "== models ready"
