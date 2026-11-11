@@ -42,7 +42,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install ruff==0.17.4 mypy==2.4.1
-      - run: ruff check --select F,E9 src scripts tests
+      - run: ruff check src scripts tests   # rules in pyproject.toml
       - run: mypy   # the library and the pipeline scripts; settings in pyproject.toml
   training-math:
     # Tiny random models on CPU: the GRPO loss, the SFT loss and prefix packing must match their

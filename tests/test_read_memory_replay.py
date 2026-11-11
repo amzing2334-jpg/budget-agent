@@ -71,7 +71,7 @@ def test_inputs_do_not_depend_on_current_target_or_future_action(tmp_path):
     second = write_run(tmp_path / "second", common + [read(4, "future.py", "unseen secret"), read(5, "next.py")])
     a = replay.replay_run(first, TokenCounter())["prefixes"]
     b = replay.replay_run(second, TokenCounter())["prefixes"]
-    for left, right in zip(a[:4], b[:4]):
+    for left, right in zip(a[:4], b[:4], strict=True):
         for strategy in ("mask", "mask-read"):
             assert left["policies"][strategy]["messages_sha256"] == right["policies"][strategy]["messages_sha256"]
             assert left["policies"][strategy]["input_tokens_estimate"] == right["policies"][strategy]["input_tokens_estimate"]

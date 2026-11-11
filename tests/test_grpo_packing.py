@@ -56,7 +56,7 @@ def test_a_prefix_chain_matches_per_turn_forwards_in_logprobs_and_gradients():
     assert torch.allclose(logp_packed, logp_separate, atol=1e-5)
     grads_packed = torch.autograd.grad(logp_packed.sum(), trainable)
     grads_separate = torch.autograd.grad(logp_separate.sum(), trainable)
-    assert all(torch.allclose(a, b, atol=1e-5) for a, b in zip(grads_packed, grads_separate))
+    assert all(torch.allclose(a, b, atol=1e-5) for a, b in zip(grads_packed, grads_separate, strict=True))
 
 
 def test_a_broken_prefix_starts_a_new_sequence():

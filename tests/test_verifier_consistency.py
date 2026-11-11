@@ -146,7 +146,7 @@ def test_mixed_quality_batch_keeps_unknown_and_valid_negative_results(tmp_path, 
     assert {item["task_id"]: item["evaluation"]["acceptance_status"] for item in audit["runs"]} == expected
     assert all(path.read_bytes() == original for path, original in originals.items())
     if engine == "openjudge":
-        for item, grade in zip(audit["runs"], audit["openjudge"]["quality"]):
+        for item, grade in zip(audit["runs"], audit["openjudge"]["quality"], strict=True):
             if expected[item["task_id"]] == "unknown":
                 assert grade["error"] == "insufficient_evidence"
                 assert "score" not in grade

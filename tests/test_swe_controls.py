@@ -47,7 +47,7 @@ def controls(tmp_path):
             "eval_script_sha256": digest(b"synthetic evaluator\n"),
             "gold_patch_sha256": digest(patches[0]), "negative_patch_sha256": digest(patches[1])}
     reports = []
-    for label, patch in zip(("gold", "negative"), patches):
+    for label, patch in zip(("gold", "negative"), patches, strict=True):
         directory = tmp_path / label / TASK
         directory.mkdir(parents=True)
         report = directory / "report.json"

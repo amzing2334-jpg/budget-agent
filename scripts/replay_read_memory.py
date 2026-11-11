@@ -146,12 +146,12 @@ def replay_run(run_dir: Path, counter: TokenCounter, read_memory_tokens: int = 1
         raise ValueError(f"{run_dir}: agent response/event count mismatch ({len(calls)} != {len(events)})")
     if len({event.id for event in events}) != len(events):
         raise ValueError(f"{run_dir}: duplicate event IDs prevent provenance matching")
-    for (_, call), event in zip(calls, events):
+    for (_, call), event in zip(calls, events, strict=True):
         if event.model_content is None or event.model_content != call["response"]["content"]:
             raise ValueError(f"{run_dir}: raw response mismatch for {event.id}; refusing positional repair")
     input_cap = config["context_tokens"] - config["max_output_tokens"]
     prefixes = []
-    for index, ((call_line, call), target) in enumerate(zip(calls, events)):
+    for index, ((call_line, call), target) in enumerate(zip(calls, events, strict=True)):
         system, issue = _call_task(call)
         prefix = events[:index]
         revision = prefix[-1].revision if prefix else result["initial_revision"]

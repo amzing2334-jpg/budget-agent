@@ -31,6 +31,13 @@ testpaths = ["tests"]
 pythonpath = ["src"]
 
 
+[tool.ruff.lint]
+select = ["F", "E9", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# The excerpt builder's closure is called only within the loop iteration that defines it.
+"src/budget_agent/context.py" = ["B023"]
+
 [tool.mypy]
 # The library and the pipeline scripts type-check cleanly; CI keeps it that way (the lint job).
 files = ["src/budget_agent", "scripts"]

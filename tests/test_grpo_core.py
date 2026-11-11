@@ -118,5 +118,5 @@ def test_chain_layout_predicts_every_completion_token_from_its_own_prompt():
     inputs, positions, targets = chain_layout(prompts, completions, [0, 1])
     assert inputs == [1, 2, 3, 4, 9, 5] and targets == [3, 4, 5, 6] and positions == [1, 2, 4, 5]
     full = inputs + [completions[1][-1]]
-    assert all(full[position + 1] == target for position, target in zip(positions, targets))
+    assert all(full[position + 1] == target for position, target in zip(positions, targets, strict=True))
     assert chain_layout(prompts, completions, [1]) == ([1, 2, 3, 4, 9, 5], [4, 5], [5, 6])

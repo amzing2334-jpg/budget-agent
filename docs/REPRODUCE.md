@@ -23,7 +23,7 @@
 ```bash
 python -m pip install -e ".[dev,tokens]"
 python -m pytest -q                     # 依赖 torch 的测试会跳过，它们在 GPU 主机的 CPU 上运行
-ruff check --select F,E9 src scripts tests
+ruff check src scripts tests            # pyflakes、语法错误和 bugbear，规则在 pyproject.toml
 mypy                                    # 核心库的类型检查，配置在 pyproject.toml
 ```
 
