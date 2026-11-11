@@ -61,6 +61,11 @@ def workspace_feedback(event: Event) -> str:
         return f"Workspace feedback for {event.id} ({tool}): workspace fingerprint unchanged. If editing, recheck the target."
     return ""
 
+# Appended to the system prompt when event headers keep the revision they were recorded at.
+FIXED_LABELS_PROMPT = ("\nEvent headers are fixed when recorded: each shows the revision it was observed at "
+                       "(source_revision for notes). The newest event's revision is the current workspace; an "
+                       "observation from another revision may be stale, so revalidate before relying on it.")
+
 
 def decision_prompt(config: RunConfig, remaining: int, step: int, events: list[Event],
                     revision: str, initial_revision: str) -> str:
@@ -183,9 +188,7 @@ class _Attempt:
         prompt = decision_prompt(config, self.budget.remaining_tokens, self.step, self.events, self.revision,
                                  self.initial_revision)
         if config.revision_labels == "fixed":
-            prompt += ("\nEvent headers are fixed when recorded: each shows the revision it was observed at "
-                       "(source_revision for notes). The newest event's revision is the current workspace; an "
-                       "observation from another revision may be stale, so revalidate before relying on it.")
+            prompt += FIXED_LABELS_PROMPT
         if config.execution_policy == "restricted":
             prompt += "\nExecution policy: restricted. Free-form run commands are denied. Use public_test for the manifest's fixed test command; source file tools and diff remain available."
         if config.loop_policy == "recover" and self.read_loop.pending_feedback:

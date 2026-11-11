@@ -60,3 +60,25 @@ def test_only_capped_unflagged_winners_of_the_split_are_kept(tmp_path, monkeypat
                                       "--keep-flagged"])
     assert sft_data.main() == 0
     assert sorted({json.loads(line)["task_id"] for line in output.read_text(encoding="utf-8").splitlines()}) == ["t1", "t2"]
+
+
+def test_samples_rebuilt_with_fixed_labels_equal_those_of_a_fixed_run(tmp_path):
+    from budget_agent.budget import TokenCounter
+    from budget_agent.models import ScriptedModel
+    from budget_agent.runner import run_task
+    from budget_agent.schema import RunConfig
+    from budget_agent.tasks import load_tasks
+    task = load_tasks(Path(__file__).parents[1] / "tasks/local.jsonl", task_ids=["slugify-digits"])[0]
+    actions = [{"tool": "read_file", "path": "slugify.py"},
+               {"tool": "edit_file", "path": "slugify.py", "old": "[^a-z]+", "new": "[^a-z0-9]+"},
+               {"tool": "read_file", "path": "slugify.py"}, {"tool": "finish"}]
+    runs = {}
+    for labels in ("relabel", "fixed"):
+        counter = TokenCounter()
+        result = run_task(task, RunConfig(strategy="recent", revision_labels=labels), tmp_path / labels,
+                          model=ScriptedModel([dict(a) for a in actions], counter), counter=counter)
+        runs[labels] = Path(result["result_path"]).parent
+    rebuilt = sft_data.samples_for(runs["relabel"], "fixed")
+    assert rebuilt == sft_data.samples_for(runs["fixed"])
+    assert rebuilt[0] == "full"            # fixed labels keep the history append-only: one sample per attempt
+    assert sft_data.samples_for(runs["relabel"])[0] == "last"
