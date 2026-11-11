@@ -41,13 +41,15 @@ flowchart LR
 - **奖励可信。**
   - 发现并修复了 5 类评分失真：标准库遮蔽、伪造判定行、git index 被改写、超时被当成"未评分"、统一超时导致的长尾。
   - 原则：每一条"排除"规则，都要问策略能不能主动触发它。
+  - 每个通过的补丁都与注入 bug 之前的源码对照（`scripts/review_patches.py --original`），量出测试覆盖不到的部分。
   - 详见 [技术复盘 §3](docs/TECH_REPORT.md)。
 - **不依赖 Docker 的环境。** 每个仓库一个 venv，每次运行都断言被测包从当前树导入，准入有三个条件。288/288 题准入，37,237 个 P2P 测试 0 丢弃。
 - **token 级数据通路。**
   - 记录采样 token、behavior logprob 和 prompt 摘要；训练前比对摘要，不一致的 turn 不训练。
   - SFT 只在需要预测训练 token 的位置算 logits，16k 样本的显存从约 34 GiB 降到 11.8 GiB，数学上等价。
 - **单卡共置的 GRPO。** vLLM 占 45% 显存，训练进程用其余显存。每步保存 LoRA 并热加载，服务不重启。支持 token 级聚合、clip-higher、TIS 和 minibatch PPO。
-- **为训练效率设计上下文。** 同一段前缀既决定推理时的前缀缓存命中，也决定训练时能否打包。前缀打包已经实现，并在 CPU 上验证了与逐 turn 前向等价；`revision_labels = fixed` 让历史在窗口滑动之前只追加不改写。数据见 [PREFIX_PACKING.md](docs/PREFIX_PACKING.md)。
+- **为训练效率设计上下文。** 同一段前缀既决定推理时的前缀缓存命中，也决定训练时能否打包。前缀打包在 CPU 上验证了与逐 turn 前向等价，第五轮起用于 GPU 训练；`revision_labels = fixed` 让历史在窗口滑动之前只追加不改写。数据见 [PREFIX_PACKING.md](docs/PREFIX_PACKING.md)。
+- **轨迹可以换一种上下文写法重放。** 记录下来的尝试可以按另一种标注方式重建每一条请求（`budget_agent.learning.rerender`），先在原模式下逐条复现记录的请求才放行：第一轮的 658 条 SFT 样本全部一致。这样换上下文格式不需要重新 rollout。
 - **可复核的结论。**
   - 协议先提交再运行，按题做配对 bootstrap，另外报告剔除可疑样本后的结果。
   - 偏差和事故都写进实验记录，例如试跑里一个变量覆盖的 bug、一次以为已停止的后台任务覆盖了服务器文件。
@@ -76,13 +78,13 @@ python scripts/build_swesmith_local.py --instances instances.jsonl --repos <镜�
 
 ```bash
 scripts/autodl/serve_vllm.sh <模型目录> teacher           # 只监听 127.0.0.1:18017
-scripts/autodl/run_pool.sh --config configs/swesmith-vllm.toml --tasks swesmith/train.jsonl \
+scripts/autodl/run_pool.sh --config configs/swesmith-vllm-tokens.toml --tasks swesmith/train.jsonl \
   --samples 4 --output /opt/coding-agent/work/teacher        # 以 nobody 身份运行 agent 命令
 python scripts/sft_data_from_runs.py --attempts <attempts.jsonl> --output sft.jsonl
 python scripts/train_sft_lora.py --model <学生模型> --data sft.jsonl --output out/sft --merge
 python scripts/compare_pools.py --baseline <训练前> --candidate <训练后> --split eval
 python scripts/grpo_harness.py --base-model <模型> --tasks swesmith/train.jsonl \
-  --config configs/swesmith-vllm.toml --output out/grpo --rollouts /opt/coding-agent/work/grpo
+  --config configs/swesmith-vllm-tokens.toml --output out/grpo --rollouts /opt/coding-agent/work/grpo --pack-turns
 ```
 
 ## 模块
@@ -94,7 +96,8 @@ python scripts/grpo_harness.py --base-model <模型> --tasks swesmith/train.json
 | `environment.py` | 文件工具、命令执行、Docker、隔离评分器、git 快照、任务级解释器和网络策略 |
 | `models.py` | OpenAI 兼容客户端：拒绝重定向，可选记录 token ID 和 logprob |
 | `pytest_outcomes.py` | 记录每个测试节点的精确结果，不依赖解析日志 |
-| `learning/grpo_core.py` | 分组、优势、token 级损失、TIS（纯函数，有单元测试） |
+| `learning/grpo_core.py` | 分组、优势、token 级损失、TIS、前缀打包的布局（纯函数，有单元测试） |
+| `learning/rerender.py` | 按另一种标注方式重建记录过的请求，先逐条复现原请求 |
 | `scripts/` | SWE-smith 构建、rollout 池、RFT、GRPO、对比分析、基准测试 |
 | `scripts/autodl/` | 共享 GPU 实例上的隔离运行脚本 |
 
