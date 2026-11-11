@@ -1,0 +1,390 @@
+{
+ "note": "Commit ids before and after the 2026-11-11 history rewrite, which removed assistant co-author trailers and set every committer to amzing2334-jpg. Trees are unchanged.",
+ "commits": [
+  {
+   "old": "496a4f1d0a0d11aabd5bbcb7e3e45871f0284b05",
+   "new": "d0e9ae3a4b4f4a1adc827a89464fcf30a6f871a7",
+   "subject": "Harden grading and snapshots, speed up the agent loop"
+  },
+  {
+   "old": "c8973138756d3265650f18cedd6f773e5bf71491",
+   "new": "167c9cffe38e238b062b0a240a770dc5dacbd46a",
+   "subject": "Add Docker-free SWE-smith tasks and RFT experiment tooling"
+  },
+  {
+   "old": "0c4b574fbb0ba6fa197b7f08df400814639fe46f",
+   "new": "ed5aab88f950a86cacccbe70257e349f9e5ac11b",
+   "subject": "Document the code review and the RFT round-1 protocol"
+  },
+  {
+   "old": "3d9832092faeecdd377592523426227d85b10435",
+   "new": "d68e3fdbd2cc5cf7c1e490f0318eba7c22fc9c09",
+   "subject": "Merge PR #1: harden grading, add Docker-free SWE-smith tasks and RFT tooling"
+  },
+  {
+   "old": "9ec23aef1b78a9385ac4ce1752d1ea467f7309dc",
+   "new": "9040559289018bb5eb8aa91692df480ef59dcea8",
+   "subject": "Record sampled token IDs and log probabilities through the harness"
+  },
+  {
+   "old": "4b0b4d8e95b5ec8b9c0a904a6635bc109b6abe55",
+   "new": "872798ba26edfbd916002f345bbc6cd7feeb88d3",
+   "subject": "Add GRPO core and a single-GPU GRPO loop over harness rollouts"
+  },
+  {
+   "old": "7a3c33b65c67c2765a5c6393c595c16bafc813c6",
+   "new": "b30d0d44e2de3c61d044385f9c32de17a0903a05",
+   "subject": "Make the SWE-smith task set reproducible and fix two environments"
+  },
+  {
+   "old": "9824155c74dda20195b6dc713de9e4367438eb5e",
+   "new": "99325e918e15db5aca6d46336abbf0f25f569e0f",
+   "subject": "Deny network access to agent commands on SWE-smith tasks"
+  },
+  {
+   "old": "7a2e4f2a4e1a4a9dc3ad28de9507dda9327ddc14",
+   "new": "4a673aa249c804159838f7d1e8d7a9e51fc4ea77",
+   "subject": "Rewrite the README around the verified results"
+  },
+  {
+   "old": "26aba8578f62d38a2b679731d8cab5145a6a7b63",
+   "new": "6b227ec6b2cef55463d9ac4aa62a4b2b0757a17a",
+   "subject": "Merge PR #2: token-level rollouts, GRPO core, reproducible SWE-smith tasks"
+  },
+  {
+   "old": "946718c89613a09ad07133537be78de6c3398c43",
+   "new": "8c3efed08a29951471dd408c834c4214a5e9b7c8",
+   "subject": "Split run_task into an Attempt with one method per concern"
+  },
+  {
+   "old": "f86d4bf92a5fd21b92c2419adde213c00b3d3f31",
+   "new": "bd6eeb9e9d92d340403db182059e173c14f63773",
+   "subject": "Merge PR #3: split run_task into an Attempt with one method per concern"
+  },
+  {
+   "old": "73324c8003f8507e9b96c520f9072a86cddf3a03",
+   "new": "928e9fbc16e59defa4e5af947c7b5db372d3bc8d",
+   "subject": "Flag grading-tamper patterns in patches and keep them out of SFT data"
+  },
+  {
+   "old": "f41e73390031585848906dedeb2c0c97a15a6452",
+   "new": "8d45bde143f9298b1e52d0921a592bc12f8c9473",
+   "subject": "Add one-command, isolation-preserving deployment to an AutoDL instance"
+  },
+  {
+   "old": "0c84247afdf8ea83c91235871ebe5609e996310e",
+   "new": "25a37c45cf805f46e42a3fa67a6a634398471fe0",
+   "subject": "Add a rollout throughput benchmark across concurrency levels"
+  },
+  {
+   "old": "ada00795e0818cd57addebbb541d1f898d7f3a67",
+   "new": "f82675248d7d293e2ccda4609fccf0f2c90f3bbc",
+   "subject": "Merge PR #4: patch tamper signals, one-command AutoDL deployment, rollout benchmark"
+  },
+  {
+   "old": "549f6acecaea0306f18b478d3727856cec2ead6e",
+   "new": "1bbfa72e4984b72bd32b1e60ccc403096c74c479",
+   "subject": "Record follow-up status in the code review"
+  },
+  {
+   "old": "1d7ea54bcb379d86ad725971428a439a75ce2368",
+   "new": "a58c194620f8185b3b16480aea412b2e1cae1240",
+   "subject": "Merge PR #5: record follow-up status in the code review"
+  },
+  {
+   "old": "d3e3a678366bfff3c8e5f2e98de8fbd5c3be49df",
+   "new": "82d067f52c4f5b6e5b64f1b9b1a0766900f0e7f1",
+   "subject": "Keep the vLLM/torch env on the system disk; deploy any ref"
+  },
+  {
+   "old": "7c8c958f8671c939c6c0ca9db29f60cd28ae8097",
+   "new": "1ece0aab0b18db535e426e90bb257c78aa2014a2",
+   "subject": "Build environments with venv from the base interpreter instead of conda"
+  },
+  {
+   "old": "002e6d87bfc3da874d2a1f7f5951ec5f850f24bd",
+   "new": "58771e9bafe8f4e906031bf5354766331214b02f",
+   "subject": "Add the round-1 RFT orchestration and a pidfile-only vLLM stop"
+  },
+  {
+   "old": "3ffbd3bceb4d40e49d9348582b0b5d3cac0c4ed0",
+   "new": "bb659a0d3d00baf4756496a89673c781ed2f1464",
+   "subject": "Pass a pip index to the remote setup and record mirror speeds"
+  },
+  {
+   "old": "d6f705f83ba1aa69d1f8f22cc5ab48ad191857f4",
+   "new": "6de58317e499b2f4229704b5ccab43eef87b6fc3",
+   "subject": "Use vLLM's PyTorch sampler when FlashInfer cannot JIT its kernels"
+  },
+  {
+   "old": "ab6a4f1ff45d329bb90906fc396b87f15e32b4de",
+   "new": "a4a4eb0c0e2687e03de5515098c8622d2b0e21cc",
+   "subject": "Merge PR #6: deployment fixes from the first real deploy, round-1 orchestration"
+  },
+  {
+   "old": "0e3e5199ebc7ba6cd7a880b9a53a583a4eaaa6c8",
+   "new": "bc4707b2a2cbbb640e774b535b05c0587fa97c9c",
+   "subject": "Break repeated failed-edit loops and point edits at real anchors"
+  },
+  {
+   "old": "94686e5792b4c0f0229b71bdcd1f4427411ddd72",
+   "new": "289c01bb38903095036e0ffea1f8da1992bdeed3",
+   "subject": "Tell the agent when a file is missing instead of calling it protected"
+  },
+  {
+   "old": "2890cdfddd4e872a8f70fcff0f6ecbe6f9e36284",
+   "new": "5703077cdcf74bea8c53b73568edc3bc9d435d2a",
+   "subject": "Add line-range edits and keep binary test artifacts from voiding grades"
+  },
+  {
+   "old": "d86cf639ce43353bf7da450a8077bffeb5001cdc",
+   "new": "5c2ea4ae1c682210ce3fe58c01202ef9a61b1754",
+   "subject": "Suggest a concrete replace_lines call when an edit anchor fails"
+  },
+  {
+   "old": "54510668eb43320148e7f40407f8f916dd9f1891",
+   "new": "2075417a809213ba54fe799039248cdd403bc6cc",
+   "subject": "Log server preparation and the pre-run harness A/B"
+  },
+  {
+   "old": "b7c3a6845abfe3720a1a40486b3dfc56cc957223",
+   "new": "50cd1aeef08c6bd6acda3237e41ff44e9c4cdc9a",
+   "subject": "Revert \"Suggest a concrete replace_lines call when an edit anchor fails\""
+  },
+  {
+   "old": "8125829bfdd463bd70aec9bc09718b480deb979b",
+   "new": "f595aac2b9b7478b9954977d44a47b31cc2d4e3e",
+   "subject": "Record the v5 pass and the harness chosen for round 1"
+  },
+  {
+   "old": "38a71437e5f0db4287eb97ce144918094b81eb55",
+   "new": "4f1290ecf2d8030ff91e7aebf31039af9e1d8ccf",
+   "subject": "Log the stale-job incident during round-1 startup"
+  },
+  {
+   "old": "48157a7560aea1df86c50ad1cd78a6b686af88ab",
+   "new": "59f1aca389db97421e0da6ae3522cd59e76aabab",
+   "subject": "Merge PR #7: harness fixes from the first real SWE-smith runs (stuck loops, edit feedback, line edits, binary artifacts)"
+  },
+  {
+   "old": "6ab622f0a68b0254c4755b1d1632813c68413fff",
+   "new": "ae9449956457f42e024d95eda6e7afcce32f3d4c",
+   "subject": "Add the round summary and the protocol's suspicious-sample comparison"
+  },
+  {
+   "old": "58f22aff30e94568b9ba0b1e735f8d6207153b15",
+   "new": "44aa2649e881a27bcecb19368573c0b83533aeed",
+   "subject": "Read and write round reports as UTF-8 on every platform"
+  },
+  {
+   "old": "f23f987a0ba16fa862f862bba42474c1c59a0fcb",
+   "new": "fd04e804aea1d42202e05ad857c9bfe21636bed1",
+   "subject": "Merge PR #8: round summary and the protocol's suspicious-sample comparison"
+  },
+  {
+   "old": "629d406a635b18f8c831bfe66085b98c33e01422",
+   "new": "941e8063b1f14878b04538047ec449f62194312c",
+   "subject": "Compute SFT logits only at positions that predict a trained token"
+  },
+  {
+   "old": "24df87182b91410862a309e2e38ebed1f64f88c8",
+   "new": "ed515e5c3f85b5767323e73cf15e3ff55eb86e8d",
+   "subject": "Merge PR #9: compute SFT logits only at positions that predict a trained token"
+  },
+  {
+   "old": "8cd81f8488bd90e1d699bf1e3d1ce724fadcaa20",
+   "new": "fa2a9d39d19fd2a8370b0ed389ac12c2d60fd3d9",
+   "subject": "Prove token-identical prompts between sampler and trainer in GRPO"
+  },
+  {
+   "old": "27b1b685ea1ec42b36cb99031a0a852573bfe7f0",
+   "new": "bc5a8df8af78c559f2415ac32977aaad746670b2",
+   "subject": "Merge PR #10: token-identical prompts between sampler and trainer; minibatch PPO updates"
+  },
+  {
+   "old": "72508bf6fda67bcb8eb023c943c7c1587f52a2e8",
+   "new": "7978f6623dad9a3713442e3c72c0c373a8af0ce0",
+   "subject": "Grade a verifier hung by the candidate as a failed repair"
+  },
+  {
+   "old": "8dc600968cca4af3c9d4ac27ae22490f7b3ab099",
+   "new": "59320f27702e790e8f8954c10db5d50329173cc5",
+   "subject": "Merge PR #11: grade a verifier hung by the candidate as a failed repair"
+  },
+  {
+   "old": "abe71c528ec01fcc639f13b4660ab8a78d643c10",
+   "new": "ad5a841ae6ae7f0d64f780bf5483af9fa7ddfe50",
+   "subject": "Freeze the GRPO pilot protocol and its server driver"
+  },
+  {
+   "old": "0aa6c25b9803222697150810f51a21a05dc16793",
+   "new": "24507d1aa3f0deef970310bdc745b068feb6d7ec",
+   "subject": "Merge PR #12: freeze the GRPO pilot protocol and its server driver"
+  },
+  {
+   "old": "42161526822249a0160112c50412ac112509d8a1",
+   "new": "11bb43eef55eee74fcb29ed3612bd4879207a457",
+   "subject": "Record round-1 results under the frozen criteria"
+  },
+  {
+   "old": "ba77287ca155af552a13752db444ebd30741efc2",
+   "new": "28b250155598b9d8b599ecaf82f6d38a4a2cb309",
+   "subject": "Put the round-1 result and today's engineering fixes in the README"
+  },
+  {
+   "old": "7c6f632ae982820098c3c938283a20cb3c65ebd2",
+   "new": "b07ea6a5c345fc0af91bff432a7afc482e30c0dc",
+   "subject": "Merge PR #13: round-1 results under the frozen criteria"
+  },
+  {
+   "old": "335ddce59c2626585304e70ae97ee4bce34df16c",
+   "new": "614867cef7f4cf8fabd386925b1805c49292ccb4",
+   "subject": "Add the rollout benchmark driver; never overlap experiment scripts"
+  },
+  {
+   "old": "f1e83e16c70fee8ce3ec8c15ee293235aa7677ca",
+   "new": "7b532efcf95947c725a9e9cc89d0ff0b3c1da01b",
+   "subject": "Merge PR #14: rollout benchmark driver; never overlap experiment scripts"
+  },
+  {
+   "old": "931916d83645cc99bbb40512034d63962bdd5df9",
+   "new": "2eeebc7ac2df60cf912613178932440d7ffb257a",
+   "subject": "Optionally train a uniform sample of turns per GRPO attempt"
+  },
+  {
+   "old": "718f3f52b4e88a37aaccbb5f95a85c90db0683b4",
+   "new": "97b964c09a82a29864d186f0dfde97c5c128ba09",
+   "subject": "Let a GRPO run stop starting steps after a wall-time budget"
+  },
+  {
+   "old": "dc0dbe373f645021065a289a123f61154424e6a9",
+   "new": "f93a95073658c83f671356fd89911d5eff70a39d",
+   "subject": "Stop the minibatch shuffle from overwriting the task schedule"
+  },
+  {
+   "old": "a6f6c8146942251a39bf56aa177b9e39a88b5e2b",
+   "new": "fe9b0720fe0c2f14bdd21bd696e8ad34a7502935",
+   "subject": "Record the GRPO pilot: step 0 passed its checks, step 1 hit a harness bug"
+  },
+  {
+   "old": "34c16b6236e8033c0f606d41d04743a88c0be1d3",
+   "new": "3e981a733140119c1a60fb96e6a40a6d80594a57",
+   "subject": "Freeze the round-2 GRPO protocol and its driver"
+  },
+  {
+   "old": "5b12d14b6fb3e2283a4b3b2737f63754990c0d6e",
+   "new": "afda287728ebc3e35a4e95309c223b47761f8fe4",
+   "subject": "Merge PR #15: gRPO round 2: frozen protocol, driver, and harness follow-ups from the pilot"
+  },
+  {
+   "old": "47b947a60312b367cd625502d49ce40348f60718",
+   "new": "2d78ac9a718113bbd9a858b996aa32671283911d",
+   "subject": "Record the rollout throughput benchmark"
+  },
+  {
+   "old": "cff93152dd7a49d16a6a71202e281b733c2d10a3",
+   "new": "247b46c7aaf570ce7985738d8d2d5ac7aa83da04",
+   "subject": "Merge PR #16: record the rollout throughput benchmark"
+  },
+  {
+   "old": "97ec051f47c71f2b300a7f6f0d62d98310a73242",
+   "new": "01a0900d62edb2896eb34419bb497edcad0499c4",
+   "subject": "Give each SWE-smith task a verifier limit from its admission timing"
+  },
+  {
+   "old": "b079f1a398d09ba8f2f467c2e89babcc632a822e",
+   "new": "92f8dacdbc43d87e765df1bd3baf1f3c9973cdac",
+   "subject": "Merge PR #17: per-task verifier limits from admission timing"
+  },
+  {
+   "old": "0be3941156038cd0498a3ae12df73d4658989206",
+   "new": "551269e769cacb868864c68f52dd2f1e635c8111",
+   "subject": "Count the context budget in the served model's own tokens"
+  },
+  {
+   "old": "fb271b11fec164fcd66cc35685237103add7cd82",
+   "new": "a48031051a4f7894b8cf403fa9f71f4048f400da",
+   "subject": "Merge PR #18: count the context budget in the served model's own tokens"
+  },
+  {
+   "old": "38a7ab9b997a4bcc65ce419542b7397ffc72a0c4",
+   "new": "815f2ae7cda3202d00218dda9305ae51d754f5b0",
+   "subject": "Move the GRPO schedule, minibatching and update out of the main loop"
+  },
+  {
+   "old": "b2aa088097a7de2b469a4da4c1151d3e6762b6d8",
+   "new": "fd4c9adecf0b6051bf3eb659226fb50579cf0ca3",
+   "subject": "Merge PR #19: move the GRPO schedule, minibatching and update out of the main loop"
+  },
+  {
+   "old": "55c1161a099668a48fc81c2949fe598a4825a0b5",
+   "new": "52e18e60b73c861e1354e3354b9c51825e343992",
+   "subject": "Record the official round-2 GRPO result and the technical report"
+  },
+  {
+   "old": "7d29b1251968d9736dd4f4abc402edc49349d89b",
+   "new": "8bd81364315bac9bbfb9a272bc21aed1c038a165",
+   "subject": "Merge PR #20: official round-2 GRPO result and the technical report"
+  },
+  {
+   "old": "9579a13fa8d107169fdd9ef5c9b32a3b2cd5f2e2",
+   "new": "cf20df359c53e89657c3e70d2a7aed139e6d7e41",
+   "subject": "Freeze the replication evaluation of round 2"
+  },
+  {
+   "old": "2d3d7e52b484b59a5e1785897a29d8c6a941c4fd",
+   "new": "fa183c947f7d50f02b02c42e329a0a382e8b932a",
+   "subject": "Merge PR #21: freeze the replication evaluation of round 2"
+  },
+  {
+   "old": "ef8f16cc13afa4f67cc9d54d012269464fa4959a",
+   "new": "523f88d1427635a410e96286012d04354c0d2ee3",
+   "subject": "Bound the agent's test and shell commands by the task's measured limit"
+  },
+  {
+   "old": "48923263a10ff15934c298b05925ac97ba4a1fa1",
+   "new": "7b59316a06afbc9dac02e59783a5e58aaff5c54c",
+   "subject": "Merge PR #22: bound the agent's test and shell commands by the task's measured limit"
+  },
+  {
+   "old": "5118f081da1ba8351c2211789063362411569844",
+   "new": "3e84b453b84022485234ed2bf243ccf0932df47f",
+   "subject": "Limit the memory of local agent commands and graders"
+  },
+  {
+   "old": "4a0decda70deff30000754828a06f2eb6d9c6643",
+   "new": "06d45e802101e9651d6e681f3e8dc0c892571a0e",
+   "subject": "Merge PR #23: limit the memory of local agent commands and graders"
+  },
+  {
+   "old": "e382e3b461b2d7514af05e9844baddbaffb77b1c",
+   "new": "b29c48b85b88e2ec3de1d1d3b563e4eb41a931fa",
+   "subject": "Freeze round 3: longer GRPO on the hardened harness"
+  },
+  {
+   "old": "e91bb647d429534a164a2d42fcb8061069d74bd7",
+   "new": "e0868257ba33e7ab29df51254ad7f07486feb897",
+   "subject": "Merge PR #24: freeze round 3, longer GRPO on the hardened harness"
+  },
+  {
+   "old": "557e368813a64d5925688b45e151232e5371f500",
+   "new": "05180f33722b2bde8c3214e28bed5c61b5593ddf",
+   "subject": "Record the replication: the round-2 gain does not replicate under the frozen rule"
+  },
+  {
+   "old": "7e5bb6b54be77f255d0700c758dd642f3b3c84ac",
+   "new": "db2425115f0fe9410b2d51d4f4dd36220948c6dd",
+   "subject": "Merge PR #25: replication result, the round-2 gain does not replicate under the frozen rule; README leads with results"
+  },
+  {
+   "old": "5a06f53336e23548b0f9c1c85a63c55df9e26b48",
+   "new": "2af9f37e9c83a8d9378ad149293c10a2ef807db5",
+   "subject": "Mark the October validation records as historical"
+  },
+  {
+   "old": "d035f5331e64ffd479d7847d158a59422393c6ae",
+   "new": "f8862d1418d8507def4ba7cedac249d6c97b2a00",
+   "subject": "Merge PR #26: mark the October validation records as historical"
+  }
+ ]
+}
