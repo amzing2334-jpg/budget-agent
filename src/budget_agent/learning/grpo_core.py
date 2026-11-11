@@ -64,6 +64,45 @@ def subsample_turns(turns: list[Turn], limit: int | None, rng) -> list[Turn]:
     return [turns[i] for i in sorted(rng.sample(range(len(turns)), limit))]
 
 
+def pack_turns(prompts: list[list[int]], completions: list[list[int]]) -> list[list[int]]:
+    """Group consecutive turns into prefix chains: each turn's prompt starts with the previous member's prompt
+    plus completion, token for token.
+
+    The `recent` context policy keeps the full history while it fits, so an
+    attempt's early turns re-send everything before them; training each turn
+    separately re-encodes that shared prefix every time. A chain is trained as
+    one sequence instead. The chain breaks where the history was cut or the
+    chat template re-tokenized a reply differently from how it was sampled.
+    """
+    chains: list[list[int]] = []
+    for index, prompt in enumerate(prompts):
+        if chains:
+            head = prompts[chains[-1][-1]] + completions[chains[-1][-1]]
+            if prompt[:len(head)] == head:
+                chains[-1].append(index)
+                continue
+        chains.append([index])
+    return chains
+
+
+def chain_layout(prompts: list[list[int]], completions: list[list[int]], chain: list[int]) -> tuple[list[int], list[int], list[int]]:
+    """Inputs of a chain's single sequence, the positions whose logits predict each completion token, and the targets.
+
+    Under causal attention the logits at those positions see exactly the
+    prompt each turn was sampled from, so the log probabilities equal those
+    of separate per-turn forwards.
+    """
+    last = chain[-1]
+    inputs = prompts[last] + completions[last][:-1]
+    positions: list[int] = []
+    targets: list[int] = []
+    for index in chain:
+        start = len(prompts[index]) - 1
+        positions.extend(range(start, start + len(completions[index])))
+        targets.extend(completions[index])
+    return inputs, positions, targets
+
+
 def group_advantages(rewards: list[float], *, scale_by_std: bool = True, eps: float = 1e-6) -> list[float] | None:
     """Group-relative advantages; None when every reward is equal (no learning signal).
 
