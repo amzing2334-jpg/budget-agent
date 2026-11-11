@@ -24,6 +24,7 @@
 python -m pip install -e ".[dev,tokens]"
 python -m pytest -q                     # 依赖 torch 的测试会跳过，它们在 GPU 主机的 CPU 上运行
 ruff check --select F,E9 src scripts tests
+mypy                                    # 核心库的类型检查，配置在 pyproject.toml
 ```
 
 ## 2. 构建 SWE-smith 本地任务
@@ -43,9 +44,9 @@ PIP_INDEX_URL=https://repo.huaweicloud.com/repository/pypi/simple \
 
 - **`deploy.sh`** 先做只读的环境勘察，然后把 `main` 和数据包传到 `/opt/coding-agent`，再在后台运行 `setup_isolated.sh`。
 - **`setup_isolated.sh`** 可以重复运行，依次完成：
-  - 在系统盘建 vLLM/torch 环境（只有 root 使用）；
+  - 在系统盘建 vLLM/torch 环境（只有 root 使用），按 `requirements-gpu-host.lock.txt` 安装。这份锁文件冻结自 GPU 主机，环境从 2026-11-06 装好后没有变过，所有轮次都跑在这套版本上（vLLM 0.33.0、torch 2.14.0 + CUDA 13.0、transformers 5.20.2、peft 0.21.2）。设 `ML_LOCK=` 为空则改装最新的 vLLM；
   - 用 uv 在 `/opt/coding-agent/python` 安装独立的 CPython 3.12.16。`/root` 的权限是 700，所有以 `nobody` 运行的东西都要用这个解释器。
-  - 建立 rollout 解释器（含 `tokenizers`）和每个仓库的 venv，完成准入；
+  - 建立 rollout 解释器（按 `requirements-rollout.lock.txt` 安装，含 `tokenizers`）和每个仓库的 venv，完成准入；
   - 从 ModelScope 下载 7B 和 1.5B 模型；
   - 把分词器文件放到 `nobody` 可读的位置。
 - **镜像源**：佛山实例上镜像默认的阿里云源只有 0.35 MB/s，华为云有 10.7 MB/s，部署前先测速。
