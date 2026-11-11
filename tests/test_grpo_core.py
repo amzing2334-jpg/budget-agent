@@ -3,8 +3,9 @@ import math
 
 import pytest
 
-from budget_agent.learning.grpo_core import (Turn, aggregate, build_groups, extract_turns, group_advantages,
-                                             minibatch_indices, step_tasks, subsample_turns, token_policy_loss)
+from budget_agent.learning.grpo_core import (Turn, aggregate, build_groups, chain_layout, extract_turns,
+                                             group_advantages, minibatch_indices, pack_turns, step_tasks,
+                                             subsample_turns, token_policy_loss)
 
 
 def write_calls(run_dir, calls):
@@ -101,3 +102,21 @@ def test_minibatch_indices_partition_the_batch():
     assert groups == minibatch_indices(10, 4, random.Random(3))
     small = minibatch_indices(3, 4, random.Random(3))  # fewer items than minibatches: one item each
     assert len(small) == 3 and all(len(group) == 1 for group in small) and sorted(sum(small, [])) == [0, 1, 2]
+
+
+def test_pack_turns_chains_prefix_consistent_turns_and_breaks_where_history_changes():
+    # turn 1 extends turn 0; turn 2 re-tokenized turn 1's reply (5 -> 55); turn 3 extends turn 2.
+    prompts = [[1, 2], [1, 2, 3, 4, 9], [1, 2, 3, 4, 9, 55, 7], [1, 2, 3, 4, 9, 55, 7, 8, 9]]
+    completions = [[3, 4], [5, 6], [8], [10, 11]]
+    assert pack_turns(prompts, completions) == [[0, 1], [2, 3]]
+    assert pack_turns([[1], [2]], [[3], [4]]) == [[0], [1]]
+
+
+def test_chain_layout_predicts_every_completion_token_from_its_own_prompt():
+    prompts = [[1, 2], [1, 2, 3, 4, 9]]
+    completions = [[3, 4], [5, 6]]
+    inputs, positions, targets = chain_layout(prompts, completions, [0, 1])
+    assert inputs == [1, 2, 3, 4, 9, 5] and targets == [3, 4, 5, 6] and positions == [1, 2, 4, 5]
+    full = inputs + [completions[1][-1]]
+    assert all(full[position + 1] == target for position, target in zip(positions, targets))
+    assert chain_layout(prompts, completions, [1]) == ([1, 2, 3, 4, 9, 5], [4, 5], [5, 6])

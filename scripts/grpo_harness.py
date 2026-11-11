@@ -19,6 +19,12 @@ template and keeps the turn only if the result is token-identical to the
 prompt the server sampled from (the recorded prompt digest). Mismatches are
 dropped and counted, never trained in a context the policy never saw.
 
+Prefix packing (--pack-turns): consecutive turns of an attempt whose prompt
+starts with the previous turn's prompt plus completion form a chain trained
+as one sequence, with logits taken only at the completion positions. The
+per-token log probabilities equal those of separate forwards, and the tokens
+encoded drop to about the length of each chain's last turn.
+
 Rollouts use temperature 1.0 so vLLM's returned log probabilities describe
 the actual sampling distribution. vLLM must run with --enable-lora and
 VLLM_ALLOW_RUNTIME_LORA_UPDATING=True (scripts/autodl/serve_vllm.sh).
@@ -31,14 +37,15 @@ from pathlib import Path
 import random
 import subprocess
 import time
+from typing import NamedTuple
 import urllib.request
 
 import torch
 from peft import LoraConfig, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from budget_agent.learning.grpo_core import (aggregate, build_groups, extract_turns, minibatch_indices, step_tasks,
-                                             subsample_turns, token_policy_loss)
+from budget_agent.learning.grpo_core import (aggregate, build_groups, chain_layout, extract_turns, minibatch_indices,
+                                             pack_turns, step_tasks, subsample_turns, token_policy_loss)
 from budget_agent.models import token_digest
 from budget_agent.tasks import load_tasks
 
@@ -56,41 +63,67 @@ def load_adapter(server: str, name: str, path: Path, previous: str | None) -> No
         post(f"{server}/v1/unload_lora_adapter", {"lora_name": previous})
 
 
-def completion_logprobs(model, prompt_ids: list[int], completion_ids: list[int]):
-    """Log probabilities of the sampled completion and its mean entropy; the last prompt token predicts the first."""
-    inputs = torch.tensor([prompt_ids + completion_ids[:-1]], device="cuda")
-    logits = model(input_ids=inputs, logits_to_keep=len(completion_ids)).logits[0].float()
+class Sequence(NamedTuple):
+    """One training forward: a single turn, or a prefix chain of turns from one attempt (--pack-turns)."""
+    inputs: list[int]
+    positions: list[int]          # logits here predict the targets
+    targets: list[int]            # sampled completion tokens, in order
+    behavior: list[float] | None  # the sampler's log probabilities of the targets
+    advantage: float
+    turns: int
+
+
+def sequence_logprobs(model, sequence: Sequence):
+    """Log probabilities of the targets at their positions, and the mean entropy there."""
+    device = next(model.parameters()).device
+    inputs = torch.tensor([sequence.inputs], device=device)
+    keep = torch.tensor(sequence.positions, device=device)
+    logits = model(input_ids=inputs, logits_to_keep=keep).logits[0].float()
     logp = logits.log_softmax(-1)
-    targets = torch.tensor(completion_ids, device="cuda")
+    targets = torch.tensor(sequence.targets, device=device)
     with torch.no_grad():
         entropy = -(logp.exp() * logp).sum(-1).mean()
     return logp.gather(-1, targets[:, None]).squeeze(-1), entropy
 
 
-def update(model, optimizer, batch: list, args) -> dict:
-    """Train on one step's turns; returns the step record's training fields.
+def build_sequences(verified: list[tuple[list[int], object]], advantage: float, pack: bool) -> list[Sequence]:
+    """Turn one attempt's verified (prompt ids, turn) pairs into training sequences."""
+    prompts = [prompt for prompt, _ in verified]
+    completions = [turn.completion_ids for _, turn in verified]
+    chains = pack_turns(prompts, completions) if pack else [[index] for index in range(len(verified))]
+    sequences = []
+    for chain in chains:
+        inputs, positions, targets = chain_layout(prompts, completions, chain)
+        logprobs = [verified[index][1].behavior_logprobs for index in chain]
+        behavior = None if any(lp is None for lp in logprobs) else [x for lp in logprobs for x in lp]
+        sequences.append(Sequence(inputs, positions, targets, behavior, advantage, len(chain)))
+    return sequences
+
+
+def update(model, optimizer, batch: list[Sequence], args) -> dict:
+    """Train on one step's sequences; returns the step record's training fields.
 
     One update: the ratio is 1 and the old log-probabilities are the current
     ones, detached. More updates freeze them before the first.
     """
     model.train()
+    device = next(model.parameters()).device
     minibatches = minibatch_indices(len(batch), args.minibatches, random)
     olds = None
     if len(minibatches) > 1:
         with torch.no_grad():
-            olds = [completion_logprobs(model, prompt, turn.completion_ids)[0] for prompt, turn, _ in batch]
+            olds = [sequence_logprobs(model, sequence)[0] for sequence in batch]
     stats, entropies, norms = [], [], []
     for indices in minibatches:
-        total_tokens = sum(len(batch[i][1].completion_ids) for i in indices)
+        total_tokens = sum(len(batch[i].targets) for i in indices)
         for i in indices:
-            prompt, turn, advantage = batch[i]
-            logp, entropy = completion_logprobs(model, prompt, turn.completion_ids)
+            sequence = batch[i]
+            logp, entropy = sequence_logprobs(model, sequence)
             old = olds[i] if olds is not None else logp.detach()
-            behavior = (torch.tensor(turn.behavior_logprobs, device="cuda")
-                        if turn.behavior_logprobs is not None else None)
-            losses, info = token_policy_loss(logp, old, advantage, clip_low=args.clip_low, clip_high=args.clip_high,
-                                             behavior_logprobs=behavior, tis_cap=args.tis_cap)
-            # Token aggregation without holding every graph: scale each turn by the minibatch token count.
+            behavior = torch.tensor(sequence.behavior, device=device) if sequence.behavior is not None else None
+            losses, info = token_policy_loss(logp, old, sequence.advantage, clip_low=args.clip_low,
+                                             clip_high=args.clip_high, behavior_logprobs=behavior, tis_cap=args.tis_cap)
+            # Token aggregation without holding every graph: scale each sequence by the minibatch token count.
             loss = (losses.sum() / total_tokens if args.loss_agg == "token"
                     else aggregate([losses], mode="sequence") / len(indices))
             loss.backward()
@@ -99,8 +132,9 @@ def update(model, optimizer, batch: list, args) -> dict:
         norms.append(float(torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)))
         optimizer.step()
         optimizer.zero_grad(set_to_none=True)
-    return {"turns": len(batch), "updates": len(minibatches),
-            "completion_tokens": sum(len(turn.completion_ids) for _, turn, _ in batch),
+    return {"turns": sum(sequence.turns for sequence in batch), "sequences": len(batch), "updates": len(minibatches),
+            "input_tokens": sum(len(sequence.inputs) for sequence in batch),
+            "completion_tokens": sum(len(sequence.targets) for sequence in batch),
             "grad_norm": sum(norms) / len(norms), "entropy": sum(entropies) / len(entropies),
             **{k: sum(s.get(k, 0.0) for s in stats) / len(stats) for k in stats[0]}}
 
@@ -127,11 +161,15 @@ def main() -> int:
     parser.add_argument("--loss-agg", choices=["token", "sequence"], default="token")
     parser.add_argument("--minibatches", type=int, default=1, help="optimizer steps per rollout batch")
     parser.add_argument("--max-minutes", type=float, help="start no new step after this much wall time")
+    parser.add_argument("--pack-turns", action="store_true",
+                        help="train each prefix chain of an attempt's turns as one sequence (same loss, far fewer tokens)")
     parser.add_argument("--turns-per-attempt", type=int, help="train at most this many uniformly sampled turns "
                         "of each attempt (default: all)")
     parser.add_argument("--max-len", type=int, default=24576)
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
+    if args.pack_turns and args.loss_agg != "token":
+        parser.error("--pack-turns trains several turns per sequence; use --loss-agg token")
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     tasks = load_tasks(args.tasks, "train")
@@ -174,13 +212,15 @@ def main() -> int:
         for attempt in kept:
             turns = extract_turns(Path(attempt["result_path"]).parent)
             available += len(turns)
+            verified = []
             for turn in subsample_turns(turns, args.turns_per_attempt, random):
                 prompt = tokenizer.apply_chat_template(turn.messages, tokenize=True, add_generation_prompt=True,
                                                        return_dict=False)
                 if token_digest(prompt) != turn.prompt_digest:
                     mismatched += 1
                 elif turn.completion_ids and len(prompt) + len(turn.completion_ids) <= args.max_len:
-                    batch.append((prompt, turn, attempt["advantage"]))
+                    verified.append((prompt, turn))
+            batch.extend(build_sequences(verified, attempt["advantage"], args.pack_turns))
         record.update(prompt_mismatch=mismatched, turns_available=available)
         if mismatched and not batch:
             raise RuntimeError(f"step {step}: no kept turn re-renders to the prompt the server sampled from; "
