@@ -1,0 +1,210 @@
+{
+ "method": "scripts/review_patches.py --original <pre-bug sources> --tasks <SWE-smith tasks>: each passing patch is applied to the buggy files and compared with the source before the bug was injected. Residuals were judged by hand: equivalent (dead code, comments, blank lines, equivalent rewrites), weak-mild (differs only in an edge property), weak-strong (part of the injected bug remains, or wrong on ordinary input). Round-4 residuals that matched a round-3 pattern take its judgement; new patterns were judged the same way.",
+ "pools": {
+  "round4_relabel": {
+   "resolved": 53,
+   "restores_original_exactly": 25,
+   "equivalent_residual": 13,
+   "weak_mild": 7,
+   "weak_strong": 8
+  },
+  "round4_fixed": {
+   "resolved": 45,
+   "restores_original_exactly": 24,
+   "equivalent_residual": 9,
+   "weak_mild": 5,
+   "weak_strong": 7
+  }
+ },
+ "weak_patches": [
+  {
+   "pool": "round4_relabel",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "funcy one(): differs only for an explicit None predicate"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__gqknew3c",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "tinydb update_multiple: still deletes every document whose id has an even number of digits"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__gqknew3c",
+   "sample": 5,
+   "kind": "strong",
+   "reason": "tinydb update_multiple: still deletes every document whose id has an even number of digits"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 6,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_shuffle__lqjyurqa",
+   "sample": 0,
+   "kind": "strong",
+   "reason": "tinydb Query.search: matches non-string values through str(value) instead of returning False"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 4,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 7,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset: the injected Dec-31 special case is kept, only guarded against None"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset: the injected Dec-31 special case is kept, only guarded against None"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__x110b8lc",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "parse int_convert: equivalent conversion, but the public base attribute becomes [] instead of None"
+  },
+  {
+   "pool": "round4_relabel",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 0,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: AttributeError when compared with another tzinfo type"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 4,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 5,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "tinydb: injected early return kept, and another function now raises instead of returning its base class"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 5,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 7,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 5,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 6,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 7,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__agjn8p50",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "parse.search(): case sensitivity inverted"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 3,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: AttributeError when compared with another tzinfo type"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: AttributeError when compared with another tzinfo type"
+  },
+  {
+   "pool": "round4_fixed",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 7,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: AttributeError when compared with another tzinfo type"
+  }
+ ]
+}

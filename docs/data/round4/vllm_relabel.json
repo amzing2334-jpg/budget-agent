@@ -1,0 +1,7 @@
+{
+ "prompt_tokens": 116940824.0,
+ "generation_tokens": 558691.0,
+ "prefix_cache_queries": 116940824.0,
+ "prefix_cache_hits": 86188448.0,
+ "prefix_cache_hit_rate": 0.737
+}

@@ -17,7 +17,7 @@
 | 第二轮 GRPO | 2.62 小时 | 8.6 元 | [EXPERIMENT_GRPO_ROUND2.md](EXPERIMENT_GRPO_ROUND2.md) |
 | 复现评测 | 0.92 小时 | 3.0 元 | [EXPERIMENT_REPLICATION.md](EXPERIMENT_REPLICATION.md) |
 | 第三轮 GRPO | 4.27 小时 | 14.0 元 | [EXPERIMENT_GRPO_ROUND3.md](EXPERIMENT_GRPO_ROUND3.md) |
-| 第四轮标注 A/B | 约 1.8 小时（计划） | 约 6 元 | [EXPERIMENT_LABELS_AB.md](EXPERIMENT_LABELS_AB.md) |
+| 第四轮标注 A/B | 2.09 小时 | 6.9 元 | [EXPERIMENT_LABELS_AB.md](EXPERIMENT_LABELS_AB.md) |
 | 第五轮 GRPO（前缀打包） | 约 4.4 小时（计划） | 约 14.5 元 | [EXPERIMENT_GRPO_ROUND5.md](EXPERIMENT_GRPO_ROUND5.md) |
 
 ## 1. 本地检查（只需 CPU）
