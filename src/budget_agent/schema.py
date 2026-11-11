@@ -79,6 +79,9 @@ class RunConfig:
     read_memory_tokens: int = 1024
     max_steps: int = 30
     timeout_seconds: int = 30
+    # Data-segment limit for local agent commands and graders (POSIX `ulimit -d`).
+    # None leaves them unlimited, as rounds 1 and 2 ran.
+    command_memory_mb: int | None = None
     tokenizer: str = "byte"
     temperature: float = 0.0
     seed: int = 0
@@ -132,6 +135,8 @@ class RunConfig:
             raise ValueError("min_action_output_tokens must not exceed max_output_tokens")
         if type(self.read_memory_tokens) is not int or self.read_memory_tokens < 0:
             raise ValueError("read_memory_tokens must be a non-negative integer")
+        if self.command_memory_mb is not None and (type(self.command_memory_mb) is not int or self.command_memory_mb <= 0):
+            raise ValueError("command_memory_mb must be a positive integer when specified")
         if self.environment not in {"local", "docker"}:
             raise ValueError("environment must be local or docker")
         if self.api_max_tokens_field not in {"max_tokens", "max_completion_tokens"}:
