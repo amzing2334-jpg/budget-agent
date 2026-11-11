@@ -16,5 +16,19 @@ def test_summary_reports_interval_tokens_and_prefix_hit_rate():
         "prefix_cache_hit_rate": 0.75}
 
 
+def test_zero_hits_give_a_zero_rate_on_current_counter_names():
+    # vLLM 0.33 exports only the unprefixed names. A falsy fallback to the old gpu_* names
+    # used to turn zero hits into None and crash the benchmark on None / queries.
+    before = {"vllm:prefix_cache_queries": 50, "vllm:prefix_cache_hits": 20}
+    after = {"vllm:prefix_cache_queries": 80, "vllm:prefix_cache_hits": 20}
+    summary = vllm_metrics.summarize(before, after)
+    assert summary["prefix_cache_hits"] == 0 and summary["prefix_cache_hit_rate"] == 0.0
+
+
+def test_summary_reads_the_older_gpu_counter_names():
+    after = {"vllm:gpu_prefix_cache_queries": 10, "vllm:gpu_prefix_cache_hits": 4}
+    assert vllm_metrics.summarize({}, after)["prefix_cache_hit_rate"] == 0.4
+
+
 def test_summary_without_prefix_queries_has_no_hit_rate():
     assert vllm_metrics.summarize({}, {"vllm:prompt_tokens": 3})["prefix_cache_hit_rate"] is None

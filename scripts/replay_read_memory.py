@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 import re
 from statistics import mean
+from typing import Any
 
 from budget_agent.budget import TokenCounter
 from budget_agent.context import ContextManager, ContextOverflow
@@ -72,7 +73,7 @@ def _known_target_lines(target: Event, sources: dict) -> tuple[dict | None, str]
     if observed is None:
         return None, "unknown_or_incomplete_read_output"
     # Sources are newest first. Conflicting older content cannot override it.
-    latest = {}
+    latest: dict[tuple[str, int], str] = {}
     for _, source in sources.values():
         for number, text in source.lines.items():
             latest.setdefault((source.path, number), text)
@@ -154,7 +155,8 @@ def replay_run(run_dir: Path, counter: TokenCounter, read_memory_tokens: int = 1
         system, issue = _call_task(call)
         prefix = events[:index]
         revision = prefix[-1].revision if prefix else result["initial_revision"]
-        constructed, policies = {}, {}
+        constructed: dict[str, list[dict]] = {}
+        policies: dict[str, dict[str, Any]] = {}
         for strategy in ("mask", "mask-read"):
             manager = ContextManager(strategy, counter, config.get("history_format", "chat"), read_memory_tokens=read_memory_tokens)
             try:
@@ -196,7 +198,7 @@ def replay_run(run_dir: Path, counter: TokenCounter, read_memory_tokens: int = 1
 def replay_roots(roots: list[Path], counter: TokenCounter, read_memory_tokens: int = 1024) -> dict:
     if read_memory_tokens < 0:
         raise ValueError("read_memory_tokens must be non-negative")
-    result_paths = set()
+    result_paths: set[Path] = set()
     for root in roots:
         found = [root] if root.is_file() and root.name == "result.json" else list(root.rglob("result.json"))
         if not found:
@@ -206,7 +208,7 @@ def replay_roots(roots: list[Path], counter: TokenCounter, read_memory_tokens: i
     prefixes = [prefix for run in runs if run["status"] == "replayed" for prefix in run["prefixes"]]
     paired = [prefix for prefix in prefixes if prefix["extra_input_tokens_estimate"] is not None]
     diagnostics = [prefix for prefix in paired if prefix["known_target_read_lines"] is not None]
-    task_counts = {}
+    task_counts: dict[str, int] = {}
     for run in runs:
         if run["status"] == "replayed":
             task_counts[run["task_id"]] = task_counts.get(run["task_id"], 0) + 1

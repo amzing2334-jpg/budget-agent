@@ -65,7 +65,7 @@ def load_upstream(path: Path):
     root = verify_upstream(path)
     sys.path.insert(0, str(root / "src"))
     package = importlib.import_module("minisweagent")
-    if Path(package.__file__).resolve() != root / "src/minisweagent/__init__.py":
+    if package.__file__ is None or Path(package.__file__).resolve() != root / "src/minisweagent/__init__.py":
         raise ValueError("Imported mini-SWE-agent is not the verified checkout")
     if package.__version__ != UPSTREAM_VERSION:
         raise ValueError("mini-SWE-agent package version differs from the pinned release")
@@ -143,7 +143,8 @@ class BudgetedTextModel:
             raise self._stop(str(exc)) from exc
         # Zero is only the disabled upstream cost counter; financial results
         # retain null when no prices are configured in the existing Budget.
-        cost = self.budget.cost_usd - before_cost if before_cost is not None else 0.0
+        after_cost = self.budget.cost_usd
+        cost = after_cost - before_cost if after_cost is not None and before_cost is not None else 0.0
         extra = {"cost": cost, "response": asdict(response)}
         try:
             actions = self.upstream.parse_actions(

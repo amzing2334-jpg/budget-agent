@@ -29,6 +29,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from typing import Any
 
 PLUGIN_MODULE = "budget_agent_pytest_outcomes"
 PROTECTED_NAMES = {"conftest.py", "setup.py", "noxfile.py", "tasks.py"}
@@ -270,9 +271,9 @@ def main() -> int:
     started = time.monotonic()
     records = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as pool:
-        futures = [pool.submit(admit, row, args.repos / row["repo"], args.venvs / row["repo"], plugin_dir,
-                               args.output, args.timeout) for row in ready]
-        for future in concurrent.futures.as_completed(futures):
+        admissions = [pool.submit(admit, row, args.repos / row["repo"], args.venvs / row["repo"], plugin_dir,
+                                  args.output, args.timeout) for row in ready]
+        for future in concurrent.futures.as_completed(admissions):
             try:
                 record = future.result()
             except Exception as exc:
@@ -284,7 +285,7 @@ def main() -> int:
     for split in ("train", "eval"):
         rows = [task for task in admitted if task["split"] == split]
         (args.output / f"{split}.jsonl").write_text("".join(json.dumps(task) + "\n" for task in rows))
-    summary = {"instances": len(instances), "repos": envs, "admitted": len(admitted),
+    summary: dict[str, Any] = {"instances": len(instances), "repos": envs, "admitted": len(admitted),
                "by_split": {s: sum(t["split"] == s for t in admitted) for s in ("train", "eval")},
                "by_repo": {repo: {"selected": sum(r["repo"] == repo for r in instances),
                                   "admitted": sum(t["metadata"]["source_repo"] == repo for t in admitted)}

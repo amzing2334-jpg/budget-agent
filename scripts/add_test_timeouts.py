@@ -15,6 +15,8 @@ import os
 from pathlib import Path
 
 SPEC = importlib.util.spec_from_file_location("build_swesmith_local", Path(__file__).with_name("build_swesmith_local.py"))
+if SPEC is None or SPEC.loader is None:
+    raise ImportError("build_swesmith_local.py must sit next to this script")
 build = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(build)
 

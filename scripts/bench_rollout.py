@@ -16,7 +16,7 @@ import subprocess
 import threading
 import time
 
-from vllm_metrics import metrics  # scripts/ is on sys.path when this file runs as a script
+from vllm_metrics import metrics, summarize  # scripts/ is on sys.path when this file runs as a script
 
 
 def sample_gpu(stop: threading.Event, samples: list[float]) -> None:
@@ -49,7 +49,8 @@ def main() -> int:
     rows = []
     for workers in args.workers:
         out = args.output / f"workers-{workers:03d}"
-        before, samples, stop = metrics(args.server), [], threading.Event()
+        before, stop = metrics(args.server), threading.Event()
+        samples: list[float] = []   # GPU utilisation, sampled by a thread
         sampler = threading.Thread(target=sample_gpu, args=(stop, samples), daemon=True)
         sampler.start()
         started = time.monotonic()
@@ -59,18 +60,15 @@ def main() -> int:
         wall = time.monotonic() - started
         stop.set()
         sampler.join()
-        after = metrics(args.server)
-        delta = {key: after.get(key, 0.0) - before.get(key, 0.0) for key in after}
+        counters = summarize(before, metrics(args.server))
         attempts = [json.loads(line) for line in (out / "attempts.jsonl").read_text().splitlines() if line.strip()]
         latency = [a["elapsed_seconds"] for a in attempts]
         outside_model = sum(a["elapsed_seconds"] - a["model_seconds"] for a in attempts) / max(1e-9, sum(latency))
-        queries = delta.get("vllm:prefix_cache_queries") or delta.get("vllm:gpu_prefix_cache_queries")
-        hits = delta.get("vllm:prefix_cache_hits") or delta.get("vllm:gpu_prefix_cache_hits")
         rows.append({"workers": workers, "attempts": len(attempts), "wall_seconds": round(wall, 1),
                      "attempts_per_hour": round(len(attempts) / wall * 3600, 1),
-                     "generation_tokens_per_s": round(delta.get("vllm:generation_tokens", 0.0) / wall, 1),
-                     "prompt_tokens_per_s": round(delta.get("vllm:prompt_tokens", 0.0) / wall, 1),
-                     "prefix_cache_hit_rate": round(hits / queries, 3) if queries else None,
+                     "generation_tokens_per_s": round(counters["generation_tokens"] / wall, 1),
+                     "prompt_tokens_per_s": round(counters["prompt_tokens"] / wall, 1),
+                     "prefix_cache_hit_rate": counters["prefix_cache_hit_rate"],
                      "gpu_util_mean": round(sum(samples) / len(samples), 1) if samples else None,
                      "latency_p50_s": percentile(latency, 0.5), "latency_p95_s": percentile(latency, 0.95),
                      "share_outside_model": round(outside_model, 3),

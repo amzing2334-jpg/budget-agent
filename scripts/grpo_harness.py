@@ -44,8 +44,9 @@ import torch
 from peft import LoraConfig, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from budget_agent.learning.grpo_core import (aggregate, build_groups, chain_layout, extract_turns, minibatch_indices,
-                                             pack_turns, step_tasks, subsample_turns, token_policy_loss)
+from budget_agent.learning.grpo_core import (Turn, aggregate, build_groups, chain_layout, extract_turns,
+                                             minibatch_indices, pack_turns, step_tasks, subsample_turns,
+                                             token_policy_loss)
 from budget_agent.models import token_digest
 from budget_agent.tasks import load_tasks
 
@@ -86,7 +87,7 @@ def sequence_logprobs(model, sequence: Sequence):
     return logp.gather(-1, targets[:, None]).squeeze(-1), entropy
 
 
-def build_sequences(verified: list[tuple[list[int], object]], advantage: float, pack: bool) -> list[Sequence]:
+def build_sequences(verified: list[tuple[list[int], Turn]], advantage: float, pack: bool) -> list[Sequence]:
     """Turn one attempt's verified (prompt ids, turn) pairs into training sequences."""
     prompts = [prompt for prompt, _ in verified]
     completions = [turn.completion_ids for _, turn in verified]
@@ -95,7 +96,8 @@ def build_sequences(verified: list[tuple[list[int], object]], advantage: float, 
     for chain in chains:
         inputs, positions, targets = chain_layout(prompts, completions, chain)
         logprobs = [verified[index][1].behavior_logprobs for index in chain]
-        behavior = None if any(lp is None for lp in logprobs) else [x for lp in logprobs for x in lp]
+        known = [lp for lp in logprobs if lp is not None]
+        behavior = [x for lp in known for x in lp] if len(known) == len(logprobs) else None
         sequences.append(Sequence(inputs, positions, targets, behavior, advantage, len(chain)))
     return sequences
 

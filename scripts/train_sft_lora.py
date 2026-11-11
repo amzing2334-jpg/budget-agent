@@ -96,7 +96,7 @@ def main() -> int:
                                                  * 0.5 * (1 + math.cos(math.pi * min(step, total_steps) / total_steps)))
     args.output.mkdir(parents=True, exist_ok=True)
     log = (args.output / "train_log.jsonl").open("w")
-    order = []
+    order: list[int] = []
     while len(order) < len(examples) * args.epochs:
         epoch = list(range(len(examples)))
         random.shuffle(epoch)

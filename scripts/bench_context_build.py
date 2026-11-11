@@ -53,7 +53,7 @@ class UncachedCounter(TokenCounter):
 
 def build_all(counter: TokenCounter, strategy: str, events: list[Event], limit: int) -> list:
     manager = ContextManager(strategy, counter, read_memory_tokens=4096)
-    built = []
+    built: list[list[dict[str, str]] | str] = []   # one request per prefix, or the overflow it raised
     for count in range(5, len(events) + 1, 5):
         try:
             built.append(manager.build("system", "issue text", events[:count], "rev0", limit))
