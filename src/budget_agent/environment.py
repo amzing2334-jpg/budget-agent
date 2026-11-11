@@ -398,11 +398,17 @@ def _verified(result: dict[str, Any], marker: str) -> tuple[bool | None, dict[st
         return None, None
 
 
-def _verifier_timeout(task: Task, config: RunConfig) -> int:
-    """The task's own limit, set at admission from measured test time, else the run's command limit."""
-    value = task.metadata.get("verifier_timeout_seconds", config.timeout_seconds)
+def _task_timeout(task: Task, config: RunConfig) -> int:
+    """The task's test-suite limit, set at admission from measured test time, else the run's command limit.
+
+    It bounds the verifier and the agent's public_test and run commands. A
+    candidate that hangs its tests otherwise holds a synchronous rollout batch
+    for the full command limit at every call (round 2: up to 13 extra minutes
+    per step).
+    """
+    value = task.metadata.get("test_timeout_seconds", config.timeout_seconds)
     if type(value) is not int or value <= 0:
-        raise EnvironmentError("verifier_timeout_seconds must be a positive integer")
+        raise EnvironmentError("test_timeout_seconds must be a positive integer")
     return value
 
 
@@ -490,10 +496,10 @@ class LocalEnvironment:
             if tool in {"read_file", "list_files", "search", "write_file", "edit_file", "replace_lines"}:
                 text = _repository_tool(self.workspace, action, self.task.metadata.get("editable"))
             elif tool == "run":
-                return _process(str(action["command"]), self.workspace, self.config.timeout_seconds, shell=True,
-                                env=self._command_env())
+                return _process(str(action["command"]), self.workspace, _task_timeout(self.task, self.config),
+                                shell=True, env=self._command_env())
             elif tool == "public_test":
-                return _process(self.task.test_command, self.workspace, self.config.timeout_seconds,
+                return _process(self.task.test_command, self.workspace, _task_timeout(self.task, self.config),
                                 env=self._command_env())
             elif tool == "diff":
                 text = self.patch()
@@ -555,7 +561,7 @@ class LocalEnvironment:
                 _write_grading_tree(grading, self.baseline, current, graded)
                 verifier_sha256 = _stage_verifier(verifier, grading)
                 command, marker = _verification_command(sys.executable)
-                result = _process(command, grading, _verifier_timeout(self.task, self.config))
+                result = _process(command, grading, _task_timeout(self.task, self.config))
             grade = _fixture_grade(result, marker, verifier_sha256, started)
             if protected:
                 grade["ignored_changes"] = protected
@@ -692,7 +698,7 @@ except (KeyError, ValueError, OSError) as exc:
             grader_name = f"budget-grade-{uuid.uuid4().hex[:12]}"
             verifier_command, marker = _verification_command("python")
             command = ["docker", "run", "--rm", "--name", grader_name, "--network", "none", "--cpus", "2", "--memory", "2g", "--pids-limit", "128", "--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--mount", f"type=bind,source={grading},target=/workspace,readonly", "-w", "/workspace", "-e", "PYTHONDONTWRITEBYTECODE=1", self.provenance["image_id"], *verifier_command]
-            result = _process(command, self.run_dir, _verifier_timeout(self.task, self.config))
+            result = _process(command, self.run_dir, _task_timeout(self.task, self.config))
             if result.get("timed_out"):
                 _process(["docker", "rm", "-f", grader_name], self.run_dir, 15)
         if result.get("returncode") in {125, 126, 127} and not result.get("timed_out"):

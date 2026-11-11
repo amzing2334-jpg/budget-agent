@@ -154,9 +154,19 @@ def test_a_verifier_hung_by_the_candidate_is_a_failed_repair(tmp_path):
     assert verified_outcome({"resolved": False, "evaluation": result}) is False
 
 
-def test_the_task_verifier_limit_overrides_the_command_limit(tmp_path):
+def test_the_task_limit_bounds_the_agents_commands(tmp_path):
     task = load_task()
-    task.metadata = {**task.metadata, "verifier_timeout_seconds": 2}
+    task.metadata = {**task.metadata, "test_timeout_seconds": 2}
+    task.test_command = ["python", "-c", "import time; time.sleep(20)"]
+    env = create_environment(task, RunConfig(timeout_seconds=60), tmp_path / "run")
+    for action in ({"tool": "public_test"}, {"tool": "run", "command": 'python -c "import time; time.sleep(20)"'}):
+        result = env.execute(action)
+        assert result["timed_out"] and result["duration_seconds"] < 15, action
+
+
+def test_the_task_limit_overrides_the_command_limit_for_grading(tmp_path):
+    task = load_task()
+    task.metadata = {**task.metadata, "test_timeout_seconds": 2}
     env = create_environment(task, RunConfig(timeout_seconds=60), tmp_path / "run")
     env.execute({"tool": "write_file", "path": "slugify.py", "content": "while True:\n    pass\n"})
     result = env.grade()
@@ -166,7 +176,7 @@ def test_the_task_verifier_limit_overrides_the_command_limit(tmp_path):
 @pytest.mark.parametrize("value", [0, -5, 2.5, "30"])
 def test_an_invalid_task_verifier_limit_is_an_infrastructure_error(tmp_path, value):
     task = load_task()
-    task.metadata = {**task.metadata, "verifier_timeout_seconds": value}
+    task.metadata = {**task.metadata, "test_timeout_seconds": value}
     result = create_environment(task, RunConfig(), tmp_path / "run").grade()
     assert result["status"] == "infrastructure_error" and result["resolved"] is None
 
