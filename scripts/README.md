@@ -43,7 +43,7 @@
 |---|---|
 | `deploy.sh`、`setup_isolated.sh` | 部署代码与数据；建立隔离的环境（独立 CPython、vLLM/torch），完成准入，下载模型 |
 | `serve_vllm.sh`、`stop_vllm.sh`、`run_pool.sh` | 只监听本机的 vLLM，只停自己启动的服务；rollout 以 `nobody` 执行 |
-| `round1_rft.sh`、`grpo_pilot.sh`、`round2_grpo.sh`、`replicate_eval.sh`、`round3_grpo.sh`、`round4_labels_ab.sh`、`bench.sh` | 各轮实验的驱动脚本，对应 `docs/EXPERIMENT_*.md`。GPU 被占用、或本项目已有别的实验脚本在运行时，都拒绝启动 |
+| `round1_rft.sh`、`grpo_pilot.sh`、`round2_grpo.sh`、`replicate_eval.sh`、`round3_grpo.sh`、`round4_labels_ab.sh`、`round5_grpo.sh`、`bench.sh` | 各轮实验的驱动脚本，对应 `docs/EXPERIMENT_*.md`。GPU 被占用、或本项目已有别的实验脚本在运行时，都拒绝启动 |
 | `recon.sh` | 只读的环境勘察 |
 
 ## 早期阶段（2026 年 10 月：上下文策略研究与 SWE-bench 试验）

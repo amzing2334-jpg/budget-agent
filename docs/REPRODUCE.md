@@ -18,6 +18,7 @@
 | 复现评测 | 0.92 小时 | 3.0 元 | [EXPERIMENT_REPLICATION.md](EXPERIMENT_REPLICATION.md) |
 | 第三轮 GRPO | 4.27 小时 | 14.0 元 | [EXPERIMENT_GRPO_ROUND3.md](EXPERIMENT_GRPO_ROUND3.md) |
 | 第四轮标注 A/B | 约 1.8 小时（计划） | 约 6 元 | [EXPERIMENT_LABELS_AB.md](EXPERIMENT_LABELS_AB.md) |
+| 第五轮 GRPO（前缀打包） | 约 4.4 小时（计划） | 约 14.5 元 | [EXPERIMENT_GRPO_ROUND5.md](EXPERIMENT_GRPO_ROUND5.md) |
 
 ## 1. 本地检查（只需 CPU）
 
@@ -82,6 +83,14 @@ cd /opt/coding-agent/swesmith && python /opt/coding-agent/budget-agent/scripts/a
   --admission admission.jsonl train.jsonl eval.jsonl smoke32.jsonl
 STEPS=40 MAX_MINUTES=180 LR=2e-5 TURNS_PER_ATTEMPT=4 MINIBATCHES=4 \
   setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round3_grpo.sh > logs/round3.log 2>&1 &
+```
+
+第四轮（标注 A/B）和第五轮（前缀打包下的第二次 GRPO，标注方式由第四轮的规则决定）：
+
+```bash
+setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round4_labels_ab.sh > logs/round4.log 2>&1 &
+STEPS=60 MAX_MINUTES=180 LR=2e-5 TURNS_PER_ATTEMPT=4 MINIBATCHES=4 SEED=1 LABELS=fixed \
+  setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round5_grpo.sh > logs/round5.log 2>&1 &
 ```
 
 每一轮都会在 `outputs/<轮次>/` 下写出：
