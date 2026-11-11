@@ -1,0 +1,120 @@
+{
+ "pools": {
+  "grpo-eval": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 384,
+     "ungraded_attempts": 0,
+     "solved_tasks": 16,
+     "pass@1": 0.09635416666666667,
+     "pass@2": 0.13368055555555555,
+     "pass@4": 0.16666666666666666,
+     "statuses": {
+      "finished": 92,
+      "stuck": 134,
+      "max_steps": 158
+     },
+     "mean_steps": 21.375
+    }
+   },
+   "attempts_per_hour": 732.2,
+   "wall_seconds": 1888.0,
+   "tokens": {
+    "input": 60907562,
+    "output": 364068
+   },
+   "evaluation_statuses": {
+    "resolved": 37,
+    "unresolved": 347
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "1203/2331"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  }
+ },
+ "sft": {
+  "examples": 0,
+  "tasks": 0,
+  "by_mode": {}
+ },
+ "training": null,
+ "loss_curve": [],
+ "compare": {
+  "eval": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.0625,
+   "candidate_pass@1": 0.09635416666666667,
+   "delta": 0.033854166666666664,
+   "ci95": [
+    0.0026041666666666665,
+    0.0703125
+   ],
+   "verdict": "improved",
+   "tasks_improved": 10,
+   "tasks_worse": 3,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  },
+  "eval_drop_flagged": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.0625,
+   "candidate_pass@1": 0.09635416666666667,
+   "delta": 0.033854166666666664,
+   "ci95": [
+    0.0026041666666666665,
+    0.0703125
+   ],
+   "verdict": "improved",
+   "tasks_improved": 10,
+   "tasks_worse": 3,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "unpaired_tasks": []
+  }
+ },
+ "stages": [
+  {
+   "step": "serve-policy",
+   "seconds": 60,
+   "finished": "2026-11-06T14:42:20Z"
+  },
+  {
+   "step": "grpo",
+   "seconds": 7341,
+   "finished": "2026-11-06T16:44:41Z"
+  },
+  {
+   "step": "serve-final",
+   "seconds": 125,
+   "finished": "2026-11-06T16:46:46Z"
+  },
+  {
+   "step": "grpo-eval",
+   "seconds": 1888,
+   "finished": "2026-11-06T17:18:14Z"
+  },
+  {
+   "step": "stop-vllm",
+   "seconds": 6,
+   "finished": "2026-11-06T17:18:20Z"
+  }
+ ],
+ "gpu_hours": 2.62,
+ "cost_cny": 8.58
+}

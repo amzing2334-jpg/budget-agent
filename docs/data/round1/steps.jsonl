@@ -1,0 +1,13 @@
+{"step": "serve-teacher", "seconds": 70, "finished": "2026-11-06T11:12:58Z"}
+{"step": "teacher-train", "seconds": 3426, "finished": "2026-11-06T12:10:04Z"}
+{"step": "teacher-eval", "seconds": 1032, "finished": "2026-11-06T12:27:16Z"}
+{"step": "serve-student", "seconds": 117, "finished": "2026-11-06T12:29:13Z"}
+{"step": "student-base-eval", "seconds": 1425, "finished": "2026-11-06T12:52:58Z"}
+{"step": "student-base-train", "seconds": 301, "finished": "2026-11-06T12:57:59Z"}
+{"step": "sft-data", "seconds": 0, "finished": "2026-11-06T12:57:59Z"}
+{"step": "stop-vllm", "seconds": 2, "finished": "2026-11-06T12:58:01Z"}
+{"step": "train-sft", "seconds": 1044, "finished": "2026-11-06T13:15:25Z"}
+{"step": "serve-student-sft", "seconds": 85, "finished": "2026-11-06T13:16:50Z"}
+{"step": "student-sft-eval", "seconds": 1529, "finished": "2026-11-06T13:42:19Z"}
+{"step": "student-sft-train", "seconds": 1021, "finished": "2026-11-06T13:59:20Z"}
+{"step": "stop-vllm-final", "seconds": 4, "finished": "2026-11-06T13:59:24Z"}
