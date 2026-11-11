@@ -19,6 +19,7 @@
 | 第三轮 GRPO | 4.27 小时 | 14.0 元 | [EXPERIMENT_GRPO_ROUND3.md](EXPERIMENT_GRPO_ROUND3.md) |
 | 第四轮标注 A/B | 2.09 小时 | 6.9 元 | [EXPERIMENT_LABELS_AB.md](EXPERIMENT_LABELS_AB.md) |
 | 第五轮 GRPO（前缀打包） | 约 4.4 小时（计划） | 约 14.5 元 | [EXPERIMENT_GRPO_ROUND5.md](EXPERIMENT_GRPO_ROUND5.md) |
+| 第六轮固定标注 SFT | 约 1.5 小时（计划） | 约 5 元 | [EXPERIMENT_LABELS_SFT.md](EXPERIMENT_LABELS_SFT.md) |
 
 ## 1. 本地检查（只需 CPU）
 
@@ -91,6 +92,7 @@ STEPS=40 MAX_MINUTES=180 LR=2e-5 TURNS_PER_ATTEMPT=4 MINIBATCHES=4 \
 setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round4_labels_ab.sh > logs/round4.log 2>&1 &
 STEPS=60 MAX_MINUTES=180 LR=2e-5 TURNS_PER_ATTEMPT=4 MINIBATCHES=4 SEED=1 LABELS=fixed \
   setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round5_grpo.sh > logs/round5.log 2>&1 &
+setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round6_labels_sft.sh > logs/round6.log 2>&1 &
 ```
 
 每一轮都会在 `outputs/<轮次>/` 下写出：
