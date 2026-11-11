@@ -1,0 +1,7 @@
+{"step": "serve-policy", "seconds": 60, "finished": "2026-11-11T15:08:03Z"}
+{"step": "grpo", "seconds": 11082, "finished": "2026-11-11T18:12:45Z"}
+{"step": "serve-sft", "seconds": 78, "finished": "2026-11-11T18:14:03Z"}
+{"step": "eval-sft", "seconds": 1805, "finished": "2026-11-11T18:44:08Z"}
+{"step": "serve-final", "seconds": 63, "finished": "2026-11-11T18:45:11Z"}
+{"step": "eval-grpo", "seconds": 2297, "finished": "2026-11-11T19:23:28Z"}
+{"step": "stop-vllm", "seconds": 4, "finished": "2026-11-11T19:23:32Z"}

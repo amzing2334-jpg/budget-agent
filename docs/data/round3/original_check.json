@@ -1,0 +1,455 @@
+{
+ "method": "scripts/review_patches.py --original <pre-bug sources> --tasks <SWE-smith tasks>: each passing patch is applied to the buggy files and compared with the source before the bug was injected. Residuals were judged by hand: equivalent (dead code, comments, blank lines, equivalent rewrites), weak-mild (differs only in an edge property), weak-strong (part of the injected bug remains, or wrong on ordinary input).",
+ "pools": {
+  "round1_teacher-eval": {
+   "resolved": 14,
+   "restores_original_exactly": 3,
+   "equivalent_residual": 5,
+   "weak_mild": 3,
+   "weak_strong": 3
+  },
+  "round1_student-sft-eval": {
+   "resolved": 24,
+   "restores_original_exactly": 9,
+   "equivalent_residual": 9,
+   "weak_mild": 3,
+   "weak_strong": 3
+  },
+  "round2_grpo-eval": {
+   "resolved": 37,
+   "restores_original_exactly": 17,
+   "equivalent_residual": 10,
+   "weak_mild": 7,
+   "weak_strong": 3
+  },
+  "replication_rep-sft": {
+   "resolved": 27,
+   "restores_original_exactly": 11,
+   "equivalent_residual": 10,
+   "weak_mild": 4,
+   "weak_strong": 2
+  },
+  "replication_rep-grpo": {
+   "resolved": 38,
+   "restores_original_exactly": 16,
+   "equivalent_residual": 8,
+   "weak_mild": 7,
+   "weak_strong": 7
+  },
+  "eval-sft": {
+   "resolved": 25,
+   "restores_original_exactly": 13,
+   "equivalent_residual": 10,
+   "weak_mild": 2,
+   "weak_strong": 0
+  },
+  "eval-grpo": {
+   "resolved": 46,
+   "restores_original_exactly": 19,
+   "equivalent_residual": 14,
+   "weak_mild": 5,
+   "weak_strong": 8
+  }
+ },
+ "weak_patches": [
+  {
+   "pool": "eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__t1925j1w",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "funcy func_partial: correct only for one partial positional argument; kwargs precedence still inverted"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 0,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 3,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 0,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset(None) returns None: time objects lose their offset"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset(None) returns None: time objects lose their offset"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset: the injected Dec-31 special case is kept, only guarded against None"
+  },
+  {
+   "pool": "eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: AttributeError when compared with another tzinfo type"
+  },
+  {
+   "pool": "eval-sft",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "eval-sft",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__4zw03ae8",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "funcy without(): the lazy generator keeps the injected inversion; the patch rewrote lwithout around it"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__gqknew3c",
+   "sample": 3,
+   "kind": "strong",
+   "reason": "tinydb update_multiple: still deletes every document whose id has an even number of digits"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 0,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict._immutable: signature broken; raises TypeError only by accident"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 3,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 0,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset returns None for every datetime"
+  },
+  {
+   "pool": "replication_rep-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 3,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset: the injected Dec-31 special case is kept, only guarded against None"
+  },
+  {
+   "pool": "replication_rep-sft",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "replication_rep-sft",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "replication_rep-sft",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 3,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "replication_rep-sft",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "replication_rep-sft",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "replication_rep-sft",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round1_student-sft-eval",
+   "task_id": "Suor__funcy.207a7810.func_basic__4zw03ae8",
+   "sample": 3,
+   "kind": "strong",
+   "reason": "funcy without(): the lazy generator keeps the injected inversion; the patch rewrote lwithout around it"
+  },
+  {
+   "pool": "round1_student-sft-eval",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "round1_student-sft-eval",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__gqknew3c",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "tinydb update_multiple: still deletes every document whose id has an even number of digits"
+  },
+  {
+   "pool": "round1_student-sft-eval",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "round1_student-sft-eval",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round1_student-sft-eval",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round1_teacher-eval",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "round1_teacher-eval",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "round1_teacher-eval",
+   "task_id": "Suor__funcy.207a7810.func_basic__yu58rsyg",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "funcy make_lookuper wrapper: accepts a single argument only and changes the generated name"
+  },
+  {
+   "pool": "round1_teacher-eval",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__je80jwkd",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "tinydb QueryImpl repr: a different format from the original"
+  },
+  {
+   "pool": "round1_teacher-eval",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 0,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "round1_teacher-eval",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "round2_grpo-eval",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "round2_grpo-eval",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "round2_grpo-eval",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)"
+  },
+  {
+   "pool": "round2_grpo-eval",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)"
+  },
+  {
+   "pool": "round2_grpo-eval",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round2_grpo-eval",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round2_grpo-eval",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round2_grpo-eval",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy"
+  },
+  {
+   "pool": "round2_grpo-eval",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: compares the name with str(other)"
+  },
+  {
+   "pool": "round2_grpo-eval",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 3,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: raises on objects that are neither tzinfo nor str"
+  }
+ ]
+}

@@ -7,11 +7,12 @@
 | | 结论 | 证据 |
 |---|---|---|
 | **RFT** | 7B 教师的 619 条通过轨迹蒸馏到 1.5B 学生。留出的 4 个仓库共 96 题，pass@1 从 **0.26% 升到 6.25%**（教师 7.29%），95% 置信区间 [+2.86, +9.64] 个百分点。机制：`edit_file` 成功率从 10.4% 升到 49.5% | [第一轮](docs/EXPERIMENT_SWESMITH_RFT_ROUND1.md) |
-| **GRPO** | 在 SFT 学生上做单卡 GRPO，12 步。两次独立评测中，pass@1 分别提高 **+3.39** 和 **+2.86** 个百分点（6.25% → 9.64%；7.03% → 9.90%）。第一次按冻结判据为"提升"，区间 [+0.26, +7.03]；复现评测的区间是 [0.00, +5.73]，按冻结规则"未复现"。合并每题 8 次采样后为 +3.13，区间 [+0.52, +6.12]。结论：增益约 3 个百分点，方向稳定，统计上处在边缘。同一策略两次评测的噪声不到 1 个百分点 | [第二轮](docs/EXPERIMENT_GRPO_ROUND2.md)、[复现](docs/EXPERIMENT_REPLICATION.md) |
-| **一致性** | 训练端与采样端的 prompt 在 token 层面完全一致：3,417 个训练 turn 的摘要全部吻合。logprob 平均差 ≤ 0.0025 nat，TIS 从未截断 | [技术复盘 §4](docs/TECH_REPORT.md) |
+| **GRPO** | 在 SFT 学生上做单卡 GRPO。第三轮在加固后的 harness 上训练 25 步，留出集 pass@1 从 6.51% 升到 **11.98%**，差值 **+5.47** 个百分点，95% 置信区间 [+2.08, +9.11]，按冻结判据为"提升"。第二轮（12 步）的两次独立评测分别为 +3.39 和 +2.86，统计上处在边缘。三次评测的方向一致 | [第二轮](docs/EXPERIMENT_GRPO_ROUND2.md)、[复现](docs/EXPERIMENT_REPLICATION.md)、[第三轮](docs/EXPERIMENT_GRPO_ROUND3.md) |
+| **奖励覆盖** | 把每个通过的补丁与注入 bug 之前的源码对照：GRPO 第三轮的 46 个通过补丁中有 13 个通过了测试却没有恢复原有行为（SFT 是 25 个中 2 个），例如保留了一半注入的 bug。把它们算作失败，增益为 +2.6 到 +3.4 个百分点，区间仍在 0 以上。各轮合计，严重的比例 GRPO 为 14.9%，SFT 为 6.6%：RL 会利用测试覆盖不到的地方 | [技术复盘 §3](docs/TECH_REPORT.md) |
+| **一致性** | 训练端与采样端的 prompt 在 token 层面完全一致：两轮 8,311 个训练 turn 的摘要全部吻合。logprob 平均差 ≤ 0.0028 nat，TIS 从未截断 | [技术复盘 §4](docs/TECH_REPORT.md) |
 | **系统** | 单卡 7B agent rollout 受 prefill 限制：prompt token 是生成 token 的 108 到 141 倍，8 个 worker 时 GPU 已饱和，环境开销只占 4% 到 11%。前缀打包训练（同一次尝试中前缀一致的 turn 合成一条序列）让训练编码的 token 减少 3.06 倍，loss 和梯度完全等价；进一步分析发现四分之三的断点来自"编辑后把旧事件重新标注为 stale"，改成固定标注后估计可达 5.2 倍，固定标注对通过率的影响正在做 A/B 评测 | [基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[打包](docs/PREFIX_PACKING.md) |
 
-三轮评测和训练共 6.3 GPU 小时，约 21 元。留出集上通过的 126 个补丁都逐条人工检查过，没有发现作弊。原始输出在 [`docs/data/`](docs/data/)。
+三轮训练和一次复现评测共 10.6 GPU 小时，约 35 元。留出集上通过的 197 个补丁都逐条人工检查过，没有发现篡改，并且都与原始源码对照过。原始输出在 [`docs/data/`](docs/data/)。
 
 ```mermaid
 flowchart LR
@@ -98,6 +99,8 @@ python scripts/grpo_harness.py --base-model <模型> --tasks swesmith/train.json
   - [GRPO 试跑](docs/EXPERIMENT_GRPO_PILOT.md)
   - [第二轮 GRPO](docs/EXPERIMENT_GRPO_ROUND2.md)
   - [复现评测](docs/EXPERIMENT_REPLICATION.md)
-  - [rollout 吞吐基准](docs/BENCH_ROLLOUT_2026-11-06.md)
+  - [第三轮 GRPO（加固后的 harness）](docs/EXPERIMENT_GRPO_ROUND3.md)
+  - [第四轮：固定标注的非劣性 A/B](docs/EXPERIMENT_LABELS_AB.md)
+  - [rollout 吞吐基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[前缀打包](docs/PREFIX_PACKING.md)
 - [代码审查与修复（2026-11-05）](docs/CODE_REVIEW_2026-11-05.md)、[项目历史](docs/HISTORY.md)、[SWE-bench 协议](docs/EXPERIMENT_PROTOCOL.md)、[训练说明](docs/TRAINING.md)
-- 测试：990+ 个，CI 覆盖 Linux 和 Windows、Python 3.11 和 3.13
+- 工程：1,000 多个测试；CI 覆盖 Linux 和 Windows、Python 3.11 和 3.13，另有 ruff（含 bugbear）、mypy（库和脚本），以及在 CPU 上用 GPU 主机的版本校验训练数学（GRPO loss、SFT loss、前缀打包）。GPU 主机的环境按锁文件安装（`requirements-gpu-host.lock.txt`），与各轮实验所用的版本完全一致
