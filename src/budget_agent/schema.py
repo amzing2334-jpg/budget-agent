@@ -64,6 +64,10 @@ class RunConfig:
     decision_policy: str = "direct"
     loop_policy: str = "off"
     repeat_policy: str = "off"
+    # relabel: every build re-marks older events stale against the current revision.
+    # fixed: event headers never change after recording, which keeps the history
+    # append-only for prefix caching and packed training (docs/PREFIX_PACKING.md).
+    revision_labels: str = "relabel"
     reflection_policy: str = "off"
     max_reflections: int = 1
     reflection_max_output_tokens: int = 256
@@ -109,6 +113,8 @@ class RunConfig:
             raise ValueError("loop_policy must be off or recover")
         if self.repeat_policy not in {"off", "warn", "stop"}:
             raise ValueError("repeat_policy must be off, warn, or stop")
+        if self.revision_labels not in {"relabel", "fixed"}:
+            raise ValueError("revision_labels must be relabel or fixed")
         if self.reflection_policy not in {"off", "failure", "evidence"}:
             raise ValueError("reflection_policy must be off, failure, or evidence")
         if type(self.max_reflections) is not int or self.max_reflections < 1:

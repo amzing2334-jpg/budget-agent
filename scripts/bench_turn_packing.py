@@ -8,7 +8,12 @@ train exactly the same completion tokens.
 
 Each chain break is classified: the next prompt still extends the previous
 prompt but the chat template re-tokenized the agent's reply differently from
-how it was sampled, or the context policy rewrote the history.
+how it was sampled, or the context policy rewrote the history. Rewrites are
+split at the message level into those caused only by relabelling earlier
+events stale after an edit, and window slides or rebuilds. The last field
+estimates the reduction if revision labels were fixed when recorded
+(revision_labels = "fixed"), scaling the measured reduction by the ratio of
+packed lengths with and without relabel breaks.
 """
 from __future__ import annotations
 
@@ -16,11 +21,39 @@ import argparse
 from collections import Counter
 import json
 from pathlib import Path
+import re
 
 from transformers import AutoTokenizer
 
 from budget_agent.learning.grpo_core import chain_layout, extract_turns, pack_turns
 from budget_agent.models import token_digest
+
+
+RELABEL = re.compile(r"stale: observed at an older revision; revalidate before relying on it|current revision")
+
+
+def relabel_breaks(run_dir: Path) -> tuple[Counter, int, int]:
+    """Message-level breaks between consecutive agent requests, and the tokens a packed trainer would encode
+    now versus with revision labels fixed at recording time (revision_labels = "fixed").
+
+    Uses the server's own token counts per request as sequence lengths.
+    """
+    calls = [json.loads(line) for line in (run_dir / "calls.jsonl").read_text(encoding="utf-8").splitlines()]
+    calls = [call for call in calls if call.get("purpose") == "agent" and "response" in call]
+    sizes = [call["response"]["input_tokens"] + call["response"]["output_tokens"] for call in calls]
+    unlabel = lambda messages: [{**m, "content": RELABEL.sub("", m["content"])} for m in messages]  # noqa: E731
+    causes: Counter = Counter()
+    packed = {"now": sizes[-1] if sizes else 0, "fixed": sizes[-1] if sizes else 0}  # every last chain ends here
+    for index in range(1, len(calls)):
+        previous, call = calls[index - 1], calls[index]
+        head = previous["messages"] + [{"role": "assistant", "content": previous["response"]["content"]}]
+        exact = call["messages"][:len(head)] == head
+        relabel_only = not exact and unlabel(call["messages"])[:len(head)] == unlabel(head)
+        causes["extends" if exact else "relabel_only" if relabel_only else "window_or_rebuild"] += 1
+        for mode, joined in (("now", exact), ("fixed", exact or relabel_only)):
+            if not joined:  # a chain ended at the previous request
+                packed[mode] += sizes[index - 1]
+    return causes, packed["now"], packed["fixed"]
 
 
 def main() -> int:
@@ -35,6 +68,10 @@ def main() -> int:
         for line in (pool / "attempts.jsonl").read_text(encoding="utf-8").splitlines():
             row = json.loads(line)
             prompts, completions = [], []
+            causes, packed_now, packed_fixed = relabel_breaks(Path(row["result_path"]).parent)
+            totals.update({f"message_{key}": value for key, value in causes.items()})
+            totals["server_packed_tokens_now"] += packed_now
+            totals["server_packed_tokens_fixed_labels"] += packed_fixed
             for turn in extract_turns(Path(row["result_path"]).parent):
                 prompt = tokenizer.apply_chat_template(turn.messages, tokenize=True, add_generation_prompt=True,
                                                        return_dict=False)
@@ -56,6 +93,9 @@ def main() -> int:
             totals["packed_tokens"] += sum(len(chain_layout(prompts, completions, chain)[0]) for chain in chains)
     report = {**totals, "turns_per_sequence": round(totals["turns"] / max(1, totals["sequences"]), 2),
               "token_reduction": round(totals["per_turn_tokens"] / max(1, totals["packed_tokens"]), 2),
+              "estimated_token_reduction_with_fixed_labels": round(
+                  totals["per_turn_tokens"] * totals["server_packed_tokens_now"]
+                  / max(1, totals["packed_tokens"] * totals["server_packed_tokens_fixed_labels"]), 2),
               "chain_length_counts": dict(sorted(chain_lengths.items()))}
     print(json.dumps(report, indent=1))
     return 0

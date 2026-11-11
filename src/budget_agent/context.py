@@ -41,35 +41,45 @@ def _clip(text: str, limit: int, counter: TokenCounter, *, tail: bool = False) -
     return marker + part if tail else part + marker
 
 
-def _event_header(event: Event, revision: str) -> str:
+def _event_header(event: Event, revision: str, *, fixed: bool = False) -> str:
     # Recording an old observation as a fresh note does not make it current.
     # The runner sets source_revision from the referenced evidence, not the model.
     source_revision = event.action.get("source_revision", event.revision) if event.action.get("tool") == "remember" else event.revision
+    if fixed:
+        # Fixed when recorded: the newest event shows the current revision, and the
+        # system prompt says to compare. Relabelling would rewrite every earlier
+        # header after each edit and break the shared prefix.
+        return f"[event_id={event.id} step={event.step} revision={event.revision} source_revision={source_revision} ok={event.ok}]\n"
     stale = source_revision != revision
     status = "stale: observed at an older revision; revalidate before relying on it" if stale else "current revision"
     return f"[event_id={event.id} step={event.step} revision={event.revision} source_revision={source_revision} {status} ok={event.ok}]\n"
 
 
-def _event_text(event: Event, revision: str, *, compact: bool = False, observation: str | None = None) -> str:
+def _event_text(event: Event, revision: str, *, compact: bool = False, observation: str | None = None,
+                fixed: bool = False) -> str:
     action = dict(event.action)
     # Full write contents are already on disk; repeated inclusion crowds out tests.
     if compact and action.get("tool") == "write_file" and "content" in action:
         action["content"] = "[written content omitted; read_file or diff to inspect]"
     return (
-        _event_header(event, revision)
+        _event_header(event, revision, fixed=fixed)
         + f"Action: {json.dumps(action, ensure_ascii=False, sort_keys=True)}\n"
         f"Observation:\n{event.output if observation is None else observation}"
     )
 
 
 class ContextManager:
-    def __init__(self, strategy: str, counter: TokenCounter, history_format: str = "chat", *, read_memory_tokens: int = 1024):
+    def __init__(self, strategy: str, counter: TokenCounter, history_format: str = "chat", *, read_memory_tokens: int = 1024,
+                 revision_labels: str = "relabel"):
         if strategy not in {"full", "recent", "mask", "mask-read", "summary", "structured"}:
             raise ValueError("Unknown context strategy")
         self.strategy = strategy
         if history_format not in {"transcript", "chat"}:
             raise ValueError("history_format must be transcript or chat")
         self.history_format = history_format
+        if revision_labels not in {"relabel", "fixed"}:
+            raise ValueError("revision_labels must be relabel or fixed")
+        self.fixed_labels = revision_labels == "fixed"
         self.counter = counter
         self.read_memory_tokens = read_memory_tokens
         self._summary = ""
@@ -79,12 +89,13 @@ class ContextManager:
 
     def _event_messages(self, event: Event, revision: str, *, observation: str | None = None) -> list[dict[str, str]]:
         if self.history_format == "transcript":
-            return [{"role": "user", "content": _event_text(event, revision, observation=observation)}]
+            return [{"role": "user", "content": _event_text(event, revision, observation=observation, fixed=self.fixed_labels)}]
         if event.model_content is None:
             raise ValueError("Chat history requires original model_content; use transcript for legacy events or restore it from calls.jsonl")
         return [
             {"role": "assistant", "content": event.model_content},
-            {"role": "user", "content": _event_header(event, revision) + "Observation:\n" + (event.output if observation is None else observation)},
+            {"role": "user", "content": _event_header(event, revision, fixed=self.fixed_labels) + "Observation:\n"
+             + (event.output if observation is None else observation)},
         ]
 
     def _history(self, events: list[Event], revision: str) -> list[dict[str, str]]:
@@ -307,7 +318,7 @@ class ContextManager:
                     messages.extend(clipped_group)
                     self.stats["excerpted_events"] += int(clipped_group != group)
                 continue
-            text = _event_text(event, revision, compact=True)
+            text = _event_text(event, revision, compact=True, fixed=self.fixed_labels)
             available = min(per_event, limit - self.counter.messages(messages) - framing)
             prefix, _, observation = text.partition("Observation:\n")
             # Keep provenance at the front and the failure traceback's tail.
@@ -356,13 +367,15 @@ class ContextManager:
                 summary_input = summary_base + clipped_group
                 self.stats["excerpted_events"] += int(clipped_group != group)
             else:
-                summary_input = [{"role": "system", "content": summary_system}, {"role": "user", "content": prefix + _event_text(event, revision)}]
+                summary_input = [{"role": "system", "content": summary_system},
+                                 {"role": "user", "content": prefix + _event_text(event, revision, fixed=self.fixed_labels)}]
                 # Summary invocation must itself fit the same input ceiling.
                 overhead = self.counter.messages([{"role": "system", "content": summary_system}, {"role": "user", "content": ""}])
                 available = limit - overhead
                 if available < 80:
                     raise ContextOverflow("Context is too small for the compaction prompt")
-                summary_input[1]["content"] = _clip(prefix + _event_text(event, revision), available, self.counter)
+                summary_input[1]["content"] = _clip(prefix + _event_text(event, revision, fixed=self.fixed_labels),
+                                                    available, self.counter)
             target = max(32, min(512, (limit - self.counter.messages(base)) // 3))
             self._summary = callback(summary_input, target)
             if not isinstance(self._summary, str) or not self._summary.strip():
