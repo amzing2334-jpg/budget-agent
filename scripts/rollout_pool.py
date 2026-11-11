@@ -19,6 +19,7 @@ from pathlib import Path
 import threading
 import time
 import tomllib
+from typing import Any
 
 from budget_agent.runner import run_task
 from budget_agent.schema import RunConfig
@@ -40,7 +41,7 @@ def summarize(rows: list[dict], k_values: list[int]) -> dict:
     for split in sorted({row["split"] for row in rows}):
         tasks = {task: attempts for task, attempts in by_task.items() if attempts[0]["split"] == split}
         graded = {task: [a for a in attempts if a["resolved"] is not None] for task, attempts in tasks.items()}
-        entry = {"tasks": len(tasks), "attempts": sum(len(a) for a in tasks.values()),
+        entry: dict[str, Any] = {"tasks": len(tasks), "attempts": sum(len(a) for a in tasks.values()),
                  "ungraded_attempts": sum(len(tasks[t]) - len(graded[t]) for t in tasks),
                  "solved_tasks": sum(any(a["resolved"] for a in g) for g in graded.values())}
         for k in k_values:

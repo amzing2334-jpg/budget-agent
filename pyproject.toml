@@ -32,13 +32,16 @@ pythonpath = ["src"]
 
 
 [tool.mypy]
-# The core library type-checks cleanly; CI keeps it that way (the lint job).
-files = ["src/budget_agent"]
+# The library and the pipeline scripts type-check cleanly; CI keeps it that way (the lint job).
+files = ["src/budget_agent", "scripts"]
+mypy_path = "src,scripts"   # scripts import the library and, in two cases, a sibling script
+explicit_package_bases = true
 python_version = "3.11"
 warn_unused_ignores = true
 check_untyped_defs = true
 
 [[tool.mypy.overrides]]
 # Optional extras that the lint job does not install.
-module = ["openjudge.*", "peft.*", "tiktoken.*", "tokenizers.*", "torch.*", "transformers.*"]
+module = ["openjudge.*", "peft.*", "tiktoken.*", "tokenizers.*", "torch.*", "transformers.*",
+          "pandas.*", "pyarrow.*", "datasets.*", "huggingface_hub.*", "minisweagent.*", "swebench.*", "yaml.*"]
 ignore_missing_imports = true
