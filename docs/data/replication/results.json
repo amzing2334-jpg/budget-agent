@@ -1,0 +1,215 @@
+{
+ "pools": {
+  "rep-grpo": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 384,
+     "ungraded_attempts": 0,
+     "solved_tasks": 14,
+     "pass@1": 0.09895833333333333,
+     "pass@2": 0.13020833333333334,
+     "pass@4": 0.14583333333333334,
+     "statuses": {
+      "finished": 92,
+      "stuck": 147,
+      "max_steps": 145
+     },
+     "mean_steps": 20.721354166666668
+    }
+   },
+   "attempts_per_hour": 787.6,
+   "wall_seconds": 1755.1,
+   "tokens": {
+    "input": 62039207,
+    "output": 323652
+   },
+   "evaluation_statuses": {
+    "resolved": 38,
+    "unresolved": 346
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "1142/2307"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  },
+  "rep-sft": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 384,
+     "ungraded_attempts": 0,
+     "solved_tasks": 13,
+     "pass@1": 0.0703125,
+     "pass@2": 0.10416666666666667,
+     "pass@4": 0.13541666666666666,
+     "statuses": {
+      "stuck": 205,
+      "max_steps": 134,
+      "finished": 45
+     },
+     "mean_steps": 18.8046875
+    }
+   },
+   "attempts_per_hour": 983.2,
+   "wall_seconds": 1406.0,
+   "tokens": {
+    "input": 54111281,
+    "output": 277491
+   },
+   "evaluation_statuses": {
+    "unresolved": 357,
+    "resolved": 27
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "908/1685"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  }
+ },
+ "sft": {
+  "examples": 0,
+  "tasks": 0,
+  "by_mode": {}
+ },
+ "training": null,
+ "loss_curve": [],
+ "compare": {
+  "eval": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.0703125,
+   "candidate_pass@1": 0.09895833333333333,
+   "delta": 0.028645833333333332,
+   "ci95": [
+    0.0,
+    0.057291666666666664
+   ],
+   "verdict": "no detectable change",
+   "tasks_improved": 11,
+   "tasks_worse": 4,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  },
+  "eval_drop_flagged": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.0703125,
+   "candidate_pass@1": 0.09895833333333333,
+   "delta": 0.028645833333333332,
+   "ci95": [
+    0.0,
+    0.057291666666666664
+   ],
+   "verdict": "no detectable change",
+   "tasks_improved": 11,
+   "tasks_worse": 4,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "unpaired_tasks": []
+  },
+  "noise_grpo": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.09635416666666667,
+   "candidate_pass@1": 0.09895833333333333,
+   "delta": 0.0026041666666666665,
+   "ci95": [
+    -0.0234375,
+    0.028645833333333332
+   ],
+   "verdict": "no detectable change",
+   "tasks_improved": 5,
+   "tasks_worse": 5,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  },
+  "noise_sft": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.0625,
+   "candidate_pass@1": 0.0703125,
+   "delta": 0.0078125,
+   "ci95": [
+    -0.013020833333333334,
+    0.026041666666666668
+   ],
+   "verdict": "no detectable change",
+   "tasks_improved": 8,
+   "tasks_worse": 4,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  },
+  "pooled": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.06640625,
+   "candidate_pass@1": 0.09765625,
+   "delta": 0.03125,
+   "ci95": [
+    0.005208333333333333,
+    0.061197916666666664
+   ],
+   "verdict": "improved",
+   "tasks_improved": 13,
+   "tasks_worse": 7,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  }
+ },
+ "stages": [
+  {
+   "step": "serve-sft",
+   "seconds": 81,
+   "finished": "2026-11-11T13:43:06Z"
+  },
+  {
+   "step": "rep-sft",
+   "seconds": 1406,
+   "finished": "2026-11-11T14:06:32Z"
+  },
+  {
+   "step": "serve-grpo",
+   "seconds": 72,
+   "finished": "2026-11-11T14:07:44Z"
+  },
+  {
+   "step": "rep-grpo",
+   "seconds": 1756,
+   "finished": "2026-11-11T14:37:00Z"
+  },
+  {
+   "step": "stop-vllm",
+   "seconds": 6,
+   "finished": "2026-11-11T14:37:06Z"
+  }
+ ],
+ "gpu_hours": 0.92,
+ "cost_cny": 3.03
+}
