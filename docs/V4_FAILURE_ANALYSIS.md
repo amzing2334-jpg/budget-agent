@@ -1,5 +1,7 @@
 # V4 两模型失败分析：历史协议修复没有产生有效补丁
 
+> 历史记录（2026 年 10 月）：文中链接的 `runs/` 产物没有收进仓库，保存在作者的本地归档中。当前的结果和方法见 [技术复盘](TECH_REPORT.md)。
+
 本文件先分析 `cloud-v4-20261022-01-protocol` 中的 A 组 Qwen2.5-Coder-7B-Instruct，再分析 `cloud-v4-qwen3-20261022-01-protocol` 中的 B 组 Qwen3-4B-Instruct-2507。每组在同一模型、同一开发任务、同一预算上限下比较 `transcript` 与 `chat` 两种历史表示。结论来自本地已完整下载的 `calls.jsonl`、`trajectory.jsonl`、`result.json` 和官方回填后的汇总；没有读取 gold patch、独立 grader 答案或隐藏测试，也没有为本分析运行模型。
 
 两组、四次尝试均为空补丁，`resolved=null`，官方没有执行独立测试。A 组主要停在重复失败编辑，B 组甚至没有成功读到源码正文，主要停在动作协议、错误路径和重复浏览。局部格式行为的变化不能替代有效修改与验证。
