@@ -181,6 +181,32 @@ def test_an_invalid_task_verifier_limit_is_an_infrastructure_error(tmp_path, val
     assert result["status"] == "infrastructure_error" and result["resolved"] is None
 
 
+@pytest.mark.skipif(os.name == "nt", reason="ulimit is POSIX-only")
+def test_command_memory_limit_turns_runaway_allocation_into_a_failed_command(tmp_path):
+    hog = 'python -c "x = bytearray(600 * 1024 * 1024)"'
+    unlimited = create_environment(load_task(), RunConfig(), tmp_path / "a")
+    assert unlimited.execute({"tool": "run", "command": hog})["ok"]
+    limited = create_environment(load_task(), RunConfig(command_memory_mb=256), tmp_path / "b")
+    result = limited.execute({"tool": "run", "command": hog})
+    assert not result["ok"] and "MemoryError" in result["output"]
+    assert limited.execute({"tool": "run", "command": 'python -c "print(1)"'})["ok"]
+
+
+@pytest.mark.skipif(os.name == "nt", reason="ulimit is POSIX-only")
+def test_memory_limited_grading_scores_a_memory_hog_as_a_failure(tmp_path):
+    env = create_environment(load_task(), RunConfig(command_memory_mb=256), tmp_path / "run")
+    env.execute({"tool": "write_file", "path": "slugify.py",
+                 "content": "HOG = bytearray(600 * 1024 * 1024)\n"})
+    grade = env.grade()
+    assert (grade["resolved"], grade["status"], grade["memory_exceeded"]) == (False, "unresolved", True)
+
+
+def test_command_memory_limit_must_be_positive():
+    for value in (0, -1, 1.5, "4096"):
+        with pytest.raises(ValueError, match="command_memory_mb"):
+            RunConfig(command_memory_mb=value).validate()
+
+
 def test_zero_exit_during_import_cannot_fake_test_success(tmp_path):
     env = create_environment(load_task(), RunConfig(), tmp_path / "run")
     env.execute({"tool": "write_file", "path": "slugify.py", "content": "import os\nos._exit(0)\n"})
