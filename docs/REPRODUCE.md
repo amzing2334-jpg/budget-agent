@@ -103,6 +103,15 @@ STEPS=60 MAX_MINUTES=180 LR=2e-5 TURNS_PER_ATTEMPT=4 MINIBATCHES=4 SEED=1 LABELS
 - **主结论**：读 `compare_eval.json` 的 `ci95` 和 `verdict`，规则在各轮协议里写定：下界大于 0 为提升，区间包含 0 为未检测到提升，上界小于 0 为变差。
 - **防作弊**：`python scripts/review_patches.py <评测池目录>` 列出每个通过补丁的改动，逐条阅读；剔除可疑样本后的结果在 `compare_eval_drop_flagged.json`。
 - **对照原始源码**：加上 `--original /opt/coding-agent/swesmith-src --tasks /opt/coding-agent/swesmith/tasks`，脚本会把每个补丁应用到带 bug 的文件上，与注入 bug 之前的源码比较，并打印剩余差异。第三轮的判断结果在 `docs/data/round3/original_check.json`。
+- **敏感性分析**：把判定为没有恢复原有行为的补丁算作失败，再做配对比较。第三轮的两个数字可以这样复现：
+
+```bash
+python scripts/mark_failures.py <SFT 池>/attempts.jsonl docs/data/round3/original_check.json --pool eval-sft --kinds strong > sft.jsonl
+python scripts/mark_failures.py <GRPO 池>/attempts.jsonl docs/data/round3/original_check.json --pool eval-grpo --kinds strong > grpo.jsonl
+python scripts/compare_pools.py --baseline sft.jsonl --candidate grpo.jsonl --split eval   # +3.39，区间 [+0.78, +6.25]
+```
+
+  `--kinds strong,mild` 给出 +2.60，区间 [+0.26, +5.21]。
 - **被限制终止的命令**：`python scripts/limit_events.py <评测池或 GRPO 步目录...>`。
 - **训练过程**：`grpo/metrics.jsonl` 每一步记录以下指标：
   - `prompt_mismatch`，应为 0；
