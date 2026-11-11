@@ -21,7 +21,7 @@ mkdir -p "$ROLL/grpo" "$OUT"
 chown nobody:nogroup "$ROLL" "$ROLL/grpo"
 STEPS_LOG=$OUT/steps.jsonl
 
-if pgrep -f "^bash $CODE/scripts/autodl/(round1_rft|round2_grpo|round3_grpo|grpo_pilot|bench|replicate_eval)\.sh" | grep -qvx "$$"; then
+if pgrep -f "^bash $CODE/scripts/autodl/(round1_rft|round2_grpo|round3_grpo|round4_labels_ab|grpo_pilot|bench|replicate_eval)\.sh" | grep -qvx "$$"; then
   echo "another experiment script of this project is running; not starting." >&2   # it would lose its vLLM
   exit 1
 fi
