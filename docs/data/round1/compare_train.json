@@ -1,0 +1,23 @@
+{
+ "split": "train",
+ "paired_tasks": 189,
+ "baseline_pass@1": 0.0,
+ "candidate_pass@1": 0.026455026455026454,
+ "delta": 0.026455026455026454,
+ "ci95": [
+  0.005291005291005291,
+  0.05291005291005291
+ ],
+ "verdict": "improved",
+ "tasks_improved": 5,
+ "tasks_worse": 0,
+ "ungraded_attempts": {
+  "baseline": 0,
+  "candidate": 3
+ },
+ "unpaired_tasks": [
+  "jd__tenacity.0d40e76f.func_basic__6xjkrkm1",
+  "jd__tenacity.0d40e76f.func_basic__9c0t85e7",
+  "python-hyper__h11.bed0dd4a.func_pm_remove_loop__geix7avs"
+ ]
+}
