@@ -169,7 +169,11 @@ def main() -> int:
                         "of each attempt (default: all)")
     parser.add_argument("--max-len", type=int, default=24576)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--rollout-set", action="append", default=[], metavar="KEY=VALUE",
+                        help="extra run-config override for every rollout pool (repeatable), e.g. revision_labels=fixed")
     args = parser.parse_args()
+    if any("=" not in item for item in args.rollout_set):
+        parser.error("--rollout-set takes KEY=VALUE")
     if args.pack_turns and args.loss_agg != "token":
         parser.error("--pack-turns trains several turns per sequence; use --loss-agg token")
     random.seed(args.seed)
@@ -183,6 +187,8 @@ def main() -> int:
                                              target_modules="all-linear", task_type="CAUSAL_LM"))
     optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=args.lr, weight_decay=0.0)
     args.output.mkdir(parents=True, exist_ok=True)
+    (args.output / "args.json").write_text(json.dumps({k: str(v) if isinstance(v, Path) else v
+                                                        for k, v in vars(args).items()}, indent=1))
     log = (args.output / "metrics.jsonl").open("a")
     model.save_pretrained(args.output / "adapters" / "v0")  # zero-initialised B: identical to the base model
     load_adapter(args.server, "policy-v0", args.output / "adapters" / "v0", None)
@@ -200,7 +206,8 @@ def main() -> int:
         pool_dir = args.rollouts / f"step-{step:04d}"
         subprocess.run([args.pool_launcher, "--config", str(args.config), "--tasks", str(manifest), "--split", "train",
                         "--samples", str(args.group), "--workers", str(args.workers), "--output", str(pool_dir),
-                        "--set", f"model=policy-v{step}", "--set", "api_logprobs=true", "--set", "temperature=1.0"],
+                        "--set", f"model=policy-v{step}", "--set", "api_logprobs=true", "--set", "temperature=1.0",
+                        *(part for item in args.rollout_set for part in ("--set", item))],
                        check=True)
         rollout_seconds = time.monotonic() - started
         attempts = [json.loads(line) for line in (pool_dir / "attempts.jsonl").read_text().splitlines() if line.strip()]
