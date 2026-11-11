@@ -1,0 +1,12 @@
+{
+ "model": "/root/autodl-tmp/coding-agent-rl/models/Qwen2.5-Coder-1.5B-Instruct",
+ "data": "/root/autodl-tmp/coding-agent-rl/outputs/round1/sft.jsonl",
+ "examples": 619,
+ "dropped": 39,
+ "trained_tokens": 25522,
+ "epochs": 2.0,
+ "lr": 0.0001,
+ "rank": 64,
+ "optimizer_steps": 155,
+ "seconds": 1010.0
+}

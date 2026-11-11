@@ -1,0 +1,970 @@
+{
+ "pools": {
+  "student-base-eval": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 384,
+     "ungraded_attempts": 0,
+     "solved_tasks": 1,
+     "pass@1": 0.0026041666666666665,
+     "pass@2": 0.005208333333333333,
+     "pass@4": 0.010416666666666666,
+     "statuses": {
+      "finished": 47,
+      "stuck": 206,
+      "max_steps": 131
+     },
+     "mean_steps": 15.057291666666666
+    }
+   },
+   "attempts_per_hour": 970.3,
+   "wall_seconds": 1424.7,
+   "tokens": {
+    "input": 28669548,
+    "output": 332948
+   },
+   "evaluation_statuses": {
+    "unresolved": 383,
+    "resolved": 1
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "93/895",
+    "replace_lines": "0/3"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  },
+  "student-base-train": {
+   "splits": {
+    "train": {
+     "tasks": 192,
+     "attempts": 192,
+     "ungraded_attempts": 0,
+     "solved_tasks": 0,
+     "pass@1": 0.0,
+     "statuses": {
+      "finished": 21,
+      "stuck": 108,
+      "max_steps": 63
+     },
+     "mean_steps": 14.40625
+    }
+   },
+   "attempts_per_hour": 2300.8,
+   "wall_seconds": 300.4,
+   "tokens": {
+    "input": 14749170,
+    "output": 146724
+   },
+   "evaluation_statuses": {
+    "unresolved": 192
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "58/375"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  },
+  "student-sft-eval": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 384,
+     "ungraded_attempts": 0,
+     "solved_tasks": 14,
+     "pass@1": 0.0625,
+     "pass@2": 0.10069444444444443,
+     "pass@4": 0.14583333333333334,
+     "statuses": {
+      "finished": 42,
+      "stuck": 215,
+      "max_steps": 127
+     },
+     "mean_steps": 19.075520833333332
+    }
+   },
+   "attempts_per_hour": 904.3,
+   "wall_seconds": 1528.8,
+   "tokens": {
+    "input": 57139965,
+    "output": 271831
+   },
+   "evaluation_statuses": {
+    "resolved": 24,
+    "unresolved": 360
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "792/1599"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  },
+  "student-sft-train": {
+   "splits": {
+    "train": {
+     "tasks": 192,
+     "attempts": 192,
+     "ungraded_attempts": 3,
+     "solved_tasks": 5,
+     "pass@1": 0.026455026455026454,
+     "statuses": {
+      "stuck": 120,
+      "finished": 12,
+      "max_steps": 60
+     },
+     "mean_steps": 18.59375
+    }
+   },
+   "attempts_per_hour": 677.3,
+   "wall_seconds": 1020.6,
+   "tokens": {
+    "input": 26808974,
+    "output": 151619
+   },
+   "evaluation_statuses": {
+    "unresolved": 184,
+    "resolved": 5,
+    "grading_error": 3
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "384/802"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  },
+  "teacher-eval": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 192,
+     "ungraded_attempts": 0,
+     "solved_tasks": 11,
+     "pass@1": 0.07291666666666667,
+     "pass@2": 0.11458333333333333,
+     "statuses": {
+      "stuck": 127,
+      "max_steps": 47,
+      "finished": 16,
+      "model_error": 2
+     },
+     "mean_steps": 17.135416666666668
+    }
+   },
+   "attempts_per_hour": 670.2,
+   "wall_seconds": 1031.3,
+   "tokens": {
+    "input": 23548658,
+    "output": 175948
+   },
+   "evaluation_statuses": {
+    "unresolved": 178,
+    "resolved": 14
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "474/922",
+    "replace_lines": "1/1"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  },
+  "teacher-train": {
+   "splits": {
+    "train": {
+     "tasks": 192,
+     "attempts": 768,
+     "ungraded_attempts": 6,
+     "solved_tasks": 33,
+     "pass@1": 0.07161458333333333,
+     "pass@2": 0.11805555555555557,
+     "pass@4": 0.17647058823529413,
+     "statuses": {
+      "stuck": 458,
+      "max_steps": 251,
+      "finished": 56,
+      "model_error": 3
+     },
+     "mean_steps": 18.938802083333332
+    }
+   },
+   "attempts_per_hour": 807.0,
+   "wall_seconds": 3426.2,
+   "tokens": {
+    "input": 96679739,
+    "output": 795784
+   },
+   "evaluation_statuses": {
+    "unresolved": 707,
+    "resolved": 55,
+    "grading_error": 6
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "1739/3697",
+    "replace_lines": "4/5",
+    "write_file": "1/10"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  }
+ },
+ "sft": {
+  "examples": 658,
+  "tasks": 33,
+  "by_mode": {
+   "last": 658
+  }
+ },
+ "training": {
+  "model": "/root/autodl-tmp/coding-agent-rl/models/Qwen2.5-Coder-1.5B-Instruct",
+  "data": "/root/autodl-tmp/coding-agent-rl/outputs/round1/sft.jsonl",
+  "examples": 619,
+  "dropped": 39,
+  "trained_tokens": 25522,
+  "epochs": 2.0,
+  "lr": 0.0001,
+  "rank": 64,
+  "optimizer_steps": 155,
+  "seconds": 1010.0
+ },
+ "loss_curve": [
+  [
+   1,
+   0.2095
+  ],
+  [
+   2,
+   0.097
+  ],
+  [
+   3,
+   0.1933
+  ],
+  [
+   4,
+   0.1498
+  ],
+  [
+   5,
+   0.1446
+  ],
+  [
+   6,
+   0.3042
+  ],
+  [
+   7,
+   0.2349
+  ],
+  [
+   8,
+   0.3143
+  ],
+  [
+   9,
+   0.0932
+  ],
+  [
+   10,
+   0.22
+  ],
+  [
+   11,
+   0.1563
+  ],
+  [
+   12,
+   0.1453
+  ],
+  [
+   13,
+   0.1336
+  ],
+  [
+   14,
+   0.2205
+  ],
+  [
+   15,
+   0.1602
+  ],
+  [
+   16,
+   0.2437
+  ],
+  [
+   17,
+   0.0725
+  ],
+  [
+   18,
+   0.1657
+  ],
+  [
+   19,
+   0.0948
+  ],
+  [
+   20,
+   0.1463
+  ],
+  [
+   21,
+   0.1486
+  ],
+  [
+   22,
+   0.1218
+  ],
+  [
+   23,
+   0.1714
+  ],
+  [
+   24,
+   0.0765
+  ],
+  [
+   25,
+   0.071
+  ],
+  [
+   26,
+   0.1338
+  ],
+  [
+   27,
+   0.2646
+  ],
+  [
+   28,
+   0.1221
+  ],
+  [
+   29,
+   0.1858
+  ],
+  [
+   30,
+   0.09
+  ],
+  [
+   31,
+   0.0662
+  ],
+  [
+   32,
+   0.0682
+  ],
+  [
+   33,
+   0.0885
+  ],
+  [
+   34,
+   0.1091
+  ],
+  [
+   35,
+   0.1102
+  ],
+  [
+   36,
+   0.2563
+  ],
+  [
+   37,
+   0.1103
+  ],
+  [
+   38,
+   0.1184
+  ],
+  [
+   39,
+   0.1532
+  ],
+  [
+   40,
+   0.1906
+  ],
+  [
+   41,
+   0.1452
+  ],
+  [
+   42,
+   0.0326
+  ],
+  [
+   43,
+   0.091
+  ],
+  [
+   44,
+   0.1082
+  ],
+  [
+   45,
+   0.0943
+  ],
+  [
+   46,
+   0.0994
+  ],
+  [
+   47,
+   0.1685
+  ],
+  [
+   48,
+   0.0495
+  ],
+  [
+   49,
+   0.2001
+  ],
+  [
+   50,
+   0.0809
+  ],
+  [
+   51,
+   0.1424
+  ],
+  [
+   52,
+   0.1417
+  ],
+  [
+   53,
+   0.0785
+  ],
+  [
+   54,
+   0.1986
+  ],
+  [
+   55,
+   0.0473
+  ],
+  [
+   56,
+   0.0972
+  ],
+  [
+   57,
+   0.058
+  ],
+  [
+   58,
+   0.1056
+  ],
+  [
+   59,
+   0.1364
+  ],
+  [
+   60,
+   0.082
+  ],
+  [
+   61,
+   0.0677
+  ],
+  [
+   62,
+   0.1114
+  ],
+  [
+   63,
+   0.0585
+  ],
+  [
+   64,
+   0.0883
+  ],
+  [
+   65,
+   0.1539
+  ],
+  [
+   66,
+   0.0989
+  ],
+  [
+   67,
+   0.1032
+  ],
+  [
+   68,
+   0.0787
+  ],
+  [
+   69,
+   0.1763
+  ],
+  [
+   70,
+   0.1785
+  ],
+  [
+   71,
+   0.1492
+  ],
+  [
+   72,
+   0.0616
+  ],
+  [
+   73,
+   0.0889
+  ],
+  [
+   74,
+   0.1518
+  ],
+  [
+   75,
+   0.0835
+  ],
+  [
+   76,
+   0.1536
+  ],
+  [
+   77,
+   0.0876
+  ],
+  [
+   78,
+   0.0871
+  ],
+  [
+   79,
+   0.0501
+  ],
+  [
+   80,
+   0.0266
+  ],
+  [
+   81,
+   0.0368
+  ],
+  [
+   82,
+   0.0344
+  ],
+  [
+   83,
+   0.0424
+  ],
+  [
+   84,
+   0.0479
+  ],
+  [
+   85,
+   0.0435
+  ],
+  [
+   86,
+   0.0508
+  ],
+  [
+   87,
+   0.0695
+  ],
+  [
+   88,
+   0.0474
+  ],
+  [
+   89,
+   0.0383
+  ],
+  [
+   90,
+   0.066
+  ],
+  [
+   91,
+   0.0688
+  ],
+  [
+   92,
+   0.0307
+  ],
+  [
+   93,
+   0.0471
+  ],
+  [
+   94,
+   0.0998
+  ],
+  [
+   95,
+   0.0381
+  ],
+  [
+   96,
+   0.0446
+  ],
+  [
+   97,
+   0.0519
+  ],
+  [
+   98,
+   0.031
+  ],
+  [
+   99,
+   0.0346
+  ],
+  [
+   100,
+   0.0784
+  ],
+  [
+   101,
+   0.0574
+  ],
+  [
+   102,
+   0.1225
+  ],
+  [
+   103,
+   0.0224
+  ],
+  [
+   104,
+   0.1287
+  ],
+  [
+   105,
+   0.0439
+  ],
+  [
+   106,
+   0.078
+  ],
+  [
+   107,
+   0.0397
+  ],
+  [
+   108,
+   0.0586
+  ],
+  [
+   109,
+   0.086
+  ],
+  [
+   110,
+   0.036
+  ],
+  [
+   111,
+   0.0642
+  ],
+  [
+   112,
+   0.1043
+  ],
+  [
+   113,
+   0.0079
+  ],
+  [
+   114,
+   0.0565
+  ],
+  [
+   115,
+   0.0631
+  ],
+  [
+   116,
+   0.0485
+  ],
+  [
+   117,
+   0.0627
+  ],
+  [
+   118,
+   0.0606
+  ],
+  [
+   119,
+   0.0343
+  ],
+  [
+   120,
+   0.0575
+  ],
+  [
+   121,
+   0.0737
+  ],
+  [
+   122,
+   0.1154
+  ],
+  [
+   123,
+   0.0295
+  ],
+  [
+   124,
+   0.0269
+  ],
+  [
+   125,
+   0.0951
+  ],
+  [
+   126,
+   0.1008
+  ],
+  [
+   127,
+   0.0428
+  ],
+  [
+   128,
+   0.0765
+  ],
+  [
+   129,
+   0.0586
+  ],
+  [
+   130,
+   0.075
+  ],
+  [
+   131,
+   0.0299
+  ],
+  [
+   132,
+   0.0312
+  ],
+  [
+   133,
+   0.0778
+  ],
+  [
+   134,
+   0.0593
+  ],
+  [
+   135,
+   0.0543
+  ],
+  [
+   136,
+   0.084
+  ],
+  [
+   137,
+   0.0361
+  ],
+  [
+   138,
+   0.0542
+  ],
+  [
+   139,
+   0.0806
+  ],
+  [
+   140,
+   0.0341
+  ],
+  [
+   141,
+   0.0641
+  ],
+  [
+   142,
+   0.0591
+  ],
+  [
+   143,
+   0.051
+  ],
+  [
+   144,
+   0.1203
+  ],
+  [
+   145,
+   0.0542
+  ],
+  [
+   146,
+   0.0666
+  ],
+  [
+   147,
+   0.0286
+  ],
+  [
+   148,
+   0.0553
+  ],
+  [
+   149,
+   0.0898
+  ],
+  [
+   150,
+   0.0809
+  ],
+  [
+   151,
+   0.0489
+  ],
+  [
+   152,
+   0.032
+  ],
+  [
+   153,
+   0.0496
+  ],
+  [
+   154,
+   0.02
+  ],
+  [
+   155,
+   0.0951
+  ]
+ ],
+ "compare": {
+  "eval": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.0026041666666666665,
+   "candidate_pass@1": 0.0625,
+   "delta": 0.059895833333333336,
+   "ci95": [
+    0.028645833333333332,
+    0.09635416666666667
+   ],
+   "verdict": "improved",
+   "tasks_improved": 14,
+   "tasks_worse": 1,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "unpaired_tasks": []
+  },
+  "train": {
+   "split": "train",
+   "paired_tasks": 189,
+   "baseline_pass@1": 0.0,
+   "candidate_pass@1": 0.026455026455026454,
+   "delta": 0.026455026455026454,
+   "ci95": [
+    0.005291005291005291,
+    0.05291005291005291
+   ],
+   "verdict": "improved",
+   "tasks_improved": 5,
+   "tasks_worse": 0,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 3
+   },
+   "unpaired_tasks": [
+    "jd__tenacity.0d40e76f.func_basic__6xjkrkm1",
+    "jd__tenacity.0d40e76f.func_basic__9c0t85e7",
+    "python-hyper__h11.bed0dd4a.func_pm_remove_loop__geix7avs"
+   ]
+  }
+ },
+ "stages": [
+  {
+   "step": "serve-teacher",
+   "seconds": 70,
+   "finished": "2026-11-06T11:12:58Z"
+  },
+  {
+   "step": "teacher-train",
+   "seconds": 3426,
+   "finished": "2026-11-06T12:10:04Z"
+  },
+  {
+   "step": "teacher-eval",
+   "seconds": 1032,
+   "finished": "2026-11-06T12:27:16Z"
+  },
+  {
+   "step": "serve-student",
+   "seconds": 117,
+   "finished": "2026-11-06T12:29:13Z"
+  },
+  {
+   "step": "student-base-eval",
+   "seconds": 1425,
+   "finished": "2026-11-06T12:52:58Z"
+  },
+  {
+   "step": "student-base-train",
+   "seconds": 301,
+   "finished": "2026-11-06T12:57:59Z"
+  },
+  {
+   "step": "sft-data",
+   "seconds": 0,
+   "finished": "2026-11-06T12:57:59Z"
+  },
+  {
+   "step": "stop-vllm",
+   "seconds": 2,
+   "finished": "2026-11-06T12:58:01Z"
+  },
+  {
+   "step": "train-sft",
+   "seconds": 1044,
+   "finished": "2026-11-06T13:15:25Z"
+  },
+  {
+   "step": "serve-student-sft",
+   "seconds": 85,
+   "finished": "2026-11-06T13:16:50Z"
+  },
+  {
+   "step": "student-sft-eval",
+   "seconds": 1529,
+   "finished": "2026-11-06T13:42:19Z"
+  },
+  {
+   "step": "student-sft-train",
+   "seconds": 1021,
+   "finished": "2026-11-06T13:59:20Z"
+  },
+  {
+   "step": "stop-vllm-final",
+   "seconds": 4,
+   "finished": "2026-11-06T13:59:24Z"
+  }
+ ],
+ "gpu_hours": 2.79,
+ "cost_cny": 9.16
+}
