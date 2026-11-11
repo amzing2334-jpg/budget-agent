@@ -123,7 +123,8 @@ class _Attempt:
         self.run_dir.mkdir(parents=True, exist_ok=False)
         self.budget = Budget(counter, config)
         self.context = ContextManager(config.strategy, counter, config.history_format,
-                                      read_memory_tokens=config.read_memory_tokens)
+                                      read_memory_tokens=config.read_memory_tokens,
+                                      revision_labels=config.revision_labels)
         self.events: list[Event] = []
         self.call_records: list[dict] = []
         self.usage_sources: set[str] = set()
@@ -172,6 +173,10 @@ class _Attempt:
         config = self.config
         prompt = decision_prompt(config, self.budget.remaining_tokens, self.step, self.events, self.revision,
                                  self.initial_revision)
+        if config.revision_labels == "fixed":
+            prompt += ("\nEvent headers are fixed when recorded: each shows the revision it was observed at "
+                       "(source_revision for notes). The newest event's revision is the current workspace; an "
+                       "observation from another revision may be stale, so revalidate before relying on it.")
         if config.execution_policy == "restricted":
             prompt += "\nExecution policy: restricted. Free-form run commands are denied. Use public_test for the manifest's fixed test command; source file tools and diff remain available."
         if config.loop_policy == "recover" and self.read_loop.pending_feedback:
