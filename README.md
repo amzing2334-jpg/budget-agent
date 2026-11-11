@@ -9,7 +9,7 @@
 | **RFT** | 7B 教师的 619 条通过轨迹蒸馏到 1.5B 学生。留出的 4 个仓库共 96 题，pass@1 从 **0.26% 升到 6.25%**（教师 7.29%），95% 置信区间 [+2.86, +9.64] 个百分点。机制：`edit_file` 成功率从 10.4% 升到 49.5% | [第一轮](docs/EXPERIMENT_SWESMITH_RFT_ROUND1.md) |
 | **GRPO** | 在 SFT 学生上做单卡 GRPO，12 步。两次独立评测中，pass@1 分别提高 **+3.39** 和 **+2.86** 个百分点（6.25% → 9.64%；7.03% → 9.90%）。第一次按冻结判据为"提升"，区间 [+0.26, +7.03]；复现评测的区间是 [0.00, +5.73]，按冻结规则"未复现"。合并每题 8 次采样后为 +3.13，区间 [+0.52, +6.12]。结论：增益约 3 个百分点，方向稳定，统计上处在边缘。同一策略两次评测的噪声不到 1 个百分点 | [第二轮](docs/EXPERIMENT_GRPO_ROUND2.md)、[复现](docs/EXPERIMENT_REPLICATION.md) |
 | **一致性** | 训练端与采样端的 prompt 在 token 层面完全一致：3,417 个训练 turn 的摘要全部吻合。logprob 平均差 ≤ 0.0025 nat，TIS 从未截断 | [技术复盘 §4](docs/TECH_REPORT.md) |
-| **系统** | 单卡 7B agent rollout 受 prefill 限制：prompt token 是生成 token 的 108 到 141 倍，8 个 worker 时 GPU 已饱和，环境开销只占 4% 到 11% | [基准](docs/BENCH_ROLLOUT_2026-11-06.md) |
+| **系统** | 单卡 7B agent rollout 受 prefill 限制：prompt token 是生成 token 的 108 到 141 倍，8 个 worker 时 GPU 已饱和，环境开销只占 4% 到 11%。前缀打包训练（同一次尝试中前缀一致的 turn 合成一条序列）让训练编码的 token 减少 3.06 倍，loss 和梯度完全等价；进一步分析发现四分之三的断点来自"编辑后把旧事件重新标注为 stale"，改成固定标注后估计可达 5.2 倍，固定标注对通过率的影响正在做 A/B 评测 | [基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[打包](docs/PREFIX_PACKING.md) |
 
 三轮评测和训练共 6.3 GPU 小时，约 21 元。留出集上通过的 126 个补丁都逐条人工检查过，没有发现作弊。原始输出在 [`docs/data/`](docs/data/)。
 
@@ -38,6 +38,7 @@ flowchart LR
   - 记录采样 token、behavior logprob 和 prompt 摘要；训练前比对摘要，不一致的 turn 不训练。
   - SFT 只在需要预测训练 token 的位置算 logits，16k 样本的显存从约 34 GiB 降到 11.8 GiB，数学上等价。
 - **单卡共置的 GRPO。** vLLM 占 45% 显存，训练进程用其余显存。每步保存 LoRA 并热加载，服务不重启。支持 token 级聚合、clip-higher、TIS 和 minibatch PPO。
+- **为训练效率设计上下文。** 同一段前缀既决定推理时的前缀缓存命中，也决定训练时能否打包。前缀打包已经实现，并在 CPU 上验证了与逐 turn 前向等价；`revision_labels = fixed` 让历史在窗口滑动之前只追加不改写。数据见 [PREFIX_PACKING.md](docs/PREFIX_PACKING.md)。
 - **可复核的结论。**
   - 协议先提交再运行，按题做配对 bootstrap，另外报告剔除可疑样本后的结果。
   - 偏差和事故都写进实验记录，例如试跑里一个变量覆盖的 bug、一次以为已停止的后台任务覆盖了服务器文件。
