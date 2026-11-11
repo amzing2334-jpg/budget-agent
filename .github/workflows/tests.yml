@@ -1,5 +1,16 @@
 name: tests
-on: [push, pull_request]
+on:
+  # Pull requests are tested on their own event; main is tested again after each merge.
+  # (Running on every push as well tested each PR commit twice.)
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  # A newer commit on the same pull request supersedes the running checks.
+  group: tests-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   unit:
     strategy:
