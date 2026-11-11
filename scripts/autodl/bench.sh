@@ -12,7 +12,7 @@ OUT=$AGENT/work/bench                # attempts written by nobody; bench.json/md
 mkdir -p "$OUT"
 chown nobody:nogroup "$OUT"
 
-if pgrep -f "^bash $CODE/scripts/autodl/(round1_rft|round2_grpo|grpo_pilot|bench)\.sh" | grep -qvx "$$"; then
+if pgrep -f "^bash $CODE/scripts/autodl/(round1_rft|round2_grpo|grpo_pilot|bench|replicate_eval)\.sh" | grep -qvx "$$"; then
   echo "another experiment script of this project is running; not starting." >&2   # it would lose its vLLM
   exit 1
 fi
