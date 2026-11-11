@@ -398,6 +398,24 @@ def _verified(result: dict[str, Any], marker: str) -> tuple[bool | None, dict[st
         return None, None
 
 
+def _memory_limited(command: str | list[str], config: RunConfig) -> str | list[str]:
+    """Apply the run's data-segment limit to one local command through the shell's ulimit.
+
+    A candidate whose tests allocate without bound otherwise drives the shared
+    container into its OOM killer, which can take other attempts or the model
+    server with it (replication run, 2026-11-11: three test processes passed
+    20 GB). Past the limit Python raises MemoryError and the test fails. The
+    wrapper is a shell builtin, not preexec_fn, because rollout pools start
+    commands from many threads.
+    """
+    if config.command_memory_mb is None or os.name == "nt":
+        return command
+    limit = f"ulimit -d {config.command_memory_mb * 1024}"
+    if isinstance(command, str):
+        return f"{limit} && {command}"
+    return ["/bin/sh", "-c", f'{limit} && exec "$0" "$@"', *command]
+
+
 def _task_timeout(task: Task, config: RunConfig) -> int:
     """The task's test-suite limit, set at admission from measured test time, else the run's command limit.
 
@@ -418,7 +436,8 @@ def _stage_verifier(source: Path, grading: Path) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def _fixture_grade(result: dict[str, Any], marker: str, verifier_sha256: str, started: float) -> dict[str, Any]:
+def _fixture_grade(result: dict[str, Any], marker: str, verifier_sha256: str, started: float,
+                   memory_limited: bool = False) -> dict[str, Any]:
     if result["output"].count(marker) > 1:
         # The grader prints one verdict line, and the marker is created at
         # grading time. A second copy came from the candidate's code.
@@ -435,6 +454,13 @@ def _fixture_grade(result: dict[str, Any], marker: str, verifier_sha256: str, st
                 "duration_seconds": time.monotonic() - started,
                 "grading_inputs": {"kind": "fixture", "verifier_sha256": verifier_sha256}}
     resolved, verdict = _verified(result, marker)
+    if resolved is None and memory_limited and "MemoryError" in result["output"]:
+        # The run's memory limit stopped the candidate's code before a verdict:
+        # a failed repair, for the same reason as a timeout. Printing the word
+        # cannot help a candidate, since ungraded only ever becomes a failure.
+        return {"resolved": False, "status": "unresolved", "memory_exceeded": True, "output": result["output"],
+                "duration_seconds": time.monotonic() - started,
+                "grading_inputs": {"kind": "fixture", "verifier_sha256": verifier_sha256}}
     status = "grading_error" if resolved is None else "resolved" if resolved else "unresolved"
     grade = {"resolved": resolved, "status": status, "output": result["output"],
              "test_results": verdict, "duration_seconds": time.monotonic() - started}
@@ -496,11 +522,11 @@ class LocalEnvironment:
             if tool in {"read_file", "list_files", "search", "write_file", "edit_file", "replace_lines"}:
                 text = _repository_tool(self.workspace, action, self.task.metadata.get("editable"))
             elif tool == "run":
-                return _process(str(action["command"]), self.workspace, _task_timeout(self.task, self.config),
-                                shell=True, env=self._command_env())
+                return _process(_memory_limited(str(action["command"]), self.config), self.workspace,
+                                _task_timeout(self.task, self.config), shell=True, env=self._command_env())
             elif tool == "public_test":
-                return _process(self.task.test_command, self.workspace, _task_timeout(self.task, self.config),
-                                env=self._command_env())
+                return _process(_memory_limited(self.task.test_command, self.config), self.workspace,
+                                _task_timeout(self.task, self.config), env=self._command_env())
             elif tool == "diff":
                 text = self.patch()
             else:
@@ -561,8 +587,9 @@ class LocalEnvironment:
                 _write_grading_tree(grading, self.baseline, current, graded)
                 verifier_sha256 = _stage_verifier(verifier, grading)
                 command, marker = _verification_command(sys.executable)
-                result = _process(command, grading, _task_timeout(self.task, self.config))
-            grade = _fixture_grade(result, marker, verifier_sha256, started)
+                result = _process(_memory_limited(command, self.config), grading, _task_timeout(self.task, self.config))
+            grade = _fixture_grade(result, marker, verifier_sha256, started,
+                                   memory_limited=self.config.command_memory_mb is not None)
             if protected:
                 grade["ignored_changes"] = protected
             return grade

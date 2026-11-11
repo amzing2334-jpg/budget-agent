@@ -22,5 +22,7 @@ max_output_tokens = 2048
 min_action_output_tokens = 128
 max_steps = 30
 timeout_seconds = 300
+# Per-process data limit for agent commands and graders; admitted suites need well under 1 GB.
+command_memory_mb = 4096
 temperature = 0.7
 tokenizer = "hf-file:/opt/coding-agent/tokenizers/qwen2.5-coder/tokenizer.json"
