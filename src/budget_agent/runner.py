@@ -9,11 +9,12 @@ import uuid
 from dataclasses import asdict, replace
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from .budget import Budget, BudgetExceeded, TokenCounter
 from .context import ContextManager, ContextOverflow
 from .diagnostics import analyze_trajectory
-from .environment import EnvironmentError, create_environment
+from .environment import DockerEnvironment, EnvironmentError, LocalEnvironment, create_environment
 from .evaluation import evidence_kind
 from .integrity import patch_signals
 from .loop_control import ReadLoopMonitor
@@ -129,12 +130,14 @@ class _Attempt:
         self.call_records: list[dict] = []
         self.usage_sources: set[str] = set()
         self.actual_models: set[str] = set()
-        self.env = None
+        self.env: LocalEnvironment | DockerEnvironment | None = None
         self.start = time.monotonic()
-        self.status, self.error, self.unknown_usage = "max_steps", None, False
+        self.status: str = "max_steps"
+        self.error: str | None = None
+        self.unknown_usage = False
         self.initial_revision = self.revision = ""
         self.step = 0
-        self.environment_provenance = None
+        self.environment_provenance: dict[str, Any] | None = None
         self.code_revision = source_fingerprint()
         self.read_loop = ReadLoopMonitor()
         self.controls: list[dict] = []
@@ -150,10 +153,16 @@ class _Attempt:
         self.failed_actions: dict[tuple[str, str], list[int]] = {}
 
     # -- recording -----------------------------------------------------------------
+    @property
+    def environment(self) -> LocalEnvironment | DockerEnvironment:
+        if self.env is None:
+            raise RuntimeError("the task environment has not been created yet")
+        return self.env
+
     def snapshot(self) -> str:
         started = time.monotonic()
         try:
-            return self.env.revision()
+            return self.environment.revision()
         finally:
             self.fingerprints["calls"] += 1
             self.fingerprints["seconds"] += time.monotonic() - started
@@ -288,7 +297,7 @@ class _Attempt:
         if action["tool"] in {"finish", "remember", "recall"}:
             return action, self.internal_tool(action), None
         self.external_actions += 1
-        outcome = self.env.execute(action)
+        outcome = self.environment.execute(action)
         decision = outcome.get("policy_decision")
         security_record = {"event_id": f"e{self.step:04d}", "tool": action["tool"], "decision": decision}
         self.safety_records.append(security_record)
@@ -342,10 +351,10 @@ class _Attempt:
                 and self.feedback_count < config.max_reflections and reflection_trigger(event, blocked=blocked)):
             return
         if config.reflection_policy == "evidence":
-            note = evidence_note(event, counter, config.reflection_max_output_tokens)
-            self.notes.append(note)
+            evidence = evidence_note(event, counter, config.reflection_max_output_tokens)
+            self.notes.append(evidence)
             self.feedback_count += 1
-            self.record_reflection("replayed", event, note=note.to_dict(), excerpt_tokens=counter.count(note.output),
+            self.record_reflection("replayed", event, note=evidence.to_dict(), excerpt_tokens=counter.count(evidence.output),
                                    text_token_limit=config.reflection_max_output_tokens)
             return
         review = reflection_messages(actor_messages, event)

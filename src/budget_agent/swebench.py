@@ -331,7 +331,7 @@ def attach_grades(runsdir: Path, reportsdir: Path, *, summary_path: Path | None 
                 if inputs is not None:
                     evaluation["grading_inputs"] = inputs
             candidates.append((result, evaluation))
-    if summary_path is not None:
+    if summary_path is not None and predictions_path is not None:   # provided together (checked above)
         empty_grades = _empty_patch_grades(by_id, Path(summary_path), Path(predictions_path))
         for result, _ in empty_grades:
             if result["task_id"] in seen:

@@ -131,8 +131,9 @@ def build_groups(attempts: list[dict], *, scale_by_std: bool = True) -> tuple[li
             ungraded += 1
             continue
         by_task.setdefault(row["task_id"], []).append(row)
-    kept, stats = [], {"tasks": len(by_task), "ungraded_attempts": ungraded, "all_solved": 0, "all_failed": 0,
-                       "kept_groups": 0, "kept_attempts": 0}
+    kept: list[dict] = []
+    stats = {"tasks": len(by_task), "ungraded_attempts": ungraded, "all_solved": 0, "all_failed": 0,
+             "kept_groups": 0, "kept_attempts": 0}
     for rows in by_task.values():
         rewards = [float(bool(row["resolved"])) for row in rows]
         advantages = group_advantages(rewards, scale_by_std=scale_by_std)

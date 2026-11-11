@@ -12,6 +12,7 @@ import sys
 import tomllib
 from dataclasses import fields, replace
 from pathlib import Path
+from typing import Any
 
 from .schema import RunConfig
 
@@ -145,7 +146,7 @@ def main(argv=None) -> int:
             from .evaluation import evaluate_run
             from .report import load_results
             results = load_results(args.input)
-            report = {"kind": "single_run_contract_audit", "runs": [
+            report: dict[str, Any] = {"kind": "single_run_contract_audit", "runs": [
                 {"task_id": result["task_id"], "run_id": result["run_id"],
                  "source_result": result["_result_path"], "evaluation": evaluate_run(result)}
                 for result in results]}

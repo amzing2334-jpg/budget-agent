@@ -32,8 +32,8 @@ def parse_read_observation(output: str) -> ReadObservation | None:
     if not isinstance(path, str) or not path or type(total) is not int or total < 0:
         return None
     rows = body.splitlines()
-    matches = [_READ_LINE.match(line) for line in rows]
-    if any(match is None for match in matches):
+    matches = [match for match in map(_READ_LINE.match, rows) if match is not None]
+    if len(matches) != len(rows):
         return None
     numbers = [int(match[1]) for match in matches]
     if numbers:

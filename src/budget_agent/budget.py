@@ -123,8 +123,11 @@ class Budget:
         inputs = self.counter.messages(messages)
         allowed = min(max_output_tokens, self.remaining_tokens - inputs, self.config.context_tokens - inputs)
         if self.config.max_cost_usd is not None:
-            remaining_cost = self.config.max_cost_usd - self.cost_usd
-            after_input = remaining_cost - inputs * self.config.input_price_per_million / 1_000_000
+            cost, input_price = self.cost_usd, self.config.input_price_per_million
+            if cost is None or input_price is None:
+                raise ValueError("a cost ceiling requires both input and output prices")
+            remaining_cost = self.config.max_cost_usd - cost
+            after_input = remaining_cost - inputs * input_price / 1_000_000
             if after_input < 0:
                 raise BudgetExceeded("Estimated input cost exceeds remaining cost budget")
             if self.config.output_price_per_million:
@@ -157,7 +160,8 @@ class Budget:
             reasons.append("provider usage exceeded per-call context limit")
         if self.input_tokens + self.output_tokens > self.config.total_tokens:
             reasons.append("actual cumulative usage exceeded total token limit")
-        if self.config.max_cost_usd is not None and self.cost_usd > self.config.max_cost_usd + 1e-12:
+        cost = self.cost_usd
+        if self.config.max_cost_usd is not None and cost is not None and cost > self.config.max_cost_usd + 1e-12:
             reasons.append("actual cumulative usage exceeded cost limit")
         self.records.append({
             "purpose": purpose,

@@ -48,7 +48,7 @@ def _process(command: str | list[str], cwd: Path, timeout: int, *, shell: bool =
              env: dict[str, str] | None = None) -> dict[str, Any]:
     started = time.monotonic()
     kwargs: dict[str, Any] = {}
-    if os.name == "nt":
+    if sys.platform == "win32":
         kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
     else:
         kwargs["start_new_session"] = True
@@ -220,7 +220,8 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
                                 excerpt += " [line suffix omitted]"
                             yield f"{relative}:{number}: {excerpt}"
 
-        rows, size, more = [], 0, False
+        rows: list[str] = []
+        size, more = 0, False
         for index, row in enumerate(records()):
             if index < offset:
                 continue
@@ -303,9 +304,9 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
             position = content.find(needle, offset)
             if position < 0:
                 break
-            line = content.count("\n", 0, position) + 1
+            line_number = content.count("\n", 0, position) + 1
             column = position - content.rfind("\n", 0, position)
-            positions.append(f"line {line}, column {column}")
+            positions.append(f"line {line_number}, column {column}")
             offset = position + len(needle)
         hint = ("Matching block starts" if matches else "First nonempty old line occurs") + ": " + "; ".join(positions) if positions else "No anchor found; read the current file before editing."
         if matches > 1:
@@ -314,8 +315,8 @@ def _repository_tool(root: Path, action: dict[str, Any], editable: list[str] | N
             # Small models often paraphrase the anchor; show the nearest real lines.
             import difflib
             lines = content.splitlines()
-            target = needle.strip()
-            scored = sorted(((difflib.SequenceMatcher(None, target, line.strip()).ratio(), number, line)
+            anchor = needle.strip()
+            scored = sorted(((difflib.SequenceMatcher(None, anchor, line.strip()).ratio(), number, line)
                              for number, line in enumerate(lines, 1) if line.strip()), reverse=True)[:3]
             close = [f"line {number}: {line.strip()[:160]}" for ratio, number, line in scored if ratio >= 0.5]
             if close:
