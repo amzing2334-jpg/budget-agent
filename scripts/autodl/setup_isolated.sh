@@ -19,9 +19,16 @@ BASE_PY=${BASE_PY:-/root/miniconda3/bin/python3}
 [ -x "$ENV_ROOT/env/bin/python" ] || "$BASE_PY" -m venv "$ENV_ROOT/env"
 ln -sfn "$ENV_ROOT/env" "$ML/env"   # scripts refer to $ML/env
 
-# ML stack: vLLM pins torch/transformers; training extras must accept those pins.
-"$ML/env/bin/pip" install -q vllm
-"$ML/env/bin/pip" install -q peft accelerate modelscope uv
+# ML stack: the exact environment every round ran on. ML_LOCK= (empty) resolves the newest
+# vLLM instead; vLLM then pins torch/transformers and the training extras must accept those pins.
+CODE=$AGENT/budget-agent
+ML_LOCK=${ML_LOCK-$CODE/requirements-gpu-host.lock.txt}
+if [ -n "$ML_LOCK" ]; then
+  "$ML/env/bin/pip" install -q -r "$ML_LOCK"
+else
+  "$ML/env/bin/pip" install -q vllm
+  "$ML/env/bin/pip" install -q peft accelerate modelscope uv
+fi
 
 # Everything that runs as `nobody` (the rollout interpreter, per-repo task venvs)
 # needs an interpreter outside /root, which is mode 700: a standalone CPython
@@ -30,7 +37,7 @@ AGENT_PY=$AGENT/python/cpython-3.12.16-linux-x86_64-gnu/bin/python3.12
 [ -x "$AGENT_PY" ] || "$ML/env/bin/uv" python install 3.12.16 --install-dir "$AGENT/python" --no-bin
 chmod -R a+rX "$AGENT/python"
 [ -x "$AGENT/interp/py/bin/python" ] || "$AGENT_PY" -m venv "$AGENT/interp/py"
-"$AGENT/interp/py/bin/python" -m pip install -q "tokenizers>=0.20,<1"   # token-counted context budgets
+"$AGENT/interp/py/bin/python" -m pip install -q -r "$CODE/requirements-rollout.lock.txt"   # tokenizers: token-counted budgets
 "$ML/env/bin/python" - <<'EOF'
 import torch, vllm, transformers, peft
 print("torch", torch.__version__, "cuda", torch.version.cuda, "gpu", torch.cuda.get_device_name(0))
