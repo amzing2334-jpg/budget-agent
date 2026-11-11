@@ -57,7 +57,7 @@ def _wilson(successes: int, n: int) -> tuple[float, float] | None:
 
 
 def _group_token_counts(records: list[dict]) -> tuple:
-    counts = []
+    counts: list[tuple[Any, ...]] = []
     for record in records:
         ledger = request_ledger(record)
         if ledger is None:
@@ -67,7 +67,11 @@ def _group_token_counts(records: list[dict]) -> tuple:
         else:
             counts.append(tuple(ledger_token_count(ledger, field)
                                 for field in ("input_tokens", "output_tokens", "total_tokens")))
-    return tuple(None if None in column else sum(column) for column in zip(*counts))
+    totals = []
+    for column in zip(*counts):
+        known = [value for value in column if value is not None]
+        totals.append(sum(known) if len(known) == len(column) else None)
+    return tuple(totals)
 
 
 def aggregate(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -101,8 +105,8 @@ def aggregate(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
             infrastructure_errors = sum(is_infrastructure_error(r) for r in records)
             empty_patches = sum(r.get("evaluation", {}).get("status") == "official_empty_patch" for r in records)
             invalid_budget_attempts = invalid_budgets[strategy]
-            costs = [r.get("cost_usd") for r in records]
-            cost = sum(costs) if all(isinstance(c, (int, float)) for c in costs) else None
+            costs = [c for c in (r.get("cost_usd") for r in records) if isinstance(c, (int, float))]
+            cost = sum(costs) if len(costs) == len(records) else None
             input_tokens, output_tokens, total_tokens = _group_token_counts(records)
             kind = evidence_kind(records[0])
             # Repeats on the same issue are dependent: do not manufacture confidence.

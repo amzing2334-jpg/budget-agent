@@ -41,8 +41,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install ruff
+      - run: python -m pip install ruff==0.17.4 mypy==2.4.1
       - run: ruff check --select F,E9 src scripts tests
+      - run: mypy   # the core library; settings in pyproject.toml
   training-math:
     # Tiny random models on CPU: the GRPO loss, the SFT loss and prefix packing must match their
     # reference computations. Pinned to the GPU host's stack. No training run happens here.

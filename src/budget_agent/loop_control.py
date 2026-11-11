@@ -75,7 +75,9 @@ class ReadLoopMonitor:
             if message["role"] != "user":
                 continue
             match = _EVENT_HEADER.match(message["content"])
-            prior = self.reads.get(match[1]) if match else None
+            if match is None:
+                continue
+            prior = self.reads.get(match[1])
             if prior is None or prior.path != current.path:
                 continue
             visible = set(message["content"].partition("Observation:\n")[2].splitlines())

@@ -50,7 +50,7 @@ def _repetitions(events: Sequence[Event], *, observations: bool) -> list[dict[st
         eligible = event.ok and tool in _BROWSE_TOOLS if observations else not event.ok and tool != "invalid_action"
         if not eligible:
             continue
-        key = (event.revision, json.dumps(event.action, sort_keys=True, ensure_ascii=False))
+        key: tuple[str, ...] = (event.revision, json.dumps(event.action, sort_keys=True, ensure_ascii=False))
         if observations:
             key += (event.output,)
         groups[key].append(event)
@@ -126,7 +126,7 @@ def _read_file_coverage(events: Sequence[Event]) -> dict[str, Any]:
     for event in events:
         if event.action["tool"] != "read_file":
             continue
-        row = {"event_id": event.id, "revision": event.revision, "path": None,
+        row: dict[str, Any] = {"event_id": event.id, "revision": event.revision, "path": None,
                "status": "unknown", "returned_lines": None, "new_lines": None,
                "repeated_lines": None, "covered_intervals": None, "covered_interval_count": None}
         rows.append(row)

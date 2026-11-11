@@ -6,7 +6,7 @@ next model input; they never erase the canonical trajectory or the task issue.
 from __future__ import annotations
 
 import json
-from typing import Callable
+from typing import Any, Callable
 
 from .budget import TokenCounter
 from .observations import parse_read_observation
@@ -84,7 +84,7 @@ class ContextManager:
         self.read_memory_tokens = read_memory_tokens
         self._summary = ""
         self._summarized_ids: set[str] = set()
-        self.stats = {"builds": 0, "compactions": 0, "summary_calls": 0, "excerpted_events": 0, "last_input_tokens": 0, "last_visible_events": 0, "last_omitted_events": 0, "last_masked_events": 0,
+        self.stats: dict[str, Any] = {"builds": 0, "compactions": 0, "summary_calls": 0, "excerpted_events": 0, "last_input_tokens": 0, "last_visible_events": 0, "last_omitted_events": 0, "last_masked_events": 0,
                       "last_read_memory_tokens": 0, "last_read_memory_lines": 0, "last_read_memory_events": 0}
 
     def _event_messages(self, event: Event, revision: str, *, observation: str | None = None) -> list[dict[str, str]]:

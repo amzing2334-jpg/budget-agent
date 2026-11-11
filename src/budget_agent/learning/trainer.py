@@ -197,8 +197,9 @@ def evaluate(policy, tasks, config: TrainingConfig, output: Path) -> dict:
         episodes.append(episode)
         print(json.dumps({"task": task.id, "resolved": episode.resolved,
                           "status": episode.status, "tokens": episode.input_tokens + episode.output_tokens}), flush=True)
-    result = {"stage": "eval", "tasks": len(episodes), "resolved": sum(e.resolved for e in episodes),
-              "resolve_rate": sum(e.resolved for e in episodes) / len(episodes),
+    resolved = sum(e.resolved is True for e in episodes)   # sample_episode never returns an ungraded episode
+    result = {"stage": "eval", "tasks": len(episodes), "resolved": resolved,
+              "resolve_rate": resolved / len(episodes),
               "total_tokens": sum(e.input_tokens + e.output_tokens for e in episodes),
               "policy_version": policy.version, "parameter_sha256": parameter_hash(policy),
               "note": "One seeded sample per task. Same-template held-out parameters, not repository generalization."}

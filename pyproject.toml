@@ -28,3 +28,15 @@ where = ["src"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 
+
+[tool.mypy]
+# The core library type-checks cleanly; CI keeps it that way (the lint job).
+files = ["src/budget_agent"]
+python_version = "3.11"
+warn_unused_ignores = true
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+# Optional extras that the lint job does not install.
+module = ["openjudge.*", "peft.*", "tiktoken.*", "tokenizers.*", "torch.*", "transformers.*"]
+ignore_missing_imports = true

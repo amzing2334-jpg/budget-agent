@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import Any, cast
 
 from .verification import fixture_outcome
 
@@ -12,6 +12,7 @@ def grading_input_match(records: list[dict]) -> str:
     identities = set()
     for record in records:
         material = record.get("evaluation", {}).get("grading_inputs")
+        hashes: tuple[Any, ...]
         match record.get("task_kind"), material:
             case "local", {"kind": "fixture", "verifier_sha256": digest}:
                 hashes = (digest,)
@@ -119,7 +120,7 @@ def _budget(result: dict) -> dict:
             invalid_requests.append(index)
         exceeded = valid_reasons and bool(reasons)
         if valid_counts:
-            inputs, outputs, estimated_inputs, reserved_outputs = values
+            inputs, outputs, estimated_inputs, reserved_outputs = cast("list[int]", values)
             exceeded = exceeded or outputs > reserved_outputs or inputs + outputs > estimated_inputs + reserved_outputs
         if exceeded:
             overrun_requests.append(index)

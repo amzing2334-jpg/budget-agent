@@ -10,6 +10,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from typing import Any
 
 from ..schema import Task
 from .rollout import initial_messages, observation
@@ -28,6 +29,8 @@ def _tests(function: str, cases: list[tuple], prefix: str) -> str:
 
 
 def _problem(family: str, value: int) -> tuple[str, str, str, str, str]:
+    public_cases: list[tuple[Any, Any]]   # (argument, expected): booleans for threshold, lists for range
+    private_cases: list[tuple[Any, Any]]
     if family == "threshold":
         issue = (f"In solution.py, qualifies(value) must return True when value is at least {value}, "
                  "including the boundary, and False below it. Fix the boundary bug.")
