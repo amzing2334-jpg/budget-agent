@@ -18,6 +18,7 @@
 | `compare_pools.py` | 两个池按题配对做 bootstrap，可以剔除可疑样本（`--drop-flagged`） |
 | `summarize_round.py` | 一轮的汇总：各池 pass@k、状态、编辑成功率、篡改审计、SFT 数据、loss 曲线、阶段耗时和费用 |
 | `review_patches.py` | 列出一个池里每个通过补丁的改动，用于逐条的防作弊检查；加 `--original` 时与注入 bug 之前的源码对照，打印剩余差异 |
+| `mark_failures.py` | 把对照原始源码后判定为没有恢复原有行为的补丁算作失败，生成用于敏感性比较的 attempts 文件 |
 | `limit_events.py` | 统计被 harness 限制终止的命令：按题测试时限、命令内存上限，以及 verifier 的超时和内存超限 |
 
 ## 训练
