@@ -1,0 +1,5 @@
+{"step": "serve-sft", "seconds": 81, "finished": "2026-11-11T13:43:06Z"}
+{"step": "rep-sft", "seconds": 1406, "finished": "2026-11-11T14:06:32Z"}
+{"step": "serve-grpo", "seconds": 72, "finished": "2026-11-11T14:07:44Z"}
+{"step": "rep-grpo", "seconds": 1756, "finished": "2026-11-11T14:37:00Z"}
+{"step": "stop-vllm", "seconds": 6, "finished": "2026-11-11T14:37:06Z"}
