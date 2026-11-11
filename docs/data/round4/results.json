@@ -1,0 +1,157 @@
+{
+ "pools": {
+  "fixed": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 768,
+     "ungraded_attempts": 0,
+     "solved_tasks": 13,
+     "pass@1": 0.05859375,
+     "pass@2": 0.09040178571428571,
+     "pass@4": 0.1193452380952381,
+     "pass@8": 0.13541666666666666,
+     "statuses": {
+      "finished": 92,
+      "max_steps": 245,
+      "stuck": 431
+     },
+     "mean_steps": 18.665364583333332
+    }
+   },
+   "attempts_per_hour": 732.4,
+   "wall_seconds": 3774.9,
+   "tokens": {
+    "input": 113619461,
+    "output": 558007
+   },
+   "evaluation_statuses": {
+    "resolved": 45,
+    "unresolved": 723
+   },
+   "verifier_timeouts": 1,
+   "edit_success": {
+    "edit_file": "1666/3304"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  },
+  "relabel": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 768,
+     "ungraded_attempts": 0,
+     "solved_tasks": 16,
+     "pass@1": 0.06901041666666667,
+     "pass@2": 0.10305059523809523,
+     "pass@4": 0.14092261904761905,
+     "pass@8": 0.16666666666666666,
+     "statuses": {
+      "stuck": 413,
+      "max_steps": 258,
+      "finished": 97
+     },
+     "mean_steps": 18.833333333333332
+    }
+   },
+   "attempts_per_hour": 764.8,
+   "wall_seconds": 3615.2,
+   "tokens": {
+    "input": 116940824,
+    "output": 558691
+   },
+   "evaluation_statuses": {
+    "unresolved": 715,
+    "resolved": 53
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "1640/3295"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  }
+ },
+ "sft": {
+  "examples": 0,
+  "tasks": 0,
+  "by_mode": {}
+ },
+ "training": null,
+ "loss_curve": [],
+ "compare": {
+  "eval": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.06901041666666667,
+   "candidate_pass@1": 0.05859375,
+   "delta": -0.010416666666666666,
+   "ci95": [
+    -0.029947916666666668,
+    0.009114583333333334
+   ],
+   "verdict": "no detectable change",
+   "tasks_improved": 6,
+   "tasks_worse": 10,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  },
+  "eval_drop_flagged": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.06901041666666667,
+   "candidate_pass@1": 0.05859375,
+   "delta": -0.010416666666666666,
+   "ci95": [
+    -0.029947916666666668,
+    0.009114583333333334
+   ],
+   "verdict": "no detectable change",
+   "tasks_improved": 6,
+   "tasks_worse": 10,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "unpaired_tasks": []
+  }
+ },
+ "stages": [
+  {
+   "step": "serve-relabel",
+   "seconds": 55,
+   "finished": "2026-11-11T19:24:59Z"
+  },
+  {
+   "step": "relabel",
+   "seconds": 3616,
+   "finished": "2026-11-11T20:25:15Z"
+  },
+  {
+   "step": "serve-fixed",
+   "seconds": 69,
+   "finished": "2026-11-11T20:26:24Z"
+  },
+  {
+   "step": "fixed",
+   "seconds": 3776,
+   "finished": "2026-11-11T21:29:20Z"
+  },
+  {
+   "step": "stop-vllm",
+   "seconds": 4,
+   "finished": "2026-11-11T21:29:24Z"
+  }
+ ],
+ "gpu_hours": 2.09,
+ "cost_cny": 6.85
+}

@@ -1,0 +1,2 @@
+{"pool": "/opt/coding-agent/work/round4/relabel", "attempts": 768, "commands": {"public_test": 1013, "run": 764}, "timed_out": {"public_test": 2, "run": 0}, "memory_error": {"public_test": 1, "run": 0}, "verifier_timed_out": 0, "verifier_memory_exceeded": 0}
+{"pool": "/opt/coding-agent/work/round4/fixed", "attempts": 768, "commands": {"public_test": 1014, "run": 783}, "timed_out": {"public_test": 3, "run": 0}, "memory_error": {"public_test": 0, "run": 0}, "verifier_timed_out": 1, "verifier_memory_exceeded": 0}
