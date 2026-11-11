@@ -172,7 +172,7 @@ def test_audit_keeps_valid_and_damaged_ledgers_in_one_report(tmp_path, engine):
         "valid": "pass", "missing_input": "unknown", "null_requests": "unknown", "request_overrun": "fail"}
     assert all(path.read_bytes() == content for path, content in originals.items())
     if engine == "openjudge":
-        for row, grade in zip(report["runs"], report["openjudge"]["budget"]):
+        for row, grade in zip(report["runs"], report["openjudge"]["budget"], strict=True):
             if row["task_id"] in {"missing_input", "null_requests"}:
                 assert grade["error"] == "insufficient_evidence"
                 assert "score" not in grade

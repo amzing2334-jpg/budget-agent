@@ -57,7 +57,7 @@ def grpo_update(policy, episodes: list[Episode], optimizer, config: TrainingConf
     optimizer.zero_grad(set_to_none=True)
     loss_value = 0.0
     max_ratio_deviation = 0.0
-    for episode, advantage in zip(episodes, advantages):
+    for episode, advantage in zip(episodes, advantages, strict=True):
         token_count = sum(len(sample.completion_ids) for sample in episode.steps)
         for sample in episode.steps:
             log_probs = policy.log_probs(sample)
@@ -71,7 +71,7 @@ def grpo_update(policy, episodes: list[Episode], optimizer, config: TrainingConf
     grad_norm = torch.nn.utils.clip_grad_norm_(parameters, config.max_grad_norm, error_if_nonfinite=True)
     optimizer.step()
     delta = sum((p.detach().float() - old.float()).square().sum().item()
-                for p, old in zip(parameters, before)) ** 0.5
+                for p, old in zip(parameters, before, strict=True)) ** 0.5
     policy.version += 1
     return {**metrics, "advantages": advantages, "loss": loss_value, "updated": True,
             "grad_norm": float(grad_norm), "parameter_delta_l2": delta,

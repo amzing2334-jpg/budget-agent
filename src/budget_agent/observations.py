@@ -43,4 +43,4 @@ def parse_read_observation(output: str) -> ReadObservation | None:
             return None
     elif start is not None or end is not None:
         return None
-    return ReadObservation(path, dict(zip(numbers, rows)), metadata.get("truncated_line_content"))
+    return ReadObservation(path, dict(zip(numbers, rows, strict=True)), metadata.get("truncated_line_content"))

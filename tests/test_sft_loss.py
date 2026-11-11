@@ -39,4 +39,4 @@ def test_assistant_loss_matches_the_full_vocabulary_loss_and_gradients(with_lora
     got = train.assistant_loss(model, ids, labels)
     grads = torch.autograd.grad(got, trainable)
     assert torch.allclose(got, expected, atol=1e-6)
-    assert all(torch.allclose(g, w, atol=1e-6) for g, w in zip(grads, want))
+    assert all(torch.allclose(g, w, atol=1e-6) for g, w in zip(grads, want, strict=True))

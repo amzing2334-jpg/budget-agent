@@ -381,7 +381,7 @@ class _Attempt:
         self.env = create_environment(self.task, self.config, self.run_dir)
         self.environment_provenance = self.env.provenance
         self.initial_revision = self.revision = self.snapshot()
-        for self.step in range(1, self.config.max_steps + 1):
+        for self.step in range(1, self.config.max_steps + 1):  # noqa: B020 (assigns an attribute; the range is built once)
             # `revision` is the previous step's post-action snapshot. Model
             # calls between steps (summaries, reflections) never touch files.
             self.read_loop.begin_revision(self.revision)

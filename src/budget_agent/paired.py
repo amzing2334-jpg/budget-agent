@@ -118,7 +118,7 @@ def analyze_paired(results: list[dict], baseline: str, candidate: str, *, factor
         grading_match = grading_input_match([left, right])
         if grading_match != "matched" and all(outcome in {"success", "failure"} for outcome in outcomes):
             ineligible_reasons.append(f"grading inputs {grading_match}")
-        for side, result, outcome in zip(("baseline", "candidate"), (left, right), outcomes):
+        for side, result, outcome in zip(("baseline", "candidate"), (left, right), outcomes, strict=True):
             budget_valid = comparison_budget_valid(result)
             if outcome not in {"success", "failure"}:
                 ineligible_reasons.append(f"{side}: {outcome}")

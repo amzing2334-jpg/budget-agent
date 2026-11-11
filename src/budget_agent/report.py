@@ -68,7 +68,7 @@ def _group_token_counts(records: list[dict]) -> tuple:
             counts.append(tuple(ledger_token_count(ledger, field)
                                 for field in ("input_tokens", "output_tokens", "total_tokens")))
     totals = []
-    for column in zip(*counts):
+    for column in zip(*counts, strict=True):
         known = [value for value in column if value is not None]
         totals.append(sum(known) if len(known) == len(column) else None)
     return tuple(totals)

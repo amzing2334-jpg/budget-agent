@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+import itertools
 import json
 from pathlib import Path
 import re
@@ -82,14 +83,14 @@ def main() -> int:
                     completions.append(turn.completion_ids)
             chains = pack_turns(prompts, completions)
             chain_lengths.update(len(chain) for chain in chains)
-            for previous, current in zip(chains, chains[1:]):  # why each chain ended
+            for previous, current in itertools.pairwise(chains):  # why each chain ended
                 before, after = prompts[previous[-1]], prompts[current[0]]
                 totals["break_retokenized_reply" if after[:len(before)] == before else "break_history_rewritten"] += 1
             totals["attempts"] += 1
             totals["turns"] += len(prompts)
             totals["sequences"] += len(chains)
             totals["completion_tokens"] += sum(len(c) for c in completions)
-            totals["per_turn_tokens"] += sum(len(p) + len(c) - 1 for p, c in zip(prompts, completions))
+            totals["per_turn_tokens"] += sum(len(p) + len(c) - 1 for p, c in zip(prompts, completions, strict=True))
             totals["packed_tokens"] += sum(len(chain_layout(prompts, completions, chain)[0]) for chain in chains)
     report = {**totals, "turns_per_sequence": round(totals["turns"] / max(1, totals["sequences"]), 2),
               "token_reduction": round(totals["per_turn_tokens"] / max(1, totals["packed_tokens"]), 2),

@@ -22,7 +22,7 @@ def vllm_body(ids, logprobs, completion_tokens=None, finish="stop"):
             "prompt_token_ids": PROMPT_IDS,
             "choices": [{"message": {"content": CONTENT}, "finish_reason": finish, "token_ids": list(ids),
                          "logprobs": {"content": [{"token": f"token_id:{i}", "logprob": lp, "bytes": None,
-                                                   "top_logprobs": []} for i, lp in zip(ids, logprobs)]}}]}
+                                                   "top_logprobs": []} for i, lp in zip(ids, logprobs, strict=True)]}}]}
 
 
 def client(server, logprobs):  # noqa: F811 (fixture argument)

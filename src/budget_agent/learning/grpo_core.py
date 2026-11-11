@@ -142,7 +142,7 @@ def build_groups(attempts: list[dict], *, scale_by_std: bool = True) -> tuple[li
             continue
         stats["kept_groups"] += 1
         stats["kept_attempts"] += len(rows)
-        kept.extend({**row, "advantage": advantage} for row, advantage in zip(rows, advantages))
+        kept.extend({**row, "advantage": advantage} for row, advantage in zip(rows, advantages, strict=True))
     return kept, stats
 
 
