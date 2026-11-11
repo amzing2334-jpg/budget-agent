@@ -1,0 +1,185 @@
+{
+ "pools": {
+  "eval-grpo": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 384,
+     "ungraded_attempts": 0,
+     "solved_tasks": 18,
+     "pass@1": 0.11979166666666667,
+     "pass@2": 0.1579861111111111,
+     "pass@4": 0.1875,
+     "statuses": {
+      "finished": 156,
+      "max_steps": 92,
+      "stuck": 136
+     },
+     "mean_steps": 19.0625
+    }
+   },
+   "attempts_per_hour": 601.7,
+   "wall_seconds": 2297.3,
+   "tokens": {
+    "input": 77306221,
+    "output": 364256
+   },
+   "evaluation_statuses": {
+    "resolved": 46,
+    "unresolved": 338
+   },
+   "verifier_timeouts": 1,
+   "edit_success": {
+    "edit_file": "1017/2302"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  },
+  "eval-sft": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 384,
+     "ungraded_attempts": 0,
+     "solved_tasks": 13,
+     "pass@1": 0.06510416666666667,
+     "pass@2": 0.09895833333333333,
+     "pass@4": 0.13541666666666666,
+     "statuses": {
+      "stuck": 194,
+      "max_steps": 138,
+      "finished": 52
+     },
+     "mean_steps": 19.010416666666668
+    }
+   },
+   "attempts_per_hour": 766.1,
+   "wall_seconds": 1804.5,
+   "tokens": {
+    "input": 56462146,
+    "output": 279056
+   },
+   "evaluation_statuses": {
+    "unresolved": 359,
+    "resolved": 25
+   },
+   "verifier_timeouts": 1,
+   "edit_success": {
+    "edit_file": "864/1663"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  }
+ },
+ "sft": {
+  "examples": 0,
+  "tasks": 0,
+  "by_mode": {}
+ },
+ "training": null,
+ "loss_curve": [],
+ "compare": {
+  "eval": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.06510416666666667,
+   "candidate_pass@1": 0.11979166666666667,
+   "delta": 0.0546875,
+   "ci95": [
+    0.020833333333333332,
+    0.09114583333333333
+   ],
+   "verdict": "improved",
+   "tasks_improved": 15,
+   "tasks_worse": 4,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  },
+  "eval_drop_flagged": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.06510416666666667,
+   "candidate_pass@1": 0.11979166666666667,
+   "delta": 0.0546875,
+   "ci95": [
+    0.020833333333333332,
+    0.09114583333333333
+   ],
+   "verdict": "improved",
+   "tasks_improved": 15,
+   "tasks_worse": 4,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "unpaired_tasks": []
+  },
+  "harness_sft": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.0625,
+   "candidate_pass@1": 0.06510416666666667,
+   "delta": 0.0026041666666666665,
+   "ci95": [
+    -0.015625,
+    0.020833333333333332
+   ],
+   "verdict": "no detectable change",
+   "tasks_improved": 5,
+   "tasks_worse": 5,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  }
+ },
+ "stages": [
+  {
+   "step": "serve-policy",
+   "seconds": 60,
+   "finished": "2026-11-11T15:08:03Z"
+  },
+  {
+   "step": "grpo",
+   "seconds": 11082,
+   "finished": "2026-11-11T18:12:45Z"
+  },
+  {
+   "step": "serve-sft",
+   "seconds": 78,
+   "finished": "2026-11-11T18:14:03Z"
+  },
+  {
+   "step": "eval-sft",
+   "seconds": 1805,
+   "finished": "2026-11-11T18:44:08Z"
+  },
+  {
+   "step": "serve-final",
+   "seconds": 63,
+   "finished": "2026-11-11T18:45:11Z"
+  },
+  {
+   "step": "eval-grpo",
+   "seconds": 2297,
+   "finished": "2026-11-11T19:23:28Z"
+  },
+  {
+   "step": "stop-vllm",
+   "seconds": 4,
+   "finished": "2026-11-11T19:23:32Z"
+  }
+ ],
+ "gpu_hours": 4.27,
+ "cost_cny": 14.02
+}

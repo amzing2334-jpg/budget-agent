@@ -16,7 +16,8 @@
 | rollout 基准 | 约 0.25 小时 | 约 0.8 元 | [BENCH_ROLLOUT_2026-11-06.md](BENCH_ROLLOUT_2026-11-06.md) |
 | 第二轮 GRPO | 2.62 小时 | 8.6 元 | [EXPERIMENT_GRPO_ROUND2.md](EXPERIMENT_GRPO_ROUND2.md) |
 | 复现评测 | 0.92 小时 | 3.0 元 | [EXPERIMENT_REPLICATION.md](EXPERIMENT_REPLICATION.md) |
-| 第三轮 GRPO | 约 4.1 小时 | 约 13.4 元 | [EXPERIMENT_GRPO_ROUND3.md](EXPERIMENT_GRPO_ROUND3.md) |
+| 第三轮 GRPO | 4.27 小时 | 14.0 元 | [EXPERIMENT_GRPO_ROUND3.md](EXPERIMENT_GRPO_ROUND3.md) |
+| 第四轮标注 A/B | 约 1.8 小时（计划） | 约 6 元 | [EXPERIMENT_LABELS_AB.md](EXPERIMENT_LABELS_AB.md) |
 
 ## 1. 本地检查（只需 CPU）
 
@@ -92,6 +93,8 @@ STEPS=40 MAX_MINUTES=180 LR=2e-5 TURNS_PER_ATTEMPT=4 MINIBATCHES=4 \
 
 - **主结论**：读 `compare_eval.json` 的 `ci95` 和 `verdict`，规则在各轮协议里写定：下界大于 0 为提升，区间包含 0 为未检测到提升，上界小于 0 为变差。
 - **防作弊**：`python scripts/review_patches.py <评测池目录>` 列出每个通过补丁的改动，逐条阅读；剔除可疑样本后的结果在 `compare_eval_drop_flagged.json`。
+- **对照原始源码**：加上 `--original /opt/coding-agent/swesmith-src --tasks /opt/coding-agent/swesmith/tasks`，脚本会把每个补丁应用到带 bug 的文件上，与注入 bug 之前的源码比较，并打印剩余差异。第三轮的判断结果在 `docs/data/round3/original_check.json`。
+- **被限制终止的命令**：`python scripts/limit_events.py <评测池或 GRPO 步目录...>`。
 - **训练过程**：`grpo/metrics.jsonl` 每一步记录以下指标：
   - `prompt_mismatch`，应为 0；
   - 采样端与训练端 logprob 的差（`sampler_trainer_abs_logprob_gap`）；
