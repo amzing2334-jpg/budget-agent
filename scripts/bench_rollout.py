@@ -12,21 +12,11 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-import re
 import subprocess
 import threading
 import time
-import urllib.request
 
-
-def metrics(server: str) -> dict[str, float]:
-    text = urllib.request.urlopen(f"{server}/metrics", timeout=10).read().decode()
-    totals: dict[str, float] = {}
-    for line in text.splitlines():
-        match = re.match(r"^(vllm:[a-z_]+?)(?:_total)?(?:\{[^}]*\})? ([0-9.eE+-]+)$", line)
-        if match:
-            totals[match[1]] = totals.get(match[1], 0.0) + float(match[2])
-    return totals
+from vllm_metrics import metrics  # scripts/ is on sys.path when this file runs as a script
 
 
 def sample_gpu(stop: threading.Event, samples: list[float]) -> None:
