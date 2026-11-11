@@ -82,3 +82,7 @@ def test_samples_rebuilt_with_fixed_labels_equal_those_of_a_fixed_run(tmp_path):
     assert rebuilt == sft_data.samples_for(runs["fixed"])
     assert rebuilt[0] == "full"            # fixed labels keep the history append-only: one sample per attempt
     assert sft_data.samples_for(runs["relabel"])[0] == "last"
+    # A controlled comparison keeps one sample per request in both modes: same count, order and weighting.
+    per_request = sft_data.samples_for(runs["relabel"], "fixed", "last")
+    assert per_request[0] == "last" and len(per_request[1]) == len(sft_data.samples_for(runs["relabel"])[1])
+    assert per_request[1][-1] == rebuilt[1][0]

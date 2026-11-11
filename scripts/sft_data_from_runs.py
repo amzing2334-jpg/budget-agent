@@ -32,11 +32,11 @@ def agent_calls(run_dir: Path, labels: str = "recorded") -> list[dict]:
     return [call for call in calls if call.get("purpose") == "agent" and call.get("response") is not None]
 
 
-def samples_for(run_dir: Path, labels: str = "recorded") -> tuple[str, list[list[dict]]]:
+def samples_for(run_dir: Path, labels: str = "recorded", sample_mode: str = "auto") -> tuple[str, list[list[dict]]]:
     calls = agent_calls(run_dir, labels)
     turns = [call["messages"] + [{"role": "assistant", "content": call["response"]["content"]}] for call in calls]
     final = turns[-1]
-    if all(final[:len(turn)] == turn for turn in turns):
+    if sample_mode == "auto" and all(final[:len(turn)] == turn for turn in turns):
         return "full", [final]
     return "last", turns
 
@@ -52,6 +52,9 @@ def main() -> int:
                         help="keep winners whose patch tripped a tamper signal (excluded by default)")
     parser.add_argument("--revision-labels", choices=["recorded", "relabel", "fixed"], default="recorded",
                         help="use the recorded requests, or rebuild them in this revision-label mode")
+    parser.add_argument("--sample-mode", choices=["auto", "last"], default="auto",
+                        help="auto: one sample per attempt when every request extends the previous one; "
+                             "last: always one sample per request, trained on its final reply")
     args = parser.parse_args()
     rows = [json.loads(line) for path in args.attempts for line in path.read_text().splitlines() if line.strip()]
     winners: dict[str, list[dict]] = {}
@@ -69,7 +72,7 @@ def main() -> int:
         chosen = sorted(winners[task_id], key=lambda row: row["sample"])
         rng.shuffle(chosen)
         for row in chosen[:args.per_task]:
-            mode, conversations = samples_for(Path(row["result_path"]).parent, args.revision_labels)
+            mode, conversations = samples_for(Path(row["result_path"]).parent, args.revision_labels, args.sample_mode)
             for messages in conversations:
                 examples.append({"task_id": task_id, "sample": row["sample"], "mode": mode,
                                  "source": row["result_path"], "messages": messages})
@@ -78,7 +81,7 @@ def main() -> int:
     args.output.write_text("".join(json.dumps(example, ensure_ascii=False) + "\n" for example in examples), encoding="utf-8")
     print(json.dumps({"tasks_with_success": len(winners), "examples": len(examples), "by_mode": written,
                       "attempts_seen": len(rows), "flagged_winners_excluded": flagged,
-                      "revision_labels": args.revision_labels}))
+                      "revision_labels": args.revision_labels, "sample_mode": args.sample_mode}))
     return 0
 
 
