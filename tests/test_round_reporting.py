@@ -66,6 +66,9 @@ def test_round_summary_reports_pools_audit_training_and_cost(tmp_path, monkeypat
                             "statuses": {"finished": 4}}},
         "attempts_per_hour": 100.0, "wall_seconds": 144.0, "tokens": {"input": 10, "output": 5}}), encoding="utf-8")
     (tmp_path / "rollouts" / "unfinished").mkdir()
+    orphan = pool / "runs" / "s01" / "interrupted"      # not in attempts.jsonl; its last line was cut off
+    orphan.mkdir(parents=True)
+    (orphan / "trajectory.jsonl").write_text('{"action": {"tool": "edit_file"}, "ok": tr', encoding="utf-8")
     out = tmp_path / "outputs"
     ledger(out / "sft.jsonl", [{"task_id": "t1", "mode": "last"}, {"task_id": "t1", "mode": "last"},
                                {"task_id": "t2", "mode": "full"}])

@@ -59,7 +59,11 @@ def pool_stats(pool: Path) -> dict:
     attempts = jsonl(pool / "attempts.jsonl")
     edits: Counter = Counter()
     edits_ok: Counter = Counter()
-    for path in pool.glob("runs/*/*/trajectory.jsonl"):
+    # Only recorded attempts count: a run directory missing from attempts.jsonl is an attempt that
+    # was interrupted (a crash, a full disk) and its trajectory may be truncated.
+    for path in (Path(row["result_path"]).parent / "trajectory.jsonl" for row in attempts if row.get("result_path")):
+        if not path.exists():
+            continue
         for event in jsonl(path):
             tool = event["action"]["tool"]
             if tool in {"edit_file", "replace_lines", "write_file"}:
