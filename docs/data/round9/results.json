@@ -1,0 +1,152 @@
+{
+ "pools": {
+  "eval-v26": {
+   "splits": {
+    "eval": {
+     "tasks": 96,
+     "attempts": 768,
+     "ungraded_attempts": 0,
+     "solved_tasks": 20,
+     "pass@1": 0.10807291666666667,
+     "pass@2": 0.13988095238095238,
+     "pass@4": 0.17380952380952383,
+     "pass@8": 0.20833333333333334,
+     "statuses": {
+      "finished": 100,
+      "max_steps": 422,
+      "stuck": 246
+     },
+     "mean_steps": 24.2265625
+    }
+   },
+   "attempts_per_hour": 609.2,
+   "wall_seconds": 4538.2,
+   "tokens": {
+    "input": 138611149,
+    "output": 615598
+   },
+   "evaluation_statuses": {
+    "resolved": 83,
+    "unresolved": 685
+   },
+   "verifier_timeouts": 0,
+   "edit_success": {
+    "edit_file": "1231/2911"
+   },
+   "patch_signals": {},
+   "tamper_audit": []
+  }
+ },
+ "sft": {
+  "examples": 0,
+  "tasks": 0,
+  "by_mode": {}
+ },
+ "training": null,
+ "loss_curve": [],
+ "grpo": null,
+ "compare": {
+  "continued": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.10807291666666667,
+   "candidate_pass@1": 0.10807291666666667,
+   "delta": 0.0,
+   "ci95": [
+    -0.0234375,
+    0.022135416666666668
+   ],
+   "verdict": "no detectable change",
+   "tasks_improved": 9,
+   "tasks_worse": 8,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  },
+  "eval": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.12369791666666667,
+   "candidate_pass@1": 0.10807291666666667,
+   "delta": -0.015625,
+   "ci95": [
+    -0.044270833333333336,
+    0.009114583333333334
+   ],
+   "verdict": "no detectable change",
+   "tasks_improved": 10,
+   "tasks_worse": 10,
+   "ungraded_attempts": {
+    "baseline": 2,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  },
+  "eval_drop_flagged": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.12369791666666667,
+   "candidate_pass@1": 0.10807291666666667,
+   "delta": -0.015625,
+   "ci95": [
+    -0.044270833333333336,
+    0.009114583333333334
+   ],
+   "verdict": "no detectable change",
+   "tasks_improved": 10,
+   "tasks_worse": 10,
+   "ungraded_attempts": {
+    "baseline": 2,
+    "candidate": 0
+   },
+   "dropped_flagged": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "unpaired_tasks": []
+  },
+  "sft": {
+   "split": "eval",
+   "paired_tasks": 96,
+   "baseline_pass@1": 0.06901041666666667,
+   "candidate_pass@1": 0.10807291666666667,
+   "delta": 0.0390625,
+   "ci95": [
+    0.009114583333333334,
+    0.07291666666666667
+   ],
+   "verdict": "improved",
+   "tasks_improved": 14,
+   "tasks_worse": 5,
+   "ungraded_attempts": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "dropped_flagged": null,
+   "unpaired_tasks": []
+  }
+ },
+ "stages": [
+  {
+   "step": "serve-final",
+   "seconds": 65,
+   "finished": "2026-11-12T20:13:20Z"
+  },
+  {
+   "step": "eval-v26",
+   "seconds": 4539,
+   "finished": "2026-11-12T21:28:59Z"
+  },
+  {
+   "step": "stop-vllm",
+   "seconds": 4,
+   "finished": "2026-11-12T21:29:03Z"
+  }
+ ],
+ "gpu_hours": 1.28,
+ "cost_cny": 4.2
+}

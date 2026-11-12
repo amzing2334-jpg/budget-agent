@@ -1,0 +1,1 @@
+{"pool": "/opt/coding-agent/work/round9/eval-v26", "attempts": 768, "commands": {"public_test": 2188}, "timed_out": {"public_test": 0}, "memory_error": {"public_test": 2}, "verifier_timed_out": 0, "verifier_memory_exceeded": 0}
