@@ -23,6 +23,7 @@
 | 第七轮继续训练 GRPO | 10.4 小时（评测 5.7 小时，含汇总报错后 1.45 小时的空闲） | 约 34.1 元 | [EXPERIMENT_GRPO_ROUND7.md](EXPERIMENT_GRPO_ROUND7.md) |
 | 第八轮流水线 GRPO | 约 4 小时（计划） | 按当时价格 | [EXPERIMENT_GRPO_ROUND8.md](EXPERIMENT_GRPO_ROUND8.md) |
 | 第九轮评测失稳检测保留的 adapter | 约 1.5 小时（计划） | 按当时价格 | [EXPERIMENT_GRPO_ROUND9.md](EXPERIMENT_GRPO_ROUND9.md) |
+| 第十轮在新题上继续训练 | 约 3 到 5 小时（计划） | 按当时价格 | [EXPERIMENT_GRPO_ROUND10.md](EXPERIMENT_GRPO_ROUND10.md) |
 
 ## 1. 本地检查（只需 CPU）
 
@@ -106,6 +107,7 @@ STEPS=60 MAX_MINUTES=180 LR=2e-5 TURNS_PER_ATTEMPT=4 MINIBATCHES=4 SEED=2 \
 STEPS=29 MAX_MINUTES=240 LR=2e-5 TURNS_PER_ATTEMPT=4 MINIBATCHES=4 SEED=1 \
   setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round8_grpo.sh > logs/round8.log 2>&1 &
 setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round9_eval.sh > logs/round9.log 2>&1 &   # 只评测，不训练
+setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round10_fresh_tasks.sh > logs/round10.log 2>&1 &
 ```
 
 轮次之间用 `chain_round.sh` 衔接：等上一轮的驱动脚本正常结束（日志里有完成标记）、GPU 空闲、新代码树的哈希核对通过，再部署并启动下一轮。第八轮到第九轮就是这样排队的：
