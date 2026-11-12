@@ -134,6 +134,58 @@ def drive_steps(steps: int, *, pipeline: bool, launch: Callable[[int, int], Any]
     return steps
 
 
+def rollout_health(attempts: list[dict]) -> dict:
+    """What a rollout batch did that the reward does not see.
+
+    invalid_action_share: agent steps whose output was not a valid action (tool
+    "invalid_action" in each attempt's trajectory.jsonl) over all agent steps of the batch;
+    output_tokens_per_attempt: mean completion tokens per attempt. In round 7 the invalid
+    share rose from about 1% to 80% while the training pass rate stayed flat, moving about
+    9 steps before the entropy did.
+    """
+    actions = invalid = 0
+    for row in attempts:
+        if not row.get("result_path"):
+            continue
+        trajectory = Path(row["result_path"]).parent / "trajectory.jsonl"
+        if not trajectory.exists():
+            continue
+        for line in trajectory.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                actions += 1
+                invalid += json.loads(line)["action"].get("tool") == "invalid_action"
+    tokens = [row.get("output_tokens") or 0 for row in attempts]
+    return {"invalid_action_share": round(invalid / actions, 4) if actions else 0.0,
+            "output_tokens_per_attempt": round(sum(tokens) / max(1, len(tokens)), 1)}
+
+
+@dataclass
+class HealthGuard:
+    """Stop a run whose rollouts degenerate while the reward does not show it.
+
+    observe(policy, share) takes one rollout batch's invalid-action share and the policy that
+    sampled it. The guard trips after `patience` consecutive batches above `threshold`;
+    healthy_policy is then the last policy whose batch stayed at or below the threshold (v0 if
+    none did), the one to keep. A threshold of None never trips.
+    """
+    threshold: float | None
+    patience: int = 2
+    healthy_policy: int = 0
+    streak: int = 0
+    tripped: bool = False
+
+    def observe(self, policy: int, share: float) -> bool:
+        if self.threshold is None or self.tripped:
+            return self.tripped
+        if share > self.threshold:
+            self.streak += 1
+            self.tripped = self.streak >= self.patience
+        else:
+            self.streak = 0
+            self.healthy_policy = policy
+        return self.tripped
+
+
 def group_advantages(rewards: list[float], *, scale_by_std: bool = True, eps: float = 1e-6) -> list[float] | None:
     """Group-relative advantages; None when every reward is equal (no learning signal).
 
