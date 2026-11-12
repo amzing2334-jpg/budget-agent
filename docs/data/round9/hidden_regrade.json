@@ -1,0 +1,209 @@
+{
+ "checks": {
+  "Suor__funcy.207a7810.func_basic__4zw03ae8": {
+   "original": "pass",
+   "buggy": "fail"
+  },
+  "Suor__funcy.207a7810.func_basic__cd2paqnl": {
+   "original": "pass",
+   "buggy": "fail"
+  },
+  "Suor__funcy.207a7810.func_basic__t1925j1w": {
+   "original": "pass",
+   "buggy": "fail"
+  },
+  "msiemens__tinydb.10644a0e.func_basic__gqknew3c": {
+   "original": "pass",
+   "buggy": "fail"
+  },
+  "msiemens__tinydb.10644a0e.func_basic__xewv2osl": {
+   "original": "pass",
+   "buggy": "fail"
+  },
+  "msiemens__tinydb.10644a0e.func_pm_ctrl_shuffle__lqjyurqa": {
+   "original": "pass",
+   "buggy": "fail"
+  },
+  "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo": {
+   "original": "pass",
+   "buggy": "fail"
+  },
+  "r1chardj0n3s__parse.30da9e4f.func_basic__agjn8p50": {
+   "original": "pass",
+   "buggy": "fail"
+  },
+  "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh": {
+   "original": "pass",
+   "buggy": "fail"
+  },
+  "r1chardj0n3s__parse.30da9e4f.func_basic__x110b8lc": {
+   "original": "pass",
+   "buggy": "fail"
+  },
+  "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4": {
+   "original": "pass",
+   "buggy": "fail"
+  }
+ },
+ "attempts": [
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__4zw03ae8",
+   "sample": 0,
+   "result": "pass"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__4zw03ae8",
+   "sample": 1,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__4zw03ae8",
+   "sample": 4,
+   "result": "pass"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 0,
+   "result": "pass"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 1,
+   "result": "pass"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 2,
+   "result": "timeout"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 3,
+   "result": "pass"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 4,
+   "result": "pass"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 6,
+   "result": "timeout"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 7,
+   "result": "timeout"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__gqknew3c",
+   "sample": 2,
+   "result": "pass"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__gqknew3c",
+   "sample": 3,
+   "result": "pass"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_shuffle__lqjyurqa",
+   "sample": 2,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_shuffle__lqjyurqa",
+   "sample": 6,
+   "result": "pass"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 0,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 1,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 3,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 4,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 5,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 6,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 7,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 0,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 6,
+   "result": "fail"
+  },
+  {
+   "pool": "/opt/coding-agent/work/round9/eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 7,
+   "result": "fail"
+  }
+ ],
+ "summary": {
+  "/opt/coding-agent/work/round9/eval-v26": {
+   "checked": 25,
+   "pass": 9,
+   "fail": 13,
+   "timeout": 3,
+   "patch_failed": 0
+  }
+ }
+}

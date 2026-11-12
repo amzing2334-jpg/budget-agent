@@ -1,0 +1,41 @@
+[
+ {
+  "pool": "/opt/coding-agent/work/round9/eval-v26",
+  "attempts": 768,
+  "resolved": 83,
+  "ungraded": 0,
+  "pass@1": 0.1081,
+  "solved_tasks": 20,
+  "statuses": {
+   "finished": 100,
+   "stuck": 246,
+   "max_steps": 422
+  },
+  "finished_and_resolved": [
+   83,
+   100
+  ],
+  "per_repository": {
+   "funcy": "22/192",
+   "parse": "32/192",
+   "tinydb": "29/192",
+   "tomli": "0/192"
+  },
+  "per_attempt": {
+   "steps": 24.2,
+   "input_tokens": 180483.3,
+   "output_tokens": 801.6,
+   "elapsed_seconds": 186.5,
+   "model_seconds": 15.5
+  },
+  "tool_calls": {
+   "search": 6877,
+   "read_file": 4830,
+   "edit_file": 2911,
+   "public_test": 2188,
+   "list_files": 1551,
+   "invalid_action": 149,
+   "finish": 100
+  }
+ }
+]

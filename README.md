@@ -16,15 +16,17 @@
 | GRPO 29 步，前缀打包，换种子独立重复 | 6.90% → **12.37%** | **+5.47 [+2.21, +9.11]** | 提升，重复成功 | [第五轮](docs/EXPERIMENT_GRPO_ROUND5.md) |
 | 在固定标注上重训 SFT 学生 vs 原学生（非劣性，界限 −2） | 6.90% → 6.51% | −0.39 [−2.08, +1.30] | 非劣性未证明（差 0.08），不采用 | [第六轮](docs/EXPERIMENT_LABELS_SFT.md) |
 | 在第五轮的 adapter 上继续训练 GRPO 46 步 vs 第五轮 | 12.37% → 10.81% | −1.56 [−4.69, +1.56] | 未检测到进一步提升，后期失稳 | [第七轮](docs/EXPERIMENT_GRPO_ROUND7.md) |
+| 流水线 GRPO（rollout 与训练重叠）vs 第五轮的同步训练（非劣性，界限 −2） | 12.37% → **14.32%** | +1.95 [−0.91, +5.21] | 非劣，此后默认流水线；GRPO 用时 −12.6% | [第八轮](docs/EXPERIMENT_GRPO_ROUND8.md) |
+| 失稳检测保留的第七轮 adapter（v26）vs 第五轮 | 12.37% → 10.81% | −1.56 [−4.43, +0.91] | 未检测到提升：同样的题上继续训练不再提高 | [第九轮](docs/EXPERIMENT_GRPO_ROUND9.md) |
 
 | | 要点 | 证据 |
 |---|---|---|
 | **奖励覆盖** | 把每个通过的补丁与注入 bug 之前的源码对照：各策略约 8% 到 15% 的通过补丁通过了测试却没有恢复原有行为，集中在几道测试不全的题上。把第三轮的这类补丁算作失败，GRPO 的增益仍为 +2.6 到 +3.4，区间在 0 以上；GRPO 与 SFT 的比例差异不显著（p = 0.17）。为这些题写的 11 个隐藏行为检查在 118 个相关补丁上与人工判断完全一致 | [技术复盘 §3](docs/TECH_REPORT.md) |
 | **一致性** | 训练端与采样端的 prompt 在 token 层面完全一致：四轮 20,279 个训练 turn 的摘要全部吻合，logprob 平均差在失稳之前 ≤ 0.0035 nat，TIS 从未截断 | [技术复盘 §4](docs/TECH_REPORT.md) |
 | **稳定性** | 在第五轮的 adapter 上继续训练，第 36 步以后失稳：无效动作（不是合法 JSON 的输出）从约 1% 升到 74% 到 83%，熵从 0.1 升到 3.0，训练题上的通过率始终不变。无效动作比例比熵早约 9 步出现异常，只看奖励发现不了。评测中，能解的题照常解，解不出的题陷入重复输出 | [第七轮](docs/EXPERIMENT_GRPO_ROUND7.md) |
-| **系统** | 单卡 7B agent rollout 受 prefill 限制（prompt token 是生成的 108 到 141 倍）。前缀打包把训练编码的 token 减少 2.9 到 3.1 倍，loss 和梯度等价；用于第五轮的 GRPO 训练后，每个训练 turn 的用时降低 36%，训练占每步时间从 59% 降到 43%，瓶颈转到 rollout。改成固定标注可到 4.48 倍（事先估计 4.43 倍），但见上表第四轮。按题测试时限把 rollout 的 p90 从 631 秒降到 235 秒 | [基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[打包](docs/PREFIX_PACKING.md) |
+| **系统** | 单卡 7B agent rollout 受 prefill 限制（prompt token 是生成的 108 到 141 倍）。前缀打包把训练编码的 token 减少 2.9 到 3.1 倍，loss 和梯度等价；用于第五轮的 GRPO 训练后，每个训练 turn 的用时降低 36%，训练占每步时间从 59% 降到 43%，瓶颈转到 rollout。改成固定标注可到 4.48 倍（事先估计 4.43 倍），但见上表第四轮。按题测试时限把 rollout 的 p90 从 631 秒降到 235 秒。流水线（第八轮）在单卡上只省 12.6%：采样和训练争用同一张 GPU，各慢约 1.7 和 1.9 倍 | [基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[打包](docs/PREFIX_PACKING.md) |
 
-六次训练（RFT、四次 GRPO、一次固定标注的 SFT 重训）、一次复现评测和一次标注 A/B 共 29.5 GPU 小时，按 3.28 元/小时约 97 元。留出集上通过的 522 个补丁都逐条人工检查过，没有发现篡改，并且都与原始源码对照过。原始输出在 [`docs/data/`](docs/data/)。
+七次训练（RFT、五次 GRPO、一次固定标注的 SFT 重训）、两次只评测的实验（复现、第九轮）和一次标注 A/B 共 34.6 GPU 小时，按 3.28 元/小时约 114 元。留出集上通过的 715 个补丁都逐条人工检查过，没有发现篡改，并且都与原始源码对照过。原始输出在 [`docs/data/`](docs/data/)。
 
 ```mermaid
 flowchart LR
@@ -121,8 +123,8 @@ python scripts/grpo_harness.py --base-model <模型> --tasks swesmith/train.json
   - [第五轮：前缀打包下的第二次 GRPO 训练](docs/EXPERIMENT_GRPO_ROUND5.md)
   - [第六轮：在固定标注的历史上重训 SFT 学生](docs/EXPERIMENT_LABELS_SFT.md)
   - [第七轮：在第五轮的基础上继续训练 GRPO](docs/EXPERIMENT_GRPO_ROUND7.md)
-  - [第八轮：流水线 GRPO（rollout 与训练重叠）](docs/EXPERIMENT_GRPO_ROUND8.md)（已冻结）
-  - [第九轮：失稳检测保留的 adapter（第七轮的 v26）](docs/EXPERIMENT_GRPO_ROUND9.md)（已冻结）
+  - [第八轮：流水线 GRPO（rollout 与训练重叠）](docs/EXPERIMENT_GRPO_ROUND8.md)
+  - [第九轮：失稳检测保留的 adapter（第七轮的 v26）](docs/EXPERIMENT_GRPO_ROUND9.md)
   - [第十轮：在新题上继续训练第八轮的策略](docs/EXPERIMENT_GRPO_ROUND10.md)（已冻结）
   - [rollout 吞吐基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[前缀打包](docs/PREFIX_PACKING.md)
 - [代码审查与修复（2026-11-05）](docs/CODE_REVIEW_2026-11-05.md)、[项目历史](docs/HISTORY.md)、[SWE-bench 协议](docs/EXPERIMENT_PROTOCOL.md)、[训练说明](docs/TRAINING.md)

@@ -1,0 +1,150 @@
+{
+ "method": "review_patches.py --original (files the grader ignored are not compared), hidden behaviour checks for the 11 tasks in tasks/hidden_checks, residuals identical to ones judged in rounds 4 to 7 take that judgement, and manual judgement of the remaining 9 (the kind of a hidden-check failure follows the failure it shows).",
+ "pools": {
+  "round9_eval-v26": {
+   "resolved": 83,
+   "restores_original_exactly": 34,
+   "equivalent_residual": 32,
+   "weak_mild": 11,
+   "weak_strong": 6
+  }
+ },
+ "weak_patches": [
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__4zw03ae8",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "funcy without(): the lazy generator keeps the injected inversion; the patch rewrote lwithout around it",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 6,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 7,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__y4v6gmc4",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "tinydb drop_table: keeps the injected storage.write({}), so dropping one table empties the database",
+   "evidence": "same residual as an earlier judgement"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_shuffle__lqjyurqa",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "tinydb Query.search: matches non-string values through str(value) instead of returning False",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 4,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 5,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 6,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 7,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 0,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset returns None for every datetime",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 6,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: falls back to identity, so equal offsets compare unequal",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round9_eval-v26",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 7,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: falls back to identity, so equal offsets compare unequal",
+   "evidence": "hidden check fail"
+  }
+ ]
+}
