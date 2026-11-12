@@ -22,6 +22,7 @@
 | 第六轮固定标注 SFT | 1.39 小时 | 约 4.6 元 | [EXPERIMENT_LABELS_SFT.md](EXPERIMENT_LABELS_SFT.md) |
 | 第七轮继续训练 GRPO | 10.4 小时（评测 5.7 小时，含汇总报错后 1.45 小时的空闲） | 约 34.1 元 | [EXPERIMENT_GRPO_ROUND7.md](EXPERIMENT_GRPO_ROUND7.md) |
 | 第八轮流水线 GRPO | 约 4 小时（计划） | 按当时价格 | [EXPERIMENT_GRPO_ROUND8.md](EXPERIMENT_GRPO_ROUND8.md) |
+| 第九轮评测失稳检测保留的 adapter | 约 1.5 小时（计划） | 按当时价格 | [EXPERIMENT_GRPO_ROUND9.md](EXPERIMENT_GRPO_ROUND9.md) |
 
 ## 1. 本地检查（只需 CPU）
 
