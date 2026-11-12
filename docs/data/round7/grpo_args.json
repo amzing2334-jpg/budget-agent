@@ -1,0 +1,30 @@
+{
+ "base_model": "/root/autodl-tmp/coding-agent-rl/outputs/round1/sft/merged",
+ "tasks": "/root/autodl-tmp/coding-agent-rl/outputs/round7/tasks.jsonl",
+ "config": "/opt/coding-agent/budget-agent/configs/swesmith-vllm-tokens.toml",
+ "output": "/root/autodl-tmp/coding-agent-rl/outputs/round7/grpo",
+ "rollouts": "/opt/coding-agent/work/round7/grpo",
+ "pool_launcher": "/opt/coding-agent/budget-agent/scripts/autodl/run_pool.sh",
+ "server": "http://127.0.0.1:18017",
+ "steps": 60,
+ "tasks_per_step": 8,
+ "group": 8,
+ "workers": 32,
+ "lr": 2e-05,
+ "rank": 32,
+ "clip_low": 0.2,
+ "clip_high": 0.28,
+ "tis_cap": 2.0,
+ "no_std_scale": false,
+ "loss_agg": "token",
+ "minibatches": 4,
+ "max_minutes": 180.0,
+ "pack_turns": true,
+ "turns_per_attempt": 4,
+ "max_len": 32768,
+ "seed": 2,
+ "init_adapter": "/root/autodl-tmp/coding-agent-rl/outputs/round5/grpo/adapters/v29",
+ "rollout_set": [
+  "revision_labels=relabel"
+ ]
+}

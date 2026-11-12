@@ -1,0 +1,126 @@
+{
+ "method": "review_patches.py --original (files the grader ignored are not compared), hidden behaviour checks for the 11 tasks in tasks/hidden_checks, residuals identical to ones judged in rounds 4 to 6 take that judgement, and manual judgement of the remaining 3.",
+ "pools": {
+  "round7_eval-grpo": {
+   "resolved": 83,
+   "restores_original_exactly": 41,
+   "equivalent_residual": 28,
+   "weak_mild": 12,
+   "weak_strong": 2
+  }
+ },
+ "weak_patches": [
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 7,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__y4v6gmc4",
+   "sample": 5,
+   "kind": "mild",
+   "reason": "tinydb drop_table: for a table that does not exist, writes the unchanged data back instead of returning (an extra write, and an error on a read-only JSON storage where the original returns)",
+   "evidence": "manual"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_shuffle__gdcca93w",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "tinydb update_multiple: returns None instead of the updated document ids, which it keeps in a module-level global",
+   "evidence": "manual"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 4,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 5,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 6,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round7_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 7,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  }
+ ]
+}
