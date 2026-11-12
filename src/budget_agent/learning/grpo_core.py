@@ -11,6 +11,7 @@ extraction stay importable in the CPU test environment.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any, Callable
 import json
 import math
 from pathlib import Path
@@ -101,6 +102,36 @@ def chain_layout(prompts: list[list[int]], completions: list[list[int]], chain: 
         positions.extend(range(start, start + len(completions[index])))
         targets.extend(completions[index])
     return inputs, positions, targets
+
+
+def drive_steps(steps: int, *, pipeline: bool, launch: Callable[[int, int], Any], finish: Callable[[Any], Any],
+                train: Callable[[int, Any, int, int | None], None], time_up: Callable[[], bool]) -> int:
+    """Run up to `steps` GRPO steps of rollout then update; return how many steps were trained.
+
+    Synchronous: rollout k is sampled by policy v{k}, the one the trainer is about to update.
+    Pipelined: rollout k+1 is launched with policy v{k} before step k trains, so sampling (mostly
+    the environment's tests) overlaps training and every rollout after the first is exactly one
+    update stale; the trainer's TIS weights correct for the behaviour policy.
+
+    launch(step, policy) starts a rollout and returns a handle; finish(handle) waits for it and
+    returns the rollout; train(step, rollout, behaviour, in_use) updates the model, publishes
+    v{step + 1}, and may unload any policy except v{step + 1} and `in_use` (the policy a running
+    rollout still samples from). No new rollout starts once time_up() is true.
+    """
+    pending: tuple[int, Any] | None = (0, launch(0, 0))
+    for step in range(steps):
+        assert pending is not None
+        behaviour, handle = pending
+        rollout = finish(handle)
+        pending = None
+        if pipeline and step + 1 < steps and not time_up():
+            pending = (step, launch(step + 1, step))
+        train(step, rollout, behaviour, pending[0] if pending else None)
+        if not pipeline and step + 1 < steps and not time_up():
+            pending = (step + 1, launch(step + 1, step + 1))
+        if pending is None:
+            return step + 1
+    return steps
 
 
 def group_advantages(rewards: list[float], *, scale_by_std: bool = True, eps: float = 1e-6) -> list[float] | None:
