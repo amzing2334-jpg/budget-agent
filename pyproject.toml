@@ -52,3 +52,19 @@ check_untyped_defs = true
 module = ["openjudge.*", "peft.*", "tiktoken.*", "tokenizers.*", "torch.*", "transformers.*",
           "pandas.*", "pyarrow.*", "datasets.*", "huggingface_hub.*", "minisweagent.*", "swebench.*", "yaml.*"]
 ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["budget_agent"]
+branch = true
+omit = [
+    "*/budget_agent/__main__.py",
+    # Imported by pytest inside the graded test processes, never in the test process itself.
+    "*/budget_agent/pytest_outcomes.py",
+    # Exercised by the openjudge-contract job against the pinned upstream checkout.
+    "*/budget_agent/openjudge_adapter.py",
+]
+
+[tool.coverage.report]
+# The full-suite CI job (torch installed) measures 89%; the floor leaves one point for platform noise.
+fail_under = 88
+skip_empty = true

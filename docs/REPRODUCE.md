@@ -25,7 +25,11 @@
 
 ```bash
 python -m pip install -e ".[dev,tokens]"
-python -m pytest -q                     # 依赖 torch 的测试会跳过，它们在 GPU 主机的 CPU 上运行
+python -m pytest -q                     # 没装 torch 时，依赖 torch 的测试会跳过
+# 与 CI 的全量任务相同：装上 GPU 主机的训练栈（CPU 版），并检查覆盖率
+python -m pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cpu
+python -m pip install transformers==5.20.2 peft==0.21.2 coverage==7.13.1
+python -m coverage run -m pytest -q && python -m coverage report
 ruff check src scripts tests            # pyflakes、语法错误和 bugbear，规则在 pyproject.toml
 mypy                                    # 核心库的类型检查，配置在 pyproject.toml
 ```

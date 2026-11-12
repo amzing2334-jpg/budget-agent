@@ -1,4 +1,4 @@
-"""The CPU training-math job, the pyproject extras and the GPU host's lock must agree."""
+"""The CPU full-suite job, the pyproject extras and the GPU host's lock must agree."""
 import re
 import tomllib
 from pathlib import Path
@@ -31,7 +31,7 @@ def test_lock_files_pin_every_package_exactly():
                 assert re.fullmatch(r"[A-Za-z0-9._-]+==[A-Za-z0-9.+!]+", line), (name, line)
 
 
-def test_ci_training_math_job_uses_the_host_versions():
+def test_ci_full_suite_job_uses_the_host_versions():
     host = pins("requirements-gpu-host.lock.txt")
     workflow = (ROOT / ".github/workflows/tests.yml").read_text()
     for package in ("torch", "transformers", "peft"):
