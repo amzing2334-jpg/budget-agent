@@ -120,6 +120,18 @@ def test_grpo_round_summary_reports_training_without_empty_sft_lines(tmp_path, m
     grpo = json.loads((out / "results.json").read_text(encoding="utf-8"))["grpo"]
     assert (grpo["steps"], grpo["updates"], grpo["attempts"], grpo["turns"], grpo["prompt_mismatch"]) == (25, 100, 1600, 4894, 0)
     assert grpo["tis_capped_fraction_max"] == 0 and grpo["train_share"] == 0.595
+    assert grpo["steps_without_update"] == 0
     markdown = (out / "results.md").read_text(encoding="utf-8")
     assert "SFT data" not in markdown and "Training:" not in markdown
     assert "GRPO: 25 steps, 100 updates, 1600 attempts (0 ungraded), 4894 turns in 4894 sequences" in markdown
+
+
+def test_a_step_that_trained_nothing_does_not_break_the_grpo_summary():
+    # Round 7, step 33: every group was all solved or all failed, so the record has no update fields.
+    rows = [{"step": 0, "attempts": 64, "ungraded_attempts": 0, "rollout_seconds": 100.0, "train_seconds": 50.0,
+             "turns": 10, "updates": 4, "prompt_mismatch": 0, "entropy": 0.1, "tis_weight_mean": 1.0},
+            {"step": 1, "attempts": 64, "ungraded_attempts": 0, "rollout_seconds": 90.0, "kept_groups": 0,
+             "prompt_mismatch": 0, "turns_available": 0, "train_seconds": 0.0}]
+    summary = summarize_round.grpo_summary(rows)
+    assert (summary["steps"], summary["steps_without_update"], summary["updates"], summary["turns"]) == (2, 1, 4, 10)
+    assert summary["entropy_first_last"] == [0.1, 0.1]
