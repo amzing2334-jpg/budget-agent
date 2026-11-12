@@ -12,8 +12,10 @@ lines themselves.
 With --original and --tasks (SWE-smith tasks), each patch is also applied to the
 task's buggy files and the result compared with the source before the bug was
 injected. A patch that restores every file exactly is marked `restores original`;
-otherwise the remaining difference from the original is printed. That residual is
-what needs judgement: dead code is harmless, but a remaining part of the injected
+a patch whose remaining difference is only comments, blank lines or formatting (the
+same Python syntax tree) is marked `same syntax tree as original`; otherwise the
+remaining difference from the original is printed. That residual is what needs
+judgement: dead code is harmless, but a remaining part of the injected
 bug, or new behaviour on inputs the tests do not cover, means the patch passes the
 tests without restoring the original behaviour.
 
@@ -26,6 +28,7 @@ the task id without its last dot-separated part (Suor__funcy.207a7810).
 from __future__ import annotations
 
 import argparse
+import ast
 import difflib
 import json
 from pathlib import Path
@@ -38,8 +41,18 @@ def patch_files(lines: list[str]) -> list[str]:
     return [line[6:] for line in lines if line.startswith("+++ b/")]
 
 
-def residual(task_id: str, patch: Path, files: list[str], original: Path, tasks: Path) -> list[str] | None:
-    """Unified diff from the original source to the patched buggy source; [] when identical.
+def same_syntax_tree(before: str, after: str) -> bool:
+    """True when two Python sources differ only in comments, blank lines or formatting."""
+    try:
+        return ast.dump(ast.parse(before)) == ast.dump(ast.parse(after))
+    except SyntaxError:
+        return False
+
+
+def residual(task_id: str, patch: Path, files: list[str], original: Path,
+             tasks: Path) -> tuple[list[str], bool] | None:
+    """Unified diff from the original source to the patched buggy source ([] when identical), and
+    whether every touched file has the original's Python syntax tree.
 
     None when the patch does not apply to the task's buggy files.
     """
@@ -56,12 +69,16 @@ def residual(task_id: str, patch: Path, files: list[str], original: Path, tasks:
         if applied.returncode:
             return None
         diff: list[str] = []
+        same_tree = True
         for rel in files:   # a file missing on either side (created or deleted by the patch) reads as empty
             before_path, after_path = original / repo / rel, work / rel
-            before = before_path.read_text(encoding="utf-8", errors="replace").splitlines() if before_path.exists() else []
-            after = after_path.read_text(encoding="utf-8", errors="replace").splitlines() if after_path.exists() else []
-            diff += difflib.unified_diff(before, after, f"original/{rel}", f"patched/{rel}", n=1, lineterm="")
-        return diff
+            before = before_path.read_text(encoding="utf-8", errors="replace") if before_path.exists() else ""
+            after = after_path.read_text(encoding="utf-8", errors="replace") if after_path.exists() else ""
+            diff += difflib.unified_diff(before.splitlines(), after.splitlines(), f"original/{rel}", f"patched/{rel}",
+                                         n=1, lineterm="")
+            if before != after:
+                same_tree &= rel.endswith(".py") and same_syntax_tree(before, after)
+        return diff, same_tree
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -76,7 +93,7 @@ def main(argv: list[str] | None = None) -> int:
     rows = [json.loads(line) for line in (pool / "attempts.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
     winners = sorted((r for r in rows if r["resolved"]), key=lambda r: (r["task_id"], r["sample"]))
     print(f"{pool.name}: {len(winners)} resolved of {len(rows)}")
-    restored = 0
+    restored = same_tree = 0
     for row in winners:
         patch_path = Path(row["result_path"]).parent / "patch.diff"
         patch = patch_path.read_text(encoding="utf-8", errors="replace")
@@ -88,17 +105,24 @@ def main(argv: list[str] | None = None) -> int:
               f"+{added}/-{removed} ignored={row['ignored_changes']} signals={row['patch_signals']}")
         print("\n".join(line for line in lines if line.startswith(("+", "-", "@@")) and not line.startswith(("+++", "---"))))
         if args.original is not None:
-            rest = residual(row["task_id"], patch_path, files, args.original, args.tasks)
-            if rest is None:
+            outcome = residual(row["task_id"], patch_path, files, args.original, args.tasks)
+            if outcome is None:
                 print("[original check] the patch does not apply to the task's buggy files")
-            elif not rest:
+                continue
+            rest, tree = outcome
+            if not rest:
                 restored += 1
                 print("[original check] restores original")
+            elif tree:
+                same_tree += 1
+                print("[original check] same syntax tree as original (comments, blank lines or formatting differ):")
             else:
                 print("[original check] differs from the original:")
+            if rest:
                 print("\n".join(line for line in rest if not line.startswith(("+++", "---"))))
     if args.original is not None:
-        print(f"\n{pool.name}: {restored} of {len(winners)} resolved patches restore the original source exactly")
+        print(f"\n{pool.name}: {restored} of {len(winners)} resolved patches restore the original source exactly, "
+              f"{same_tree} more have its syntax tree")
     return 0
 
 
