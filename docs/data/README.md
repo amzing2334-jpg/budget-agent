@@ -11,6 +11,7 @@
 | `round4/` | 第四轮：固定标注与重新标注的非劣性 A/B（SFT 学生，每题 8 次），含 vLLM 计数和打包统计 | [EXPERIMENT_LABELS_AB.md](../EXPERIMENT_LABELS_AB.md) |
 | `round5/` | 第五轮：前缀打包下的第二次 GRPO 训练（每题 8 次评测），含对照原始源码和隐藏检查的结果 | [EXPERIMENT_GRPO_ROUND5.md](../EXPERIMENT_GRPO_ROUND5.md) |
 | `hidden_checks/` | 隐藏行为检查的重新评分：每个检查在原始源码和带 bug 源码上的结果，以及 9 个评测池中每个相关通过补丁的结果 | [tasks/hidden_checks/README.md](../../tasks/hidden_checks/README.md) |
+| `round6/` | 第六轮：在固定标注上重训的 SFT 学生（每题 8 次评测），含 SFT 训练记录、vLLM 计数、打包统计、对照原始源码和隐藏检查的结果 | [EXPERIMENT_LABELS_SFT.md](../EXPERIMENT_LABELS_SFT.md) |
 | `bench_rollout_2026-11-06.json` | rollout 吞吐随并发数的变化 | [BENCH_ROLLOUT_2026-11-06.md](../BENCH_ROLLOUT_2026-11-06.md) |
 | `packing_round3_steps0-3.json` | 第三轮前 4 步上前缀打包的 token 节省和断点分类 | [PREFIX_PACKING.md](../PREFIX_PACKING.md) |
 | `commit_map_20261111.json` | 2026-11-11 历史改写前后的 commit ID 对照，代码树不变 | |

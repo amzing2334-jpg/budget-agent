@@ -1,0 +1,110 @@
+{
+ "method": "review_patches.py --original (files the grader ignored are not compared; same syntax tree counts as equivalent), hidden behaviour checks for the tasks in tasks/hidden_checks, and manual judgement of the rest.",
+ "pools": {
+  "round6_fixed-trained": {
+   "resolved": 50,
+   "restores_original_exactly": 22,
+   "equivalent_residual": 16,
+   "weak_mild": 5,
+   "weak_strong": 7
+  }
+ },
+ "weak_patches": [
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 4,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 6,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 5,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 6,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 7,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__dinxi9qb",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "parse int_convert strips leading whitespace: a space-prefixed hex number parses differently from the original",
+   "evidence": "manual"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset: part of the injected special case kept, or time objects lose their offset",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 7,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset: part of the injected special case kept, or time objects lose their offset",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__x110b8lc",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse int_convert: the public base attribute changes",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round6_fixed-trained",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 6,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: raises or misjudges when compared with other objects",
+   "evidence": "hidden check fail"
+  }
+ ]
+}

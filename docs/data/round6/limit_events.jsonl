@@ -1,0 +1,1 @@
+{"pool": "/opt/coding-agent/work/round6/fixed-trained", "attempts": 768, "commands": {"run": 772, "public_test": 871}, "timed_out": {"run": 2, "public_test": 0}, "memory_error": {"run": 0, "public_test": 0}, "verifier_timed_out": 2, "verifier_memory_exceeded": 0}
