@@ -14,3 +14,8 @@ runs/
 data/swebench/
 build/
 dist/
+# Coverage data from local runs and the local merge gate
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
