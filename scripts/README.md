@@ -20,6 +20,7 @@
 | `review_patches.py` | 列出一个池里每个通过补丁的改动，用于逐条的防作弊检查；加 `--original` 时与注入 bug 之前的源码对照，打印剩余差异 |
 | `regrade_hidden.py` | 用 `tasks/hidden_checks/` 里的隐藏行为检查重新评分通过的补丁；每个检查先要在注入 bug 之前的源码上通过 |
 | `mark_failures.py` | 把对照原始源码后判定为没有恢复原有行为的补丁算作失败，生成用于敏感性比较的 attempts 文件 |
+| `pool_behaviour.py` | 描述一个池里策略的行为：状态分布、主动结束时确实修好的比例、各仓库的通过数、每次尝试的步数和 token、各工具的调用次数 |
 | `limit_events.py` | 统计被 harness 限制终止的命令：按题测试时限、命令内存上限，以及 verifier 的超时和内存超限 |
 
 ## 训练
