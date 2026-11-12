@@ -106,6 +106,7 @@ python scripts/grpo_harness.py --base-model <模型> --tasks swesmith/train.json
 - **[技术复盘：从评测 harness 到 RL 环境](docs/TECH_REPORT.md)**（先读这篇）
 - [复现指南](docs/REPRODUCE.md)：硬件、费用、部署和每一轮的命令
 - [变更记录](CHANGELOG.md)：按版本整理的主要变化
+- [开发与实验流程](docs/DEVELOPMENT.md)：本地检查、CI、代码约定，以及每一轮实验从协议到结果的流程
 - 实验记录：
   - [第一轮 RFT](docs/EXPERIMENT_SWESMITH_RFT_ROUND1.md)
   - [GRPO 试跑](docs/EXPERIMENT_GRPO_PILOT.md)
