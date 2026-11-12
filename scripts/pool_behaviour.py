@@ -28,6 +28,8 @@ def repository(task_id: str) -> str:
 
 
 def describe(pool: Path) -> dict:
+    if (pool / "PACKED.json").exists() and not (pool / "runs").exists():   # scripts/pack_rollouts.py
+        raise SystemExit(f"{pool} is packed; restore it first: tar -xzf {pool / 'runs.tar.gz'} -C {pool}")
     rows = jsonl(pool / "attempts.jsonl")
     n = max(1, len(rows))
     finished = [r for r in rows if r["status"] == "finished"]
