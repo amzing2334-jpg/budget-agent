@@ -46,6 +46,7 @@
 |---|---|
 | `deploy.sh`、`setup_isolated.sh` | 部署代码与数据；建立隔离的环境（独立 CPython、vLLM/torch），完成准入，下载模型 |
 | `serve_vllm.sh`、`stop_vllm.sh`、`run_pool.sh` | 只监听本机的 vLLM，只停自己启动的服务；rollout 以 `nobody` 执行，系统盘剩余空间不足时拒绝启动 |
+| `chain_round.sh` | 上一轮正常结束后才启动下一轮：检查完成标记、GPU 空闲，核对新代码树的哈希后归档上一轮的 rollout、部署、按冻结的参数启动 |
 | `archive_rollouts.sh` | 把已完成的 rollout 从系统盘移到数据盘并留下符号链接：先复制，核对文件数和字节数一致后才删除源目录 |
 | `round1_rft.sh`、`grpo_pilot.sh`、`round2_grpo.sh`、`replicate_eval.sh`、`round3_grpo.sh`、`round4_labels_ab.sh`、`round5_grpo.sh`、`round6_labels_sft.sh`、`round7_grpo.sh`、`round8_grpo.sh`、`bench.sh` | 各轮实验的驱动脚本，对应 `docs/EXPERIMENT_*.md`。GPU 被占用、或本项目已有别的实验脚本在运行时，都拒绝启动 |
 | `recon.sh` | 只读的环境勘察 |
