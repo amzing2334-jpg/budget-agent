@@ -35,20 +35,28 @@ def tamper_audit(attempts: list[dict]) -> list[dict]:
 
 
 def grpo_summary(rows: list[dict]) -> dict:
-    """One GRPO run from grpo/metrics.jsonl: volume, data-path checks, update health and time."""
+    """One GRPO run from grpo/metrics.jsonl: volume, data-path checks, update health and time.
+
+    A step whose groups were all solved or all failed trains nothing; its record has no update
+    fields, so every training field is read with a default.
+    """
     def span(key: str) -> list[float] | None:
         values = [r[key] for r in rows if r.get(key) is not None]
         return [round(min(values), 4), round(max(values), 4)] if values else None
-    train, rollout = [r["train_seconds"] for r in rows], [r["rollout_seconds"] for r in rows]
-    turns = sum(r["turns"] for r in rows)
-    return {"steps": len(rows), "updates": sum(r["updates"] for r in rows),
+    trained = [r for r in rows if r.get("entropy") is not None]
+    train = [r.get("train_seconds", 0) for r in rows]
+    rollout = [r["rollout_seconds"] for r in rows]
+    return {"steps": len(rows), "steps_without_update": len(rows) - len(trained),
+            "updates": sum(r.get("updates", 0) for r in rows),
             "attempts": sum(r["attempts"] for r in rows), "ungraded": sum(r["ungraded_attempts"] for r in rows),
-            "turns": turns, "sequences": sum(r.get("sequences", r["turns"]) for r in rows),
-            "prompt_mismatch": sum(r["prompt_mismatch"] for r in rows),
+            "turns": sum(r.get("turns", 0) for r in rows),
+            "sequences": sum(r.get("sequences", r.get("turns", 0)) for r in rows),
+            "prompt_mismatch": sum(r.get("prompt_mismatch", 0) for r in rows),
             "logprob_gap": span("sampler_trainer_abs_logprob_gap"), "tis_weight_mean": span("tis_weight_mean"),
             "tis_capped_fraction_max": (span("tis_capped_fraction") or [0, 0])[1],
             "clip_fraction_max": (span("clip_fraction") or [0, 0])[1],
-            "entropy_first_last": [round(rows[0]["entropy"], 4), round(rows[-1]["entropy"], 4)],
+            "entropy_first_last": ([round(trained[0]["entropy"], 4), round(trained[-1]["entropy"], 4)]
+                                   if trained else None),
             "train_seconds": {"total": round(sum(train)), "median": round(statistics.median(train))},
             "rollout_seconds": {"total": round(sum(rollout)), "median": round(statistics.median(rollout))},
             "train_share": round(sum(train) / max(1e-9, sum(train) + sum(rollout)), 3)}
@@ -119,8 +127,9 @@ def main() -> int:
         lines += [f"GRPO: {g['steps']} steps, {g['updates']} updates, {g['attempts']} attempts ({g['ungraded']} ungraded), "
                   f"{g['turns']} turns in {g['sequences']} sequences, prompt mismatches {g['prompt_mismatch']}, "
                   f"logprob gap {g['logprob_gap']}, TIS mean {g['tis_weight_mean']} (capped at most "
-                  f"{g['tis_capped_fraction_max']}), clip at most {g['clip_fraction_max']}, entropy "
-                  f"{g['entropy_first_last'][0]} → {g['entropy_first_last'][1]}, train share {g['train_share']}", ""]
+                  f"{g['tis_capped_fraction_max']}), clip at most {g['clip_fraction_max']}, entropy first/last "
+                  f"{g['entropy_first_last']}, train share {g['train_share']}, steps without an update "
+                  f"{g['steps_without_update']}", ""]
     for name, value in compare.items():
         lines.append(f"Paired {name}: base {value['baseline_pass@1']:.3f} → candidate {value['candidate_pass@1']:.3f}, "
                      f"delta {value['delta']:+.3f}, 95% CI [{value['ci95'][0]:+.3f}, {value['ci95'][1]:+.3f}], {value['verdict']}")
