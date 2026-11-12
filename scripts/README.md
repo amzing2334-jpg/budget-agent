@@ -28,7 +28,7 @@
 |---|---|
 | `sft_data_from_runs.py` | 拒绝采样：只保留通过的轨迹，每题有上限，有篡改信号的排除；`--revision-labels` 把同一批轨迹按另一种标注方式重新渲染（先逐条复现记录的请求） |
 | `train_sft_lora.py` | 多 turn 轨迹的 LoRA SFT，只在训练 token 处计算 logits |
-| `grpo_harness.py` | 单卡 GRPO：harness rollout 加 LoRA 热加载、TIS、clip-higher、minibatch，以及前缀打包（`--pack-turns`）；`--init-adapter` 从保存的 adapter 继续训练 |
+| `grpo_harness.py` | 单卡 GRPO：harness rollout 加 LoRA 热加载、TIS、clip-higher、minibatch，以及前缀打包（`--pack-turns`）；`--init-adapter` 从保存的 adapter 继续训练；`--pipeline` 让 rollout 与上一步的训练重叠 |
 
 ## 系统测量
 
@@ -46,7 +46,7 @@
 | `deploy.sh`、`setup_isolated.sh` | 部署代码与数据；建立隔离的环境（独立 CPython、vLLM/torch），完成准入，下载模型 |
 | `serve_vllm.sh`、`stop_vllm.sh`、`run_pool.sh` | 只监听本机的 vLLM，只停自己启动的服务；rollout 以 `nobody` 执行，系统盘剩余空间不足时拒绝启动 |
 | `archive_rollouts.sh` | 把已完成的 rollout 从系统盘移到数据盘并留下符号链接：先复制，核对文件数和字节数一致后才删除源目录 |
-| `round1_rft.sh`、`grpo_pilot.sh`、`round2_grpo.sh`、`replicate_eval.sh`、`round3_grpo.sh`、`round4_labels_ab.sh`、`round5_grpo.sh`、`round6_labels_sft.sh`、`round7_grpo.sh`、`bench.sh` | 各轮实验的驱动脚本，对应 `docs/EXPERIMENT_*.md`。GPU 被占用、或本项目已有别的实验脚本在运行时，都拒绝启动 |
+| `round1_rft.sh`、`grpo_pilot.sh`、`round2_grpo.sh`、`replicate_eval.sh`、`round3_grpo.sh`、`round4_labels_ab.sh`、`round5_grpo.sh`、`round6_labels_sft.sh`、`round7_grpo.sh`、`round8_grpo.sh`、`bench.sh` | 各轮实验的驱动脚本，对应 `docs/EXPERIMENT_*.md`。GPU 被占用、或本项目已有别的实验脚本在运行时，都拒绝启动 |
 | `recon.sh` | 只读的环境勘察 |
 
 ## 早期阶段（2026 年 10 月：上下文策略研究与 SWE-bench 试验）
