@@ -40,7 +40,7 @@ pull request 和合并后的 `main` 各跑一次；同一个 pull request 的新
    - 驱动脚本在 GPU 已被占用、或本项目已有别的实验在运行时拒绝启动（`tests/test_autodl_guards.py` 保证各脚本的检查一致）；
    - 模型生成的命令一律以 `nobody` 执行，vLLM 只监听本机；
    - 轮次之间用 `scripts/autodl/chain_round.sh` 衔接：上一轮正常结束（日志里有完成标记）、GPU 空闲、新代码树的哈希核对通过后，才归档上一轮的 rollout、部署并启动下一轮，每一步都记日志；
-   - 系统盘剩余空间不足 5 GB 时，`run_pool.sh` 拒绝启动评测池；已完成的 rollout 用 `archive_rollouts.sh` 移到数据盘。
+   - 系统盘剩余空间不足 5 GB 时，`run_pool.sh` 拒绝启动评测池；已完成的 rollout 用 `archive_rollouts.sh` 移到数据盘，分析做完后用 `pack_rollouts.py` 打包（没有实验运行时才做，避免影响测试时限和计时）。
 4. **写结果**：
    - 结果只追加在协议后面，判据不改；
    - 原始输出复制到 `docs/data/<轮次>/`；

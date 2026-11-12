@@ -29,6 +29,8 @@ def jsonl(path: Path) -> list[dict]:
 
 
 def pool_limits(pool: Path) -> dict:
+    if (pool / "PACKED.json").exists() and not (pool / "runs").exists():   # scripts/pack_rollouts.py
+        raise SystemExit(f"{pool} is packed; restore it first: tar -xzf {pool / 'runs.tar.gz'} -C {pool}")
     commands: Counter = Counter()
     timed_out: Counter = Counter()
     memory: Counter = Counter()
