@@ -21,6 +21,7 @@
 | `regrade_hidden.py` | 用 `tasks/hidden_checks/` 里的隐藏行为检查重新评分通过的补丁；每个检查先要在注入 bug 之前的源码上通过 |
 | `mark_failures.py` | 把对照原始源码后判定为没有恢复原有行为的补丁算作失败，生成用于敏感性比较的 attempts 文件 |
 | `pool_behaviour.py` | 描述一个池里策略的行为：状态分布、主动结束时确实修好的比例、各仓库的通过数、每次尝试的步数和 token、各工具的调用次数 |
+| `select_tasks.py` | 按此前的 rollout 从任务清单里选题：去掉某些台账里解出过的题，或只留解出至少 K 次的题；路径改成绝对路径（第十轮的候选题和训练题） |
 | `pack_rollouts.py` | 把已完成的评测池的 `runs/` 打成一个压缩包：写入时逐个文件计算 SHA-256，读回压缩包核对目录、符号链接和每个文件一致后才删除 `runs/`，`attempts.jsonl` 等台账留在原处；分析脚本遇到打包过的池会报错并给出恢复命令 |
 | `limit_events.py` | 统计被 harness 限制终止的命令：按题测试时限、命令内存上限，以及 verifier 的超时和内存超限 |
 
