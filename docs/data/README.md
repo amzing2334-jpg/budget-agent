@@ -12,6 +12,7 @@
 | `round5/` | 第五轮：前缀打包下的第二次 GRPO 训练（每题 8 次评测），含对照原始源码和隐藏检查的结果 | [EXPERIMENT_GRPO_ROUND5.md](../EXPERIMENT_GRPO_ROUND5.md) |
 | `hidden_checks/` | 隐藏行为检查的重新评分：每个检查在原始源码和带 bug 源码上的结果，以及 9 个评测池中每个相关通过补丁的结果 | [tasks/hidden_checks/README.md](../../tasks/hidden_checks/README.md) |
 | `round6/` | 第六轮：在固定标注上重训的 SFT 学生（每题 8 次评测），含 SFT 训练记录、vLLM 计数、打包统计、对照原始源码和隐藏检查的结果 | [EXPERIMENT_LABELS_SFT.md](../EXPERIMENT_LABELS_SFT.md) |
+| `round7/` | 第七轮：在第五轮的 adapter 上继续训练 GRPO（每题 8 次评测），含对照原始源码、隐藏检查、敏感性比较和每步 rollout 的行为统计 | [EXPERIMENT_GRPO_ROUND7.md](../EXPERIMENT_GRPO_ROUND7.md) |
 | `bench_rollout_2026-11-06.json` | rollout 吞吐随并发数的变化 | [BENCH_ROLLOUT_2026-11-06.md](../BENCH_ROLLOUT_2026-11-06.md) |
 | `packing_round3_steps0-3.json` | 第三轮前 4 步上前缀打包的 token 节省和断点分类 | [PREFIX_PACKING.md](../PREFIX_PACKING.md) |
 | `commit_map_20261111.json` | 2026-11-11 历史改写前后的 commit ID 对照，代码树不变 | |
@@ -27,6 +28,7 @@
 | `limit_events.jsonl` | `scripts/limit_events.py` | 被按题测试时限、命令内存上限终止的命令，以及 verifier 的超时和内存超限 |
 | `original_check.json` | `scripts/review_patches.py --original` 加人工判断 | 每个评测池中与注入 bug 之前的源码一致、行为等价、没有恢复原有行为（轻微或严重）的补丁数，以及每个没有恢复的补丁和理由 |
 | `vllm_*.json`、`packing_*.json` | `scripts/vllm_metrics.py`、`scripts/bench_turn_packing.py` | 第四轮每个评测池前后的 vLLM 计数快照及其差值（prompt token、前缀缓存命中），以及打包训练的 token 节省和断点分类 |
+| `behaviour.json` | `scripts/pool_behaviour.py` | 每个评测池和每个训练步的 rollout：状态、主动结束的精确率、各仓库通过数、每次尝试的步数和 token、各工具（含无效动作）的调用次数 |
 | `compare_eval_weak_*.json` | `scripts/mark_failures.py` 加 `compare_pools.py` | 把没有恢复原有行为的补丁算作失败后的配对比较（事后的敏感性分析） |
 
 评测池本身（每次尝试的轨迹、请求记录和补丁）体积较大，留在 GPU 主机上。

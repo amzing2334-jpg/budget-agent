@@ -1,0 +1,2035 @@
+[
+ {
+  "pool": "/opt/coding-agent/work/round5/eval-grpo",
+  "attempts": 768,
+  "resolved": 94,
+  "ungraded": 2,
+  "pass@1": 0.1224,
+  "solved_tasks": 20,
+  "statuses": {
+   "finished": 125,
+   "stuck": 215,
+   "max_steps": 428
+  },
+  "finished_and_resolved": [
+   94,
+   125
+  ],
+  "per_repository": {
+   "funcy": "22/192",
+   "parse": "37/192",
+   "tinydb": "35/192",
+   "tomli": "0/192"
+  },
+  "per_attempt": {
+   "steps": 23.7,
+   "input_tokens": 209682.2,
+   "output_tokens": 1121.6,
+   "elapsed_seconds": 200.5,
+   "model_seconds": 26.8
+  },
+  "tool_calls": {
+   "edit_file": 4805,
+   "search": 4728,
+   "read_file": 4673,
+   "public_test": 2441,
+   "run": 566,
+   "list_files": 535,
+   "invalid_action": 293,
+   "finish": 125,
+   "write_file": 5,
+   "diff": 5
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/eval-grpo",
+  "attempts": 768,
+  "resolved": 83,
+  "ungraded": 0,
+  "pass@1": 0.1081,
+  "solved_tasks": 18,
+  "statuses": {
+   "finished": 83,
+   "max_steps": 492,
+   "stuck": 193
+  },
+  "finished_and_resolved": [
+   83,
+   83
+  ],
+  "per_repository": {
+   "funcy": "23/192",
+   "parse": "25/192",
+   "tinydb": "35/192",
+   "tomli": "0/192"
+  },
+  "per_attempt": {
+   "steps": 25.5,
+   "input_tokens": 305372.6,
+   "output_tokens": 28386.5,
+   "elapsed_seconds": 833.4,
+   "model_seconds": 828.6
+  },
+  "tool_calls": {
+   "invalid_action": 16820,
+   "read_file": 770,
+   "search": 761,
+   "edit_file": 667,
+   "public_test": 370,
+   "list_files": 149,
+   "finish": 83,
+   "replace_lines": 2
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0000",
+  "attempts": 64,
+  "resolved": 29,
+  "ungraded": 0,
+  "pass@1": 0.4531,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 33,
+   "stuck": 7,
+   "max_steps": 24
+  },
+  "finished_and_resolved": [
+   28,
+   33
+  ],
+  "per_repository": {
+   "gpxpy": "1/8",
+   "isodate": "1/8",
+   "python-dotenv": "4/16",
+   "schema": "12/16",
+   "tenacity": "7/8",
+   "voluptuous": "4/8"
+  },
+  "per_attempt": {
+   "steps": 17.5,
+   "input_tokens": 152572.0,
+   "output_tokens": 685.7,
+   "elapsed_seconds": 68.0,
+   "model_seconds": 38.3
+  },
+  "tool_calls": {
+   "edit_file": 285,
+   "search": 270,
+   "read_file": 262,
+   "public_test": 189,
+   "run": 39,
+   "finish": 33,
+   "list_files": 25,
+   "invalid_action": 13,
+   "recall": 1,
+   "diff": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0001",
+  "attempts": 64,
+  "resolved": 22,
+  "ungraded": 0,
+  "pass@1": 0.3438,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 25,
+   "stuck": 19,
+   "max_steps": 20
+  },
+  "finished_and_resolved": [
+   18,
+   25
+  ],
+  "per_repository": {
+   "h11": "6/8",
+   "isodate": "2/16",
+   "python-dotenv": "0/8",
+   "schema": "7/8",
+   "tenacity": "7/24"
+  },
+  "per_attempt": {
+   "steps": 19.2,
+   "input_tokens": 149438.5,
+   "output_tokens": 815.2,
+   "elapsed_seconds": 64.7,
+   "model_seconds": 30.5
+  },
+  "tool_calls": {
+   "edit_file": 340,
+   "read_file": 322,
+   "search": 270,
+   "public_test": 160,
+   "run": 56,
+   "list_files": 35,
+   "finish": 25,
+   "invalid_action": 16,
+   "recall": 2,
+   "diff": 2
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0002",
+  "attempts": 64,
+  "resolved": 44,
+  "ungraded": 0,
+  "pass@1": 0.6875,
+  "solved_tasks": 8,
+  "statuses": {
+   "finished": 42,
+   "stuck": 17,
+   "max_steps": 5
+  },
+  "finished_and_resolved": [
+   38,
+   42
+  ],
+  "per_repository": {
+   "h11": "6/8",
+   "isodate": "22/24",
+   "python-dotenv": "4/8",
+   "schema": "5/8",
+   "tenacity": "2/8",
+   "voluptuous": "5/8"
+  },
+  "per_attempt": {
+   "steps": 12.8,
+   "input_tokens": 73007.6,
+   "output_tokens": 533.7,
+   "elapsed_seconds": 61.3,
+   "model_seconds": 26.6
+  },
+  "tool_calls": {
+   "edit_file": 215,
+   "read_file": 200,
+   "search": 157,
+   "public_test": 134,
+   "list_files": 44,
+   "finish": 42,
+   "run": 12,
+   "invalid_action": 8,
+   "write_file": 3,
+   "recall": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0003",
+  "attempts": 64,
+  "resolved": 25,
+  "ungraded": 0,
+  "pass@1": 0.3906,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 35,
+   "stuck": 18,
+   "max_steps": 11
+  },
+  "finished_and_resolved": [
+   19,
+   35
+  ],
+  "per_repository": {
+   "gpxpy": "8/8",
+   "h11": "11/24",
+   "isodate": "0/8",
+   "python-dotenv": "4/8",
+   "tenacity": "1/8",
+   "voluptuous": "1/8"
+  },
+  "per_attempt": {
+   "steps": 15.4,
+   "input_tokens": 103348.4,
+   "output_tokens": 571.4,
+   "elapsed_seconds": 55.8,
+   "model_seconds": 19.7
+  },
+  "tool_calls": {
+   "edit_file": 289,
+   "read_file": 222,
+   "search": 206,
+   "public_test": 188,
+   "finish": 35,
+   "list_files": 25,
+   "run": 15,
+   "diff": 3,
+   "write_file": 3,
+   "invalid_action": 2
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0004",
+  "attempts": 64,
+  "resolved": 31,
+  "ungraded": 0,
+  "pass@1": 0.4844,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 48,
+   "stuck": 9,
+   "max_steps": 7
+  },
+  "finished_and_resolved": [
+   31,
+   48
+  ],
+  "per_repository": {
+   "gpxpy": "0/8",
+   "python-dotenv": "5/16",
+   "schema": "10/16",
+   "tenacity": "7/8",
+   "textfsm": "6/8",
+   "voluptuous": "3/8"
+  },
+  "per_attempt": {
+   "steps": 12.8,
+   "input_tokens": 68730.5,
+   "output_tokens": 439.6,
+   "elapsed_seconds": 39.1,
+   "model_seconds": 12.1
+  },
+  "tool_calls": {
+   "read_file": 215,
+   "edit_file": 214,
+   "search": 160,
+   "public_test": 147,
+   "finish": 48,
+   "list_files": 31,
+   "run": 3,
+   "invalid_action": 2,
+   "diff": 1,
+   "replace_lines": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0005",
+  "attempts": 64,
+  "resolved": 26,
+  "ungraded": 0,
+  "pass@1": 0.4062,
+  "solved_tasks": 4,
+  "statuses": {
+   "finished": 48,
+   "stuck": 11,
+   "max_steps": 5
+  },
+  "finished_and_resolved": [
+   22,
+   48
+  ],
+  "per_repository": {
+   "h11": "7/8",
+   "isodate": "3/24",
+   "python-dotenv": "0/8",
+   "schema": "8/8",
+   "tenacity": "8/16"
+  },
+  "per_attempt": {
+   "steps": 12.8,
+   "input_tokens": 62738.8,
+   "output_tokens": 468.0,
+   "elapsed_seconds": 39.1,
+   "model_seconds": 13.4
+  },
+  "tool_calls": {
+   "edit_file": 206,
+   "read_file": 194,
+   "search": 179,
+   "public_test": 141,
+   "finish": 48,
+   "list_files": 33,
+   "invalid_action": 8,
+   "run": 8,
+   "replace_lines": 1,
+   "diff": 1,
+   "write_file": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0006",
+  "attempts": 64,
+  "resolved": 29,
+  "ungraded": 0,
+  "pass@1": 0.4531,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 48,
+   "stuck": 9,
+   "max_steps": 7
+  },
+  "finished_and_resolved": [
+   27,
+   48
+  ],
+  "per_repository": {
+   "h11": "4/8",
+   "isodate": "11/16",
+   "python-dotenv": "5/8",
+   "schema": "3/8",
+   "tenacity": "1/16",
+   "voluptuous": "5/8"
+  },
+  "per_attempt": {
+   "steps": 14.2,
+   "input_tokens": 71890.3,
+   "output_tokens": 508.4,
+   "elapsed_seconds": 39.4,
+   "model_seconds": 12.6
+  },
+  "tool_calls": {
+   "read_file": 244,
+   "search": 228,
+   "edit_file": 191,
+   "public_test": 126,
+   "list_files": 50,
+   "finish": 48,
+   "invalid_action": 8,
+   "run": 5,
+   "diff": 4,
+   "write_file": 2,
+   "recall": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0007",
+  "attempts": 64,
+  "resolved": 21,
+  "ungraded": 0,
+  "pass@1": 0.3281,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 32,
+   "stuck": 8,
+   "max_steps": 24
+  },
+  "finished_and_resolved": [
+   15,
+   32
+  ],
+  "per_repository": {
+   "gpxpy": "5/8",
+   "h11": "8/24",
+   "isodate": "3/8",
+   "python-dotenv": "1/8",
+   "tenacity": "2/8",
+   "voluptuous": "2/8"
+  },
+  "per_attempt": {
+   "steps": 19.3,
+   "input_tokens": 145020.4,
+   "output_tokens": 652.6,
+   "elapsed_seconds": 54.5,
+   "model_seconds": 23.2
+  },
+  "tool_calls": {
+   "search": 375,
+   "read_file": 332,
+   "edit_file": 248,
+   "public_test": 182,
+   "list_files": 43,
+   "finish": 32,
+   "invalid_action": 10,
+   "replace_lines": 4,
+   "run": 3,
+   "diff": 2,
+   "write_file": 2
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0008",
+  "attempts": 64,
+  "resolved": 37,
+  "ungraded": 0,
+  "pass@1": 0.5781,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 49,
+   "max_steps": 15
+  },
+  "finished_and_resolved": [
+   37,
+   49
+  ],
+  "per_repository": {
+   "gpxpy": "0/8",
+   "isodate": "6/8",
+   "python-dotenv": "4/16",
+   "schema": "11/16",
+   "tenacity": "8/8",
+   "textfsm": "8/8"
+  },
+  "per_attempt": {
+   "steps": 13.6,
+   "input_tokens": 81060.8,
+   "output_tokens": 449.7,
+   "elapsed_seconds": 43.2,
+   "model_seconds": 16.1
+  },
+  "tool_calls": {
+   "search": 251,
+   "read_file": 242,
+   "edit_file": 165,
+   "public_test": 121,
+   "finish": 49,
+   "list_files": 31,
+   "run": 6,
+   "replace_lines": 4,
+   "invalid_action": 4
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0009",
+  "attempts": 64,
+  "resolved": 27,
+  "ungraded": 0,
+  "pass@1": 0.4219,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 38,
+   "stuck": 5,
+   "max_steps": 21
+  },
+  "finished_and_resolved": [
+   25,
+   38
+  ],
+  "per_repository": {
+   "h11": "6/8",
+   "isodate": "5/24",
+   "python-dotenv": "1/8",
+   "schema": "6/8",
+   "tenacity": "7/8",
+   "voluptuous": "2/8"
+  },
+  "per_attempt": {
+   "steps": 17.4,
+   "input_tokens": 96000.6,
+   "output_tokens": 574.4,
+   "elapsed_seconds": 40.8,
+   "model_seconds": 17.2
+  },
+  "tool_calls": {
+   "search": 389,
+   "read_file": 306,
+   "edit_file": 194,
+   "public_test": 145,
+   "finish": 38,
+   "list_files": 23,
+   "run": 9,
+   "invalid_action": 6,
+   "diff": 3
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0010",
+  "attempts": 64,
+  "resolved": 23,
+  "ungraded": 0,
+  "pass@1": 0.3594,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 28,
+   "stuck": 11,
+   "max_steps": 25
+  },
+  "finished_and_resolved": [
+   21,
+   28
+  ],
+  "per_repository": {
+   "h11": "3/8",
+   "isodate": "5/8",
+   "python-dotenv": "4/8",
+   "schema": "2/8",
+   "tenacity": "3/24",
+   "voluptuous": "6/8"
+  },
+  "per_attempt": {
+   "steps": 18.8,
+   "input_tokens": 124519.7,
+   "output_tokens": 723.2,
+   "elapsed_seconds": 45.5,
+   "model_seconds": 18.9
+  },
+  "tool_calls": {
+   "search": 474,
+   "read_file": 343,
+   "edit_file": 143,
+   "public_test": 110,
+   "list_files": 84,
+   "finish": 28,
+   "invalid_action": 14,
+   "run": 6,
+   "replace_lines": 3,
+   "diff": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0011",
+  "attempts": 64,
+  "resolved": 23,
+  "ungraded": 0,
+  "pass@1": 0.3594,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 28,
+   "stuck": 6,
+   "max_steps": 30
+  },
+  "finished_and_resolved": [
+   19,
+   28
+  ],
+  "per_repository": {
+   "gpxpy": "6/8",
+   "h11": "6/24",
+   "isodate": "9/16",
+   "python-dotenv": "0/8",
+   "tenacity": "2/8"
+  },
+  "per_attempt": {
+   "steps": 21.1,
+   "input_tokens": 177495.8,
+   "output_tokens": 655.8,
+   "elapsed_seconds": 59.9,
+   "model_seconds": 35.9
+  },
+  "tool_calls": {
+   "search": 551,
+   "read_file": 349,
+   "edit_file": 194,
+   "public_test": 143,
+   "list_files": 64,
+   "finish": 28,
+   "run": 8,
+   "diff": 6,
+   "invalid_action": 5,
+   "replace_lines": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0012",
+  "attempts": 64,
+  "resolved": 23,
+  "ungraded": 0,
+  "pass@1": 0.3594,
+  "solved_tasks": 6,
+  "statuses": {
+   "finished": 34,
+   "stuck": 7,
+   "max_steps": 23
+  },
+  "finished_and_resolved": [
+   23,
+   34
+  ],
+  "per_repository": {
+   "gpxpy": "0/8",
+   "isodate": "3/8",
+   "python-dotenv": "1/16",
+   "schema": "3/8",
+   "tenacity": "8/8",
+   "textfsm": "7/8",
+   "voluptuous": "1/8"
+  },
+  "per_attempt": {
+   "steps": 18.2,
+   "input_tokens": 119273.4,
+   "output_tokens": 588.5,
+   "elapsed_seconds": 49.4,
+   "model_seconds": 20.7
+  },
+  "tool_calls": {
+   "search": 492,
+   "read_file": 285,
+   "edit_file": 156,
+   "public_test": 133,
+   "list_files": 49,
+   "finish": 34,
+   "run": 5,
+   "replace_lines": 5,
+   "invalid_action": 2,
+   "write_file": 2
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0013",
+  "attempts": 64,
+  "resolved": 33,
+  "ungraded": 0,
+  "pass@1": 0.5156,
+  "solved_tasks": 6,
+  "statuses": {
+   "finished": 39,
+   "stuck": 10,
+   "max_steps": 15
+  },
+  "finished_and_resolved": [
+   27,
+   39
+  ],
+  "per_repository": {
+   "h11": "7/8",
+   "isodate": "2/24",
+   "schema": "14/16",
+   "tenacity": "7/8",
+   "voluptuous": "3/8"
+  },
+  "per_attempt": {
+   "steps": 15.7,
+   "input_tokens": 79410.8,
+   "output_tokens": 462.2,
+   "elapsed_seconds": 38.4,
+   "model_seconds": 12.0
+  },
+  "tool_calls": {
+   "search": 409,
+   "read_file": 202,
+   "edit_file": 166,
+   "public_test": 137,
+   "list_files": 40,
+   "finish": 39,
+   "invalid_action": 4,
+   "run": 2,
+   "replace_lines": 2,
+   "diff": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0014",
+  "attempts": 64,
+  "resolved": 19,
+  "ungraded": 0,
+  "pass@1": 0.2969,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 35,
+   "stuck": 21,
+   "max_steps": 8
+  },
+  "finished_and_resolved": [
+   19,
+   35
+  ],
+  "per_repository": {
+   "h11": "1/8",
+   "isodate": "6/8",
+   "python-dotenv": "6/16",
+   "tenacity": "2/24",
+   "voluptuous": "4/8"
+  },
+  "per_attempt": {
+   "steps": 15.5,
+   "input_tokens": 90785.6,
+   "output_tokens": 487.9,
+   "elapsed_seconds": 49.7,
+   "model_seconds": 11.6
+  },
+  "tool_calls": {
+   "search": 362,
+   "read_file": 203,
+   "edit_file": 171,
+   "public_test": 140,
+   "list_files": 65,
+   "finish": 35,
+   "invalid_action": 9,
+   "run": 6,
+   "replace_lines": 2,
+   "diff": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0015",
+  "attempts": 64,
+  "resolved": 32,
+  "ungraded": 0,
+  "pass@1": 0.5,
+  "solved_tasks": 6,
+  "statuses": {
+   "finished": 37,
+   "stuck": 18,
+   "max_steps": 9
+  },
+  "finished_and_resolved": [
+   26,
+   37
+  ],
+  "per_repository": {
+   "gpxpy": "8/8",
+   "h11": "8/24",
+   "isodate": "12/16",
+   "python-dotenv": "1/8",
+   "schema": "3/8"
+  },
+  "per_attempt": {
+   "steps": 14.6,
+   "input_tokens": 72024.0,
+   "output_tokens": 437.9,
+   "elapsed_seconds": 43.3,
+   "model_seconds": 10.4
+  },
+  "tool_calls": {
+   "search": 336,
+   "edit_file": 181,
+   "read_file": 171,
+   "public_test": 152,
+   "list_files": 50,
+   "finish": 37,
+   "invalid_action": 10
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0016",
+  "attempts": 64,
+  "resolved": 22,
+  "ungraded": 0,
+  "pass@1": 0.3438,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 33,
+   "stuck": 17,
+   "max_steps": 14
+  },
+  "finished_and_resolved": [
+   22,
+   33
+  ],
+  "per_repository": {
+   "gpxpy": "0/8",
+   "isodate": "4/8",
+   "python-dotenv": "0/8",
+   "schema": "1/8",
+   "tenacity": "12/16",
+   "textfsm": "5/8",
+   "voluptuous": "0/8"
+  },
+  "per_attempt": {
+   "steps": 15.3,
+   "input_tokens": 75597.2,
+   "output_tokens": 505.3,
+   "elapsed_seconds": 42.3,
+   "model_seconds": 12.6
+  },
+  "tool_calls": {
+   "search": 373,
+   "read_file": 183,
+   "edit_file": 177,
+   "public_test": 139,
+   "list_files": 60,
+   "finish": 33,
+   "invalid_action": 9,
+   "recall": 2,
+   "run": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0017",
+  "attempts": 64,
+  "resolved": 32,
+  "ungraded": 0,
+  "pass@1": 0.5,
+  "solved_tasks": 6,
+  "statuses": {
+   "finished": 42,
+   "stuck": 9,
+   "max_steps": 13
+  },
+  "finished_and_resolved": [
+   32,
+   42
+  ],
+  "per_repository": {
+   "isodate": "2/24",
+   "python-dotenv": "4/8",
+   "schema": "15/16",
+   "tenacity": "8/8",
+   "voluptuous": "3/8"
+  },
+  "per_attempt": {
+   "steps": 14.2,
+   "input_tokens": 60468.0,
+   "output_tokens": 392.8,
+   "elapsed_seconds": 33.6,
+   "model_seconds": 10.3
+  },
+  "tool_calls": {
+   "search": 400,
+   "edit_file": 150,
+   "read_file": 132,
+   "public_test": 126,
+   "list_files": 59,
+   "finish": 42,
+   "invalid_action": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0018",
+  "attempts": 64,
+  "resolved": 19,
+  "ungraded": 0,
+  "pass@1": 0.2969,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 27,
+   "stuck": 20,
+   "max_steps": 17
+  },
+  "finished_and_resolved": [
+   13,
+   27
+  ],
+  "per_repository": {
+   "h11": "6/16",
+   "python-dotenv": "7/16",
+   "tenacity": "1/24",
+   "voluptuous": "5/8"
+  },
+  "per_attempt": {
+   "steps": 18.4,
+   "input_tokens": 92628.8,
+   "output_tokens": 559.0,
+   "elapsed_seconds": 54.7,
+   "model_seconds": 12.9
+  },
+  "tool_calls": {
+   "search": 550,
+   "read_file": 169,
+   "edit_file": 158,
+   "public_test": 132,
+   "list_files": 132,
+   "finish": 27,
+   "invalid_action": 7,
+   "diff": 1,
+   "replace_lines": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0019",
+  "attempts": 64,
+  "resolved": 34,
+  "ungraded": 0,
+  "pass@1": 0.5312,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 35,
+   "max_steps": 13,
+   "stuck": 16
+  },
+  "finished_and_resolved": [
+   29,
+   35
+  ],
+  "per_repository": {
+   "gpxpy": "8/8",
+   "h11": "7/24",
+   "isodate": "17/24",
+   "schema": "2/8"
+  },
+  "per_attempt": {
+   "steps": 14.5,
+   "input_tokens": 73107.6,
+   "output_tokens": 412.9,
+   "elapsed_seconds": 42.2,
+   "model_seconds": 9.6
+  },
+  "tool_calls": {
+   "search": 393,
+   "edit_file": 144,
+   "read_file": 136,
+   "public_test": 120,
+   "list_files": 89,
+   "finish": 35,
+   "invalid_action": 9
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0020",
+  "attempts": 64,
+  "resolved": 24,
+  "ungraded": 0,
+  "pass@1": 0.375,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 32,
+   "stuck": 14,
+   "max_steps": 18
+  },
+  "finished_and_resolved": [
+   24,
+   32
+  ],
+  "per_repository": {
+   "isodate": "7/8",
+   "python-dotenv": "0/16",
+   "schema": "2/8",
+   "tenacity": "8/16",
+   "textfsm": "6/8",
+   "voluptuous": "1/8"
+  },
+  "per_attempt": {
+   "steps": 16.5,
+   "input_tokens": 101776.7,
+   "output_tokens": 476.6,
+   "elapsed_seconds": 44.4,
+   "model_seconds": 15.2
+  },
+  "tool_calls": {
+   "search": 477,
+   "read_file": 191,
+   "edit_file": 152,
+   "public_test": 129,
+   "list_files": 69,
+   "finish": 32,
+   "invalid_action": 7,
+   "diff": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0021",
+  "attempts": 64,
+  "resolved": 26,
+  "ungraded": 0,
+  "pass@1": 0.4062,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 30,
+   "stuck": 8,
+   "max_steps": 26
+  },
+  "finished_and_resolved": [
+   26,
+   30
+  ],
+  "per_repository": {
+   "gpxpy": "1/8",
+   "isodate": "4/24",
+   "python-dotenv": "3/8",
+   "schema": "8/8",
+   "tenacity": "8/8",
+   "voluptuous": "2/8"
+  },
+  "per_attempt": {
+   "steps": 18.3,
+   "input_tokens": 99402.0,
+   "output_tokens": 552.8,
+   "elapsed_seconds": 44.9,
+   "model_seconds": 15.1
+  },
+  "tool_calls": {
+   "search": 472,
+   "read_file": 227,
+   "edit_file": 224,
+   "public_test": 165,
+   "list_files": 48,
+   "finish": 30,
+   "invalid_action": 4
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0022",
+  "attempts": 64,
+  "resolved": 30,
+  "ungraded": 0,
+  "pass@1": 0.4688,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 28,
+   "stuck": 16,
+   "max_steps": 20
+  },
+  "finished_and_resolved": [
+   25,
+   28
+  ],
+  "per_repository": {
+   "h11": "6/8",
+   "python-dotenv": "6/16",
+   "schema": "8/8",
+   "tenacity": "4/24",
+   "voluptuous": "6/8"
+  },
+  "per_attempt": {
+   "steps": 17.9,
+   "input_tokens": 104535.7,
+   "output_tokens": 561.2,
+   "elapsed_seconds": 53.6,
+   "model_seconds": 15.9
+  },
+  "tool_calls": {
+   "search": 454,
+   "read_file": 244,
+   "edit_file": 181,
+   "public_test": 141,
+   "list_files": 87,
+   "finish": 28,
+   "invalid_action": 9,
+   "replace_lines": 2
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0023",
+  "attempts": 64,
+  "resolved": 39,
+  "ungraded": 0,
+  "pass@1": 0.6094,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 29,
+   "stuck": 16,
+   "max_steps": 19
+  },
+  "finished_and_resolved": [
+   28,
+   29
+  ],
+  "per_repository": {
+   "h11": "12/32",
+   "isodate": "22/24",
+   "schema": "5/8"
+  },
+  "per_attempt": {
+   "steps": 17.7,
+   "input_tokens": 116249.8,
+   "output_tokens": 523.1,
+   "elapsed_seconds": 46.5,
+   "model_seconds": 13.3
+  },
+  "tool_calls": {
+   "search": 445,
+   "read_file": 243,
+   "edit_file": 156,
+   "public_test": 136,
+   "list_files": 119,
+   "finish": 29,
+   "invalid_action": 5,
+   "recall": 2
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0024",
+  "attempts": 64,
+  "resolved": 36,
+  "ungraded": 0,
+  "pass@1": 0.5625,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 39,
+   "stuck": 14,
+   "max_steps": 11
+  },
+  "finished_and_resolved": [
+   36,
+   39
+  ],
+  "per_repository": {
+   "gpxpy": "8/8",
+   "isodate": "5/8",
+   "python-dotenv": "1/16",
+   "tenacity": "11/16",
+   "textfsm": "8/8",
+   "voluptuous": "3/8"
+  },
+  "per_attempt": {
+   "steps": 13.9,
+   "input_tokens": 89196.5,
+   "output_tokens": 469.3,
+   "elapsed_seconds": 43.7,
+   "model_seconds": 13.8
+  },
+  "tool_calls": {
+   "search": 255,
+   "read_file": 205,
+   "edit_file": 159,
+   "public_test": 142,
+   "list_files": 65,
+   "finish": 39,
+   "invalid_action": 21,
+   "recall": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0025",
+  "attempts": 64,
+  "resolved": 17,
+  "ungraded": 0,
+  "pass@1": 0.2656,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 21,
+   "stuck": 20,
+   "max_steps": 23
+  },
+  "finished_and_resolved": [
+   17,
+   21
+  ],
+  "per_repository": {
+   "gpxpy": "0/8",
+   "isodate": "1/24",
+   "python-dotenv": "3/8",
+   "schema": "10/16",
+   "voluptuous": "3/8"
+  },
+  "per_attempt": {
+   "steps": 19.5,
+   "input_tokens": 102197.3,
+   "output_tokens": 596.3,
+   "elapsed_seconds": 42.9,
+   "model_seconds": 17.4
+  },
+  "tool_calls": {
+   "search": 434,
+   "read_file": 295,
+   "edit_file": 202,
+   "public_test": 180,
+   "list_files": 102,
+   "finish": 21,
+   "invalid_action": 16,
+   "replace_lines": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0026",
+  "attempts": 64,
+  "resolved": 28,
+  "ungraded": 0,
+  "pass@1": 0.4375,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 26,
+   "stuck": 23,
+   "max_steps": 15
+  },
+  "finished_and_resolved": [
+   23,
+   26
+  ],
+  "per_repository": {
+   "h11": "7/8",
+   "python-dotenv": "8/16",
+   "schema": "5/8",
+   "tenacity": "8/32"
+  },
+  "per_attempt": {
+   "steps": 16.6,
+   "input_tokens": 87135.2,
+   "output_tokens": 548.1,
+   "elapsed_seconds": 48.7,
+   "model_seconds": 10.1
+  },
+  "tool_calls": {
+   "search": 331,
+   "read_file": 263,
+   "list_files": 145,
+   "edit_file": 144,
+   "public_test": 128,
+   "finish": 26,
+   "invalid_action": 23,
+   "replace_lines": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0027",
+  "attempts": 64,
+  "resolved": 39,
+  "ungraded": 0,
+  "pass@1": 0.6094,
+  "solved_tasks": 6,
+  "statuses": {
+   "finished": 37,
+   "stuck": 17,
+   "max_steps": 10
+  },
+  "finished_and_resolved": [
+   35,
+   37
+  ],
+  "per_repository": {
+   "h11": "7/24",
+   "isodate": "21/24",
+   "schema": "4/8",
+   "voluptuous": "7/8"
+  },
+  "per_attempt": {
+   "steps": 13.6,
+   "input_tokens": 61774.4,
+   "output_tokens": 418.8,
+   "elapsed_seconds": 35.7,
+   "model_seconds": 8.2
+  },
+  "tool_calls": {
+   "search": 283,
+   "read_file": 162,
+   "edit_file": 117,
+   "list_files": 113,
+   "public_test": 111,
+   "invalid_action": 48,
+   "finish": 37,
+   "diff": 1,
+   "recall": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0028",
+  "attempts": 64,
+  "resolved": 44,
+  "ungraded": 0,
+  "pass@1": 0.6875,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 43,
+   "stuck": 16,
+   "max_steps": 5
+  },
+  "finished_and_resolved": [
+   37,
+   43
+  ],
+  "per_repository": {
+   "gpxpy": "8/8",
+   "h11": "8/8",
+   "isodate": "8/8",
+   "python-dotenv": "0/8",
+   "tenacity": "13/16",
+   "textfsm": "6/8",
+   "voluptuous": "1/8"
+  },
+  "per_attempt": {
+   "steps": 11.4,
+   "input_tokens": 40740.6,
+   "output_tokens": 417.8,
+   "elapsed_seconds": 37.5,
+   "model_seconds": 7.0
+  },
+  "tool_calls": {
+   "search": 238,
+   "read_file": 120,
+   "public_test": 104,
+   "edit_file": 97,
+   "list_files": 82,
+   "invalid_action": 46,
+   "finish": 43,
+   "recall": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0029",
+  "attempts": 64,
+  "resolved": 12,
+  "ungraded": 0,
+  "pass@1": 0.1875,
+  "solved_tasks": 3,
+  "statuses": {
+   "finished": 32,
+   "stuck": 21,
+   "max_steps": 11
+  },
+  "finished_and_resolved": [
+   12,
+   32
+  ],
+  "per_repository": {
+   "gpxpy": "2/8",
+   "isodate": "0/16",
+   "python-dotenv": "2/16",
+   "schema": "8/16",
+   "voluptuous": "0/8"
+  },
+  "per_attempt": {
+   "steps": 15.9,
+   "input_tokens": 85348.5,
+   "output_tokens": 501.8,
+   "elapsed_seconds": 36.7,
+   "model_seconds": 16.9
+  },
+  "tool_calls": {
+   "search": 323,
+   "read_file": 161,
+   "public_test": 142,
+   "edit_file": 137,
+   "list_files": 129,
+   "invalid_action": 84,
+   "finish": 32,
+   "diff": 4,
+   "recall": 3,
+   "replace_lines": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0030",
+  "attempts": 64,
+  "resolved": 29,
+  "ungraded": 0,
+  "pass@1": 0.4531,
+  "solved_tasks": 6,
+  "statuses": {
+   "finished": 42,
+   "stuck": 22
+  },
+  "finished_and_resolved": [
+   28,
+   42
+  ],
+  "per_repository": {
+   "h11": "8/8",
+   "isodate": "1/8",
+   "python-dotenv": "4/8",
+   "schema": "8/8",
+   "tenacity": "8/32"
+  },
+  "per_attempt": {
+   "steps": 11.3,
+   "input_tokens": 40532.7,
+   "output_tokens": 363.5,
+   "elapsed_seconds": 42.3,
+   "model_seconds": 6.3
+  },
+  "tool_calls": {
+   "search": 206,
+   "read_file": 129,
+   "public_test": 126,
+   "edit_file": 108,
+   "invalid_action": 59,
+   "list_files": 53,
+   "finish": 42,
+   "diff": 2,
+   "recall": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0031",
+  "attempts": 64,
+  "resolved": 46,
+  "ungraded": 0,
+  "pass@1": 0.7188,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 50,
+   "stuck": 13,
+   "max_steps": 1
+  },
+  "finished_and_resolved": [
+   42,
+   50
+  ],
+  "per_repository": {
+   "h11": "7/16",
+   "isodate": "22/24",
+   "python-dotenv": "6/8",
+   "schema": "3/8",
+   "voluptuous": "8/8"
+  },
+  "per_attempt": {
+   "steps": 8.3,
+   "input_tokens": 21175.2,
+   "output_tokens": 229.0,
+   "elapsed_seconds": 29.8,
+   "model_seconds": 4.1
+  },
+  "tool_calls": {
+   "search": 133,
+   "public_test": 101,
+   "read_file": 84,
+   "edit_file": 79,
+   "finish": 50,
+   "list_files": 45,
+   "invalid_action": 25,
+   "recall": 6,
+   "diff": 3,
+   "replace_lines": 3
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0032",
+  "attempts": 64,
+  "resolved": 43,
+  "ungraded": 0,
+  "pass@1": 0.6719,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 54,
+   "stuck": 10
+  },
+  "finished_and_resolved": [
+   38,
+   54
+  ],
+  "per_repository": {
+   "gpxpy": "8/8",
+   "h11": "10/16",
+   "isodate": "8/8",
+   "python-dotenv": "0/8",
+   "tenacity": "8/8",
+   "textfsm": "8/8",
+   "voluptuous": "1/8"
+  },
+  "per_attempt": {
+   "steps": 8.3,
+   "input_tokens": 21941.6,
+   "output_tokens": 244.5,
+   "elapsed_seconds": 34.7,
+   "model_seconds": 3.9
+  },
+  "tool_calls": {
+   "search": 138,
+   "public_test": 100,
+   "edit_file": 91,
+   "read_file": 84,
+   "finish": 54,
+   "invalid_action": 29,
+   "list_files": 18,
+   "recall": 11,
+   "diff": 9
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0033",
+  "attempts": 64,
+  "resolved": 16,
+  "ungraded": 0,
+  "pass@1": 0.25,
+  "solved_tasks": 2,
+  "statuses": {
+   "finished": 50,
+   "stuck": 13,
+   "max_steps": 1
+  },
+  "finished_and_resolved": [
+   16,
+   50
+  ],
+  "per_repository": {
+   "gpxpy": "0/8",
+   "isodate": "0/8",
+   "python-dotenv": "0/16",
+   "schema": "8/16",
+   "tenacity": "8/8",
+   "voluptuous": "0/8"
+  },
+  "per_attempt": {
+   "steps": 9.8,
+   "input_tokens": 37375.1,
+   "output_tokens": 289.5,
+   "elapsed_seconds": 32.3,
+   "model_seconds": 6.2
+  },
+  "tool_calls": {
+   "search": 170,
+   "public_test": 105,
+   "edit_file": 84,
+   "read_file": 82,
+   "invalid_action": 75,
+   "finish": 50,
+   "list_files": 40,
+   "recall": 13,
+   "diff": 10
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0034",
+  "attempts": 64,
+  "resolved": 30,
+  "ungraded": 0,
+  "pass@1": 0.4688,
+  "solved_tasks": 4,
+  "statuses": {
+   "finished": 58,
+   "stuck": 6
+  },
+  "finished_and_resolved": [
+   28,
+   58
+  ],
+  "per_repository": {
+   "h11": "8/8",
+   "isodate": "0/16",
+   "python-dotenv": "7/8",
+   "schema": "7/8",
+   "tenacity": "8/24"
+  },
+  "per_attempt": {
+   "steps": 8.9,
+   "input_tokens": 21447.6,
+   "output_tokens": 259.1,
+   "elapsed_seconds": 34.4,
+   "model_seconds": 4.3
+  },
+  "tool_calls": {
+   "search": 166,
+   "public_test": 84,
+   "edit_file": 75,
+   "read_file": 69,
+   "invalid_action": 68,
+   "finish": 58,
+   "list_files": 27,
+   "diff": 11,
+   "recall": 11
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0035",
+  "attempts": 64,
+  "resolved": 37,
+  "ungraded": 0,
+  "pass@1": 0.5781,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 50,
+   "stuck": 13,
+   "max_steps": 1
+  },
+  "finished_and_resolved": [
+   35,
+   50
+  ],
+  "per_repository": {
+   "h11": "8/8",
+   "isodate": "16/24",
+   "python-dotenv": "4/8",
+   "schema": "1/8",
+   "tenacity": "0/8",
+   "voluptuous": "8/8"
+  },
+  "per_attempt": {
+   "steps": 9.7,
+   "input_tokens": 27025.7,
+   "output_tokens": 266.2,
+   "elapsed_seconds": 29.9,
+   "model_seconds": 4.6
+  },
+  "tool_calls": {
+   "search": 175,
+   "invalid_action": 105,
+   "public_test": 93,
+   "edit_file": 61,
+   "read_file": 57,
+   "finish": 50,
+   "list_files": 41,
+   "recall": 26,
+   "diff": 15
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0036",
+  "attempts": 64,
+  "resolved": 25,
+  "ungraded": 0,
+  "pass@1": 0.3906,
+  "solved_tasks": 6,
+  "statuses": {
+   "finished": 50,
+   "stuck": 9,
+   "max_steps": 5
+  },
+  "finished_and_resolved": [
+   21,
+   50
+  ],
+  "per_repository": {
+   "gpxpy": "4/8",
+   "h11": "8/24",
+   "isodate": "5/8",
+   "python-dotenv": "0/8",
+   "tenacity": "7/8",
+   "voluptuous": "1/8"
+  },
+  "per_attempt": {
+   "steps": 12.1,
+   "input_tokens": 38103.4,
+   "output_tokens": 388.2,
+   "elapsed_seconds": 35.3,
+   "model_seconds": 6.1
+  },
+  "tool_calls": {
+   "invalid_action": 298,
+   "search": 162,
+   "public_test": 85,
+   "read_file": 65,
+   "edit_file": 59,
+   "finish": 50,
+   "diff": 25,
+   "recall": 17,
+   "list_files": 14
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0037",
+  "attempts": 64,
+  "resolved": 25,
+  "ungraded": 0,
+  "pass@1": 0.3906,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 46,
+   "stuck": 7,
+   "max_steps": 11
+  },
+  "finished_and_resolved": [
+   25,
+   46
+  ],
+  "per_repository": {
+   "gpxpy": "1/8",
+   "python-dotenv": "1/16",
+   "schema": "8/16",
+   "tenacity": "8/8",
+   "textfsm": "7/8",
+   "voluptuous": "0/8"
+  },
+  "per_attempt": {
+   "steps": 13.3,
+   "input_tokens": 54401.8,
+   "output_tokens": 432.9,
+   "elapsed_seconds": 28.0,
+   "model_seconds": 8.8
+  },
+  "tool_calls": {
+   "invalid_action": 476,
+   "search": 116,
+   "public_test": 78,
+   "read_file": 56,
+   "edit_file": 47,
+   "finish": 46,
+   "list_files": 17,
+   "diff": 9,
+   "recall": 8,
+   "replace_lines": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0038",
+  "attempts": 64,
+  "resolved": 31,
+  "ungraded": 0,
+  "pass@1": 0.4844,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 38,
+   "stuck": 4,
+   "max_steps": 22
+  },
+  "finished_and_resolved": [
+   26,
+   38
+  ],
+  "per_repository": {
+   "h11": "8/8",
+   "isodate": "1/24",
+   "python-dotenv": "7/8",
+   "schema": "8/8",
+   "tenacity": "7/16"
+  },
+  "per_attempt": {
+   "steps": 16.3,
+   "input_tokens": 44982.4,
+   "output_tokens": 476.8,
+   "elapsed_seconds": 34.7,
+   "model_seconds": 8.4
+  },
+  "tool_calls": {
+   "invalid_action": 666,
+   "search": 118,
+   "public_test": 72,
+   "edit_file": 57,
+   "read_file": 55,
+   "finish": 38,
+   "diff": 18,
+   "list_files": 12,
+   "recall": 7
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0039",
+  "attempts": 64,
+  "resolved": 26,
+  "ungraded": 0,
+  "pass@1": 0.4062,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 35,
+   "max_steps": 28,
+   "stuck": 1
+  },
+  "finished_and_resolved": [
+   18,
+   35
+  ],
+  "per_repository": {
+   "h11": "8/8",
+   "isodate": "7/16",
+   "python-dotenv": "3/8",
+   "schema": "0/8",
+   "tenacity": "0/16",
+   "voluptuous": "8/8"
+  },
+  "per_attempt": {
+   "steps": 19.3,
+   "input_tokens": 61855.9,
+   "output_tokens": 663.6,
+   "elapsed_seconds": 50.7,
+   "model_seconds": 16.5
+  },
+  "tool_calls": {
+   "invalid_action": 909,
+   "search": 109,
+   "public_test": 58,
+   "read_file": 48,
+   "edit_file": 45,
+   "finish": 35,
+   "list_files": 17,
+   "diff": 10,
+   "recall": 2,
+   "replace_lines": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0040",
+  "attempts": 64,
+  "resolved": 28,
+  "ungraded": 0,
+  "pass@1": 0.4375,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 34,
+   "max_steps": 30
+  },
+  "finished_and_resolved": [
+   23,
+   34
+  ],
+  "per_repository": {
+   "gpxpy": "6/8",
+   "h11": "9/24",
+   "isodate": "6/8",
+   "python-dotenv": "0/8",
+   "tenacity": "7/8",
+   "voluptuous": "0/8"
+  },
+  "per_attempt": {
+   "steps": 18.4,
+   "input_tokens": 62915.7,
+   "output_tokens": 651.2,
+   "elapsed_seconds": 36.1,
+   "model_seconds": 11.7
+  },
+  "tool_calls": {
+   "invalid_action": 900,
+   "search": 77,
+   "read_file": 55,
+   "edit_file": 52,
+   "public_test": 49,
+   "finish": 34,
+   "diff": 5,
+   "list_files": 3,
+   "replace_lines": 2,
+   "recall": 2,
+   "run": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0041",
+  "attempts": 64,
+  "resolved": 29,
+  "ungraded": 0,
+  "pass@1": 0.4531,
+  "solved_tasks": 7,
+  "statuses": {
+   "finished": 34,
+   "max_steps": 29,
+   "stuck": 1
+  },
+  "finished_and_resolved": [
+   29,
+   34
+  ],
+  "per_repository": {
+   "gpxpy": "1/8",
+   "isodate": "3/8",
+   "python-dotenv": "1/16",
+   "schema": "9/16",
+   "tenacity": "8/8",
+   "textfsm": "7/8"
+  },
+  "per_attempt": {
+   "steps": 17.0,
+   "input_tokens": 58449.1,
+   "output_tokens": 709.0,
+   "elapsed_seconds": 26.2,
+   "model_seconds": 12.6
+  },
+  "tool_calls": {
+   "invalid_action": 843,
+   "search": 68,
+   "read_file": 53,
+   "public_test": 38,
+   "edit_file": 36,
+   "finish": 34,
+   "list_files": 11,
+   "diff": 3
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0042",
+  "attempts": 64,
+  "resolved": 28,
+  "ungraded": 0,
+  "pass@1": 0.4375,
+  "solved_tasks": 4,
+  "statuses": {
+   "finished": 22,
+   "max_steps": 41,
+   "stuck": 1
+  },
+  "finished_and_resolved": [
+   21,
+   22
+  ],
+  "per_repository": {
+   "h11": "7/8",
+   "isodate": "0/24",
+   "python-dotenv": "5/8",
+   "schema": "8/8",
+   "tenacity": "8/8",
+   "voluptuous": "0/8"
+  },
+  "per_attempt": {
+   "steps": 21.4,
+   "input_tokens": 67847.0,
+   "output_tokens": 1384.1,
+   "elapsed_seconds": 31.7,
+   "model_seconds": 19.9
+  },
+  "tool_calls": {
+   "invalid_action": 1102,
+   "search": 69,
+   "edit_file": 61,
+   "read_file": 59,
+   "public_test": 52,
+   "finish": 22,
+   "diff": 2,
+   "list_files": 2,
+   "recall": 1,
+   "replace_lines": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0043",
+  "attempts": 64,
+  "resolved": 29,
+  "ungraded": 0,
+  "pass@1": 0.4531,
+  "solved_tasks": 4,
+  "statuses": {
+   "finished": 22,
+   "max_steps": 42
+  },
+  "finished_and_resolved": [
+   21,
+   22
+  ],
+  "per_repository": {
+   "h11": "8/8",
+   "isodate": "8/8",
+   "python-dotenv": "5/8",
+   "schema": "0/8",
+   "tenacity": "0/24",
+   "voluptuous": "8/8"
+  },
+  "per_attempt": {
+   "steps": 21.5,
+   "input_tokens": 85131.6,
+   "output_tokens": 3404.7,
+   "elapsed_seconds": 51.0,
+   "model_seconds": 39.9
+  },
+  "tool_calls": {
+   "invalid_action": 1141,
+   "search": 64,
+   "read_file": 56,
+   "edit_file": 46,
+   "public_test": 33,
+   "finish": 22,
+   "list_files": 12,
+   "replace_lines": 1
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0044",
+  "attempts": 64,
+  "resolved": 38,
+  "ungraded": 0,
+  "pass@1": 0.5938,
+  "solved_tasks": 5,
+  "statuses": {
+   "finished": 30,
+   "max_steps": 34
+  },
+  "finished_and_resolved": [
+   30,
+   30
+  ],
+  "per_repository": {
+   "gpxpy": "8/8",
+   "h11": "8/24",
+   "isodate": "15/16",
+   "python-dotenv": "0/8",
+   "tenacity": "7/8"
+  },
+  "per_attempt": {
+   "steps": 18.4,
+   "input_tokens": 104209.3,
+   "output_tokens": 6851.5,
+   "elapsed_seconds": 94.6,
+   "model_seconds": 81.1
+  },
+  "tool_calls": {
+   "invalid_action": 899,
+   "search": 64,
+   "read_file": 63,
+   "edit_file": 63,
+   "public_test": 50,
+   "finish": 30,
+   "list_files": 10
+  }
+ },
+ {
+  "pool": "/opt/coding-agent/work/round7/grpo/step-0045",
+  "attempts": 64,
+  "resolved": 25,
+  "ungraded": 0,
+  "pass@1": 0.3906,
+  "solved_tasks": 4,
+  "statuses": {
+   "finished": 25,
+   "max_steps": 39
+  },
+  "finished_and_resolved": [
+   25,
+   25
+  ],
+  "per_repository": {
+   "gpxpy": "0/8",
+   "isodate": "8/8",
+   "python-dotenv": "1/16",
+   "schema": "0/8",
+   "tenacity": "8/8",
+   "textfsm": "8/8",
+   "voluptuous": "0/8"
+  },
+  "per_attempt": {
+   "steps": 20.2,
+   "input_tokens": 261452.5,
+   "output_tokens": 22284.0,
+   "elapsed_seconds": 726.4,
+   "model_seconds": 717.2
+  },
+  "tool_calls": {
+   "invalid_action": 1030,
+   "search": 64,
+   "read_file": 62,
+   "edit_file": 62,
+   "public_test": 43,
+   "finish": 25,
+   "list_files": 10
+  }
+ }
+]

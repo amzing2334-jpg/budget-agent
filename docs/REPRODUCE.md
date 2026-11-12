@@ -20,7 +20,7 @@
 | 第四轮标注 A/B | 2.09 小时 | 6.9 元 | [EXPERIMENT_LABELS_AB.md](EXPERIMENT_LABELS_AB.md) |
 | 第五轮 GRPO（前缀打包） | 5.0 小时（含一次中断） | 约 16.4 元 | [EXPERIMENT_GRPO_ROUND5.md](EXPERIMENT_GRPO_ROUND5.md) |
 | 第六轮固定标注 SFT | 1.39 小时 | 约 4.6 元 | [EXPERIMENT_LABELS_SFT.md](EXPERIMENT_LABELS_SFT.md) |
-| 第七轮继续训练 GRPO | 约 4.6 小时（计划） | 按当时价格 | [EXPERIMENT_GRPO_ROUND7.md](EXPERIMENT_GRPO_ROUND7.md) |
+| 第七轮继续训练 GRPO | 10.4 小时（评测 5.7 小时，含汇总报错后 1.45 小时的空闲） | 约 34.1 元 | [EXPERIMENT_GRPO_ROUND7.md](EXPERIMENT_GRPO_ROUND7.md) |
 | 第八轮流水线 GRPO | 约 4 小时（计划） | 按当时价格 | [EXPERIMENT_GRPO_ROUND8.md](EXPERIMENT_GRPO_ROUND8.md) |
 
 ## 1. 本地检查（只需 CPU）
