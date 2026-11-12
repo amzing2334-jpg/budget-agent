@@ -57,6 +57,7 @@ PIP_INDEX_URL=https://repo.huaweicloud.com/repository/pypi/simple \
   - 从 ModelScope 下载 7B 和 1.5B 模型；
   - 把分词器文件放到 `nobody` 可读的位置。
 - **镜像源**：佛山实例上镜像默认的阿里云源只有 0.35 MB/s，华为云有 10.7 MB/s，部署前先测速。
+- **磁盘**：rollout 必须写在系统盘的 `/opt/coding-agent/work` 下（`/root` 的权限是 700，`nobody` 进不去），而系统盘只有 30 GB，其中 vLLM/torch 环境约占 14 GB；一个每题 8 次的评测池约 2.5 GB。每轮结束后用 `scripts/autodl/archive_rollouts.sh <目录>` 把已完成的 rollout 移到数据盘并留下符号链接，记录里的路径保持有效。`run_pool.sh` 在剩余空间不足 5 GB 时拒绝启动（`MIN_FREE_GB` 可调），第五轮就曾因系统盘写满而在评测中途中断。
 - **核对部署**：在服务器上计算代码树哈希，与本地 `git archive` 解出的结果比对：
 
 ```bash
