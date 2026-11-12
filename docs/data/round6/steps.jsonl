@@ -1,0 +1,5 @@
+{"step": "sft-data", "seconds": 0, "finished": "2026-11-12T02:43:08Z"}
+{"step": "train-sft", "seconds": 1187, "finished": "2026-11-12T03:02:55Z"}
+{"step": "serve-student", "seconds": 96, "finished": "2026-11-12T03:04:31Z"}
+{"step": "eval", "seconds": 3728, "finished": "2026-11-12T04:06:39Z"}
+{"step": "stop-vllm", "seconds": 4, "finished": "2026-11-12T04:06:43Z"}

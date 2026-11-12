@@ -14,6 +14,7 @@
 | GRPO 25 步，加固后的 harness | 6.51% → **11.98%** | **+5.47 [+2.08, +9.11]** | 提升 | [第三轮](docs/EXPERIMENT_GRPO_ROUND3.md) |
 | 固定标注 vs 重新标注（非劣性，界限 −2） | 6.90% → 5.86% | −1.04 [−2.99, +0.91] | 非劣性未证明，不采用 | [第四轮](docs/EXPERIMENT_LABELS_AB.md) |
 | GRPO 29 步，前缀打包，换种子独立重复 | 6.90% → **12.37%** | **+5.47 [+2.21, +9.11]** | 提升，重复成功 | [第五轮](docs/EXPERIMENT_GRPO_ROUND5.md) |
+| 在固定标注上重训 SFT 学生 vs 原学生（非劣性，界限 −2） | 6.90% → 6.51% | −0.39 [−2.08, +1.30] | 非劣性未证明（差 0.08），不采用 | [第六轮](docs/EXPERIMENT_LABELS_SFT.md) |
 
 | | 要点 | 证据 |
 |---|---|---|
@@ -21,7 +22,7 @@
 | **一致性** | 训练端与采样端的 prompt 在 token 层面完全一致：三轮 13,847 个训练 turn 的摘要全部吻合，logprob 平均差 ≤ 0.0028 nat，TIS 从未截断 | [技术复盘 §4](docs/TECH_REPORT.md) |
 | **系统** | 单卡 7B agent rollout 受 prefill 限制（prompt token 是生成的 108 到 141 倍）。前缀打包把训练编码的 token 减少 2.9 到 3.1 倍，loss 和梯度等价；用于第五轮的 GRPO 训练后，每个训练 turn 的用时降低 36%，训练占每步时间从 59% 降到 43%，瓶颈转到 rollout。改成固定标注可到 4.48 倍（事先估计 4.43 倍），但见上表第四轮。按题测试时限把 rollout 的 p90 从 631 秒降到 235 秒 | [基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[打包](docs/PREFIX_PACKING.md) |
 
-四轮训练、一次复现评测和一次标注 A/B 共 17.7 GPU 小时，约 58 元。留出集上通过的 389 个补丁都逐条人工检查过，没有发现篡改，并且都与原始源码对照过。原始输出在 [`docs/data/`](docs/data/)。
+五次训练（RFT、三次 GRPO、一次固定标注的 SFT 重训）、一次复现评测和一次标注 A/B 共 19.1 GPU 小时，按 3.28 元/小时约 63 元。留出集上通过的 439 个补丁都逐条人工检查过，没有发现篡改，并且都与原始源码对照过。原始输出在 [`docs/data/`](docs/data/)。
 
 ```mermaid
 flowchart LR
@@ -116,7 +117,7 @@ python scripts/grpo_harness.py --base-model <模型> --tasks swesmith/train.json
   - [第三轮 GRPO（加固后的 harness）](docs/EXPERIMENT_GRPO_ROUND3.md)
   - [第四轮：固定标注的非劣性 A/B](docs/EXPERIMENT_LABELS_AB.md)
   - [第五轮：前缀打包下的第二次 GRPO 训练](docs/EXPERIMENT_GRPO_ROUND5.md)
-  - [第六轮：在固定标注的历史上重训 SFT 学生](docs/EXPERIMENT_LABELS_SFT.md)（已冻结）
+  - [第六轮：在固定标注的历史上重训 SFT 学生](docs/EXPERIMENT_LABELS_SFT.md)
   - [第七轮：在第五轮的基础上继续训练 GRPO](docs/EXPERIMENT_GRPO_ROUND7.md)（已冻结）
   - [rollout 吞吐基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[前缀打包](docs/PREFIX_PACKING.md)
 - [代码审查与修复（2026-11-05）](docs/CODE_REVIEW_2026-11-05.md)、[项目历史](docs/HISTORY.md)、[SWE-bench 协议](docs/EXPERIMENT_PROTOCOL.md)、[训练说明](docs/TRAINING.md)
