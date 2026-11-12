@@ -48,18 +48,20 @@ step() {  # step <name> <command...>: run, time and log one stage
   printf '{"step": "%s", "seconds": %d, "finished": "%s"}\n' "$name" $(( $(date +%s) - started )) "$(date -u +%FT%TZ)" >> "$STEPS_LOG"
 }
 
-# 1. Candidates: the train tasks the round-1 teacher never solved.
-"$PY" "$CODE/scripts/select_tasks.py" "$AGENT/swesmith/train.jsonl" --not-solved-in "$TEACHER" > "$OUT/candidates.jsonl"
+# 1. Candidates: the train tasks the round-1 teacher never solved. The pool runs as nobody, who
+#    cannot enter /root, so its manifest lives in the rollout directory (a copy goes to $OUT).
+"$PY" "$CODE/scripts/select_tasks.py" "$AGENT/swesmith/train.jsonl" --not-solved-in "$TEACHER" > "$ROLL/candidates.jsonl"
+cp "$ROLL/candidates.jsonl" "$OUT/candidates.jsonl"
 # 2. Selection pool: the starting policy, 4 samples per candidate at the rollout temperature.
 if [ ! -f "$ROLL/select/summary.json" ]; then
   step serve-start "$CODE/scripts/autodl/serve_vllm.sh" "$POLICY" policy-base \
     --enable-lora --max-lora-rank 32 --lora-modules "policy-start=$START"
-  step select "$CODE/scripts/autodl/run_pool.sh" --config "$CONFIG" --tasks "$OUT/candidates.jsonl" \
+  step select "$CODE/scripts/autodl/run_pool.sh" --config "$CONFIG" --tasks "$ROLL/candidates.jsonl" \
     --split train --samples 4 --workers 32 --output "$ROLL/select" --resume \
     --set model=policy-start --set temperature=1.0 --set revision_labels=relabel
 fi
 # 3. Training set: the candidates solved at least once; steps keep about 7 visits per task.
-"$PY" "$CODE/scripts/select_tasks.py" "$OUT/candidates.jsonl" --solved-in "$ROLL/select/attempts.jsonl" > "$OUT/tasks.jsonl"
+"$PY" "$CODE/scripts/select_tasks.py" "$ROLL/candidates.jsonl" --solved-in "$ROLL/select/attempts.jsonl" > "$OUT/tasks.jsonl"
 N=$(wc -l < "$OUT/tasks.jsonl")
 STEPS=$(( (7 * N + 7) / 8 ))
 if [ "$STEPS" -gt 29 ]; then STEPS=29; fi
