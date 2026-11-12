@@ -135,3 +135,16 @@ def test_a_step_that_trained_nothing_does_not_break_the_grpo_summary():
     summary = summarize_round.grpo_summary(rows)
     assert (summary["steps"], summary["steps_without_update"], summary["updates"], summary["turns"]) == (2, 1, 4, 10)
     assert summary["entropy_first_last"] == [0.1, 0.1]
+    assert summary["invalid_action_share"] is None and summary["halted"] is None    # runs before PR #72
+
+
+def test_the_grpo_summary_reports_rollout_health_and_a_halt():
+    rows = [{"step": s, "attempts": 64, "ungraded_attempts": 0, "rollout_seconds": 100.0, "train_seconds": 50.0,
+             "turns": 10, "updates": 4, "prompt_mismatch": 0, "entropy": 0.1, "invalid_action_share": share}
+            for s, share in enumerate([0.01, 0.06])]
+    rows.append({"step": 2, "attempts": 64, "ungraded_attempts": 0, "rollout_seconds": 90.0, "prompt_mismatch": 0,
+                 "invalid_action_share": 0.08,
+                 "halted": {"invalid_action_share_above": 0.05, "patience": 2, "keep_policy": 0}})
+    summary = summarize_round.grpo_summary(rows)
+    assert summary["invalid_action_share"] == [0.01, 0.08]
+    assert summary["halted"]["keep_policy"] == 0 and summary["steps_without_update"] == 1
