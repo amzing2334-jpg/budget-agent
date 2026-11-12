@@ -49,8 +49,8 @@ def same_syntax_tree(before: str, after: str) -> bool:
         return False
 
 
-def residual(task_id: str, patch: Path, files: list[str], original: Path,
-             tasks: Path) -> tuple[list[str], bool] | None:
+def residual(task_id: str, patch: Path, files: list[str], original: Path, tasks: Path,
+             compare: list[str] | None = None) -> tuple[list[str], bool] | None:
     """Unified diff from the original source to the patched buggy source ([] when identical), and
     whether every touched file has the original's Python syntax tree.
 
@@ -70,7 +70,7 @@ def residual(task_id: str, patch: Path, files: list[str], original: Path,
             return None
         diff: list[str] = []
         same_tree = True
-        for rel in files:   # a file missing on either side (created or deleted by the patch) reads as empty
+        for rel in files if compare is None else compare:   # a file missing on either side reads as empty
             before_path, after_path = original / repo / rel, work / rel
             before = before_path.read_text(encoding="utf-8", errors="replace") if before_path.exists() else ""
             after = after_path.read_text(encoding="utf-8", errors="replace") if after_path.exists() else ""
@@ -105,7 +105,14 @@ def main(argv: list[str] | None = None) -> int:
               f"+{added}/-{removed} ignored={row['ignored_changes']} signals={row['patch_signals']}")
         print("\n".join(line for line in lines if line.startswith(("+", "-", "@@")) and not line.startswith(("+++", "---"))))
         if args.original is not None:
-            outcome = residual(row["task_id"], patch_path, files, args.original, args.tasks)
+            # Files the grader ignored (coverage reports and other artifacts) are not part of the graded
+            # program; they are named, not compared.
+            ignored = [f for f in files if f in row["ignored_changes"]]
+            if ignored:
+                print(f"[original check] ignored by the grader, not compared: {ignored[:3]}"
+                      + (f" and {len(ignored) - 3} more" if len(ignored) > 3 else ""))
+            graded = [f for f in files if f not in row["ignored_changes"]]
+            outcome = residual(row["task_id"], patch_path, files, args.original, args.tasks, compare=graded)
             if outcome is None:
                 print("[original check] the patch does not apply to the task's buggy files")
                 continue
