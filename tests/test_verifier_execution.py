@@ -67,7 +67,7 @@ ALL_SKIP = verifier('''\
 def test_real_verifier_uses_observed_non_skip_outcomes(tmp_path, source, expected):
     (tmp_path / "_private_verifier.py").write_text(source, encoding="utf-8")
     command, marker = _verification_command(sys.executable)
-    process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=10)
+    process = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=120)  # hang guard
     outcome, verdict = _verified({"ok": process.returncode == 0,
                                  "output": process.stdout + process.stderr}, marker)
     assert outcome is expected

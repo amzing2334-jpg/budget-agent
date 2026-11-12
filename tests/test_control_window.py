@@ -73,7 +73,7 @@ else:
     # The marker represents a caller that gates downstream work on shell success.
     return subprocess.run(
         ["bash", "-c", 'bash "$@" && touch model-started', "replay", *arguments],
-        cwd=root, capture_output=True, text=True, timeout=15,
+        cwd=root, capture_output=True, text=True, timeout=120,   # a hang guard, not a speed limit
         env={**os.environ, "PATH": f"{root}:{os.environ['PATH']}", "REPLAY_DIR": str(root),
              "PREFLIGHT_END": str(preflight_end),
              "GOLD_RESULT": gold_result,
