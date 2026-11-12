@@ -9,6 +9,7 @@
 | `replication/` | 两个策略的独立复现评测 | [EXPERIMENT_REPLICATION.md](../EXPERIMENT_REPLICATION.md) |
 | `round3/` | 第三轮 GRPO（加固后的 harness，25 步），以及对照原始源码的复核 | [EXPERIMENT_GRPO_ROUND3.md](../EXPERIMENT_GRPO_ROUND3.md) |
 | `round4/` | 第四轮：固定标注与重新标注的非劣性 A/B（SFT 学生，每题 8 次），含 vLLM 计数和打包统计 | [EXPERIMENT_LABELS_AB.md](../EXPERIMENT_LABELS_AB.md) |
+| `round5/` | 第五轮：前缀打包下的第二次 GRPO 训练（每题 8 次评测），含对照原始源码和隐藏检查的结果 | [EXPERIMENT_GRPO_ROUND5.md](../EXPERIMENT_GRPO_ROUND5.md) |
 | `hidden_checks/` | 隐藏行为检查的重新评分：每个检查在原始源码和带 bug 源码上的结果，以及 9 个评测池中每个相关通过补丁的结果 | [tasks/hidden_checks/README.md](../../tasks/hidden_checks/README.md) |
 | `bench_rollout_2026-11-06.json` | rollout 吞吐随并发数的变化 | [BENCH_ROLLOUT_2026-11-06.md](../BENCH_ROLLOUT_2026-11-06.md) |
 | `packing_round3_steps0-3.json` | 第三轮前 4 步上前缀打包的 token 节省和断点分类 | [PREFIX_PACKING.md](../PREFIX_PACKING.md) |

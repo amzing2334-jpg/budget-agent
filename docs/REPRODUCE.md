@@ -18,7 +18,7 @@
 | 复现评测 | 0.92 小时 | 3.0 元 | [EXPERIMENT_REPLICATION.md](EXPERIMENT_REPLICATION.md) |
 | 第三轮 GRPO | 4.27 小时 | 14.0 元 | [EXPERIMENT_GRPO_ROUND3.md](EXPERIMENT_GRPO_ROUND3.md) |
 | 第四轮标注 A/B | 2.09 小时 | 6.9 元 | [EXPERIMENT_LABELS_AB.md](EXPERIMENT_LABELS_AB.md) |
-| 第五轮 GRPO（前缀打包） | 约 4.4 小时（计划） | 约 14.5 元 | [EXPERIMENT_GRPO_ROUND5.md](EXPERIMENT_GRPO_ROUND5.md) |
+| 第五轮 GRPO（前缀打包） | 5.0 小时（含一次中断） | 约 16.4 元 | [EXPERIMENT_GRPO_ROUND5.md](EXPERIMENT_GRPO_ROUND5.md) |
 | 第六轮固定标注 SFT | 约 1.5 小时（计划） | 约 5 元 | [EXPERIMENT_LABELS_SFT.md](EXPERIMENT_LABELS_SFT.md) |
 
 ## 1. 本地检查（只需 CPU）
