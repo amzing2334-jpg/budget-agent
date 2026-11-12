@@ -55,6 +55,8 @@ def grpo_summary(rows: list[dict]) -> dict:
             "logprob_gap": span("sampler_trainer_abs_logprob_gap"), "tis_weight_mean": span("tis_weight_mean"),
             "tis_capped_fraction_max": (span("tis_capped_fraction") or [0, 0])[1],
             "clip_fraction_max": (span("clip_fraction") or [0, 0])[1],
+            "invalid_action_share": span("invalid_action_share"),
+            "halted": next((r["halted"] for r in rows if r.get("halted")), None),
             "entropy_first_last": ([round(trained[0]["entropy"], 4), round(trained[-1]["entropy"], 4)]
                                    if trained else None),
             "train_seconds": {"total": round(sum(train)), "median": round(statistics.median(train))},
@@ -129,7 +131,8 @@ def main() -> int:
                   f"logprob gap {g['logprob_gap']}, TIS mean {g['tis_weight_mean']} (capped at most "
                   f"{g['tis_capped_fraction_max']}), clip at most {g['clip_fraction_max']}, entropy first/last "
                   f"{g['entropy_first_last']}, train share {g['train_share']}, steps without an update "
-                  f"{g['steps_without_update']}", ""]
+                  f"{g['steps_without_update']}, invalid action share {g['invalid_action_share']}, halted "
+                  f"{g['halted']}", ""]
     for name, value in compare.items():
         lines.append(f"Paired {name}: base {value['baseline_pass@1']:.3f} → candidate {value['candidate_pass@1']:.3f}, "
                      f"delta {value['delta']:+.3f}, 95% CI [{value['ci95'][0]:+.3f}, {value['ci95'][1]:+.3f}], {value['verdict']}")

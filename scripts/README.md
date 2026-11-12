@@ -29,7 +29,7 @@
 |---|---|
 | `sft_data_from_runs.py` | 拒绝采样：只保留通过的轨迹，每题有上限，有篡改信号的排除；`--revision-labels` 把同一批轨迹按另一种标注方式重新渲染（先逐条复现记录的请求） |
 | `train_sft_lora.py` | 多 turn 轨迹的 LoRA SFT，只在训练 token 处计算 logits |
-| `grpo_harness.py` | 单卡 GRPO：harness rollout 加 LoRA 热加载、TIS、clip-higher、minibatch，以及前缀打包（`--pack-turns`）；`--init-adapter` 从保存的 adapter 继续训练；`--pipeline` 让 rollout 与上一步的训练重叠 |
+| `grpo_harness.py` | 单卡 GRPO：harness rollout 加 LoRA 热加载、TIS、clip-higher、minibatch，以及前缀打包（`--pack-turns`）；`--init-adapter` 从保存的 adapter 继续训练；`--pipeline` 让 rollout 与上一步的训练重叠；每步记录无效动作比例和每次尝试的输出 token，`--halt-invalid-share` 在连续几批超过界限时停止并保留最后一个正常的策略（`final.json`） |
 
 ## 系统测量
 

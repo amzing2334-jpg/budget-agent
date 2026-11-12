@@ -25,6 +25,14 @@ as one sequence, with logits taken only at the completion positions. The
 per-token log probabilities equal those of separate forwards, and the tokens
 encoded drop to about the length of each chain's last turn.
 
+Rollout health: every step records the share of agent steps whose output was
+not a valid action and the mean output tokens per attempt (rollout_health).
+The reward cannot see either: a policy that loops on invalid output fails
+tasks it would fail anyway. With --halt-invalid-share X the run stops after
+--halt-patience consecutive batches above X, and final.json names the last
+policy whose batch stayed at or below it; otherwise final.json names the last
+policy published.
+
 Rollouts use temperature 1.0 so vLLM's returned log probabilities describe
 the actual sampling distribution. vLLM must run with --enable-lora and
 VLLM_ALLOW_RUNTIME_LORA_UPDATING=True (scripts/autodl/serve_vllm.sh).
@@ -44,9 +52,9 @@ import torch
 from peft import LoraConfig, PeftModel, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from budget_agent.learning.grpo_core import (Turn, aggregate, build_groups, chain_layout, drive_steps, extract_turns,
-                                             minibatch_indices, pack_turns, step_tasks, subsample_turns,
-                                             token_policy_loss)
+from budget_agent.learning.grpo_core import (HealthGuard, Turn, aggregate, build_groups, chain_layout, drive_steps,
+                                             extract_turns, minibatch_indices, pack_turns, rollout_health, step_tasks,
+                                             subsample_turns, token_policy_loss)
 from budget_agent.models import token_digest
 from budget_agent.tasks import load_tasks
 
@@ -185,11 +193,19 @@ def main() -> int:
                         help="continue from this saved LoRA (trainable; the optimizer starts fresh) instead of a new one")
     parser.add_argument("--rollout-set", action="append", default=[], metavar="KEY=VALUE",
                         help="extra run-config override for every rollout pool (repeatable), e.g. revision_labels=fixed")
+    parser.add_argument("--halt-invalid-share", type=float,
+                        help="stop once this many consecutive rollout batches (--halt-patience) have a larger share of "
+                             "invalid actions, and keep the last policy whose batch did not (final.json)")
+    parser.add_argument("--halt-patience", type=int, default=2)
     args = parser.parse_args()
     if any("=" not in item for item in args.rollout_set):
         parser.error("--rollout-set takes KEY=VALUE")
     if args.pack_turns and args.loss_agg != "token":
         parser.error("--pack-turns trains several turns per sequence; use --loss-agg token")
+    if args.halt_invalid_share is not None and not 0 <= args.halt_invalid_share < 1:
+        parser.error("--halt-invalid-share is a share in [0, 1)")
+    if args.halt_patience < 1:
+        parser.error("--halt-patience must be at least 1")
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     tasks = load_tasks(args.tasks, "train")
@@ -210,9 +226,14 @@ def main() -> int:
     random.shuffle(schedule)
     run_started = time.monotonic()
     loaded = {0}   # adapter versions the server holds
+    published = [0]   # adapter versions written, in order
+    guard = HealthGuard(args.halt_invalid_share, args.halt_patience)
 
     def time_up() -> bool:
         return args.max_minutes is not None and time.monotonic() - run_started > args.max_minutes * 60
+
+    def stop() -> bool:
+        return time_up() or guard.tripped
 
     def launch(step: int, policy: int) -> dict:
         started = time.monotonic()
@@ -224,7 +245,8 @@ def main() -> int:
                    "--samples", str(args.group), "--workers", str(args.workers), "--output", str(pool_dir),
                    "--set", f"model=policy-v{policy}", "--set", "api_logprobs=true", "--set", "temperature=1.0",
                    *(part for item in args.rollout_set for part in ("--set", item))]
-        return {"process": subprocess.Popen(command), "command": command, "pool": pool_dir, "started": started}
+        return {"process": subprocess.Popen(command), "command": command, "pool": pool_dir, "started": started,
+                "policy": policy}
 
     def finish(handle: dict) -> dict:
         waiting = time.monotonic()
@@ -234,8 +256,11 @@ def main() -> int:
         done = time.monotonic()
         attempts = [json.loads(line) for line in (handle["pool"] / "attempts.jsonl").read_text().splitlines()
                     if line.strip()]
+        health = rollout_health(attempts)
+        # Checked before the next rollout is launched, so a tripped guard starts nothing new.
+        halted = guard.observe(handle["policy"], health["invalid_action_share"])
         return {"attempts": attempts, "rollout_seconds": round(done - handle["started"], 1),
-                "wait_seconds": round(done - waiting, 1)}
+                "wait_seconds": round(done - waiting, 1), "health": health, "halted": halted}
 
     def train(step: int, rollout: dict, behaviour: int, in_use: int | None) -> None:
         attempts = rollout["attempts"]
@@ -243,7 +268,15 @@ def main() -> int:
         graded = [a for a in attempts if a["resolved"] is not None]
         record = {"step": step, "behaviour_policy": behaviour, "attempts": len(attempts), "graded": len(graded),
                   "pass_rate": sum(bool(a["resolved"]) for a in graded) / max(1, len(graded)), **groups,
-                  "rollout_seconds": rollout["rollout_seconds"], "rollout_wait_seconds": rollout["wait_seconds"]}
+                  "rollout_seconds": rollout["rollout_seconds"], "rollout_wait_seconds": rollout["wait_seconds"],
+                  **rollout["health"]}
+        if rollout["halted"]:
+            record["halted"] = {"invalid_action_share_above": args.halt_invalid_share, "patience": args.halt_patience,
+                                "keep_policy": guard.healthy_policy}
+            log.write(json.dumps(record) + "\n")
+            log.flush()
+            print(json.dumps(record), flush=True)
+            return
         train_started = time.monotonic()
         batch, mismatched, available = [], 0, 0
         for attempt in kept:
@@ -274,15 +307,20 @@ def main() -> int:
             post(f"{args.server}/v1/unload_lora_adapter", {"lora_name": f"policy-v{version}"})
             loaded.discard(version)
         loaded.add(step + 1)
+        published.append(step + 1)
         record["sync_seconds"] = round(time.monotonic() - sync_started, 1)
         log.write(json.dumps(record) + "\n")
         log.flush()
         print(json.dumps(record), flush=True)
 
-    trained = drive_steps(args.steps, pipeline=args.pipeline, launch=launch, finish=finish, train=train,
-                          time_up=time_up)
-    if trained < args.steps:
-        print(json.dumps({"stopped_before_step": trained, "reason": "max_minutes"}), flush=True)
+    steps_run = drive_steps(args.steps, pipeline=args.pipeline, launch=launch, finish=finish, train=train,
+                            time_up=stop)
+    final = guard.healthy_policy if guard.tripped else published[-1]
+    stopped = "halted" if guard.tripped else "max_minutes" if steps_run < args.steps else "steps"
+    summary = {"policy": final, "adapter": str(args.output / "adapters" / f"v{final}"), "steps_run": steps_run,
+               "stopped": stopped}
+    (args.output / "final.json").write_text(json.dumps(summary, indent=1) + "\n")
+    print(json.dumps(summary), flush=True)
     return 0
 
 
