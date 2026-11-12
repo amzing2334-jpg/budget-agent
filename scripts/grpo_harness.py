@@ -44,7 +44,7 @@ import torch
 from peft import LoraConfig, PeftModel, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from budget_agent.learning.grpo_core import (Turn, aggregate, build_groups, chain_layout, extract_turns,
+from budget_agent.learning.grpo_core import (Turn, aggregate, build_groups, chain_layout, drive_steps, extract_turns,
                                              minibatch_indices, pack_turns, step_tasks, subsample_turns,
                                              token_policy_loss)
 from budget_agent.models import token_digest
@@ -177,6 +177,10 @@ def main() -> int:
                         "of each attempt (default: all)")
     parser.add_argument("--max-len", type=int, default=24576)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--device", default="cuda", help="torch device for the trainer (cpu in the end-to-end test)")
+    parser.add_argument("--pipeline", action="store_true",
+                        help="launch each rollout with the newest policy before the previous step trains, so sampling "
+                             "overlaps training; every rollout after the first is one update stale (TIS corrects it)")
     parser.add_argument("--init-adapter", type=Path,
                         help="continue from this saved LoRA (trainable; the optimizer starts fresh) instead of a new one")
     parser.add_argument("--rollout-set", action="append", default=[], metavar="KEY=VALUE",
@@ -190,7 +194,8 @@ def main() -> int:
     torch.manual_seed(args.seed)
     tasks = load_tasks(args.tasks, "train")
     tokenizer = AutoTokenizer.from_pretrained(args.base_model)
-    model = AutoModelForCausalLM.from_pretrained(args.base_model, dtype=torch.bfloat16, attn_implementation="sdpa").cuda()
+    model = AutoModelForCausalLM.from_pretrained(args.base_model, dtype=torch.bfloat16,
+                                                 attn_implementation="sdpa").to(args.device)
     model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
     model.enable_input_require_grads()
     model = attach_lora(model, args.rank, args.init_adapter)
@@ -204,27 +209,41 @@ def main() -> int:
     schedule = list(range(len(tasks)))
     random.shuffle(schedule)
     run_started = time.monotonic()
-    for step in range(args.steps):
-        if args.max_minutes is not None and time.monotonic() - run_started > args.max_minutes * 60:
-            print(json.dumps({"stopped_before_step": step, "reason": "max_minutes"}), flush=True)
-            break
+    loaded = {0}   # adapter versions the server holds
+
+    def time_up() -> bool:
+        return args.max_minutes is not None and time.monotonic() - run_started > args.max_minutes * 60
+
+    def launch(step: int, policy: int) -> dict:
         started = time.monotonic()
         chosen = [tasks[i] for i in step_tasks(schedule, step, args.tasks_per_step)]
         manifest = args.rollouts / f"step-{step:04d}.jsonl"
         manifest.write_text("".join(json.dumps({**task.__dict__}) + "\n" for task in chosen))
         pool_dir = args.rollouts / f"step-{step:04d}"
-        subprocess.run([args.pool_launcher, "--config", str(args.config), "--tasks", str(manifest), "--split", "train",
-                        "--samples", str(args.group), "--workers", str(args.workers), "--output", str(pool_dir),
-                        "--set", f"model=policy-v{step}", "--set", "api_logprobs=true", "--set", "temperature=1.0",
-                        *(part for item in args.rollout_set for part in ("--set", item))],
-                       check=True)
-        rollout_seconds = time.monotonic() - started
-        attempts = [json.loads(line) for line in (pool_dir / "attempts.jsonl").read_text().splitlines() if line.strip()]
+        command = [args.pool_launcher, "--config", str(args.config), "--tasks", str(manifest), "--split", "train",
+                   "--samples", str(args.group), "--workers", str(args.workers), "--output", str(pool_dir),
+                   "--set", f"model=policy-v{policy}", "--set", "api_logprobs=true", "--set", "temperature=1.0",
+                   *(part for item in args.rollout_set for part in ("--set", item))]
+        return {"process": subprocess.Popen(command), "command": command, "pool": pool_dir, "started": started}
+
+    def finish(handle: dict) -> dict:
+        waiting = time.monotonic()
+        code = handle["process"].wait()
+        if code:
+            raise subprocess.CalledProcessError(code, handle["command"])
+        done = time.monotonic()
+        attempts = [json.loads(line) for line in (handle["pool"] / "attempts.jsonl").read_text().splitlines()
+                    if line.strip()]
+        return {"attempts": attempts, "rollout_seconds": round(done - handle["started"], 1),
+                "wait_seconds": round(done - waiting, 1)}
+
+    def train(step: int, rollout: dict, behaviour: int, in_use: int | None) -> None:
+        attempts = rollout["attempts"]
         kept, groups = build_groups(attempts, scale_by_std=not args.no_std_scale)
         graded = [a for a in attempts if a["resolved"] is not None]
-        record = {"step": step, "attempts": len(attempts), "graded": len(graded),
+        record = {"step": step, "behaviour_policy": behaviour, "attempts": len(attempts), "graded": len(graded),
                   "pass_rate": sum(bool(a["resolved"]) for a in graded) / max(1, len(graded)), **groups,
-                  "rollout_seconds": round(rollout_seconds, 1)}
+                  "rollout_seconds": rollout["rollout_seconds"], "rollout_wait_seconds": rollout["wait_seconds"]}
         train_started = time.monotonic()
         batch, mismatched, available = [], 0, 0
         for attempt in kept:
@@ -249,11 +268,21 @@ def main() -> int:
         sync_started = time.monotonic()
         path = args.output / "adapters" / f"v{step + 1}"
         model.save_pretrained(path)
-        load_adapter(args.server, f"policy-v{step + 1}", path, f"policy-v{step}")
+        load_adapter(args.server, f"policy-v{step + 1}", path, None)
+        # Unload every older policy except the one a running rollout still samples from (pipelined mode).
+        for version in sorted(loaded - {step + 1, in_use}):
+            post(f"{args.server}/v1/unload_lora_adapter", {"lora_name": f"policy-v{version}"})
+            loaded.discard(version)
+        loaded.add(step + 1)
         record["sync_seconds"] = round(time.monotonic() - sync_started, 1)
         log.write(json.dumps(record) + "\n")
         log.flush()
         print(json.dumps(record), flush=True)
+
+    trained = drive_steps(args.steps, pipeline=args.pipeline, launch=launch, finish=finish, train=train,
+                          time_up=time_up)
+    if trained < args.steps:
+        print(json.dumps({"stopped_before_step": trained, "reason": "max_minutes"}), flush=True)
     return 0
 
 
