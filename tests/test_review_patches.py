@@ -61,6 +61,18 @@ def test_a_fix_that_differs_only_in_a_comment_has_the_original_syntax_tree(tmp_p
     assert out.rstrip().endswith("0 of 1 resolved patches restore the original source exactly, 1 more have its syntax tree")
 
 
+def test_files_the_grader_ignored_are_named_and_not_compared(tmp_path, capsys):
+    report = ("--- a/coverage.xml\n+++ b/coverage.xml\n@@ -0,0 +1 @@\n+<coverage/>\n")
+    pool = make_pool(tmp_path, [patch("items[-1]", "items[0]") + report])
+    rows = [json.loads(line) for line in (pool / "attempts.jsonl").read_text().splitlines()]
+    rows[0]["ignored_changes"] = ["coverage.xml"]
+    (pool / "attempts.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+    review_patches.main([str(pool), "--original", str(tmp_path / "original"), "--tasks", str(tmp_path / "tasks")])
+    out = capsys.readouterr().out
+    assert "ignored by the grader, not compared: ['coverage.xml']" in out
+    assert "[original check] restores original" in out
+
+
 def test_syntax_tree_comparison_ignores_formatting_but_not_code():
     assert review_patches.same_syntax_tree("x = [1,2]\n", "x = [1, 2]  # note\n\n")
     assert not review_patches.same_syntax_tree("x = [1, 2]\n", "x = [2, 1]\n")
