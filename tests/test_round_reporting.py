@@ -98,3 +98,25 @@ def test_round_summary_reports_pools_audit_training_and_cost(tmp_path, monkeypat
     assert "Paired eval: base 0.250 → candidate 0.500, delta +0.250, 95% CI [+0.000, +0.500]" in markdown
     assert "Tamper audit student-sft-eval: 1 resolved attempts with signals, 1 in graded files" in markdown
     assert "process_exit in mod.py (graded)" in markdown and "tests/test_mod.py (ignored)" in markdown
+
+
+def test_grpo_round_summary_reports_training_without_empty_sft_lines(tmp_path, monkeypatch):
+    pool = tmp_path / "rollouts" / "eval-grpo"
+    pool.mkdir(parents=True)
+    ledger(pool / "attempts.jsonl", [attempt("a", True)])
+    (pool / "summary.json").write_text(json.dumps({
+        "splits": {"eval": {"tasks": 1, "attempts": 1, "pass@1": 1.0, "solved_tasks": 1, "statuses": {"finished": 1}}},
+        "attempts_per_hour": 10.0, "wall_seconds": 1.0, "tokens": {"input": 1, "output": 1}}), encoding="utf-8")
+    out = tmp_path / "outputs"
+    (out / "grpo").mkdir(parents=True)
+    # Round 3's real per-step metrics: the summary must reproduce the numbers in its record.
+    (out / "grpo" / "metrics.jsonl").write_text(
+        (Path(__file__).parents[1] / "docs/data/round3/grpo_metrics.jsonl").read_text(encoding="utf-8"), encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", ["summarize_round", "--rollouts", str(tmp_path / "rollouts"), "--outputs", str(out)])
+    assert summarize_round.main() == 0
+    grpo = json.loads((out / "results.json").read_text(encoding="utf-8"))["grpo"]
+    assert (grpo["steps"], grpo["updates"], grpo["attempts"], grpo["turns"], grpo["prompt_mismatch"]) == (25, 100, 1600, 4894, 0)
+    assert grpo["tis_capped_fraction_max"] == 0 and grpo["train_share"] == 0.595
+    markdown = (out / "results.md").read_text(encoding="utf-8")
+    assert "SFT data" not in markdown and "Training:" not in markdown
+    assert "GRPO: 25 steps, 100 updates, 1600 attempts (0 ungraded), 4894 turns in 4894 sequences" in markdown
