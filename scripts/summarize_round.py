@@ -14,6 +14,7 @@ import argparse
 from collections import Counter
 import json
 from pathlib import Path
+import statistics
 
 
 def jsonl(path: Path) -> list[dict]:
@@ -31,6 +32,26 @@ def tamper_audit(attempts: list[dict]) -> list[dict]:
         audit.append({"task_id": row["task_id"], "sample": row["sample"],
                       "signals": [{**record, "graded": record["file"] not in ignored} for record in records]})
     return audit
+
+
+def grpo_summary(rows: list[dict]) -> dict:
+    """One GRPO run from grpo/metrics.jsonl: volume, data-path checks, update health and time."""
+    def span(key: str) -> list[float] | None:
+        values = [r[key] for r in rows if r.get(key) is not None]
+        return [round(min(values), 4), round(max(values), 4)] if values else None
+    train, rollout = [r["train_seconds"] for r in rows], [r["rollout_seconds"] for r in rows]
+    turns = sum(r["turns"] for r in rows)
+    return {"steps": len(rows), "updates": sum(r["updates"] for r in rows),
+            "attempts": sum(r["attempts"] for r in rows), "ungraded": sum(r["ungraded_attempts"] for r in rows),
+            "turns": turns, "sequences": sum(r.get("sequences", r["turns"]) for r in rows),
+            "prompt_mismatch": sum(r["prompt_mismatch"] for r in rows),
+            "logprob_gap": span("sampler_trainer_abs_logprob_gap"), "tis_weight_mean": span("tis_weight_mean"),
+            "tis_capped_fraction_max": (span("tis_capped_fraction") or [0, 0])[1],
+            "clip_fraction_max": (span("clip_fraction") or [0, 0])[1],
+            "entropy_first_last": [round(rows[0]["entropy"], 4), round(rows[-1]["entropy"], 4)],
+            "train_seconds": {"total": round(sum(train)), "median": round(statistics.median(train))},
+            "rollout_seconds": {"total": round(sum(rollout)), "median": round(statistics.median(rollout))},
+            "train_share": round(sum(train) / max(1e-9, sum(train) + sum(rollout)), 3)}
 
 
 def pool_stats(pool: Path) -> dict:
@@ -68,10 +89,12 @@ def main() -> int:
     compare = {path.stem.removeprefix("compare_"): json.loads(path.read_text(encoding="utf-8"))
                for path in sorted(out.glob("compare_*.json"))}
     steps = jsonl(out / "steps.jsonl") if (out / "steps.jsonl").exists() else []
+    grpo_rows = jsonl(out / "grpo" / "metrics.jsonl") if (out / "grpo" / "metrics.jsonl").exists() else []
     hours = sum(step["seconds"] for step in steps) / 3600
     report = {"pools": pools, "sft": {"examples": len(sft_rows), "tasks": len({r["task_id"] for r in sft_rows}),
                                       "by_mode": dict(Counter(r["mode"] for r in sft_rows))},
               "training": training, "loss_curve": [(c["step"], round(c["loss"], 4)) for c in curve],
+              "grpo": grpo_summary(grpo_rows) if grpo_rows else None,
               "compare": compare, "stages": steps, "gpu_hours": round(hours, 2),
               "cost_cny": round(hours * args.price_per_hour, 2)}
     (out / "results.json").write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
@@ -83,8 +106,17 @@ def main() -> int:
             lines.append(f"| {name} | {split} | {entry['tasks']} | {entry['attempts']} | {entry.get('pass@1')} | "
                          f"{ks} | {entry['solved_tasks']} | {entry['statuses']} | {stats['evaluation_statuses']} "
                          f"(timeouts {stats['verifier_timeouts']}) | {stats['edit_success']} | {stats['attempts_per_hour']} |")
-    lines += ["", f"SFT data: {report['sft']}", f"Training: {training}",
-              f"Loss (first, last): {report['loss_curve'][:1]} … {report['loss_curve'][-1:]}", ""]
+    lines.append("")
+    if sft_rows or training:
+        lines += [f"SFT data: {report['sft']}", f"Training: {training}",
+                  f"Loss (first, last): {report['loss_curve'][:1]} … {report['loss_curve'][-1:]}", ""]
+    if report["grpo"]:
+        g = report["grpo"]
+        lines += [f"GRPO: {g['steps']} steps, {g['updates']} updates, {g['attempts']} attempts ({g['ungraded']} ungraded), "
+                  f"{g['turns']} turns in {g['sequences']} sequences, prompt mismatches {g['prompt_mismatch']}, "
+                  f"logprob gap {g['logprob_gap']}, TIS mean {g['tis_weight_mean']} (capped at most "
+                  f"{g['tis_capped_fraction_max']}), clip at most {g['clip_fraction_max']}, entropy "
+                  f"{g['entropy_first_last'][0]} → {g['entropy_first_last'][1]}, train share {g['train_share']}", ""]
     for name, value in compare.items():
         lines.append(f"Paired {name}: base {value['baseline_pass@1']:.3f} → candidate {value['candidate_pass@1']:.3f}, "
                      f"delta {value['delta']:+.3f}, 95% CI [{value['ci95'][0]:+.3f}, {value['ci95'][1]:+.3f}], {value['verdict']}")
