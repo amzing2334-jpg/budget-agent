@@ -1,0 +1,222 @@
+{
+ "method": "review_patches.py --original (files the grader ignored are not compared), hidden behaviour checks for the 11 tasks in tasks/hidden_checks, and manual judgement of the remaining residuals.",
+ "pools": {
+  "round5_eval-grpo": {
+   "resolved": 94,
+   "restores_original_exactly": 42,
+   "equivalent_residual": 26,
+   "weak_mild": 14,
+   "weak_strong": 12
+  }
+ },
+ "weak_patches": [
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 6,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 7,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__t1925j1w",
+   "sample": 6,
+   "kind": "strong",
+   "reason": "funcy func_partial: wrong argument order for more than one partial argument",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__532t36or",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "tinydb JSONStorage.write: keeps the injected character-length truncation, which corrupts the file once ensure_ascii=False is honoured",
+   "evidence": "manual"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__532t36or",
+   "sample": 7,
+   "kind": "strong",
+   "reason": "tinydb JSONStorage.write: keeps the injected character-length truncation, which corrupts the file once ensure_ascii=False is honoured",
+   "evidence": "manual"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 0,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 3,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 5,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__y4v6gmc4",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "tinydb drop_table: keeps the injected storage.write({}), so dropping one table empties the database",
+   "evidence": "manual"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 4,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 5,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 6,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 7,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__x110b8lc",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "parse int_convert: equivalent conversion, but the public base attribute changes",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: raises or misjudges when compared with other objects",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round5_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 6,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: raises or misjudges when compared with other objects",
+   "evidence": "hidden check fail"
+  }
+ ]
+}

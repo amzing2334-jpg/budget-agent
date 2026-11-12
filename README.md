@@ -13,14 +13,15 @@
 | 同一对策略独立复现评测 | 7.03% → 9.90% | +2.86 [0.00, +5.73] | 未复现 | [复现](docs/EXPERIMENT_REPLICATION.md) |
 | GRPO 25 步，加固后的 harness | 6.51% → **11.98%** | **+5.47 [+2.08, +9.11]** | 提升 | [第三轮](docs/EXPERIMENT_GRPO_ROUND3.md) |
 | 固定标注 vs 重新标注（非劣性，界限 −2） | 6.90% → 5.86% | −1.04 [−2.99, +0.91] | 非劣性未证明，不采用 | [第四轮](docs/EXPERIMENT_LABELS_AB.md) |
+| GRPO 29 步，前缀打包，换种子独立重复 | 6.90% → **12.37%** | **+5.47 [+2.21, +9.11]** | 提升，重复成功 | [第五轮](docs/EXPERIMENT_GRPO_ROUND5.md) |
 
 | | 要点 | 证据 |
 |---|---|---|
 | **奖励覆盖** | 把每个通过的补丁与注入 bug 之前的源码对照：各策略约 8% 到 15% 的通过补丁通过了测试却没有恢复原有行为，集中在几道测试不全的题上。把第三轮的这类补丁算作失败，GRPO 的增益仍为 +2.6 到 +3.4，区间在 0 以上；GRPO 与 SFT 的比例差异不显著（p = 0.17）。为这些题写的 11 个隐藏行为检查在 118 个相关补丁上与人工判断完全一致 | [技术复盘 §3](docs/TECH_REPORT.md) |
-| **一致性** | 训练端与采样端的 prompt 在 token 层面完全一致：8,311 个训练 turn 的摘要全部吻合，logprob 平均差 ≤ 0.0028 nat，TIS 从未截断 | [技术复盘 §4](docs/TECH_REPORT.md) |
-| **系统** | 单卡 7B agent rollout 受 prefill 限制（prompt token 是生成的 108 到 141 倍）。前缀打包把训练编码的 token 减少 2.9 到 3.1 倍，loss 和梯度等价；改成固定标注可到 4.48 倍（事先估计 4.43 倍），但见上表第四轮。按题测试时限把 rollout 的 p90 从 631 秒降到 235 秒 | [基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[打包](docs/PREFIX_PACKING.md) |
+| **一致性** | 训练端与采样端的 prompt 在 token 层面完全一致：三轮 13,847 个训练 turn 的摘要全部吻合，logprob 平均差 ≤ 0.0028 nat，TIS 从未截断 | [技术复盘 §4](docs/TECH_REPORT.md) |
+| **系统** | 单卡 7B agent rollout 受 prefill 限制（prompt token 是生成的 108 到 141 倍）。前缀打包把训练编码的 token 减少 2.9 到 3.1 倍，loss 和梯度等价；用于第五轮的 GRPO 训练后，每个训练 turn 的用时降低 36%，训练占每步时间从 59% 降到 43%，瓶颈转到 rollout。改成固定标注可到 4.48 倍（事先估计 4.43 倍），但见上表第四轮。按题测试时限把 rollout 的 p90 从 631 秒降到 235 秒 | [基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[打包](docs/PREFIX_PACKING.md) |
 
-三轮训练、一次复现评测和一次标注 A/B 共 12.7 GPU 小时，约 42 元。留出集上通过的 295 个补丁都逐条人工检查过，没有发现篡改，并且都与原始源码对照过。原始输出在 [`docs/data/`](docs/data/)。
+四轮训练、一次复现评测和一次标注 A/B 共 17.7 GPU 小时，约 58 元。留出集上通过的 389 个补丁都逐条人工检查过，没有发现篡改，并且都与原始源码对照过。原始输出在 [`docs/data/`](docs/data/)。
 
 ```mermaid
 flowchart LR
@@ -114,7 +115,7 @@ python scripts/grpo_harness.py --base-model <模型> --tasks swesmith/train.json
   - [复现评测](docs/EXPERIMENT_REPLICATION.md)
   - [第三轮 GRPO（加固后的 harness）](docs/EXPERIMENT_GRPO_ROUND3.md)
   - [第四轮：固定标注的非劣性 A/B](docs/EXPERIMENT_LABELS_AB.md)
-  - [第五轮：前缀打包下的第二次 GRPO 训练](docs/EXPERIMENT_GRPO_ROUND5.md)（已冻结）
+  - [第五轮：前缀打包下的第二次 GRPO 训练](docs/EXPERIMENT_GRPO_ROUND5.md)
   - [第六轮：在固定标注的历史上重训 SFT 学生](docs/EXPERIMENT_LABELS_SFT.md)（已冻结）
   - [rollout 吞吐基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[前缀打包](docs/PREFIX_PACKING.md)
 - [代码审查与修复（2026-11-05）](docs/CODE_REVIEW_2026-11-05.md)、[项目历史](docs/HISTORY.md)、[SWE-bench 协议](docs/EXPERIMENT_PROTOCOL.md)、[训练说明](docs/TRAINING.md)
