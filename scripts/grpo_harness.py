@@ -41,7 +41,7 @@ from typing import NamedTuple
 import urllib.request
 
 import torch
-from peft import LoraConfig, get_peft_model
+from peft import LoraConfig, PeftModel, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from budget_agent.learning.grpo_core import (Turn, aggregate, build_groups, chain_layout, extract_turns,
@@ -85,6 +85,14 @@ def sequence_logprobs(model, sequence: Sequence):
     with torch.no_grad():
         entropy = -(logp.exp() * logp).sum(-1).mean()
     return logp.gather(-1, targets[:, None]).squeeze(-1), entropy
+
+
+def attach_lora(model, rank: int, init_adapter: Path | None = None):
+    """A fresh LoRA (B = 0, so the base model's behaviour) or a trainable copy of a saved adapter."""
+    if init_adapter is not None:
+        return PeftModel.from_pretrained(model, str(init_adapter), is_trainable=True)
+    return get_peft_model(model, LoraConfig(r=rank, lora_alpha=2 * rank, lora_dropout=0.0,
+                                            target_modules="all-linear", task_type="CAUSAL_LM"))
 
 
 def build_sequences(verified: list[tuple[list[int], Turn]], advantage: float, pack: bool) -> list[Sequence]:
@@ -169,6 +177,8 @@ def main() -> int:
                         "of each attempt (default: all)")
     parser.add_argument("--max-len", type=int, default=24576)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--init-adapter", type=Path,
+                        help="continue from this saved LoRA (trainable; the optimizer starts fresh) instead of a new one")
     parser.add_argument("--rollout-set", action="append", default=[], metavar="KEY=VALUE",
                         help="extra run-config override for every rollout pool (repeatable), e.g. revision_labels=fixed")
     args = parser.parse_args()
@@ -183,14 +193,13 @@ def main() -> int:
     model = AutoModelForCausalLM.from_pretrained(args.base_model, dtype=torch.bfloat16, attn_implementation="sdpa").cuda()
     model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
     model.enable_input_require_grads()
-    model = get_peft_model(model, LoraConfig(r=args.rank, lora_alpha=2 * args.rank, lora_dropout=0.0,
-                                             target_modules="all-linear", task_type="CAUSAL_LM"))
+    model = attach_lora(model, args.rank, args.init_adapter)
     optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=args.lr, weight_decay=0.0)
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "args.json").write_text(json.dumps({k: str(v) if isinstance(v, Path) else v
                                                         for k, v in vars(args).items()}, indent=1))
     log = (args.output / "metrics.jsonl").open("a")
-    model.save_pretrained(args.output / "adapters" / "v0")  # zero-initialised B: identical to the base model
+    model.save_pretrained(args.output / "adapters" / "v0")  # the base model (B = 0) or the initial adapter
     load_adapter(args.server, "policy-v0", args.output / "adapters" / "v0", None)
     schedule = list(range(len(tasks)))
     random.shuffle(schedule)
