@@ -105,6 +105,15 @@ STEPS=60 MAX_MINUTES=180 LR=2e-5 TURNS_PER_ATTEMPT=4 MINIBATCHES=4 SEED=2 \
   setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round7_grpo.sh > logs/round7.log 2>&1 &
 STEPS=29 MAX_MINUTES=240 LR=2e-5 TURNS_PER_ATTEMPT=4 MINIBATCHES=4 SEED=1 \
   setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round8_grpo.sh > logs/round8.log 2>&1 &
+setsid nohup bash /opt/coding-agent/budget-agent/scripts/autodl/round9_eval.sh > logs/round9.log 2>&1 &   # 只评测，不训练
+```
+
+轮次之间用 `chain_round.sh` 衔接：等上一轮的驱动脚本正常结束（日志里有完成标记）、GPU 空闲、新代码树的哈希核对通过，再部署并启动下一轮。第八轮到第九轮就是这样排队的：
+
+```bash
+setsid nohup bash chain_round.sh --after round8_grpo --marker "== round 8 done" \
+  --deploy /opt/coding-agent/incoming/budget-agent-<commit>.tar.gz --tree <代码树哈希> \
+  --start round9_eval > logs/chain_round9.log 2>&1 &
 ```
 
 每一轮都会在 `outputs/<轮次>/` 下写出：
