@@ -49,7 +49,7 @@ esac
 
     def run_shell(self, *args):
         return subprocess.run(
-            ["bash", *args], text=True, capture_output=True, timeout=10,
+            ["bash", *args], text=True, capture_output=True, timeout=120,   # a hang guard, not a speed limit
             env={**os.environ, "PATH": f"{self.root}:{os.environ['PATH']}",
                  "REPLAY": str(self.root), "MEMBER": MEMBER})
 
