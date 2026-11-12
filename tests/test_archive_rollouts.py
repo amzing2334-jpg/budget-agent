@@ -53,3 +53,17 @@ def test_paths_outside_the_work_tree_and_existing_targets_are_refused(tmp_path):
     (tmp_path / "archive" / "round9").mkdir(parents=True)
     refused = archive(tmp_path, round_dir)
     assert refused.returncode != 0 and round_dir.is_dir() and not round_dir.is_symlink()
+
+
+def test_a_copy_that_differs_is_removed_and_the_source_kept(tmp_path):
+    round_dir, _ = make_round(tmp_path)
+    shim = tmp_path / "bin"
+    shim.mkdir()
+    # A cp that loses a file: the check must catch it, delete the partial copy and keep the source.
+    (shim / "cp").write_text('#!/bin/sh\n/bin/cp "$@" && find "$3" -name result.json -delete\n')
+    (shim / "cp").chmod(0o755)
+    env = {**os.environ, "WORK": str(tmp_path / "work"), "ARCHIVE": str(tmp_path / "archive"),
+           "PATH": f"{shim}:{os.environ['PATH']}"}
+    result = subprocess.run(["bash", str(SCRIPT), str(round_dir)], env=env, capture_output=True, text=True, timeout=120)
+    assert result.returncode != 0 and "copy removed, source kept" in result.stderr
+    assert round_dir.is_dir() and not round_dir.is_symlink() and not (tmp_path / "archive" / "round9").exists()
