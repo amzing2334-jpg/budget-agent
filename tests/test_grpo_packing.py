@@ -62,3 +62,28 @@ def test_a_prefix_chain_matches_per_turn_forwards_in_logprobs_and_gradients():
 def test_a_broken_prefix_starts_a_new_sequence():
     packed = harness.build_sequences(attempt(break_prefix=True), 0.7, pack=True)
     assert [s.turns for s in packed] == [2, 1]
+
+
+def reference_logprobs(model, sequence):
+    """The plain full-vocabulary computation the harness used before chunking."""
+    logits = model(input_ids=torch.tensor([sequence.inputs]), logits_to_keep=torch.tensor(sequence.positions)).logits[0]
+    logp = logits.float().log_softmax(-1)
+    entropy = -(logp.exp() * logp).sum(-1).mean()
+    return logp.gather(-1, torch.tensor(sequence.targets)[:, None]).squeeze(-1), entropy
+
+
+@pytest.mark.parametrize("chunk", [1, 5, 1000])
+def test_chunked_logprobs_match_the_plain_computation_in_values_entropy_and_gradients(chunk):
+    model = tiny_policy()
+    sequence = harness.build_sequences(attempt(), 0.7, pack=True)[0]
+    trainable = [p for p in model.parameters() if p.requires_grad]
+    weights = torch.linspace(-1.0, 1.0, len(sequence.targets))   # an arbitrary per-token loss
+    logp, entropy = harness.sequence_logprobs(model, sequence, chunk=chunk)
+    reference, reference_entropy = reference_logprobs(model, sequence)
+    assert torch.allclose(logp, reference, atol=1e-5) and torch.allclose(entropy, reference_entropy, atol=1e-5)
+    grads = torch.autograd.grad((logp * weights).sum(), trainable)
+    reference_grads = torch.autograd.grad((reference * weights).sum(), trainable)
+    assert all(torch.allclose(a, b, atol=1e-5) for a, b in zip(grads, reference_grads, strict=True))
+    with torch.no_grad():
+        frozen, none = harness.sequence_logprobs(model, sequence, entropy=False, chunk=chunk)
+    assert none is None and torch.allclose(frozen, reference, atol=1e-5)
