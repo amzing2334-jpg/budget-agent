@@ -1,0 +1,104 @@
+[
+ {
+  "pool": "round10",
+  "tasks": 96,
+  "pass@1": 0.14583333333333334,
+  "selector": 0.21145833333333333,
+  "delta": 0.065625,
+  "ci95": [
+   0.03428819444444444,
+   0.10164930555555556
+  ],
+  "verdict": "improved",
+  "tasks_better": 15,
+  "tasks_worse": 0,
+  "pass@k": 0.25,
+  "tasks_without_finish": 21,
+  "finish_precision": 0.5463414634146342
+ },
+ {
+  "pool": "sft_round4",
+  "tasks": 96,
+  "pass@1": 0.06901041666666667,
+  "selector": 0.1521577380952381,
+  "delta": 0.08314732142857142,
+  "ci95": [
+   0.04148065476190476,
+   0.1298363095238095
+  ],
+  "verdict": "improved",
+  "tasks_better": 15,
+  "tasks_worse": 0,
+  "pass@k": 0.16666666666666666,
+  "tasks_without_finish": 52,
+  "finish_precision": 0.5463917525773195
+ },
+ {
+  "pool": "round5",
+  "tasks": 96,
+  "pass@1": 0.12369791666666667,
+  "selector": 0.20138888888888887,
+  "delta": 0.07769097222222222,
+  "ci95": [
+   0.0390625,
+   0.1228298611111111
+  ],
+  "verdict": "improved",
+  "tasks_better": 15,
+  "tasks_worse": 0,
+  "pass@k": 0.20833333333333334,
+  "tasks_without_finish": 58,
+  "finish_precision": 0.7642276422764228
+ },
+ {
+  "pool": "round7",
+  "tasks": 96,
+  "pass@1": 0.10807291666666667,
+  "selector": 0.1875,
+  "delta": 0.07942708333333333,
+  "ci95": [
+   0.036458333333333336,
+   0.13020833333333334
+  ],
+  "verdict": "improved",
+  "tasks_better": 11,
+  "tasks_worse": 0,
+  "pass@k": 0.1875,
+  "tasks_without_finish": 78,
+  "finish_precision": 1.0
+ },
+ {
+  "pool": "round8",
+  "tasks": 96,
+  "pass@1": 0.14322916666666666,
+  "selector": 0.18194444444444444,
+  "delta": 0.03871527777777778,
+  "ci95": [
+   0.014583333333333335,
+   0.06796875000000001
+  ],
+  "verdict": "improved",
+  "tasks_better": 9,
+  "tasks_worse": 0,
+  "pass@k": 0.19791666666666666,
+  "tasks_without_finish": 37,
+  "finish_precision": 0.5978260869565217
+ },
+ {
+  "pool": "round9",
+  "tasks": 96,
+  "pass@1": 0.10807291666666667,
+  "selector": 0.1996527777777778,
+  "delta": 0.0915798611111111,
+  "ci95": [
+   0.048177083333333336,
+   0.14105902777777776
+  ],
+  "verdict": "improved",
+  "tasks_better": 16,
+  "tasks_worse": 0,
+  "pass@k": 0.20833333333333334,
+  "tasks_without_finish": 64,
+  "finish_precision": 0.83
+ }
+]
