@@ -1,0 +1,193 @@
+[
+ {
+  "data": "round1/compare_eval.json",
+  "record": "EXPERIMENT_SWESMITH_RFT_ROUND1.md",
+  "rule": "superiority",
+  "expect": "improved",
+  "tag": "R1 RFT",
+  "zh": {
+   "experiment": "RFT：7B 教师（7.29%）的通过轨迹蒸馏到 1.5B 学生",
+   "verdict": "提升",
+   "link": "第一轮"
+  },
+  "en": {
+   "experiment": "RFT: the 7B teacher's (7.29%) passing trajectories distilled into a 1.5B student",
+   "verdict": "improved",
+   "link": "Round 1"
+  }
+ },
+ {
+  "data": "round2/compare_eval.json",
+  "record": "EXPERIMENT_GRPO_ROUND2.md",
+  "rule": "superiority",
+  "expect": "improved",
+  "tag": "R2 GRPO",
+  "zh": {
+   "experiment": "GRPO 12 步",
+   "verdict": "提升（边缘）",
+   "link": "第二轮"
+  },
+  "en": {
+   "experiment": "GRPO, 12 steps",
+   "verdict": "improved (marginal)",
+   "link": "Round 2"
+  }
+ },
+ {
+  "data": "replication/compare_eval.json",
+  "record": "EXPERIMENT_REPLICATION.md",
+  "rule": "superiority",
+  "expect": "no_detectable_change",
+  "tag": "Replication",
+  "kind": "replication",
+  "zh": {
+   "experiment": "同一对策略独立复现评测",
+   "verdict": "未复现",
+   "link": "复现"
+  },
+  "en": {
+   "experiment": "Independent re-evaluation of the same two policies",
+   "verdict": "not replicated",
+   "link": "Replication"
+  }
+ },
+ {
+  "data": "round3/compare_eval.json",
+  "record": "EXPERIMENT_GRPO_ROUND3.md",
+  "rule": "superiority",
+  "expect": "improved",
+  "tag": "R3 GRPO",
+  "bold": "both",
+  "zh": {
+   "experiment": "GRPO 25 步，加固后的 harness",
+   "verdict": "提升",
+   "link": "第三轮"
+  },
+  "en": {
+   "experiment": "GRPO, 25 steps, hardened harness",
+   "verdict": "improved",
+   "link": "Round 3"
+  }
+ },
+ {
+  "data": "round4/compare_eval.json",
+  "record": "EXPERIMENT_LABELS_AB.md",
+  "rule": "non-inferiority",
+  "expect": "non_inferiority_not_shown",
+  "tag": "R4 labels",
+  "zh": {
+   "experiment": "固定标注 vs 重新标注（非劣性，界限 −2）",
+   "verdict": "非劣性未证明，不采用",
+   "link": "第四轮"
+  },
+  "en": {
+   "experiment": "Fixed vs relabelled history (non-inferiority, margin −2)",
+   "verdict": "non-inferiority not shown; not adopted",
+   "link": "Round 4"
+  }
+ },
+ {
+  "data": "round5/compare_eval.json",
+  "record": "EXPERIMENT_GRPO_ROUND5.md",
+  "rule": "superiority",
+  "expect": "improved",
+  "tag": "R5 GRPO",
+  "bold": "both",
+  "zh": {
+   "experiment": "GRPO 29 步，前缀打包，换种子独立重复",
+   "verdict": "提升，重复成功",
+   "link": "第五轮"
+  },
+  "en": {
+   "experiment": "GRPO, 29 steps, prefix packing, independent rerun with another seed",
+   "verdict": "improved; replicated",
+   "link": "Round 5"
+  }
+ },
+ {
+  "data": "round6/compare_eval.json",
+  "record": "EXPERIMENT_LABELS_SFT.md",
+  "rule": "non-inferiority",
+  "expect": "non_inferiority_not_shown",
+  "tag": "R6 labels",
+  "zh": {
+   "experiment": "在固定标注上重训 SFT 学生 vs 原学生（非劣性，界限 −2）",
+   "verdict": "非劣性未证明（差 0.08），不采用",
+   "link": "第六轮"
+  },
+  "en": {
+   "experiment": "SFT student retrained on fixed labels vs the original (non-inferiority, margin −2)",
+   "verdict": "non-inferiority not shown (by 0.08); not adopted",
+   "link": "Round 6"
+  }
+ },
+ {
+  "data": "round7/compare_eval.json",
+  "record": "EXPERIMENT_GRPO_ROUND7.md",
+  "rule": "superiority",
+  "expect": "no_detectable_change",
+  "tag": "R7 continue",
+  "zh": {
+   "experiment": "在第五轮的 adapter 上继续训练 GRPO 46 步 vs 第五轮",
+   "verdict": "未检测到进一步提升，后期失稳",
+   "link": "第七轮"
+  },
+  "en": {
+   "experiment": "Round 5's adapter trained 46 more GRPO steps vs round 5",
+   "verdict": "no further gain detected; late collapse",
+   "link": "Round 7"
+  }
+ },
+ {
+  "data": "round8/compare_eval.json",
+  "record": "EXPERIMENT_GRPO_ROUND8.md",
+  "rule": "non-inferiority",
+  "expect": "non_inferior",
+  "tag": "R8 pipeline",
+  "bold": "candidate",
+  "zh": {
+   "experiment": "流水线 GRPO（rollout 与训练重叠）vs 第五轮的同步训练（非劣性，界限 −2）",
+   "verdict": "非劣，此后默认流水线；GRPO 用时 −12.6%",
+   "link": "第八轮"
+  },
+  "en": {
+   "experiment": "Pipelined GRPO (rollouts overlap training) vs round 5's synchronous run (non-inferiority, margin −2)",
+   "verdict": "non-inferior, now the default; GRPO time −12.6%",
+   "link": "Round 8"
+  }
+ },
+ {
+  "data": "round9/compare_eval.json",
+  "record": "EXPERIMENT_GRPO_ROUND9.md",
+  "rule": "superiority",
+  "expect": "no_detectable_change",
+  "tag": "R9 guard v26",
+  "zh": {
+   "experiment": "失稳检测保留的第七轮 adapter（v26）vs 第五轮",
+   "verdict": "未检测到提升：同样的题上继续训练不再提高",
+   "link": "第九轮"
+  },
+  "en": {
+   "experiment": "The round 7 adapter the health guard keeps (v26) vs round 5",
+   "verdict": "no gain detected: more training on the same tasks stopped helping",
+   "link": "Round 9"
+  }
+ },
+ {
+  "data": "round10/compare_eval.json",
+  "record": "EXPERIMENT_GRPO_ROUND10.md",
+  "rule": "superiority",
+  "expect": "no_detectable_change",
+  "tag": "R10 new tasks",
+  "zh": {
+   "experiment": "在 14 道新题上继续训练第八轮的策略 vs 第八轮",
+   "verdict": "未检测到提升：新题上学会了，留出集不变",
+   "link": "第十轮"
+  },
+  "en": {
+   "experiment": "Round 8's policy trained on 14 fresh tasks vs round 8",
+   "verdict": "no gain detected: the new tasks were learned, held-out did not move",
+   "link": "Round 10"
+  }
+ }
+]

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="456" viewBox="0 0 900 456" font-family="Helvetica, Arial, sans-serif" font-size="14">
+<rect width="900" height="456" fill="#FFFFFF"/>
+<text x="190" y="20" fill="#14213D" font-weight="bold">Held-out pass@1 difference, percentage points (95% CI)</text>
+<line x1="227.3" y1="30" x2="227.3" y2="410" stroke="#E2E0D8"/>
+<text x="227.3" y="428" fill="#5F6979" text-anchor="middle">−4</text>
+<line x1="302.0" y1="30" x2="302.0" y2="410" stroke="#E2E0D8"/>
+<text x="302.0" y="428" fill="#5F6979" text-anchor="middle">−2</text>
+<line x1="376.7" y1="30" x2="376.7" y2="410" stroke="#E2E0D8"/>
+<text x="376.7" y="428" fill="#5F6979" text-anchor="middle">0</text>
+<line x1="451.3" y1="30" x2="451.3" y2="410" stroke="#E2E0D8"/>
+<text x="451.3" y="428" fill="#5F6979" text-anchor="middle">+2</text>
+<line x1="526.0" y1="30" x2="526.0" y2="410" stroke="#E2E0D8"/>
+<text x="526.0" y="428" fill="#5F6979" text-anchor="middle">+4</text>
+<line x1="600.7" y1="30" x2="600.7" y2="410" stroke="#E2E0D8"/>
+<text x="600.7" y="428" fill="#5F6979" text-anchor="middle">+6</text>
+<line x1="675.3" y1="30" x2="675.3" y2="410" stroke="#E2E0D8"/>
+<text x="675.3" y="428" fill="#5F6979" text-anchor="middle">+8</text>
+<line x1="750.0" y1="30" x2="750.0" y2="410" stroke="#E2E0D8"/>
+<text x="750.0" y="428" fill="#5F6979" text-anchor="middle">+10</text>
+<line x1="376.7" y1="30" x2="376.7" y2="410" stroke="#5F6979" stroke-width="2"/>
+<line x1="302.0" y1="30" x2="302.0" y2="410" stroke="#C9600F" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="178" y="58" fill="#14213D" text-anchor="end">R1 RFT</text>
+<line x1="483.6" y1="53" x2="736.4" y2="53" stroke="#2A62C9" stroke-width="4" stroke-linecap="round"/>
+<circle cx="600.3" cy="53" r="6" fill="#2A62C9" stroke="#2A62C9" stroke-width="2.5"/>
+<text x="764" y="58" fill="#2A62C9">+5.99 [+2.86, +9.64]</text>
+<text x="178" y="92" fill="#14213D" text-anchor="end">R2 GRPO</text>
+<line x1="386.4" y1="87" x2="639.2" y2="87" stroke="#2A62C9" stroke-width="4" stroke-linecap="round"/>
+<circle cx="503.1" cy="87" r="6" fill="#2A62C9" stroke="#2A62C9" stroke-width="2.5"/>
+<text x="764" y="92" fill="#2A62C9">+3.39 [+0.26, +7.03]</text>
+<text x="178" y="126" fill="#14213D" text-anchor="end">Replication</text>
+<line x1="376.7" y1="121" x2="590.6" y2="121" stroke="#2A62C9" stroke-width="4" stroke-linecap="round"/>
+<circle cx="483.6" cy="121" r="6" fill="#FFFFFF" stroke="#2A62C9" stroke-width="2.5"/>
+<text x="764" y="126" fill="#2A62C9">+2.86 [0.00, +5.73]</text>
+<text x="178" y="160" fill="#14213D" text-anchor="end">R3 GRPO</text>
+<line x1="454.4" y1="155" x2="716.9" y2="155" stroke="#2A62C9" stroke-width="4" stroke-linecap="round"/>
+<circle cx="580.8" cy="155" r="6" fill="#2A62C9" stroke="#2A62C9" stroke-width="2.5"/>
+<text x="764" y="160" fill="#2A62C9">+5.47 [+2.08, +9.11]</text>
+<text x="178" y="194" fill="#14213D" text-anchor="end">R4 labels</text>
+<line x1="264.9" y1="189" x2="410.7" y2="189" stroke="#C9600F" stroke-width="4" stroke-linecap="round"/>
+<circle cx="337.8" cy="189" r="6" fill="#C9600F" stroke="#C9600F" stroke-width="2.5"/>
+<text x="764" y="194" fill="#C9600F">−1.04 [−2.99, +0.91]</text>
+<text x="178" y="228" fill="#14213D" text-anchor="end">R5 GRPO</text>
+<line x1="459.3" y1="223" x2="716.9" y2="223" stroke="#2A62C9" stroke-width="4" stroke-linecap="round"/>
+<circle cx="580.8" cy="223" r="6" fill="#2A62C9" stroke="#2A62C9" stroke-width="2.5"/>
+<text x="764" y="228" fill="#2A62C9">+5.47 [+2.21, +9.11]</text>
+<text x="178" y="262" fill="#14213D" text-anchor="end">R6 labels</text>
+<line x1="298.9" y1="257" x2="425.3" y2="257" stroke="#C9600F" stroke-width="4" stroke-linecap="round"/>
+<circle cx="362.1" cy="257" r="6" fill="#C9600F" stroke="#C9600F" stroke-width="2.5"/>
+<text x="764" y="262" fill="#C9600F">−0.39 [−2.08, +1.30]</text>
+<text x="178" y="296" fill="#14213D" text-anchor="end">R7 continue</text>
+<line x1="201.7" y1="291" x2="435.0" y2="291" stroke="#2A62C9" stroke-width="4" stroke-linecap="round"/>
+<circle cx="318.3" cy="291" r="6" fill="#2A62C9" stroke="#2A62C9" stroke-width="2.5"/>
+<text x="764" y="296" fill="#2A62C9">−1.56 [−4.69, +1.56]</text>
+<text x="178" y="330" fill="#14213D" text-anchor="end">R8 pipeline</text>
+<line x1="342.6" y1="325" x2="571.1" y2="325" stroke="#C9600F" stroke-width="4" stroke-linecap="round"/>
+<circle cx="449.6" cy="325" r="6" fill="#C9600F" stroke="#C9600F" stroke-width="2.5"/>
+<text x="764" y="330" fill="#C9600F">+1.95 [−0.91, +5.21]</text>
+<text x="178" y="364" fill="#14213D" text-anchor="end">R9 guard v26</text>
+<line x1="211.4" y1="359" x2="410.7" y2="359" stroke="#2A62C9" stroke-width="4" stroke-linecap="round"/>
+<circle cx="318.3" cy="359" r="6" fill="#2A62C9" stroke="#2A62C9" stroke-width="2.5"/>
+<text x="764" y="364" fill="#2A62C9">−1.56 [−4.43, +0.91]</text>
+<text x="178" y="398" fill="#14213D" text-anchor="end">R10 new tasks</text>
+<line x1="298.9" y1="393" x2="464.2" y2="393" stroke="#2A62C9" stroke-width="4" stroke-linecap="round"/>
+<circle cx="386.4" cy="393" r="6" fill="#2A62C9" stroke="#2A62C9" stroke-width="2.5"/>
+<text x="764" y="398" fill="#2A62C9">+0.26 [−2.08, +2.34]</text>
+<text x="190" y="450" fill="#5F6979">blue: superiority; orange: non-inferiority (dashed line: margin −2); hollow: re-evaluation</text>
+</svg>
