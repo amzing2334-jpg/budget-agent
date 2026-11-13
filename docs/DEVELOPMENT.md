@@ -44,6 +44,7 @@ pull request 和合并后的 `main` 各跑一次；同一个 pull request 的新
    - 系统盘剩余空间不足 5 GB 时，`run_pool.sh` 拒绝启动评测池；已完成的 rollout 用 `archive_rollouts.sh` 移到数据盘，分析做完后用 `pack_rollouts.py` 打包（没有实验运行时才做，避免影响测试时限和计时）。
 4. **写结果**：
    - 结果只追加在协议后面，判据不改；
+   - 新的比较加进 `docs/data/comparisons.json`（原始输出、冻结的规则、记录写的结论），再运行 `python scripts/results_table.py --write` 更新中英文 README 的结果表和森林图；测试会检查它们与原始输出一致；
    - 原始输出复制到 `docs/data/<轮次>/`；
    - 逐条读通过的补丁，并与注入 bug 之前的源码对照（`review_patches.py --original`）；
    - 发现之前的结论有误时，追加更正并说明依据，不改写原文。
