@@ -1,0 +1,6 @@
+{
+ "policy": 13,
+ "adapter": "/root/autodl-tmp/coding-agent-rl/outputs/round10/grpo/adapters/v13",
+ "steps_run": 13,
+ "stopped": "steps"
+}

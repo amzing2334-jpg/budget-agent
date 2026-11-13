@@ -23,7 +23,7 @@
 | 第七轮继续训练 GRPO | 10.4 小时（评测 5.7 小时，含汇总报错后 1.45 小时的空闲） | 约 34.1 元 | [EXPERIMENT_GRPO_ROUND7.md](EXPERIMENT_GRPO_ROUND7.md) |
 | 第八轮流水线 GRPO | 3.85 小时 | 约 12.6 元 | [EXPERIMENT_GRPO_ROUND8.md](EXPERIMENT_GRPO_ROUND8.md) |
 | 第九轮评测失稳检测保留的 adapter | 1.28 小时 | 约 4.2 元 | [EXPERIMENT_GRPO_ROUND9.md](EXPERIMENT_GRPO_ROUND9.md) |
-| 第十轮在新题上继续训练 | 约 3 到 5 小时（计划） | 按当时价格 | [EXPERIMENT_GRPO_ROUND10.md](EXPERIMENT_GRPO_ROUND10.md) |
+| 第十轮在新题上继续训练 | 3.61 小时 | 约 11.8 元 | [EXPERIMENT_GRPO_ROUND10.md](EXPERIMENT_GRPO_ROUND10.md) |
 
 ## 1. 本地检查（只需 CPU）
 
