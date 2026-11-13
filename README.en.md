@@ -64,7 +64,7 @@ Every experiment has a protocol committed before it runs (question, setup, prima
 - `src/budget_agent/`: the harness, grader, tasks, token accounting and the GRPO core (standard library only; torch and tokenizers are optional).
 - `scripts/`: training (`grpo_harness.py`, `train_sft_lora.py`), evaluation pools, comparisons (`compare_pools.py`), analysis tools, and the GPU-host drivers in `scripts/autodl/`.
 - `docs/`: experiment records (`EXPERIMENT_*.md`), the technical report (`TECH_REPORT.md`), reproduction and development guides, and raw outputs in `docs/data/`. The documents are written in Chinese.
-- Engineering: 1,000+ tests (Linux and Windows, Python 3.11 and 3.13), ruff and mypy, a full-suite job with the GPU host's training stack on CPU (line plus branch coverage 89%, floor 88%), and lock files for the GPU host.
+- Engineering: 1,000+ tests (Linux and Windows, Python 3.11 and 3.13), ruff and mypy, a full-suite job with the GPU host's training stack on CPU (line plus branch coverage 90%, floor 89%), and lock files for the GPU host.
 
 ## Limitations
 

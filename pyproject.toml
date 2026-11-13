@@ -66,5 +66,5 @@ omit = [
 
 [tool.coverage.report]
 # The full-suite CI job (torch installed) measures 89%; the floor leaves one point for platform noise.
-fail_under = 88
+fail_under = 89
 skip_empty = true

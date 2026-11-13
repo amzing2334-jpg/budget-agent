@@ -142,4 +142,4 @@ python scripts/grpo_harness.py --base-model <模型> --tasks swesmith/train.json
   - [离线分析：用 agent 自己的主动结束挑选尝试](docs/ANALYSIS_FINISH_SELECTOR.md)
   - [rollout 吞吐基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[前缀打包](docs/PREFIX_PACKING.md)
 - [代码审查与修复（2026-11-05）](docs/CODE_REVIEW_2026-11-05.md)、[项目历史](docs/HISTORY.md)、[SWE-bench 协议](docs/EXPERIMENT_PROTOCOL.md)、[训练说明](docs/TRAINING.md)
-- 工程：1,000 多个测试；CI 覆盖 Linux 和 Windows、Python 3.11 和 3.13，另有 ruff（含 bugbear）、mypy（库和脚本），以及一个装了 GPU 主机训练栈（CPU 版 torch）的全量测试任务：GRPO 和 SFT 的 loss、前缀打包与参考计算一致，库的行加分支覆盖率不低于 88%（当前 89%）。GPU 主机的环境按锁文件安装（`requirements-gpu-host.lock.txt`），与各轮实验所用的版本完全一致
+- 工程：1,000 多个测试；CI 覆盖 Linux 和 Windows、Python 3.11 和 3.13，另有 ruff（含 bugbear）、mypy（库和脚本），以及一个装了 GPU 主机训练栈（CPU 版 torch）的全量测试任务：GRPO 和 SFT 的 loss、前缀打包与参考计算一致，库的行加分支覆盖率不低于 89%（当前 90%）。GPU 主机的环境按锁文件安装（`requirements-gpu-host.lock.txt`），与各轮实验所用的版本完全一致
