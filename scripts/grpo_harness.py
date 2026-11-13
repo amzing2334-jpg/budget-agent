@@ -43,6 +43,7 @@ import argparse
 import json
 from pathlib import Path
 import random
+import shutil
 import subprocess
 import time
 from typing import NamedTuple
@@ -197,6 +198,9 @@ def main() -> int:
                         help="stop once this many consecutive rollout batches (--halt-patience) have a larger share of "
                              "invalid actions, and keep the last policy whose batch did not (final.json)")
     parser.add_argument("--halt-patience", type=int, default=2)
+    parser.add_argument("--keep-adapters", type=int,
+                        help="keep on disk only v0, the last K adapters, those vLLM still holds and the one the guard "
+                             "would keep (default: keep every adapter)")
     args = parser.parse_args()
     if any("=" not in item for item in args.rollout_set):
         parser.error("--rollout-set takes KEY=VALUE")
@@ -206,6 +210,8 @@ def main() -> int:
         parser.error("--halt-invalid-share is a share in [0, 1)")
     if args.halt_patience < 1:
         parser.error("--halt-patience must be at least 1")
+    if args.keep_adapters is not None and args.keep_adapters < 1:
+        parser.error("--keep-adapters must be at least 1")
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     tasks = load_tasks(args.tasks, "train")
@@ -308,6 +314,11 @@ def main() -> int:
             loaded.discard(version)
         loaded.add(step + 1)
         published.append(step + 1)
+        if args.keep_adapters is not None:
+            keep = {0, guard.healthy_policy, *loaded, *range(step + 2 - args.keep_adapters, step + 2)}
+            for version in published:
+                if version not in keep and (args.output / "adapters" / f"v{version}").exists():
+                    shutil.rmtree(args.output / "adapters" / f"v{version}")
         record["sync_seconds"] = round(time.monotonic() - sync_started, 1)
         log.write(json.dumps(record) + "\n")
         log.flush()
