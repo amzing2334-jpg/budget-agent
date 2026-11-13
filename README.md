@@ -2,6 +2,11 @@
 
 **面向 coding agent 后训练的可验证环境和训练闭环。** 评测、拒绝采样微调（RFT）和 GRPO 共用同一个 agent harness 与同一个隔离评分器。全部实验在一张 A100-40GB 上完成，每个结论都有运行前冻结的判据。
 
+- **训练效果**：1.5B 学生经 RFT 从 0.26% 到 6.25%（留出集 pass@1）；在此基础上的 GRPO 两次独立训练都是 +5.47 个百分点，最好的策略 14.58%（对 SFT 学生 +7.68，区间 [+3.78, +12.11]）。
+- **奖励可信**：修复 5 类评分失真；827 个通过的补丁逐条检查并与注入 bug 之前的源码对照，11 个隐藏行为检查与人工判断一致。
+- **系统**：前缀打包让每个训练 turn 的用时降低 36%；流水线 GRPO 非劣（单卡省 12.6% 的时间）；分块 logprob 让 3B 学生能与 vLLM 同卡。
+- **稳定性**：无效动作比例比熵早约 9 步发现策略失稳，奖励看不出来；据此加了自动停止并回退的护栏。三种继续训练的方式都没有提高留出集，结论按冻结判据如实记录。
+
 ## 结果
 
 每一行都是一次运行前冻结判据的比较：留出的 4 个仓库共 96 题，按题配对 bootstrap，区间为 95% 置信区间（百分点）。
@@ -127,8 +132,8 @@ python scripts/grpo_harness.py --base-model <模型> --tasks swesmith/train.json
   - [第八轮：流水线 GRPO（rollout 与训练重叠）](docs/EXPERIMENT_GRPO_ROUND8.md)
   - [第九轮：失稳检测保留的 adapter（第七轮的 v26）](docs/EXPERIMENT_GRPO_ROUND9.md)
   - [第十轮：在新题上继续训练第八轮的策略](docs/EXPERIMENT_GRPO_ROUND10.md)
-  - [第十一轮：换种子重复第八轮](docs/EXPERIMENT_GRPO_ROUND11.md)（已冻结）
-  - [第十二轮：3B 学生，同样的 SFT 和 GRPO 流程](docs/EXPERIMENT_GRPO_ROUND12.md)（已冻结）
+  - [第十一轮：换种子重复第八轮](docs/EXPERIMENT_GRPO_ROUND11.md)（已冻结，未运行）
+  - [第十二轮：3B 学生，同样的 SFT 和 GRPO 流程](docs/EXPERIMENT_GRPO_ROUND12.md)（已冻结，未运行）
   - [rollout 吞吐基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[前缀打包](docs/PREFIX_PACKING.md)
 - [代码审查与修复（2026-11-05）](docs/CODE_REVIEW_2026-11-05.md)、[项目历史](docs/HISTORY.md)、[SWE-bench 协议](docs/EXPERIMENT_PROTOCOL.md)、[训练说明](docs/TRAINING.md)
 - 工程：1,000 多个测试；CI 覆盖 Linux 和 Windows、Python 3.11 和 3.13，另有 ruff（含 bugbear）、mypy（库和脚本），以及一个装了 GPU 主机训练栈（CPU 版 torch）的全量测试任务：GRPO 和 SFT 的 loss、前缀打包与参考计算一致，库的行加分支覆盖率不低于 88%（当前 89%）。GPU 主机的环境按锁文件安装（`requirements-gpu-host.lock.txt`），与各轮实验所用的版本完全一致

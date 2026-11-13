@@ -24,8 +24,8 @@
 | 第八轮流水线 GRPO | 3.85 小时 | 约 12.6 元 | [EXPERIMENT_GRPO_ROUND8.md](EXPERIMENT_GRPO_ROUND8.md) |
 | 第九轮评测失稳检测保留的 adapter | 1.28 小时 | 约 4.2 元 | [EXPERIMENT_GRPO_ROUND9.md](EXPERIMENT_GRPO_ROUND9.md) |
 | 第十轮在新题上继续训练 | 3.61 小时 | 约 11.8 元 | [EXPERIMENT_GRPO_ROUND10.md](EXPERIMENT_GRPO_ROUND10.md) |
-| 第十一轮换种子重复第八轮 | 约 4 小时（计划） | 按当时价格 | [EXPERIMENT_GRPO_ROUND11.md](EXPERIMENT_GRPO_ROUND11.md) |
-| 第十二轮 3B 学生 | 约 8 到 10 小时（计划） | 按当时价格 | [EXPERIMENT_GRPO_ROUND12.md](EXPERIMENT_GRPO_ROUND12.md) |
+| 第十一轮换种子重复第八轮 | 未运行（约 4 小时） | — | [EXPERIMENT_GRPO_ROUND11.md](EXPERIMENT_GRPO_ROUND11.md) |
+| 第十二轮 3B 学生 | 未运行（约 8 到 10 小时） | — | [EXPERIMENT_GRPO_ROUND12.md](EXPERIMENT_GRPO_ROUND12.md) |
 
 ## 1. 本地检查（只需 CPU）
 
