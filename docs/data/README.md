@@ -16,6 +16,7 @@
 | `round8/` | 第八轮：流水线 GRPO（每题 8 次评测），含对照原始源码、隐藏检查、敏感性比较、每步 rollout 的行为统计和训练 token 构成 | [EXPERIMENT_GRPO_ROUND8.md](../EXPERIMENT_GRPO_ROUND8.md) |
 | `round9/` | 第九轮：失稳检测保留的第七轮 adapter（v26）的评测，含对第七轮 v46 的比较、对照原始源码、隐藏检查和行为统计 | [EXPERIMENT_GRPO_ROUND9.md](../EXPERIMENT_GRPO_ROUND9.md) |
 | `round10/` | 第十轮：在新题上继续训练第八轮的策略，含选题结果、训练的逐步指标和 `final.json`、对照原始源码、隐藏检查、敏感性比较和行为统计 | [EXPERIMENT_GRPO_ROUND10.md](../EXPERIMENT_GRPO_ROUND10.md) |
+| `selection/` | 离线分析：六个评测池的原始台账（`attempts.jsonl`，原样复制）和按主动结束挑选的结果 | [ANALYSIS_FINISH_SELECTOR.md](../ANALYSIS_FINISH_SELECTOR.md) |
 | `bench_rollout_2026-11-06.json` | rollout 吞吐随并发数的变化 | [BENCH_ROLLOUT_2026-11-06.md](../BENCH_ROLLOUT_2026-11-06.md) |
 | `packing_round3_steps0-3.json` | 第三轮前 4 步上前缀打包的 token 节省和断点分类 | [PREFIX_PACKING.md](../PREFIX_PACKING.md) |
 | `commit_map_20261111.json` | 2026-11-11 历史改写前后的 commit ID 对照，代码树不变 | |
