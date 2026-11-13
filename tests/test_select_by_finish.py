@@ -33,3 +33,14 @@ def test_pass_at_one_matches_compare_pools_on_a_published_pool():
     report = select_by_finish.evaluate("round10", pool, resamples=100, seed=0)
     published = json.loads((ROOT / "docs/data/round10/compare_eval.json").read_text())
     assert abs(report["pass@1"] - published["candidate_pass@1"]) < 1e-12
+
+
+def test_the_interval_does_not_depend_on_the_order_of_the_ledger(tmp_path):
+    import random
+    lines = (ROOT / "docs/data/selection/round8_eval.jsonl").read_text().splitlines()
+    shuffled = lines[:]
+    random.Random(1).shuffle(shuffled)
+    (tmp_path / "shuffled.jsonl").write_text("\n".join(shuffled) + "\n")
+    original = select_by_finish.evaluate("a", ROOT / "docs/data/selection/round8_eval.jsonl", resamples=500, seed=0)
+    again = select_by_finish.evaluate("a", tmp_path / "shuffled.jsonl", resamples=500, seed=0)
+    assert original["ci95"] == again["ci95"] and original["delta"] == again["delta"]

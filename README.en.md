@@ -5,7 +5,7 @@
 - **Training results**: RFT took a 1.5B student from 0.26% to 6.25% held-out pass@1; GRPO on top of it gained +5.47 points in two independent runs, and the best policy reached 14.58% (+7.68 over the SFT student, 95% CI [+3.78, +12.11]).
 - **Reward integrity**: five grading distortions an RL policy could exploit were found and fixed; all 827 passing patches were reviewed and compared with the source before the bug was injected, and 11 executable hidden checks agree with the manual verdicts.
 - **Systems**: prefix packing cut training time per turn by 36%; pipelined GRPO passed a non-inferiority test (12.6% faster on one GPU); chunked log-probabilities fit a 3B student next to vLLM on the same card.
-- **Test-time selection**: with 8 samples per task, picking one only by whether the agent itself finished raises the best policy from 14.58% to 21.15% (+6.56, 95% CI [+3.43, +10.16]; a pre-registered offline analysis), and it holds in all six evaluation pools.
+- **Test-time selection**: with 8 samples per task, picking one only by whether the agent itself finished raises the best policy from 14.58% to 21.15% (+6.56, 95% CI [+3.40, +10.29]; a pre-registered offline analysis), and it holds in all six evaluation pools.
 - **Stability**: the share of invalid actions flagged a policy collapse about 9 steps before entropy did, while the reward showed nothing; a guard now stops and rolls back automatically. Three ways of training further did not raise held-out pass@1, and the records say so.
 
 ## Results
