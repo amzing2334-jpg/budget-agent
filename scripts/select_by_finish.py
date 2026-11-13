@@ -41,7 +41,8 @@ def evaluate(name: str, path: Path, resamples: int = 10_000, seed: int = 0) -> d
     tasks = per_task(path)
     random_pick, selector, deltas = [], [], []
     solved = without_finish = finished_attempts = finished_resolved = 0
-    for rows in tasks.values():
+    for task in sorted(tasks):   # the order compare_pools.py resamples in, so seeded intervals agree
+        rows = tasks[task]
         rate = sum(resolved for _, resolved in rows) / len(rows)
         finished = [resolved for done, resolved in rows if done]
         pick = sum(finished) / len(finished) if finished else rate
