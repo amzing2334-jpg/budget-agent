@@ -1,0 +1,22 @@
+{
+ "candidates": 159,
+ "attempts": 636,
+ "resolved": 23,
+ "ungraded": 0,
+ "selected": {
+  "alecthomas__voluptuous.a7a55f83.func_basic__bna5mneb": "1/4",
+  "alecthomas__voluptuous.a7a55f83.func_basic__meokhupy": "2/4",
+  "alecthomas__voluptuous.a7a55f83.func_pm_remove_cond__ylhctwti": "1/4",
+  "google__textfsm.c31b6007.func_pm_class_rm_base__tkuc43a1": "1/4",
+  "gweis__isodate.17cb25eb.func_basic__v7su6vte": "2/4",
+  "jd__tenacity.0d40e76f.func_basic__9hhsahcu": "1/4",
+  "jd__tenacity.0d40e76f.func_basic__g7sdimm9": "2/4",
+  "jd__tenacity.0d40e76f.func_basic__m9tzhblx": "2/4",
+  "keleshev__schema.24a30457.func_basic__jrrcjrx1": "1/4",
+  "keleshev__schema.24a30457.func_basic__rwcnsptu": "3/4",
+  "keleshev__schema.24a30457.func_basic__vucpbdqh": "2/4",
+  "python-hyper__h11.bed0dd4a.func_pm_class_rm_funcs__9kzx2763": "2/4",
+  "theskumar__python-dotenv.2b8635b7.combine_file__3a81d5iz": "2/4",
+  "tkrajina__gpxpy.09fc46b3.func_pm_op_change_const__nuw8rzlc": "1/4"
+ }
+}

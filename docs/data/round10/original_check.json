@@ -1,0 +1,214 @@
+{
+ "method": "review_patches.py --original (files the grader ignored are not compared), hidden behaviour checks for the 11 tasks in tasks/hidden_checks, residuals identical to ones judged in rounds 4 to 9 take that judgement, and manual judgement of the remaining 17 (the kind of a hidden-check failure follows the failure it shows).",
+ "pools": {
+  "round10_eval-grpo": {
+   "resolved": 112,
+   "restores_original_exactly": 49,
+   "equivalent_residual": 38,
+   "weak_mild": 14,
+   "weak_strong": 11
+  }
+ },
+ "weak_patches": [
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 1,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 4,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 5,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 6,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "Suor__funcy.207a7810.func_basic__cd2paqnl",
+   "sample": 7,
+   "kind": "mild",
+   "reason": "funcy one(): consumes the whole iterable (not lazy; hangs on infinite input)",
+   "evidence": "hidden check timeout"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__xewv2osl",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "tinydb FrozenDict: clear() and popitem() return silently instead of raising (injected early return kept)",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__y4v6gmc4",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "tinydb drop_table: keeps the injected storage.write({}), so dropping one table empties the database",
+   "evidence": "same residual as an earlier judgement"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_basic__y4v6gmc4",
+   "sample": 5,
+   "kind": "strong",
+   "reason": "tinydb drop_table: writes None to the storage, so dropping one table empties the database",
+   "evidence": "manual"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_shuffle__gdcca93w",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "tinydb update_multiple: applies the updates but returns None instead of the updated document ids",
+   "evidence": "manual"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 0,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 2,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 3,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 4,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 5,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 6,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__0i1oecyo",
+   "sample": 7,
+   "kind": "mild",
+   "reason": "parse named_fields: returns the internal list instead of a copy",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__agjn8p50",
+   "sample": 7,
+   "kind": "strong",
+   "reason": "parse.search(): case sensitivity inverted",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 1,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset(None) returns None: time objects lose their offset",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 2,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset: the injected Dec-31 special case is widened to all of December and every 31st",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset: the injected Dec-31 special case is kept, only guarded against None",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 6,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset always returns a zero offset",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_basic__u30gcrhh",
+   "sample": 7,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.utcoffset: the injected Dec-31 special case is kept, only guarded against None",
+   "evidence": "hidden check fail"
+  },
+  {
+   "pool": "round10_eval-grpo",
+   "task_id": "r1chardj0n3s__parse.30da9e4f.func_pm_ctrl_shuffle__ckf9bzo4",
+   "sample": 4,
+   "kind": "strong",
+   "reason": "parse FixedTzOffset.__eq__: compares the name with a string and returns False instead of NotImplemented",
+   "evidence": "hidden check fail"
+  }
+ ]
+}

@@ -18,6 +18,7 @@
 | 在第五轮的 adapter 上继续训练 GRPO 46 步 vs 第五轮 | 12.37% → 10.81% | −1.56 [−4.69, +1.56] | 未检测到进一步提升，后期失稳 | [第七轮](docs/EXPERIMENT_GRPO_ROUND7.md) |
 | 流水线 GRPO（rollout 与训练重叠）vs 第五轮的同步训练（非劣性，界限 −2） | 12.37% → **14.32%** | +1.95 [−0.91, +5.21] | 非劣，此后默认流水线；GRPO 用时 −12.6% | [第八轮](docs/EXPERIMENT_GRPO_ROUND8.md) |
 | 失稳检测保留的第七轮 adapter（v26）vs 第五轮 | 12.37% → 10.81% | −1.56 [−4.43, +0.91] | 未检测到提升：同样的题上继续训练不再提高 | [第九轮](docs/EXPERIMENT_GRPO_ROUND9.md) |
+| 在 14 道新题上继续训练第八轮的策略 vs 第八轮 | 14.32% → 14.58% | +0.26 [−2.08, +2.34] | 未检测到提升：新题上学会了，留出集不变 | [第十轮](docs/EXPERIMENT_GRPO_ROUND10.md) |
 
 | | 要点 | 证据 |
 |---|---|---|
@@ -26,7 +27,7 @@
 | **稳定性** | 在第五轮的 adapter 上继续训练，第 36 步以后失稳：无效动作（不是合法 JSON 的输出）从约 1% 升到 74% 到 83%，熵从 0.1 升到 3.0，训练题上的通过率始终不变。无效动作比例比熵早约 9 步出现异常，只看奖励发现不了。评测中，能解的题照常解，解不出的题陷入重复输出。新加的失稳检测（无效动作比例连续 2 批超过 4% 就停）会保留 v26，它行为正常，但留出集同样没有提升（第九轮） | [第七轮](docs/EXPERIMENT_GRPO_ROUND7.md) |
 | **系统** | 单卡 7B agent rollout 受 prefill 限制（prompt token 是生成的 108 到 141 倍）。前缀打包把训练编码的 token 减少 2.9 到 3.1 倍，loss 和梯度等价；用于第五轮的 GRPO 训练后，每个训练 turn 的用时降低 36%，训练占每步时间从 59% 降到 43%，瓶颈转到 rollout。改成固定标注可到 4.48 倍（事先估计 4.43 倍），但见上表第四轮。按题测试时限把 rollout 的 p90 从 631 秒降到 235 秒。流水线（第八轮）在单卡上只省 12.6%：采样和训练争用同一张 GPU，各慢约 1.7 和 1.9 倍 | [基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[打包](docs/PREFIX_PACKING.md) |
 
-七次训练（RFT、五次 GRPO、一次固定标注的 SFT 重训）、两次只评测的实验（复现、第九轮）和一次标注 A/B 共 34.6 GPU 小时，按 3.28 元/小时约 114 元。留出集上通过的 715 个补丁都逐条人工检查过，没有发现篡改，并且都与原始源码对照过。原始输出在 [`docs/data/`](docs/data/)。
+八次训练（RFT、六次 GRPO、一次固定标注的 SFT 重训）、两次只评测的实验（复现、第九轮）和一次标注 A/B 共 38.2 GPU 小时，按 3.28 元/小时约 125 元。留出集上通过的 827 个补丁都逐条人工检查过，没有发现篡改，并且都与原始源码对照过。原始输出在 [`docs/data/`](docs/data/)。
 
 ```mermaid
 flowchart LR
@@ -125,7 +126,7 @@ python scripts/grpo_harness.py --base-model <模型> --tasks swesmith/train.json
   - [第七轮：在第五轮的基础上继续训练 GRPO](docs/EXPERIMENT_GRPO_ROUND7.md)
   - [第八轮：流水线 GRPO（rollout 与训练重叠）](docs/EXPERIMENT_GRPO_ROUND8.md)
   - [第九轮：失稳检测保留的 adapter（第七轮的 v26）](docs/EXPERIMENT_GRPO_ROUND9.md)
-  - [第十轮：在新题上继续训练第八轮的策略](docs/EXPERIMENT_GRPO_ROUND10.md)（已冻结）
+  - [第十轮：在新题上继续训练第八轮的策略](docs/EXPERIMENT_GRPO_ROUND10.md)
   - [rollout 吞吐基准](docs/BENCH_ROLLOUT_2026-11-06.md)、[前缀打包](docs/PREFIX_PACKING.md)
 - [代码审查与修复（2026-11-05）](docs/CODE_REVIEW_2026-11-05.md)、[项目历史](docs/HISTORY.md)、[SWE-bench 协议](docs/EXPERIMENT_PROTOCOL.md)、[训练说明](docs/TRAINING.md)
 - 工程：1,000 多个测试；CI 覆盖 Linux 和 Windows、Python 3.11 和 3.13，另有 ruff（含 bugbear）、mypy（库和脚本），以及一个装了 GPU 主机训练栈（CPU 版 torch）的全量测试任务：GRPO 和 SFT 的 loss、前缀打包与参考计算一致，库的行加分支覆盖率不低于 88%（当前 89%）。GPU 主机的环境按锁文件安装（`requirements-gpu-host.lock.txt`），与各轮实验所用的版本完全一致

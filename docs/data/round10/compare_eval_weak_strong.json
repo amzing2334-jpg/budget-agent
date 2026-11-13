@@ -1,0 +1,20 @@
+{
+ "split": "eval",
+ "paired_tasks": 96,
+ "baseline_pass@1": 0.12239583333333333,
+ "candidate_pass@1": 0.13151041666666666,
+ "delta": 0.009114583333333334,
+ "ci95": [
+  -0.006510416666666667,
+  0.026041666666666668
+ ],
+ "verdict": "no detectable change",
+ "tasks_improved": 8,
+ "tasks_worse": 5,
+ "ungraded_attempts": {
+  "baseline": 0,
+  "candidate": 0
+ },
+ "dropped_flagged": null,
+ "unpaired_tasks": []
+}
