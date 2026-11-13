@@ -55,6 +55,42 @@ flowchart LR
 - **Health monitoring.** Every step records the invalid-action share and output length; `--halt-invalid-share` stops a run after consecutive unhealthy batches and `final.json` names the last healthy policy.
 - **Operations.** Experiment rounds are chained only after a clean finish, an idle GPU and a verified code-tree hash; finished rollouts are archived and packed with per-file SHA-256 checks; all drivers refuse to run on a busy GPU.
 
+## Quick start
+
+CPU only:
+
+```bash
+python -m pip install -e ".[dev]"
+python -m pytest -q
+python -m budget_agent demo --output runs/demo   # scripted repairs on three bundled fixtures, 9 runs, HTML report
+```
+
+Building the local SWE-smith tasks (CPU, needs access to Hugging Face and GitHub):
+
+```bash
+python -m pip install -e ".[swesmith]"
+python scripts/select_swesmith_instances.py <SWE-smith shard dir> instances.jsonl selection.json
+python scripts/build_swesmith_local.py --instances instances.jsonl --repos <mirror clones> \
+  --venvs <venv dir> --output swesmith --plugin src/budget_agent/pytest_outcomes.py \
+  --extras configs/swesmith-extras.json
+```
+
+Rollouts, RFT and GRPO on a GPU host:
+
+```bash
+scripts/autodl/serve_vllm.sh <model dir> teacher           # listens on 127.0.0.1:18017 only
+scripts/autodl/run_pool.sh --config configs/swesmith-vllm-tokens.toml --tasks swesmith/train.jsonl \
+  --samples 4 --output /opt/coding-agent/work/teacher        # agent commands run as nobody
+python scripts/sft_data_from_runs.py --attempts <attempts.jsonl> --output sft.jsonl
+python scripts/train_sft_lora.py --model <student> --data sft.jsonl --output out/sft --merge
+python scripts/compare_pools.py --baseline <before> --candidate <after> --split eval
+python scripts/grpo_harness.py --base-model <model> --tasks swesmith/train.jsonl \
+  --config configs/swesmith-vllm-tokens.toml --output out/grpo --rollouts /opt/coding-agent/work/grpo \
+  --pack-turns --pipeline --halt-invalid-share 0.04
+```
+
+`docs/REPRODUCE.md` has every round's exact commands, and `scripts/autodl/` holds the frozen driver of each round.
+
 ## Method
 
 Every experiment has a protocol committed before it runs (question, setup, primary metric, decision rule, secondary metrics, budget, known limitations); results are appended below it and never edit the criteria. Corrections are appended with their evidence (for example, an early claim that RL increased weak fixes was withdrawn after a pooled test gave p = 0.26). Superiority comparisons need the interval's lower bound above 0; non-inferiority comparisons (system changes) need it above −2 points.
