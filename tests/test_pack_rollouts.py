@@ -95,12 +95,12 @@ def test_an_archive_that_does_not_match_deletes_nothing(tmp_path, monkeypatch):
     assert snapshot(pool) == before                                        # no archive, no partial, runs/ intact
 
 
-def test_it_refuses_an_existing_archive_and_files_it_cannot_represent(tmp_path):
+def test_it_refuses_an_unreadable_archive_in_place_and_files_it_cannot_represent(tmp_path):
     pool = make_pool(tmp_path / "pool")
     (pool / "runs.tar.gz").write_bytes(b"old")
-    with pytest.raises(FileExistsError):
+    with pytest.raises(tarfile.ReadError):
         pack_rollouts.pack(pool)
-    assert (pool / "runs").exists()
+    assert (pool / "runs").exists() and not (pool / "PACKED.json").exists()
     if POSIX:
         other = make_pool(tmp_path / "other")
         os.mkfifo(other / "runs" / "s00" / "pipe")
@@ -116,3 +116,40 @@ def test_analysis_tools_refuse_a_packed_pool_instead_of_counting_nothing(tmp_pat
     for describe in (pool_behaviour.describe, limit_events.pool_limits):
         with pytest.raises(SystemExit, match="is packed"):
             describe(pool)
+
+
+def test_a_run_stopped_while_removing_runs_is_finished(tmp_path, monkeypatch):
+    pool = make_pool(tmp_path / "pool")
+    real = pack_rollouts.shutil.rmtree
+
+    def stopped(path, *args, **kwargs):
+        raise KeyboardInterrupt   # the machine went down after PACKED.json, before runs/ was gone
+    monkeypatch.setattr(pack_rollouts.shutil, "rmtree", stopped)
+    with pytest.raises(KeyboardInterrupt):
+        pack_rollouts.pack(pool)
+    assert (pool / "PACKED.json").exists() and (pool / "runs").exists()
+    monkeypatch.setattr(pack_rollouts.shutil, "rmtree", real)
+    record = pack_rollouts.pack(pool)
+    assert record["resumed"] and not (pool / "runs").exists() and record["files"] == 8
+
+
+def test_a_run_stopped_before_recording_rechecks_the_archive_against_runs(tmp_path, monkeypatch):
+    pool = make_pool(tmp_path / "pool")
+    before = snapshot(pool / "runs")
+    real = pack_rollouts.finish
+    monkeypatch.setattr(pack_rollouts, "finish", lambda pool, written: (_ for _ in ()).throw(KeyboardInterrupt()))
+    with pytest.raises(KeyboardInterrupt):
+        pack_rollouts.pack(pool)
+    assert (pool / "runs.tar.gz").exists() and not (pool / "PACKED.json").exists()
+    monkeypatch.setattr(pack_rollouts, "finish", real)
+    other = make_pool(tmp_path / "other")
+    (other / "runs.tar.gz").write_bytes((pool / "runs.tar.gz").read_bytes())
+    (other / "runs" / "s00" / "t1__run" / "patch.diff").write_text("changed after packing\n")
+    with pytest.raises(ValueError, match="already in place"):
+        pack_rollouts.pack(other)                                       # an archive that no longer matches
+    assert (other / "runs").exists() and not (other / "PACKED.json").exists()
+    record = pack_rollouts.pack(pool)
+    assert record["resumed"] and not (pool / "runs").exists()
+    with tarfile.open(pool / "runs.tar.gz") as archive:
+        archive.extractall(pool, filter="tar")
+    assert snapshot(pool / "runs") == before
