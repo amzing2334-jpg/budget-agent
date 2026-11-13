@@ -9,7 +9,9 @@ this writes runs/ into runs.tar.gz, hashing every file as it is read; reads the 
 and checks that it holds exactly the same directories, symlinks and regular files with the
 same SHA-256; and only then deletes runs/ and writes PACKED.json. The rest of the pool
 (attempts.jsonl, summary.json) stays in place, so the ledgers that comparisons read remain
-usable. Restore a pool with
+usable. A run stopped at any point can be repeated: a pool whose verified archive was already
+moved into place is finished (its archive is checked against runs/ again unless PACKED.json
+says it was). Restore a pool with
 
     tar -xzf POOL/runs.tar.gz -C POOL
 
@@ -84,6 +86,36 @@ def write_archive(pool: Path, target: Path, compresslevel: int) -> dict[str, Ent
     return written
 
 
+def scan_tree(pool: Path) -> dict[str, Entry]:
+    """What write_archive records for pool/runs, without writing anything."""
+    entries: dict[str, Entry] = {}
+    for dirpath, dirnames, filenames in os.walk(pool / "runs"):
+        dirnames.sort()
+        base = Path(dirpath)
+        entries[base.relative_to(pool).as_posix()] = ("dir",)
+        for child in [base / d for d in dirnames if (base / d).is_symlink()] + [base / f for f in sorted(filenames)]:
+            name = child.relative_to(pool).as_posix()
+            if child.is_symlink():
+                entries[name] = ("link", os.readlink(child))
+            elif child.is_file():
+                digest = hashlib.sha256()
+                with child.open("rb") as stream:
+                    for block in iter(lambda: stream.read(1 << 20), b""):  # noqa: B023 (consumed in this iteration)
+                        digest.update(block)
+                entries[name] = ("file", child.stat().st_size, digest.hexdigest())
+            else:
+                raise ValueError(f"{child}: not a regular file, directory or symlink")
+    return entries
+
+
+def differences(pool: Path, expected: dict[str, Entry], found: dict[str, Entry]) -> str | None:
+    if found == expected:
+        return None
+    missing, extra = sorted(expected.keys() - found.keys()), sorted(found.keys() - expected.keys())
+    changed = sorted(k for k in expected.keys() & found.keys() if expected[k] != found[k])
+    return f"{pool}: archive differs from runs/ (missing {missing[:3]}, extra {extra[:3]}, changed {changed[:3]})"
+
+
 def read_archive(path: Path) -> dict[str, Entry]:
     found: dict[str, Entry] = {}
     with tarfile.open(path, "r|gz") as archive:
@@ -108,22 +140,25 @@ def pack(pool: Path, compresslevel: int = 6, min_free_gb: float = 2.0) -> dict:
     """Pack one pool; return what PACKED.json records. Raises without deleting anything on any doubt."""
     target, partial = pool / ARCHIVE, pool / (ARCHIVE + ".partial")
     if target.exists():
-        raise FileExistsError(f"{target} exists next to runs/; check both and remove one")
+        return resume(pool)
     free = shutil.disk_usage(pool).free / 1e9
     if free < min_free_gb:
         raise OSError(f"{pool}: {free:.1f} GB free, below {min_free_gb} GB")
     try:
         written = write_archive(pool, partial, compresslevel)
-        found = read_archive(partial)
-        if found != written:
-            missing, extra = sorted(written.keys() - found.keys()), sorted(found.keys() - written.keys())
-            changed = sorted(k for k in written.keys() & found.keys() if written[k] != found[k])
-            raise ValueError(f"{pool}: archive differs from runs/ (missing {missing[:3]}, extra {extra[:3]}, "
-                             f"changed {changed[:3]})")
+        problem = differences(pool, written, read_archive(partial))
+        if problem:
+            raise ValueError(problem)
     except BaseException:
         partial.unlink(missing_ok=True)
         raise
-    os.replace(partial, target)
+    os.replace(partial, target)   # only a verified archive ever gets the final name
+    return finish(pool, written)
+
+
+def finish(pool: Path, written: dict[str, Entry]) -> dict:
+    """Record a verified archive in PACKED.json, then remove runs/ (in that order)."""
+    target = pool / ARCHIVE
     files = [entry for entry in written.values() if entry[0] == "file"]
     digest = hashlib.sha256()
     with target.open("rb") as stream:
@@ -138,6 +173,23 @@ def pack(pool: Path, compresslevel: int = 6, min_free_gb: float = 2.0) -> dict:
     (pool / MARKER).write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     shutil.rmtree(pool / "runs")
     return record
+
+
+def resume(pool: Path) -> dict:
+    """Finish a pool a stopped run left with its archive in place next to runs/.
+
+    The archive got its final name only after it was verified, and runs/ is removed only after
+    PACKED.json is written. With PACKED.json present the run stopped while removing runs/: finish
+    the removal. Without it runs/ is still whole: check the archive against it again first.
+    """
+    if (pool / MARKER).exists():
+        shutil.rmtree(pool / "runs")
+        return {**json.loads((pool / MARKER).read_text(encoding="utf-8")), "resumed": True}
+    written = scan_tree(pool)
+    problem = differences(pool, written, read_archive(pool / ARCHIVE))
+    if problem:
+        raise ValueError(f"{problem}; {ARCHIVE} was already in place, check both")
+    return {**finish(pool, written), "resumed": True}
 
 
 def main(argv: list[str] | None = None) -> int:
