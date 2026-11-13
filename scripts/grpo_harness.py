@@ -51,6 +51,7 @@ import urllib.request
 
 import torch
 from peft import LoraConfig, PeftModel, get_peft_model
+from torch.utils.checkpoint import checkpoint
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from budget_agent.learning.grpo_core import (HealthGuard, Turn, aggregate, build_groups, chain_layout, drive_steps,
@@ -73,6 +74,9 @@ def load_adapter(server: str, name: str, path: Path, previous: str | None) -> No
         post(f"{server}/v1/unload_lora_adapter", {"lora_name": previous})
 
 
+LOGPROB_CHUNK = 1024   # positions widened to full-vocabulary fp32 at a time
+
+
 class Sequence(NamedTuple):
     """One training forward: a single turn, or a prefix chain of turns from one attempt (--pack-turns)."""
     inputs: list[int]
@@ -83,17 +87,41 @@ class Sequence(NamedTuple):
     turns: int
 
 
-def sequence_logprobs(model, sequence: Sequence):
-    """Log probabilities of the targets at their positions, and the mean entropy there."""
+def _target_logprobs(logits, targets):
+    logits = logits.float()
+    return logits.gather(-1, targets[:, None]).squeeze(-1) - torch.logsumexp(logits, dim=-1)
+
+
+def _entropy_sum(logits):
+    logp = logits.float().log_softmax(-1)
+    return -(logp.exp() * logp).sum()
+
+
+def sequence_logprobs(model, sequence: Sequence, *, entropy: bool = True, chunk: int = LOGPROB_CHUNK):
+    """Log probabilities of the targets at their positions, and the mean entropy there (None if not asked).
+
+    Only `chunk` positions at a time are widened to full-vocabulary fp32: with gradients on, each
+    chunk's log-softmax is recomputed in the backward pass instead of kept. A plain computation keeps
+    several [positions x vocabulary] fp32 tensors at once, 4.6 GiB each at 8,192 positions of a
+    152k vocabulary, which is what ran a 3B student next to vLLM out of memory.
+    """
     device = next(model.parameters()).device
     inputs = torch.tensor([sequence.inputs], device=device)
     keep = torch.tensor(sequence.positions, device=device)
-    logits = model(input_ids=inputs, logits_to_keep=keep).logits[0].float()
-    logp = logits.log_softmax(-1)
+    logits = model(input_ids=inputs, logits_to_keep=keep).logits[0]
     targets = torch.tensor(sequence.targets, device=device)
-    with torch.no_grad():
-        entropy = -(logp.exp() * logp).sum(-1).mean()
-    return logp.gather(-1, targets[:, None]).squeeze(-1), entropy
+    picked, entropies = [], []
+    for start in range(0, len(sequence.targets), chunk):
+        part, wanted = logits[start:start + chunk], targets[start:start + chunk]
+        if torch.is_grad_enabled() and part.requires_grad:
+            picked.append(checkpoint(_target_logprobs, part, wanted, use_reentrant=False))
+        else:
+            picked.append(_target_logprobs(part, wanted))
+        if entropy:
+            with torch.no_grad():
+                entropies.append(_entropy_sum(part))
+    mean_entropy = torch.stack(entropies).sum() / len(sequence.targets) if entropy else None
+    return torch.cat(picked), mean_entropy
 
 
 def attach_lora(model, rank: int, init_adapter: Path | None = None):
@@ -131,7 +159,7 @@ def update(model, optimizer, batch: list[Sequence], args) -> dict:
     olds = None
     if len(minibatches) > 1:
         with torch.no_grad():
-            olds = [sequence_logprobs(model, sequence)[0] for sequence in batch]
+            olds = [sequence_logprobs(model, sequence, entropy=False)[0] for sequence in batch]
     stats, entropies, norms = [], [], []
     for indices in minibatches:
         total_tokens = sum(len(batch[i].targets) for i in indices)
