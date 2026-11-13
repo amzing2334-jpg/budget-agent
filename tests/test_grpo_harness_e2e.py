@@ -178,3 +178,25 @@ def test_a_pipelined_run_halts_before_launching_another_rollout(setup, monkeypat
     assert policies == ["policy-v0", "policy-v0", "policy-v1"] and [r["behaviour_policy"] for r in records] == [0, 0, 1]
     assert records[2]["halted"]["keep_policy"] == 0
     assert json.loads((setup[0] / "out" / "final.json").read_text())["policy"] == 0
+
+
+@pytest.mark.parametrize("pipeline", [False, True])
+def test_adapter_retention_keeps_v0_the_last_ones_and_whatever_vllm_still_holds(setup, monkeypatch, pipeline):
+    extra = ["--keep-adapters", "1"] + (["--pipeline"] if pipeline else [])
+    records, _ = run_harness(*setup, monkeypatch, *extra)
+    assert len(records) == 3
+    kept = sorted(path.name for path in (setup[0] / "out" / "adapters").iterdir())
+    assert kept == ["v0", "v3"]                      # v1 and v2 were removed once nothing used them
+    assert json.loads((setup[0] / "out" / "final.json").read_text())["policy"] == 3
+
+
+def test_the_memory_probe_runs_the_harness_update_on_a_synthetic_long_sequence(tmp_path, capsys):
+    spec = importlib.util.spec_from_file_location("probe", ROOT / "scripts/probe_grpo_memory.py")
+    assert spec is not None and spec.loader is not None
+    probe = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(probe)
+    tiny_model(tmp_path / "model")
+    assert probe.main(["--model", str(tmp_path / "model"), "--max-len", "64", "--completion", "16", "--rank", "4",
+                       "--device", "cpu"]) == 0
+    report = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
+    assert (report["max_len"], report["completion"], report["peak_allocated_gib"]) == (64, 16, None)
