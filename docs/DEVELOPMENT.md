@@ -19,7 +19,7 @@ mypy                                     # 库和流水线脚本
 |---|---|
 | `unit` | Linux 和 Windows、Python 3.11 和 3.13 上的测试，演示运行；Linux 3.13 上另跑 mini-SWE-agent 的上游契约测试 |
 | `lint` | ruff 和 mypy，版本固定 |
-| `full-suite` | 装有 GPU 主机训练栈（torch 2.14 CPU、transformers 5.20.2、peft 0.21.2）的全量测试：GRPO 和 SFT 的 loss、前缀打包与参考计算一致；库的行加分支覆盖率不低于 88% |
+| `full-suite` | 装有 GPU 主机训练栈（torch 2.14 CPU、transformers 5.20.2、peft 0.21.2）的全量测试：GRPO 和 SFT 的 loss、前缀打包与参考计算一致；库的行加分支覆盖率不低于 89% |
 | `openjudge-contract` | 固定版本的 OpenJudge 上游与评测适配器的契约测试 |
 
 pull request 和合并后的 `main` 各跑一次；同一个 pull request 的新提交会取消旧的运行。
