@@ -86,7 +86,7 @@ def write_archive(pool: Path, target: Path, compresslevel: int) -> dict[str, Ent
                     written[arcname] = ("file", info.size, reader.digest.hexdigest())
                 else:
                     raise ValueError(f"{child}: not a regular file, directory or symlink")
-            archive.members.clear()   # a TarFile keeps every header it wrote; `written` already records them
+            archive.members.clear()  # type: ignore[attr-defined]  # (not in typeshed) every header written; `written` has them
     return written
 
 
@@ -137,7 +137,7 @@ def read_archive(path: Path) -> dict[str, Entry]:
                 found[member.name] = ("dir",)
             else:
                 found[member.name] = ("other", member.type)
-            archive.members.clear()   # likewise for every header it read
+            archive.members.clear()  # type: ignore[attr-defined]  # likewise for every header read
     return found
 
 
