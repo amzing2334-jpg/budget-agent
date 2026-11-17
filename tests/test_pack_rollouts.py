@@ -153,3 +153,27 @@ def test_a_run_stopped_before_recording_rechecks_the_archive_against_runs(tmp_pa
     with tarfile.open(pool / "runs.tar.gz") as archive:
         archive.extractall(pool, filter="tar")
     assert snapshot(pool / "runs") == before
+
+
+def test_tarfile_does_not_keep_every_header_while_packing(tmp_path, monkeypatch):
+    """A TarFile remembers each header it writes or reads; an evaluation pool has half a million."""
+    pool = make_pool(tmp_path / "eval-grpo", tasks=tuple(f"t{i}" for i in range(30)))
+    sizes = []
+    addfile, next_member = tarfile.TarFile.addfile, tarfile.TarFile.next
+
+    def counting_addfile(self, *args, **kwargs):
+        sizes.append(len(self.members))
+        return addfile(self, *args, **kwargs)
+
+    def counting_next(self):
+        sizes.append(len(self.members))
+        return next_member(self)
+
+    monkeypatch.setattr(tarfile.TarFile, "addfile", counting_addfile)
+    monkeypatch.setattr(tarfile.TarFile, "next", counting_next)
+    before = snapshot(pool / "runs")
+    assert pack_rollouts.main([str(pool)]) == 0
+    assert len(sizes) > 400 and max(sizes) <= 8
+    with tarfile.open(pool / "runs.tar.gz") as archive:
+        archive.extractall(tmp_path / "restored", filter="tar")
+    assert snapshot(tmp_path / "restored" / "runs") == before
